@@ -28,6 +28,8 @@ public class LoginController {
 
     @RequestMapping(value = "/login")
     public Result login(HttpServletRequest req) {
+        String username = req.getParameter("username");
+        String passwd = req.getParameter("passwd");
         return loginService.login(req);
     }
 }
