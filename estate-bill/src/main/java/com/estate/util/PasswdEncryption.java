@@ -4,6 +4,7 @@ import org.springframework.util.DigestUtils;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
+import java.util.Base64;
 import java.util.Calendar;
 
 public class PasswdEncryption {
@@ -43,6 +44,7 @@ public class PasswdEncryption {
     }
 
     /***
+     * 密码解密方法
      * auth:cfy
      * date:2020年7月27日10:56:56
      * @return
@@ -51,11 +53,12 @@ public class PasswdEncryption {
         StringBuffer sbf = new StringBuffer();
         byte[] pd = null;
         try {
-            String password = new String(passwd.getBytes(),"utf-8");
-            pd = decoder.decodeBuffer(password);
-            sbf.append(pd);
-            int start = sbf.indexOf("_");
-            int end = sbf.length() - 1;
+            Base64.Decoder decoder = Base64.getDecoder();
+            pd = decoder.decode(passwd);
+            String pwd = new String(pd,"utf-8");
+            int start = pwd.indexOf("_");
+            int end = pwd.length();
+            sbf.append(pwd);
             sbf.replace(start, end, "");
             return sbf.toString();
         }catch (Exception e){

@@ -8,6 +8,7 @@ import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,6 +23,9 @@ public class LoginServiceImpl implements LoginService {
         String username = req.getParameter("username");
         String passwd = req.getParameter("passwd");
         SUser user = userService.findByUserName(username);
+        if(StringUtils.isEmpty(user)){
+            return ResultUtil.error("没有找到用户信息，请重新确认",0);
+        }
         String password = user.getPassword();
         StringBuffer sbf = new StringBuffer(passwd);
         //在用户输入的密码两头拼接sdzy
@@ -34,7 +38,7 @@ public class LoginServiceImpl implements LoginService {
         if(pwd.equals(pd)){
             return ResultUtil.success();
         }else{
-            return ResultUtil.error("登陆失败",0);
+            return ResultUtil.error("登陆失败，请联系管理员",0);
         }
     }
 }
