@@ -1,5 +1,6 @@
 package com.estate.sdzy.service;
 
+import com.estate.sdzy.entity.SCompany;
 import com.estate.sdzy.entity.SUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Param;
@@ -18,4 +19,11 @@ public interface SUserService extends IService<SUser> {
 
     List<SUser> findOne(Integer id);
     SUser findByUserName(String username);
+
+    /**
+     * 自动添加公司管理员角色
+     * @param company 公司信息
+     * @return
+     */
+    Boolean autoSave(SCompany company);
 }

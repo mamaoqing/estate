@@ -4,6 +4,8 @@ package com.estate.sdzy.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.entity.SCompany;
 import com.estate.sdzy.service.SCompanyService;
+import com.estate.sdzy.service.SUserService;
+import com.estate.util.Pinyin;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -29,11 +31,20 @@ public class SCompanyController {
     @Autowired
     private SCompanyService companyService;
 
+    @Autowired
+    private SUserService userService;
+
     @PostMapping("/insertCompany")
     public Result insertCompany(SCompany sCompany){
         boolean save = companyService.save(sCompany);
         if(save){
             log.info("添加公司信息成功，公司id={}",sCompany.getId());
+            Boolean aBoolean = userService.autoSave(sCompany);
+            if(aBoolean){
+                log.info("自动添加公司管理员角色，登录用户名={},密码=123456", Pinyin.getPinYinHeadChar(sCompany.getAbbreviation()));
+            }else{
+                log.error("自动添加管理员角色失败");
+            }
             return ResultUtil.success(sCompany);
         }
 

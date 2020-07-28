@@ -37,7 +37,7 @@ public class SUserRoleServiceImpl extends ServiceImpl<SUserRoleMapper, SUserRole
         }
 
         // 1. 通过token查询用户id；
-        String userId = "1";
+        String userId = "9";
 
         // 2. 通过用户id查询user_role.
         QueryWrapper<SUserRole> queryWrapper = new QueryWrapper<>();

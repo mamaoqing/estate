@@ -45,7 +45,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
         for (Long roleId : roleIds) {
             // 1.通过roleid查询出菜单id -> menuid,一个权限role可能对应多个菜单menu；
             QueryWrapper<SRoleMenu> qw = new QueryWrapper<>();
-            qw.eq("roleId", roleId);
+            qw.eq("role_id", roleId);
             List<SRoleMenu> sRoleMenus = roleMenuMapper.selectList(qw);
 
             // 2.遍历得到的权限菜单表，通过菜单id查询该权限下的所有的菜单

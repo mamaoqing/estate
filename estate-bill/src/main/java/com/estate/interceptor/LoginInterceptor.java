@@ -2,9 +2,14 @@ package com.estate.interceptor;
 
 import com.estate.sdzy.entity.SUser;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,13 +19,22 @@ import javax.servlet.http.HttpServletResponse;
  * @description 登录拦截器，验证用户是否登录
  */
 @Slf4j
+@Component
 public class LoginInterceptor implements HandlerInterceptor {
+
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("验证用户是否登录");
         try {
+
             String token = String.valueOf(request.getParameter("token"));
+
             SUser user = (SUser) request.getSession().getAttribute(token);
+            String key = String.valueOf(redisTemplate.opsForValue().get(token));
+            System.out.println("---------------=========" + key + "=========---------------");
             System.out.println("---------------=========" + token + "=========---------------");
             if (user != null) {
                 return true;

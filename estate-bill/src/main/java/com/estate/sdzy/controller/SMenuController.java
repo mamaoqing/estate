@@ -9,6 +9,7 @@ import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
@@ -35,13 +36,20 @@ public class SMenuController {
     @Autowired
     private SMenuService sMenuService;
 
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
+
     @GetMapping("/get")
     @ResponseBody
     public Result getMenuList(String token) {
 
+        redisTemplate.opsForValue().set("a","123");
+
         List<Long> longs = userRoleService.listUserRole(token);
 
         List<SMenu> sMenus = sMenuService.listMenu(longs);
+
+        System.out.println(redisTemplate.opsForValue().get("a")+"======================");
 
         List<SMenu> allRoleMenu = MenuUtil.getAllRoleMenu(sMenus);
 
