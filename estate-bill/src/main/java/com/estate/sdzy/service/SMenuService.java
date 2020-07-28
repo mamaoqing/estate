@@ -27,19 +27,19 @@ public interface SMenuService extends IService<SMenu> {
      * @param menu 菜单信息
      * @return
      */
-    boolean insertMenu(SMenu menu);
+    boolean insertMenu(SMenu menu,String token);
 
     /**
      * 更新菜单
      * @param menu
      * @return
      */
-    boolean updateMenu(SMenu menu);
+    boolean updateMenu(SMenu menu,String token);
 
     /**
      * 删除菜单
      * @param id
      * @return
      */
-    boolean deleteMenuById(Long id);
+    boolean deleteMenuById(Long id,String token);
 }

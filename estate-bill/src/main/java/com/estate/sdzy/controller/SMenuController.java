@@ -28,7 +28,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/sdzy/sMenu")
 @Slf4j
-public class SMenuController {
+public class SMenuController extends BaseController {
 
     @Autowired
     private SUserRoleService userRoleService;
@@ -37,20 +37,14 @@ public class SMenuController {
     private SMenuService sMenuService;
 
     @Autowired
-    private RedisTemplate<String,Object> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @GetMapping("/get")
     @ResponseBody
     public Result getMenuList(String token) {
 
-        redisTemplate.opsForValue().set("a","123");
-
         List<Long> longs = userRoleService.listUserRole(token);
-
         List<SMenu> sMenus = sMenuService.listMenu(longs);
-
-        System.out.println(redisTemplate.opsForValue().get("a")+"======================");
-
         List<SMenu> allRoleMenu = MenuUtil.getAllRoleMenu(sMenus);
 
         return ResultUtil.success(allRoleMenu);
@@ -58,15 +52,11 @@ public class SMenuController {
 
     @PostMapping("/insertMenu")
     @ResponseBody
-    public Result insertMenu(SMenu menu) {
+    public Result insertMenu(SMenu menu, String token) {
         try {
-            boolean flag = sMenuService.insertMenu(menu);
-            if (flag) {
-                log.info("添加菜单成功");
-                return ResultUtil.success();
-            }
+            boolean flag = sMenuService.insertMenu(menu, token);
+            return ResultUtil.success(flag);
         } catch (Exception e) {
-            log.error("添加菜单失败，失败信息：{}",e);
             e.printStackTrace();
         }
         return ResultUtil.error("菜单添加失败", 1);
@@ -75,41 +65,34 @@ public class SMenuController {
     @GetMapping("/{id}")
     @ResponseBody
     public Result getMenu(@PathVariable("id") long id) {
-        try{
+        try {
             SMenu menu = sMenuService.getById(id);
             return ResultUtil.success(menu);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("查询菜单错误",1);
+        return ResultUtil.error("查询菜单错误", 1);
     }
 
     @PutMapping("/updateMenu")
     @ResponseBody
-    public Result updateMenu(SMenu menu) {
+    public Result updateMenu(SMenu menu, String token) {
         try {
-            boolean flag = sMenuService.updateMenu(menu);
-            if (flag) {
-                log.info("菜单修改成功");
-                return ResultUtil.success();
-            }
+            boolean flag = sMenuService.updateMenu(menu, token);
+            return ResultUtil.success(flag);
         } catch (Exception e) {
-            log.error("修改菜单失败，失败信息：{}",e);
             e.printStackTrace();
         }
-        return ResultUtil.error("菜单修改失败", 1);
+        return ResultUtil.error("系统错误，菜单修改失败。", 1);
     }
+
     @DeleteMapping("/{id}")
     @ResponseBody
-    public Result deleteMenu(@PathVariable("id") Long id) {
+    public Result deleteMenu(@PathVariable("id") Long id, String token) {
         try {
-            boolean flag = sMenuService.deleteMenuById(id);
-            if (flag) {
-                log.info("菜单删除成功");
-                return ResultUtil.success();
-            }
+            boolean flag = sMenuService.deleteMenuById(id, token);
+            return ResultUtil.success(flag);
         } catch (Exception e) {
-            log.error("删除菜单失败，失败信息：{}",e);
             e.printStackTrace();
         }
         return ResultUtil.error("菜单删除失败", 1);

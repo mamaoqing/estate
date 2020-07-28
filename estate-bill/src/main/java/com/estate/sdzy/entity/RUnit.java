@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.List;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -50,6 +52,11 @@ public class RUnit implements Serializable {
     private Long commAreaId;
 
     /**
+     * 楼栋id
+     */
+    private Long buildingId;
+
+    /**
      * 状态
      */
     private String state;
@@ -91,5 +98,7 @@ public class RUnit implements Serializable {
     @TableLogic
     private Integer isDelete;
 
+    @TableField(exist = false)
+    private List<RRoom> roomList;
 
 }

@@ -60,15 +60,12 @@ public class SRoleController {
 
     @PutMapping("/updateRole")
     @ResponseBody
-    public Result updateRole(SRole role) {
+    public Result updateRole(SRole role, String token) {
         try {
-            boolean flag = roleService.saveOrUpdate(role);
-            if (flag) {
-                log.info("更新角色成功");
-                return ResultUtil.success(flag);
-            }
+            boolean flag = roleService.saveOrUpdate(role, token);
+            return ResultUtil.success(flag);
+
         } catch (Exception e) {
-            log.error("更新角色失败,失败信息：{}", e);
             e.printStackTrace();
         }
         return ResultUtil.error("更新角色失败", 1);
@@ -90,9 +87,9 @@ public class SRoleController {
         return ResultUtil.error("添加角色失败", 1);
     }
 
-    @DeleteMapping("/deleteRole")
+    @DeleteMapping("/{id}")
     @ResponseBody
-    public Result deleteRole(Long id) {
+    public Result deleteRole(@PathVariable("id") Long id) {
         try {
             boolean flag = roleService.removeById(id);
             if (flag) {

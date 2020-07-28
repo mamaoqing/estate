@@ -43,10 +43,10 @@ public class SUserController {
     @GetMapping("/listUser")
     @ResponseBody
     public Result listUser(Integer pageNo, Integer size) {
-        if(StringUtils.isEmpty(pageNo)){
-            return ResultUtil.error("参数错误，请输入页码",1);
+        if (StringUtils.isEmpty(pageNo)) {
+            return ResultUtil.error("参数错误，请输入页码", 1);
         }
-        if(StringUtils.isEmpty(size)){
+        if (StringUtils.isEmpty(size)) {
             size = 10;
         }
         try {
@@ -61,49 +61,40 @@ public class SUserController {
 
     @PostMapping("/insertUser")
     @ResponseBody
-    public Result insertUser(SUser user) {
+    public Result insertUser(SUser user, String token) {
         try {
-            boolean flag = userService.save(user);
-            if (flag) {
-                log.info("添加用户信息成功：{}", user);
-                return ResultUtil.success(user);
-            }
+            boolean flag = userService.save(user,token);
+            return ResultUtil.success(user);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log.error("添加用户信息失败：{}", user);
         return ResultUtil.error("添加用户错误", 1);
     }
 
-    @DeleteMapping("/deleteUser")
+    @DeleteMapping("/{id}")
     @ResponseBody
-    public Result deleteUser(Long id) {
+    public Result deleteUser(@PathVariable("id") Long id,String token) {
         try {
-            boolean flag = userService.removeById(id);
-            if (flag) {
-                log.info("删除用户信息成功用户id：{}",id);
-                return ResultUtil.success(flag);
-            }
+            boolean flag = userService.removeById(id,token);
+            return ResultUtil.success(flag);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log.error("删除用户信息失败,用户id：{}", id);
         return ResultUtil.error("删除用户错误", 1);
     }
 
     @PutMapping("/updateUser")
     @ResponseBody
-    public Result updateUser(SUser user) {
+    public Result updateUser(SUser user,String token) {
         try {
-            boolean flag = userService.saveOrUpdate(user);
-            if (flag) {
-                log.info("更新用户信息成功用户id：{}",user);
-                return ResultUtil.success(flag);
-            }
+            boolean flag = userService.saveOrUpdate(user,token);
+            return ResultUtil.success(flag);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        log.error("更新用户信息失败,用户id：{}", user);
         return ResultUtil.error("更新用户错误", 1);
     }
 

@@ -2,11 +2,13 @@ package com.estate.sdzy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.entity.SUserRole;
 import com.estate.sdzy.mapper.SUserRoleMapper;
 import com.estate.sdzy.service.SUserRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -27,6 +29,8 @@ public class SUserRoleServiceImpl extends ServiceImpl<SUserRoleMapper, SUserRole
     @Autowired
     private SUserRoleMapper userRoleMapper;
 
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public List<Long> listUserRole(String token) {
@@ -37,7 +41,11 @@ public class SUserRoleServiceImpl extends ServiceImpl<SUserRoleMapper, SUserRole
         }
 
         // 1. 通过token查询用户id；
-        String userId = "9";
+        Object o = redisTemplate.opsForValue().get(token);
+        if(null == o){
+            return list;
+        }
+        Long userId = ((SUser) o).getId();
 
         // 2. 通过用户id查询user_role.
         QueryWrapper<SUserRole> queryWrapper = new QueryWrapper<>();

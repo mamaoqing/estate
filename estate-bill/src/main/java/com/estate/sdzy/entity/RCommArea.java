@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.List;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -108,6 +110,9 @@ public class RCommArea implements Serializable {
 
     @TableLogic
     private Integer isDelete;
+
+    @TableField(exist = false)
+    private List<RBuilding> buildingList;
 
 
 }

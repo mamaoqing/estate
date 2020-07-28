@@ -1,6 +1,7 @@
 package com.estate.interceptor;
 
 import com.estate.sdzy.entity.SUser;
+import com.estate.sdzy.service.SUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -25,17 +26,17 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private RedisTemplate<String,Object> redisTemplate;
 
+    @Autowired
+    private SUserService userService;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("验证用户是否登录");
         try {
 
             String token = String.valueOf(request.getParameter("token"));
-
-            SUser user = (SUser) request.getSession().getAttribute(token);
-            String key = String.valueOf(redisTemplate.opsForValue().get(token));
-            System.out.println("---------------=========" + key + "=========---------------");
-            System.out.println("---------------=========" + token + "=========---------------");
+            SUser user = (SUser)redisTemplate.opsForValue().get(token);
+//            SUser user = (SUser) request.getSession().getAttribute(token);
             if (user != null) {
                 return true;
             }

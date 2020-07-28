@@ -3,12 +3,14 @@ package com.estate.sdzy.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.estate.sdzy.entity.SMenu;
 import com.estate.sdzy.entity.SRoleMenu;
+import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.mapper.SMenuMapper;
 import com.estate.sdzy.mapper.SRoleMenuMapper;
 import com.estate.sdzy.service.SMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -33,6 +35,9 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
 
     @Autowired
     private SRoleMenuMapper roleMenuMapper;
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public List<SMenu> listMenu(List<Long> roleIds) {
@@ -63,19 +68,45 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
     }
 
     @Override
-    public boolean insertMenu(SMenu menu) {
-        return menuMapper.insert(menu) > 0;
+    public boolean insertMenu(SMenu menu, String token) {
+        SUser user = getUserByToken(token);
+        if (null == user) {
+            return false;
+        }
+        menu.setCreatedBy(user.getId());
+        menu.setCreatedName(user.getUserName());
+
+        int insert = menuMapper.insert(menu);
+        if (insert > 0) {
+            log.info("添加菜单信息成功，添加人={}", user.getName());
+        }
+        return insert > 0;
     }
 
     @Override
-    public boolean updateMenu(SMenu menu) {
-        return menuMapper.updateById(menu) > 0;
+    public boolean updateMenu(SMenu menu, String token) {
+
+        SUser user = getUserByToken(token);
+        if (null == user) {
+            return false;
+        }
+        menu.setModifiedBy(user.getId());
+        menu.setModifiedName(user.getUserName());
+        int i = menuMapper.updateById(menu);
+        if (i > 0) {
+            log.info("修改菜单信息成功，修改人={}", user.getName());
+        }
+        return i > 0;
     }
 
     @Override
     @Transactional
-    public boolean deleteMenuById(Long id) {
+    public boolean deleteMenuById(Long id, String token) {
         if (StringUtils.isEmpty(id)) {
+            return false;
+        }
+        SUser user = getUserByToken(token);
+        if (null == user) {
             return false;
         }
 
@@ -87,8 +118,19 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
 
         // 2.删除当前菜单
         int i = menuMapper.deleteById(id);
-
+        if (i > 0) {
+            log.info("菜单删除成功，删除人={}", user.getUserName());
+        }
         return i > 0;
+    }
+
+    private SUser getUserByToken(String token) {
+        Object o = redisTemplate.opsForValue().get(token);
+        if (null == o) {
+            log.error("登录失效，请重新登录。");
+            return null;
+        }
+        return (SUser) o;
     }
 
 }

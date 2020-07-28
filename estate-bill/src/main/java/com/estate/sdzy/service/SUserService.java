@@ -26,4 +26,10 @@ public interface SUserService extends IService<SUser> {
      * @return
      */
     Boolean autoSave(SCompany company);
+
+    boolean save(SUser user ,String token);
+
+    boolean saveOrUpdate(SUser user ,String token);
+
+    boolean removeById(Long id,String token);
 }

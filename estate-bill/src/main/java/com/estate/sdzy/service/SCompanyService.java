@@ -13,4 +13,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SCompanyService extends IService<SCompany> {
 
+    boolean save(SCompany company,String token);
+
+    boolean saveOrUpdate(SCompany company,String token);
+
+    boolean removeById(Long id ,String token);
 }
