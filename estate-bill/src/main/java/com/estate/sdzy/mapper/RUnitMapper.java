@@ -2,7 +2,6 @@ package com.estate.sdzy.mapper;
 
 import com.estate.sdzy.entity.RUnit;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -10,9 +9,8 @@ import org.springframework.stereotype.Repository;
  * </p>
  *
  * @author mq
- * @since 2020-07-23
+ * @since 2020-07-28
  */
-@Repository
 public interface RUnitMapper extends BaseMapper<RUnit> {
 
 }

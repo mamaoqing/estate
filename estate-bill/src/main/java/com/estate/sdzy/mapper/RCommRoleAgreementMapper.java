@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author mq
- * @since 2020-07-24
+ * @since 2020-07-28
  */
 public interface RCommRoleAgreementMapper extends BaseMapper<RCommRoleAgreement> {
 

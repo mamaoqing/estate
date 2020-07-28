@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author mq
- * @since 2020-07-24
+ * @since 2020-07-28
  */
 @Data
 @EqualsAndHashCode(callSuper = false)

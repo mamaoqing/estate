@@ -61,7 +61,7 @@ public class AutoCode {
 //        // 策略，逻辑删除。。。
 //        StrategyConfig strategy = new StrategyConfig();
 //        // 要映射的表
-//        strategy.setInclude("s_user_comm","r_comm_role_agreement","r_comm_area","r_building");
+//        strategy.setInclude("r_building","r_comm_area","r_comm_role_agreement","r_community","r_room","r_unit");
 ////        strategy.setInclude("s_user","s_role_menu","s_role","s_org","s_menu","s_dict_item","s_dict","s_company","s_comp_link","r_unit","r_room");
 //        strategy.setNaming(NamingStrategy.underline_to_camel);
 //        strategy.setColumnNaming(NamingStrategy.underline_to_camel);
