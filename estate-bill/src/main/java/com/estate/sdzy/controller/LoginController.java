@@ -26,10 +26,28 @@ public class LoginController {
     @Autowired
     private LoginService loginService;
 
+    /**
+     * create by: cfy
+     * description: TODO
+     * create time: 2020/7/28 11:18
+     * 
+      * @Param: null
+     * @return 
+     */
     @RequestMapping(value = "/login")
     public Result login(HttpServletRequest req) {
-        String username = req.getParameter("username");
-        String passwd = req.getParameter("passwd");
         return loginService.login(req);
+    }
+    /**
+     * create by: cfy
+     * description: TODO
+     * create time: 2020/7/28 11:35
+     * 
+      * @Param: null
+     * @return 
+     */
+    @RequestMapping("/checkLogin")
+    public Result checkLogin(HttpServletRequest req){
+        return loginService.checkToken(req);
     }
 }
