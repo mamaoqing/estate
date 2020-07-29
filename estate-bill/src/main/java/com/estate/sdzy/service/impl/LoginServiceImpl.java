@@ -40,25 +40,15 @@ public class LoginServiceImpl implements LoginService {
         String pwd = DigestUtils.md5DigestAsHex(sbf.toString().getBytes());
         String pd = PasswdEncryption.dencptyPasswd(password);
 
-        if(pwd.equals(pd)){
-            String token = String.valueOf(UUID.randomUUID());
-            redisUtil.set(token+":"+user.getUserName(),user,5*60);
+        if(pwd.equals(pd)) {
+            String key = String.valueOf(UUID.randomUUID());
+            String token = key+":"+user.getUserName();
+            redisUtil.set(token, user, 5 * 60);
             return ResultUtil.success(token);
         }else{
             return ResultUtil.error("登陆失败，用户名密码不正确",0);
         }
     }
 
-    public Result checkToken(HttpServletRequest req) {
-        String userName = req.getParameter("username");
-        String token = req.getParameter("token");
-        String key = token+":"+userName;
-        Object obj = redisUtil.get(key,SUser.class);
-        if(null != obj && ((SUser)obj).getUserName().equals(userName)){
-            redisUtil.expire(key,5*60);
-            return ResultUtil.success(token);
-        }
-        return ResultUtil.error("登陆过期，请重新登录",0);
-    }
 
 }

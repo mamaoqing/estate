@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author mq
@@ -38,13 +39,14 @@ public class LoginInterceptor implements HandlerInterceptor {
             SUser user = (SUser)redisTemplate.opsForValue().get(token);
 //            SUser user = (SUser) request.getSession().getAttribute(token);
             if (user != null) {
+                redisTemplate.expire(token,5*60,TimeUnit.SECONDS);
                 return true;
             }
 //            response.sendRedirect(request.getContextPath()+"你的登陆页地址");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return true;
+        return false;
     }
 
     @Override

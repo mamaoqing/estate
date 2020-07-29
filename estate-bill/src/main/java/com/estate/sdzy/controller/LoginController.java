@@ -38,16 +38,5 @@ public class LoginController {
     public Result login(HttpServletRequest req) {
         return loginService.login(req);
     }
-    /**
-     * create by: cfy
-     * description: TODO
-     * create time: 2020/7/28 11:35
-     * 
-      * @Param: null
-     * @return 
-     */
-    @RequestMapping("/checkLogin")
-    public Result checkLogin(HttpServletRequest req){
-        return loginService.checkToken(req);
-    }
+
 }
