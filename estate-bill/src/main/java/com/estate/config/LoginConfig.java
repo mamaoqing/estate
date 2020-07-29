@@ -27,6 +27,7 @@ public class LoginConfig implements WebMvcConfigurer {
         return new LoginInterceptor();
     }
 
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         InterceptorRegistration registration = registry.addInterceptor(getSessionInterceptor());
