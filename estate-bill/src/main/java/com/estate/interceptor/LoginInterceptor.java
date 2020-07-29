@@ -34,7 +34,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         log.info("验证用户是否登录");
         try {
 
-            String token = String.valueOf(request.getParameter("token"));
+            String token = String.valueOf(request.getHeader("Authentication-Token"));
             SUser user = (SUser)redisTemplate.opsForValue().get(token);
 //            SUser user = (SUser) request.getSession().getAttribute(token);
             if (user != null) {

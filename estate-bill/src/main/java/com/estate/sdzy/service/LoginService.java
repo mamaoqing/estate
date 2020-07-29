@@ -6,4 +6,5 @@ import javax.servlet.http.HttpServletRequest;
 
 public interface LoginService {
     Result login(HttpServletRequest req);
+    Result checkToken(HttpServletRequest req);
 }
