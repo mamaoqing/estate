@@ -6,11 +6,14 @@ import com.estate.util.PasswdEncryption;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 
 @Service
@@ -18,6 +21,8 @@ public class LoginServiceImpl implements LoginService {
 
     @Autowired
     private SUserServiceImpl userService;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     public Result login(HttpServletRequest req) {
         String username = req.getParameter("username");
@@ -36,7 +41,10 @@ public class LoginServiceImpl implements LoginService {
         String pd = PasswdEncryption.dencptyPasswd(password);
 
         if(pwd.equals(pd)){
-            return ResultUtil.success();
+            String s = UUID.randomUUID().toString();
+            String s1 = s.replace("-", "");
+            redisTemplate.opsForValue().set(s1,user,30*60, TimeUnit.SECONDS);
+            return ResultUtil.success(s1);
         }else{
             return ResultUtil.error("登陆失败，请联系管理员",0);
         }

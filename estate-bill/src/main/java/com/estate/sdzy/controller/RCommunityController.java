@@ -4,6 +4,7 @@ package com.estate.sdzy.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.entity.RCommunity;
+import com.estate.sdzy.entity.RRoom;
 import com.estate.sdzy.service.RCommunityService;
 import com.estate.sdzy.service.SUserCommService;
 import com.estate.util.Result;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -26,7 +29,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/sdzy/rCommunity")
-public class RCommunityController {
+public class RCommunityController extends BaseController{
 
     @Autowired
     private RCommunityService communityService;
@@ -105,6 +108,19 @@ public class RCommunityController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return ResultUtil.error("查询失败", 1);
+    }
+
+    @GetMapping("/getCommunityById")
+    public Result getCommunityById(HttpServletRequest request){
+        try {
+            Map<String, String> map = super.getParameterMap(request);
+            Page<RRoom> roomPage = communityService.getRoomByMap(map);
+            return ResultUtil.success(roomPage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return ResultUtil.error("查询失败", 1);
     }
 

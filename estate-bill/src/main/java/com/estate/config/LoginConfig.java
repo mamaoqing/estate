@@ -1,5 +1,6 @@
 package com.estate.config;
 
+import com.estate.interceptor.BuyInterceptor;
 import com.estate.interceptor.LoginInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,13 +27,12 @@ public class LoginConfig implements WebMvcConfigurer {
         return new LoginInterceptor();
     }
 
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         InterceptorRegistration registration = registry.addInterceptor(getSessionInterceptor());
         // 拦截路径 /** 表示所有的路径都拦截
-        registration.addPathPatterns("/**");
+        registration.addPathPatterns("/sdzy/**");
         // 不拦截路径 多个用 "," 隔开
-//        registration.excludePathPatterns("","","","");
+        registration.excludePathPatterns("/buy/**","/api/login/**");
     }
 }

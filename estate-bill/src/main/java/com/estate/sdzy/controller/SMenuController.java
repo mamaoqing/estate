@@ -1,6 +1,7 @@
 package com.estate.sdzy.controller;
 
 
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SMenu;
 import com.estate.sdzy.service.SMenuService;
 import com.estate.sdzy.service.SUserRoleService;
@@ -42,12 +43,16 @@ public class SMenuController extends BaseController {
     @GetMapping("/get")
     @ResponseBody
     public Result getMenuList(String token) {
+        try {
+            List<Long> longs = userRoleService.listUserRole(token);
+            List<SMenu> sMenus = sMenuService.listMenu(longs);
+            List<SMenu> allRoleMenu = MenuUtil.getAllRoleMenu(sMenus);
 
-        List<Long> longs = userRoleService.listUserRole(token);
-        List<SMenu> sMenus = sMenuService.listMenu(longs);
-        List<SMenu> allRoleMenu = MenuUtil.getAllRoleMenu(sMenus);
-
-        return ResultUtil.success(allRoleMenu);
+            return ResultUtil.success(allRoleMenu);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResultUtil.error("菜单查询失败，请稍后再试", 1);
     }
 
     @PostMapping("/insertMenu")
@@ -96,6 +101,28 @@ public class SMenuController extends BaseController {
             e.printStackTrace();
         }
         return ResultUtil.error("菜单删除失败", 1);
+    }
+
+    @GetMapping("/textIndex")
+    public Result testIndex(){
+
+        System.out.println(1234);
+        if(true){
+            throw  new BillException(1,"测试成功了没有！！");
+        }
+
+        return ResultUtil.success();
+    }
+
+    @GetMapping("/bill")
+    public Result billTestIndex(){
+
+        System.out.println(1234);
+        if(true){
+            throw  new BillException(1,"测试成功了没有！！");
+        }
+
+        return ResultUtil.success();
     }
 }
 

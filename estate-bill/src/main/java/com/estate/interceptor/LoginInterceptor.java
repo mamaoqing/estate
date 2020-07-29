@@ -4,6 +4,7 @@ import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.service.SUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -29,12 +30,16 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Autowired
     private SUserService userService;
 
+    // 登录路径
+    @Value("${loginPath}")
+    private String loginPath;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         log.info("验证用户是否登录");
         try {
 
-            String token = String.valueOf(request.getParameter("token"));
+            String token = String.valueOf(request.getHeader("Authentication-Token"));
             SUser user = (SUser)redisTemplate.opsForValue().get(token);
 //            SUser user = (SUser) request.getSession().getAttribute(token);
             if (user != null) {
