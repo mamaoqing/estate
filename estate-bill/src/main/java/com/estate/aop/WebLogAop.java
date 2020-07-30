@@ -59,7 +59,7 @@ public class WebLogAop {
 
         if(!flag){
             // 在这里进行数据权限的控制
-            throw new BillException(1,"抱歉您没有权限访问");
+            throw new BillException(1,"抱歉您没有权限访问，或者权限已过期");
         }
 
 
