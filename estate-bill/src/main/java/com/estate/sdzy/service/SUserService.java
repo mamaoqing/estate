@@ -27,6 +27,15 @@ public interface SUserService extends IService<SUser> {
      */
     Boolean autoSave(SCompany company);
 
+    /**
+     * 设置用户角色，用户与角色是一对多的关系，一个用户可以有多个角色
+     *
+     * @param userId 用户di
+     * @param roleIds 角色id的string串，中间用“,”隔开
+     * @return
+     */
+    boolean setUserRole(Long userId,String roleIds,String token);
+
     boolean save(SUser user ,String token);
 
     boolean saveOrUpdate(SUser user ,String token);

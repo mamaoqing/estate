@@ -67,7 +67,7 @@ public class SUserController {
     @ResponseBody
     public Result insertUser(SUser user, String token) {
         try {
-            boolean flag = userService.save(user,token);
+            boolean flag = userService.save(user, token);
             return ResultUtil.success(flag);
 
         } catch (Exception e) {
@@ -78,9 +78,9 @@ public class SUserController {
 
     @DeleteMapping("/{id}")
     @ResponseBody
-    public Result deleteUser(@PathVariable("id") Long id,String token) {
+    public Result deleteUser(@PathVariable("id") Long id, String token) {
         try {
-            boolean flag = userService.removeById(id,token);
+            boolean flag = userService.removeById(id, token);
             return ResultUtil.success(flag);
 
         } catch (Exception e) {
@@ -91,15 +91,26 @@ public class SUserController {
 
     @PutMapping("/updateUser")
     @ResponseBody
-    public Result updateUser(SUser user,String token) {
+    public Result updateUser(SUser user, String token) {
         try {
-            boolean flag = userService.saveOrUpdate(user,token);
+            boolean flag = userService.saveOrUpdate(user, token);
             return ResultUtil.success(flag);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
         throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+    }
+
+    @PostMapping("/setUserRole")
+    public Result setUserRole(Long userId, String roleIds, String token) {
+        try {
+            boolean flag = userService.setUserRole(userId, roleIds, token);
+            return ResultUtil.success(flag);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        throw new BillException(BillExceptionEnum.SET_USER_ROLE_ERROR);
     }
 
 }

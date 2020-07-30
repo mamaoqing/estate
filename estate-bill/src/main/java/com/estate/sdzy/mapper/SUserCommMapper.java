@@ -2,6 +2,7 @@ package com.estate.sdzy.mapper;
 
 import com.estate.sdzy.entity.SUserComm;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author mq
  * @since 2020-07-24
  */
+@Repository
 public interface SUserCommMapper extends BaseMapper<SUserComm> {
 
 }

@@ -1,11 +1,13 @@
 package com.estate.sdzy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.entity.SUserComm;
 import com.estate.sdzy.mapper.SUserCommMapper;
 import com.estate.sdzy.service.SUserCommService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -36,7 +38,7 @@ public class SUserCommServiceImpl extends ServiceImpl<SUserCommMapper, SUserComm
     public List<Long> getUserCommIdList(String token) {
         List<Long> list = new ArrayList<>();
         SUser user = getUserByToken(token);
-        //if (null == user) { return list; }
+
         QueryWrapper<SUserComm> query = new QueryWrapper<>();
 //        query.eq("user_id",9);
         query.eq("user_id",user.getId());
@@ -54,7 +56,7 @@ public class SUserCommServiceImpl extends ServiceImpl<SUserCommMapper, SUserComm
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {
             log.error("登录失效，请重新登录。");
-            return null;
+            throw new BillException(BillExceptionEnum.LOGIN_TIME_OUT);
         }
         return (SUser) o;
     }

@@ -15,5 +15,10 @@ import java.util.List;
  */
 public interface SUserCommService extends IService<SUserComm> {
 
+    /**
+     * 通过用户的登录token，查询用户分管的所有的社区id
+     * @param token
+     * @return 社区id集合
+     */
     List<Long> getUserCommIdList(String token);
 }
