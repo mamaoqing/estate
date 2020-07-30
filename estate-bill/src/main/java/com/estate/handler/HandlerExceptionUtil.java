@@ -1,6 +1,8 @@
-package com.estate.util;
+package com.estate.handler;
 
 import com.estate.exception.BillException;
+import com.estate.util.Result;
+import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
+ * 自定义异常捕获
  * @author mq
  * @date 2020/7/29 14:07
  * @description 捕获异常

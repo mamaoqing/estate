@@ -2,6 +2,9 @@ package com.estate.aop;
 
 import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SUser;
+import com.estate.sdzy.service.RCommRoleAgreementService;
+import com.estate.sdzy.service.SRoleService;
+import com.estate.sdzy.service.SUserRoleService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -16,6 +19,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author mq
@@ -30,6 +34,12 @@ public class WebLogAop {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
+    @Autowired
+    private RCommRoleAgreementService rCommRoleAgreementService;
+
+    @Autowired
+    private SUserRoleService userRoleService;
+
 
     @Pointcut("execution(public * com.estate.sdzy.controller.*.bill*(..))")
     public void aopLog() {
@@ -43,7 +53,11 @@ public class WebLogAop {
         String token = request.getParameter("token");
         log.info("token={}",token);
         SUser user =  (SUser)redisTemplate.opsForValue().get(token);
-        if(user.getId() == null){
+        // 得到该角色全部的权限id。
+        List<Long> longs = userRoleService.listUserRole(token);
+        boolean flag = rCommRoleAgreementService.isPermission(longs);
+
+        if(!flag){
             // 在这里进行数据权限的控制
             throw new BillException(1,"抱歉您没有权限访问");
         }
@@ -53,7 +67,7 @@ public class WebLogAop {
 
     @After("aopLog()")
     public void after(JoinPoint point) {
-        log.info("=============我来源与after========================");
+        //log.info("=============我来源与after========================");
     }
 
     @Pointcut("execution(public * com.estate.sdzy.controller.*.*(..))")
