@@ -50,7 +50,7 @@ public class WebLogAop {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         writeLog(point);
-        String token = request.getParameter("token");
+        String token = request.getHeader("Authentication-Token");
         log.info("token={}",token);
         SUser user =  (SUser)redisTemplate.opsForValue().get(token);
         // 得到该角色全部的权限id。

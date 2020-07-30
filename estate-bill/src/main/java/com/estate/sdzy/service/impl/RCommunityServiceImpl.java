@@ -2,10 +2,12 @@ package com.estate.sdzy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.*;
 import com.estate.sdzy.mapper.*;
 import com.estate.sdzy.service.RCommunityService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -46,9 +48,6 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
     @Override
     public boolean save(RCommunity community, String token) {
         SUser user = getUserByToken(token);
-        if (null == user) {
-            return false;
-        }
         community.setCreatedBy(user.getId());
         community.setCreatedName(user.getUserName());
 
@@ -62,9 +61,6 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
     @Override
     public boolean saveOrUpdate(RCommunity community, String token) {
         SUser user = getUserByToken(token);
-        if (null == user) {
-            return false;
-        }
         community.setCreatedBy(user.getId());
         community.setCreatedName(user.getUserName());
 
@@ -78,9 +74,6 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
     @Override
     public boolean removeById(Long id, String token) {
         SUser user = getUserByToken(token);
-        if (null == user) {
-            return false;
-        }
         int delete = communityMapper.deleteById(id);
         if (delete > 0) {
             log.info("社区信息删除成功，删除人={}", user.getUserName());
@@ -143,7 +136,7 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
     public Page<RRoom> getRoomByMap(Map<String, String> map) {
         if (StringUtils.isEmpty(map.get("pageNo"))) {
             log.error("参数错误，请输入页码");
-            return null;
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         Integer pageNo = Integer.valueOf(map.get("pageNo"));
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
@@ -176,7 +169,7 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {
             log.error("登录失效，请重新登录。");
-            return null;
+            throw new BillException(BillExceptionEnum.LOGIN_TIME_OUT);
         }
         return (SUser) o;
     }

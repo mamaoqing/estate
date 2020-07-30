@@ -2,8 +2,10 @@ package com.estate.sdzy.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SRole;
 import com.estate.sdzy.service.SRoleService;
+import com.estate.util.BillExceptionEnum;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -35,16 +37,21 @@ public class SRoleController {
     @ResponseBody
     public Result listRole(Integer pageNo, Integer size) {
 //        List<SRole> list = roleService.list(null);
-        if (StringUtils.isEmpty(pageNo)) {
-            return ResultUtil.error("参数错误，请输入页码", 1);
-        }
-        if (StringUtils.isEmpty(size)) {
-            size = 10;
-        }
+        try{
+            if (StringUtils.isEmpty(pageNo)) {
+                throw  new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+            }
+            if (StringUtils.isEmpty(size)) {
+                size = 10;
+            }
 
-        Page<SRole> page = new Page<>(pageNo, size);
-        Page<SRole> pageList = roleService.page(page);
-        return ResultUtil.success(pageList);
+            Page<SRole> page = new Page<>(pageNo, size);
+            Page<SRole> pageList = roleService.page(page);
+            return ResultUtil.success(pageList);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        throw new BillException(BillExceptionEnum.SYSTEM_SELECT_ERROR);
     }
 
     @GetMapping("/{id}")
@@ -55,7 +62,7 @@ public class SRoleController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("查询角色错误", 1);
+        throw  new BillException(BillExceptionEnum.SYSTEM_SELECT_ERROR);
     }
 
     @PutMapping("/updateRole")
@@ -66,9 +73,10 @@ public class SRoleController {
             return ResultUtil.success(flag);
 
         } catch (Exception e) {
+            log.error("更新角色失败,失败信息：{}", e);
             e.printStackTrace();
         }
-        return ResultUtil.error("更新角色失败", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
     }
 
     @PostMapping("/insertRole")
@@ -84,7 +92,7 @@ public class SRoleController {
             log.error("添加角色失败,失败信息：{}", e);
             e.printStackTrace();
         }
-        return ResultUtil.error("添加角色失败", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
     }
 
     @DeleteMapping("/{id}")
@@ -100,7 +108,7 @@ public class SRoleController {
             log.error("删除角色失败,失败信息：{}", e);
             e.printStackTrace();
         }
-        return ResultUtil.error("删除角色失败", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
     }
 
 }

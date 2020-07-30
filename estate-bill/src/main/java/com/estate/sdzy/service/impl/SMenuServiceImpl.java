@@ -1,6 +1,7 @@
 package com.estate.sdzy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SMenu;
 import com.estate.sdzy.entity.SRoleMenu;
 import com.estate.sdzy.entity.SUser;
@@ -8,6 +9,7 @@ import com.estate.sdzy.mapper.SMenuMapper;
 import com.estate.sdzy.mapper.SRoleMenuMapper;
 import com.estate.sdzy.service.SMenuService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -44,7 +46,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
         List<SMenu> list = new ArrayList<>();
         // 如果传递的参数不存在直接返回。
         if (roleIds.isEmpty()) {
-            return list;
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
 
         for (Long roleId : roleIds) {
@@ -70,8 +72,8 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
     @Override
     public boolean insertMenu(SMenu menu, String token) {
         SUser user = getUserByToken(token);
-        if (null == user) {
-            return false;
+        if(null == menu){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         menu.setCreatedBy(user.getId());
         menu.setCreatedName(user.getUserName());
@@ -85,11 +87,10 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
 
     @Override
     public boolean updateMenu(SMenu menu, String token) {
-
-        SUser user = getUserByToken(token);
-        if (null == user) {
-            return false;
+        if(null == menu){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
+        SUser user = getUserByToken(token);
         menu.setModifiedBy(user.getId());
         menu.setModifiedName(user.getUserName());
         int i = menuMapper.updateById(menu);
@@ -103,15 +104,11 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
     @Transactional
     public boolean deleteMenuById(Long id, String token) {
         if (StringUtils.isEmpty(id)) {
-            return false;
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         SUser user = getUserByToken(token);
-        if (null == user) {
-            return false;
-        }
-
         // 删除菜单分为两部，1. 删除全部的子菜单如果子菜单存在子菜单继续删除。2.删除当前菜单。
-        // 1.删除当前菜单的全部子菜单
+        // 1.删除当前菜单的全部子菜单,父菜单列表之间用","隔开，需要在条件中添加','
         QueryWrapper<SMenu> qw = new QueryWrapper<>();
         qw.like("parent_id_list", id + ",");
         menuMapper.delete(qw);
@@ -128,7 +125,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {
             log.error("登录失效，请重新登录。");
-            return null;
+            throw new BillException(BillExceptionEnum.LOGIN_TIME_OUT);
         }
         return (SUser) o;
     }

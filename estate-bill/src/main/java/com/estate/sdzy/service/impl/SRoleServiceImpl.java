@@ -1,10 +1,12 @@
 package com.estate.sdzy.service.impl;
 
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SRole;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.mapper.SRoleMapper;
 import com.estate.sdzy.service.SRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,7 +33,9 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
     @Override
     public boolean saveOrUpdate(SRole role, String token) {
         SUser user = getUserByToken(token);
-        if (null == user) { return false; }
+        if(null == role){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
         role.setModifiedBy(user.getId());
         role.setModifiedName(user.getUserName());
         int update = roleMapper.updateById(role);
@@ -44,7 +48,10 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
     @Override
     public boolean save(SRole role, String token) {
         SUser user = getUserByToken(token);
-        if (null == user) { return false; }
+
+        if(null == role){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
         role.setModifiedBy(user.getId());
         role.setModifiedName(user.getUserName());
 
@@ -54,7 +61,7 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {
             log.error("登录失效，请重新登录。");
-            return null;
+            throw new BillException(BillExceptionEnum.LOGIN_TIME_OUT);
         }
         return (SUser) o;
     }

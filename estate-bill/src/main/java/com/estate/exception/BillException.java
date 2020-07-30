@@ -1,5 +1,6 @@
 package com.estate.exception;
 
+import com.estate.util.BillExceptionEnum;
 import lombok.Data;
 
 /**
@@ -10,6 +11,12 @@ import lombok.Data;
 public class BillException extends RuntimeException{
 
     private Integer code;
+
+    public BillException(BillExceptionEnum exceptionEnum){
+
+        super(exceptionEnum.getMsg());
+        this.code = exceptionEnum.getCode();
+    }
 
     public BillException(Integer code,String msg){
 

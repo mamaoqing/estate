@@ -1,10 +1,13 @@
 package com.estate.sdzy.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.service.SUserService;
+import com.estate.util.BillExceptionEnum;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -44,19 +47,20 @@ public class SUserController {
     @ResponseBody
     public Result listUser(Integer pageNo, Integer size) {
         if (StringUtils.isEmpty(pageNo)) {
-            return ResultUtil.error("参数错误，请输入页码", 1);
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         if (StringUtils.isEmpty(size)) {
             size = 10;
         }
         try {
             Page<SUser> page = new Page<>(pageNo, size);
-            IPage<SUser> userIPage = userService.page(page, null);
+            QueryWrapper<SUser> queryWrapper = new QueryWrapper<>();
+            IPage<SUser> userIPage = userService.page(page, queryWrapper);
             return ResultUtil.success(userIPage);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("查询用户出现错误", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_SELECT_ERROR);
     }
 
     @PostMapping("/insertUser")
@@ -64,12 +68,12 @@ public class SUserController {
     public Result insertUser(SUser user, String token) {
         try {
             boolean flag = userService.save(user,token);
-            return ResultUtil.success(user);
+            return ResultUtil.success(flag);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("添加用户错误", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
     }
 
     @DeleteMapping("/{id}")
@@ -82,7 +86,7 @@ public class SUserController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("删除用户错误", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
     }
 
     @PutMapping("/updateUser")
@@ -95,7 +99,7 @@ public class SUserController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("更新用户错误", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
     }
 
 }

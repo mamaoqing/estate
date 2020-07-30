@@ -3,10 +3,12 @@ package com.estate.sdzy.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.RCommunity;
 import com.estate.sdzy.entity.RRoom;
 import com.estate.sdzy.service.RCommunityService;
 import com.estate.sdzy.service.SUserCommService;
+import com.estate.util.BillExceptionEnum;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,14 +47,14 @@ public class RCommunityController extends BaseController{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("社区信息添加失败。", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
     }
 
     @GetMapping("/listCommunity")
     public Result listCommunity(Integer pageNo, Integer size) {
         try {
             if (StringUtils.isEmpty(pageNo)) {
-                return ResultUtil.error("参数错误，请输入页码", 1);
+                throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
             }
             if (StringUtils.isEmpty(size)) {
                 size = 10;
@@ -63,7 +65,7 @@ public class RCommunityController extends BaseController{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("查询错误！", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_SELECT_ERROR);
     }
 
     @PutMapping("/updateCommunity")
@@ -74,7 +76,7 @@ public class RCommunityController extends BaseController{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("社区信息更新失败", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
     }
 
     @DeleteMapping("/{id}")
@@ -85,7 +87,7 @@ public class RCommunityController extends BaseController{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("社区信息删除失败", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
     }
 
     @GetMapping("/{id}")
@@ -96,7 +98,7 @@ public class RCommunityController extends BaseController{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("查询失败", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_SELECT_ERROR);
     }
 
     @GetMapping("/userCommunity")
@@ -108,7 +110,7 @@ public class RCommunityController extends BaseController{
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("查询失败", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_SELECT_ERROR);
     }
 
     @GetMapping("/getCommunityById")
@@ -121,7 +123,7 @@ public class RCommunityController extends BaseController{
             e.printStackTrace();
         }
 
-        return ResultUtil.error("查询失败", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_SELECT_ERROR);
     }
 
 }

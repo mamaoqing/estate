@@ -5,6 +5,7 @@ import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SMenu;
 import com.estate.sdzy.service.SMenuService;
 import com.estate.sdzy.service.SUserRoleService;
+import com.estate.util.BillExceptionEnum;
 import com.estate.util.MenuUtil;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
@@ -52,7 +53,8 @@ public class SMenuController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("菜单查询失败，请稍后再试", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_SELECT_ERROR);
+//        return ResultUtil.error("菜单查询失败，请稍后再试", 1);
     }
 
     @PostMapping("/insertMenu")
@@ -64,8 +66,9 @@ public class SMenuController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("菜单添加失败", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
     }
+
 
     @GetMapping("/{id}")
     @ResponseBody
@@ -76,7 +79,7 @@ public class SMenuController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("查询菜单错误", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_SELECT_ERROR);
     }
 
     @PutMapping("/updateMenu")
@@ -88,7 +91,7 @@ public class SMenuController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("系统错误，菜单修改失败。", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
     }
 
     @DeleteMapping("/{id}")
@@ -100,7 +103,7 @@ public class SMenuController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ResultUtil.error("菜单删除失败", 1);
+        throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
     }
 
     @GetMapping("/textIndex")

@@ -1,10 +1,12 @@
 package com.estate.sdzy.service.impl;
 
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SCompany;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.mapper.SUserMapper;
 import com.estate.sdzy.service.SUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.util.BillExceptionEnum;
 import com.estate.util.PasswdEncryption;
 import com.estate.util.Pinyin;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +71,6 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
     @Override
     public boolean save(SUser user, String token) {
         SUser users = getUserByToken(token);
-        if (null == users) { return false; }
         int insert = userMapper.insert(user);
         if (insert > 0) {
             log.info("用户添加成功，添加人={}",users.getUserName());
@@ -80,7 +81,6 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
     @Override
     public boolean saveOrUpdate(SUser user, String token) {
         SUser users = getUserByToken(token);
-        if (null == users) { return false; }
         int i = userMapper.updateById(user);
         if (i > 0) {
             log.info("用户更新成功，修改人={}",users.getUserName());
@@ -91,7 +91,6 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
     @Override
     public boolean removeById(Long id, String token) {
         SUser users = getUserByToken(token);
-        if (null == users) { return false; }
         int i = userMapper.deleteById(id);
         if (i > 0) {
             log.info("用户删除成功，删除人={}",users.getUserName());
@@ -103,7 +102,7 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {
             log.error("登录失效，请重新登录。");
-            return null;
+            throw new BillException(BillExceptionEnum.LOGIN_TIME_OUT);
         }
         return (SUser) o;
     }
