@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisUtil {
     @Autowired
-    private RedisTemplate<String,String> redisTemplate;
+    private RedisTemplate<String,Object> redisTemplate;
 
     //设置key-value
     public void set(String key,Object value){
@@ -28,19 +28,12 @@ public class RedisUtil {
 
     //设置key-value 加时长
     public void set(String key,Object value,int seconds){
-        String valueString = JSON.toJSONString(value);
-        redisTemplate.opsForValue().set(key,valueString,seconds, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(key,value,seconds, TimeUnit.SECONDS);
     }
 
     //获取value
-    public String get(String key){
+    public Object get(String key){
         return redisTemplate.opsForValue().get(key);
-    }
-
-    //获取value转对象
-    public Object get(String key,Class cls){
-        String value = redisTemplate.opsForValue().get(key);
-        return JSON.parseObject(value,cls);
     }
 
     //获取value转对象
