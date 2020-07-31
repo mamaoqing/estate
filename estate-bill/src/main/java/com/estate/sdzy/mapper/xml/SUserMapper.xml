@@ -5,6 +5,6 @@
         select * from s_user where id =#{id}
     </select>
     <select id="findByUserName" resultType="com.estate.sdzy.entity.SUser" parameterType="java.lang.String">
-        select * from s_user where user_name =#{username}
+        select * from s_user where user_name =#{username} and is_delete = 0
     </select>
 </mapper>
