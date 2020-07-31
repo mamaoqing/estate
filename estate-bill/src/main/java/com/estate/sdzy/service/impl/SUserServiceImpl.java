@@ -97,20 +97,29 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
                 userRole.setCreatedBy(user.getId());
                 userRole.setCreatedName(user.getUserName());
 
-                userRoleMapper.insert(userRole);
+                int insert = userRoleMapper.insert(userRole);
+                if(!(insert > 0)){
+                    throw new BillException(BillExceptionEnum.SET_USER_ROLE_ERROR);
+                }
             }
-
+        }else {
+            throw new BillException(BillExceptionEnum.SET_USER_ROLE_ERROR);
         }
 
-        return false;
+        return true;
     }
 
     @Override
     public boolean save(SUser user, String token) {
         SUser users = getUserByToken(token);
+        if(null == user){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
         int insert = userMapper.insert(user);
         if (insert > 0) {
             log.info("用户添加成功，添加人={}", users.getUserName());
+        }else{
+            throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
         }
         return insert > 0;
     }
@@ -121,6 +130,8 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         int i = userMapper.updateById(user);
         if (i > 0) {
             log.info("用户更新成功，修改人={}", users.getUserName());
+        }else {
+            throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
         }
         return i > 0;
     }
@@ -131,6 +142,8 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         int i = userMapper.deleteById(id);
         if (i > 0) {
             log.info("用户删除成功，删除人={}", users.getUserName());
+        }else{
+            throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
         }
         return i > 0;
     }

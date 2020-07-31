@@ -31,7 +31,7 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
     private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public boolean saveOrUpdate(SRole role, String token) {
+    public boolean saveOrUpdate(SRole role, String token) throws BillException{
         SUser user = getUserByToken(token);
         if(null == role){
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
@@ -41,12 +41,14 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
         int update = roleMapper.updateById(role);
         if(update > 0){
             log.info("角色信息修改成功，修改人={}",user.getUserName());
+        }else{
+            throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
         }
         return update > 0;
     }
 
     @Override
-    public boolean save(SRole role, String token) {
+    public boolean save(SRole role, String token) throws BillException{
         SUser user = getUserByToken(token);
 
         if(null == role){
@@ -54,9 +56,30 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
         }
         role.setModifiedBy(user.getId());
         role.setModifiedName(user.getUserName());
-
-        return false;
+        int insert = roleMapper.insert(role);
+        if(insert > 0){
+            log.info("角色添加成功，添加人={}",user.getUserName());
+        }else{
+            throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+        }
+        return insert > 0;
     }
+
+    @Override
+    public boolean remove(Long id, String token) throws BillException{
+        SUser user = getUserByToken(token);
+        if(null == id){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        int delete = roleMapper.deleteById(id);
+        if(delete > 0){
+            log.info("角色删除成功，删除人={}",user.getUserName());
+        }else{
+            throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+        }
+        return delete > 0;
+    }
+
     private SUser getUserByToken(String token){
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {

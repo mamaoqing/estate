@@ -2,11 +2,13 @@ package com.estate.sdzy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.entity.SUserRole;
 import com.estate.sdzy.mapper.SUserRoleMapper;
 import com.estate.sdzy.service.SUserRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.util.BillExceptionEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -37,7 +39,7 @@ public class SUserRoleServiceImpl extends ServiceImpl<SUserRoleMapper, SUserRole
         List<Long> list = new ArrayList<>();
 
         if(StringUtils.isEmpty(token)){
-            return list;
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
 
         // 1. 通过token查询用户id；

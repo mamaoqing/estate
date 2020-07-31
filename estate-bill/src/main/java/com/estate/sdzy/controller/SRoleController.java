@@ -25,7 +25,7 @@ import java.util.List;
  * @author mq
  * @since 2020-07-23
  */
-@Controller
+@RestController
 @RequestMapping("/sdzy/sRole")
 @Slf4j
 public class SRoleController {
@@ -34,82 +34,38 @@ public class SRoleController {
     private SRoleService roleService;
 
     @GetMapping("/get")
-    @ResponseBody
     public Result listRole(Integer pageNo, Integer size) {
 //        List<SRole> list = roleService.list(null);
-        try{
-            if (StringUtils.isEmpty(pageNo)) {
-                throw  new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
-            }
-            if (StringUtils.isEmpty(size)) {
-                size = 10;
-            }
-
-            Page<SRole> page = new Page<>(pageNo, size);
-            Page<SRole> pageList = roleService.page(page);
-            return ResultUtil.success(pageList);
-        }catch (Exception e){
-            e.printStackTrace();
+        if (StringUtils.isEmpty(pageNo)) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
-        throw new BillException(BillExceptionEnum.SYSTEM_SELECT_ERROR);
+        if (StringUtils.isEmpty(size)) {
+            size = 10;
+        }
+        Page<SRole> page = new Page<>(pageNo, size);
+        Page<SRole> pageList = roleService.page(page);
+        return ResultUtil.success(pageList);
     }
 
     @GetMapping("/{id}")
     public Result getRole(@PathVariable("id") Long id) {
-        try {
-            SRole role = roleService.getById(id);
-            return ResultUtil.success(role);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        throw  new BillException(BillExceptionEnum.SYSTEM_SELECT_ERROR);
+        return ResultUtil.success(roleService.getById(id));
     }
 
     @PutMapping("/updateRole")
-    @ResponseBody
     public Result updateRole(SRole role, String token) {
-        try {
-            boolean flag = roleService.saveOrUpdate(role, token);
-            return ResultUtil.success(flag);
+        return ResultUtil.success(roleService.saveOrUpdate(role, token));
 
-        } catch (Exception e) {
-            log.error("更新角色失败,失败信息：{}", e);
-            e.printStackTrace();
-        }
-        throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
     }
 
     @PostMapping("/insertRole")
-    @ResponseBody
     public Result insertRole(SRole role) {
-        try {
-            boolean flag = roleService.save(role);
-            if (flag) {
-                log.info("添加角色成功");
-                return ResultUtil.success(flag);
-            }
-        } catch (Exception e) {
-            log.error("添加角色失败,失败信息：{}", e);
-            e.printStackTrace();
-        }
-        throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+        return ResultUtil.success(roleService.save(role));
     }
 
     @DeleteMapping("/{id}")
-    @ResponseBody
-    public Result deleteRole(@PathVariable("id") Long id) {
-        try {
-            boolean flag = roleService.removeById(id);
-            if (flag) {
-                log.info("删除角色成功,删除id：{}", id);
-                return ResultUtil.success(flag);
-            }
-        } catch (Exception e) {
-            log.error("删除角色失败,失败信息：{}", e);
-            e.printStackTrace();
-        }
-        throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+    public Result deleteRole(@PathVariable("id") Long id,String token) {
+        return ResultUtil.success(roleService.remove(id,token));
     }
-
 }
 

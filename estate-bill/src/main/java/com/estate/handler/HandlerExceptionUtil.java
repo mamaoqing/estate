@@ -23,7 +23,7 @@ public class HandlerExceptionUtil {
     @ResponseBody
     public Result handlerException(BillException billException){
 
-        log.error(billException.getMessage());
+        log.error(billException.getMessage(),billException);
 
         return ResultUtil.error(billException.getMessage(),billException.getCode());
     }

@@ -44,85 +44,53 @@ public class SMenuController extends BaseController {
     @GetMapping("/get")
     @ResponseBody
     public Result getMenuList(String token) {
-        try {
-            List<Long> longs = userRoleService.listUserRole(token);
-            List<SMenu> sMenus = sMenuService.listMenu(longs);
-            List<SMenu> allRoleMenu = MenuUtil.getAllRoleMenu(sMenus);
+        List<Long> longs = userRoleService.listUserRole(token);
 
-            return ResultUtil.success(allRoleMenu);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        throw new BillException(BillExceptionEnum.SYSTEM_SELECT_ERROR);
-//        return ResultUtil.error("菜单查询失败，请稍后再试", 1);
+        return ResultUtil.success(MenuUtil.getAllRoleMenu(sMenuService.listMenu(longs)));
     }
 
     @PostMapping("/insertMenu")
     @ResponseBody
     public Result insertMenu(SMenu menu, String token) {
-        try {
-            boolean flag = sMenuService.insertMenu(menu, token);
-            return ResultUtil.success(flag);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+        return ResultUtil.success(sMenuService.insertMenu(menu, token));
     }
 
 
     @GetMapping("/{id}")
     @ResponseBody
     public Result getMenu(@PathVariable("id") long id) {
-        try {
-            SMenu menu = sMenuService.getById(id);
-            return ResultUtil.success(menu);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        throw new BillException(BillExceptionEnum.SYSTEM_SELECT_ERROR);
+        return ResultUtil.success(sMenuService.getById(id));
     }
 
     @PutMapping("/updateMenu")
     @ResponseBody
     public Result updateMenu(SMenu menu, String token) {
-        try {
-            boolean flag = sMenuService.updateMenu(menu, token);
-            return ResultUtil.success(flag);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+        return ResultUtil.success(sMenuService.updateMenu(menu, token));
     }
 
     @DeleteMapping("/{id}")
     @ResponseBody
     public Result deleteMenu(@PathVariable("id") Long id, String token) {
-        try {
-            boolean flag = sMenuService.deleteMenuById(id, token);
-            return ResultUtil.success(flag);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+        return ResultUtil.success(sMenuService.deleteMenuById(id, token));
     }
 
     @GetMapping("/textIndex")
-    public Result testIndex(){
+    public Result testIndex() {
 
         System.out.println(1234);
-        if(true){
-            throw  new BillException(1,"测试成功了没有！！");
+        if (true) {
+            throw new BillException(1, "测试成功了没有！！");
         }
 
         return ResultUtil.success();
     }
 
     @GetMapping("/bill")
-    public Result billTestIndex(){
+    public Result billTestIndex() {
 
         System.out.println(1234);
-        if(true){
-            throw  new BillException(1,"测试成功了没有！！");
+        if (true) {
+            throw new BillException(1, "测试成功了没有！！");
         }
 
         return ResultUtil.success();
