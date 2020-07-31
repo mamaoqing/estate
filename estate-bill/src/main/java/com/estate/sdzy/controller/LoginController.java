@@ -4,7 +4,9 @@ import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.service.LoginService;
 import com.estate.sdzy.service.SUserService;
 import com.estate.util.Result;
+import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,6 +39,12 @@ public class LoginController {
     @RequestMapping(value = "/login")
     public Result login(HttpServletRequest req) {
         return loginService.login(req);
+    }
+
+    @GetMapping("/logout")
+    public Result logout(String token){
+
+        return ResultUtil.success(loginService.logout(token));
     }
 
 }

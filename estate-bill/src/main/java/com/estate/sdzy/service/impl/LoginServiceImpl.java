@@ -1,11 +1,9 @@
 package com.estate.sdzy.service.impl;
 
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.service.LoginService;
-import com.estate.util.PasswdEncryption;
-import com.estate.util.RedisUtil;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
+import com.estate.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -48,6 +46,19 @@ public class LoginServiceImpl implements LoginService {
         }else{
             return ResultUtil.error("登陆失败，请联系管理员",0);
         }
+    }
+
+    @Override
+    public boolean logout(String token) {
+        if(StringUtils.isEmpty(token)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        Object o = redisUtil.get(token);
+        if(null == o){
+            return true;
+        }
+        redisUtil.delete(token);
+        return true;
     }
 
 
