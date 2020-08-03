@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -44,6 +45,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             SUser user = (SUser)redisTemplate.opsForValue().get(token);
 //            SUser user = (SUser) request.getSession().getAttribute(token);
             if (user != null) {
+                log.info("用户{},登录成功。记录时间{}",user.getUserName(),new Date());
                 redisTemplate.expire(token,5*60,TimeUnit.SECONDS);
                 return true;
             }
