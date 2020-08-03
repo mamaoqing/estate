@@ -3,7 +3,7 @@
     <!--  控制台日志  -->
     <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d ---> %p - %c[%L]  %msg%n</pattern>
+            <pattern>%d ---> %p - %c[%L] %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -19,7 +19,7 @@
         </rollingPolicy>
         <encoder>
             <pattern>%d -->%p %c[%L] --> %msg%n</pattern>
-<!--            <pattern>%d{yyyy-MM-dd HH:mm:ss}&ndash;&gt; [%thread] %-5level %logger{50} &ndash;&gt; %msg%n</pattern>-->
+            <!--            <pattern>%d{yyyy-MM-dd HH:mm:ss}&ndash;&gt; [%thread] %-5level %logger{50} &ndash;&gt; %msg%n</pattern>-->
         </encoder>
     </appender>
 
@@ -37,7 +37,7 @@
             <FileNamePattern>logs/error.%d.log</FileNamePattern>
         </rollingPolicy>
     </appender>
-
+    <!-- 全局日志级别 -->
     <root level="info">
         <appender-ref ref="consoleLog"/>
         <appender-ref ref="fileInfoLog"/>
