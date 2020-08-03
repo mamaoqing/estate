@@ -48,12 +48,17 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
     @Override
     public boolean save(RCommunity community, String token) {
         SUser user = getUserByToken(token);
+        if(null == community){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
         community.setCreatedBy(user.getId());
         community.setCreatedName(user.getUserName());
 
         int insert = communityMapper.insert(community);
         if (insert > 0) {
             log.info("社区信息添加成功，添加人={}", user.getUserName());
+        }else{
+            throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
         }
         return insert > 0;
     }
@@ -61,12 +66,17 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
     @Override
     public boolean saveOrUpdate(RCommunity community, String token) {
         SUser user = getUserByToken(token);
+        if(null == community){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
         community.setCreatedBy(user.getId());
         community.setCreatedName(user.getUserName());
 
         int update = communityMapper.updateById(community);
         if (update > 0) {
             log.info("社区信息修改成功，修改人={}", user.getUserName());
+        }else{
+            throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
         }
         return update > 0;
     }
@@ -74,9 +84,14 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
     @Override
     public boolean removeById(Long id, String token) {
         SUser user = getUserByToken(token);
+        if(null == id){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
         int delete = communityMapper.deleteById(id);
         if (delete > 0) {
             log.info("社区信息删除成功，删除人={}", user.getUserName());
+        }else {
+            throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
         }
         return delete > 0;
     }

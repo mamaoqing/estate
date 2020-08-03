@@ -34,6 +34,6 @@ public class LoginConfig implements WebMvcConfigurer {
         // 拦截路径 /** 表示所有的路径都拦截
         registration.addPathPatterns("/sdzy/**");
         // 不拦截路径 多个用 "," 隔开
-        registration.excludePathPatterns("/buy/**","/api/login/**");
+        registration.excludePathPatterns("/buy/**","/sdzy/login/**");
     }
 }

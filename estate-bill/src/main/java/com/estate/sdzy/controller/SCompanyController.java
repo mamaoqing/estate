@@ -2,9 +2,11 @@ package com.estate.sdzy.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SCompany;
 import com.estate.sdzy.service.SCompanyService;
 import com.estate.sdzy.service.SUserService;
+import com.estate.util.BillExceptionEnum;
 import com.estate.util.Pinyin;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
@@ -35,64 +37,42 @@ public class SCompanyController {
     private SUserService userService;
 
     @PostMapping("/insertCompany")
-    public Result insertCompany(SCompany sCompany, String token) {
+    public Result insertCompany(SCompany sCompany, @RequestHeader("Authentication-Token") String token) {
         boolean save = companyService.save(sCompany, token);
         if (save) {
             log.info("添加公司信息成功，公司id={}", sCompany.getId());
-            Boolean aBoolean = userService.autoSave(sCompany);
-            if (aBoolean) {
-                log.info("自动添加公司管理员角色，登录用户名={}admin,密码=123456", Pinyin.getPinYinHeadChar(sCompany.getAbbreviation()));
-            } else {
-                log.error("自动添加管理员角色失败");
-            }
-            return ResultUtil.success(sCompany);
+            return ResultUtil.success(userService.autoSave(sCompany));
         }
 
         return ResultUtil.error("保存公司信息失败！", 1);
     }
 
     @PutMapping("/updateCompany")
-    public Result updateCompany(SCompany sCompany, String token) {
-        try {
-            boolean b = companyService.saveOrUpdate(sCompany);
-            return ResultUtil.success(b);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ResultUtil.error("更新公司信息出错", 1);
+    public Result updateCompany(SCompany sCompany, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(companyService.saveOrUpdate(sCompany));
     }
 
     @GetMapping("/listCompany")
     public Result listCompany(Integer pageNo, Integer size) {
         if (StringUtils.isEmpty(pageNo)) {
-            return ResultUtil.error("参数错误，请输入页码", 1);
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         if (StringUtils.isEmpty(size)) {
             size = 10;
         }
         Page<SCompany> p = new Page<>(pageNo, size);
-        Page<SCompany> page = companyService.page(p);
-        return ResultUtil.success(page);
-//        return ResultUtil.error("",1);
+        return ResultUtil.success(companyService.page(p));
 
     }
 
     @GetMapping("/{id}")
     public Result getCompany(@PathVariable("id") Long id) {
-        SCompany sCompany = companyService.getById(id);
-        return ResultUtil.success(sCompany);
+        return ResultUtil.success(companyService.getById(id));
     }
 
     @DeleteMapping("/{id}")
-    public Result deleteCompany(@PathVariable("id") Long id, String token) {
-
-        try {
-            boolean b = companyService.removeById(id,token);
-            return ResultUtil.success(b);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ResultUtil.error("删除公司信息错误", 1);
+    public Result deleteCompany(@PathVariable("id") Long id, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(companyService.removeById(id, token));
     }
 
 

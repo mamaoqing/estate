@@ -3,7 +3,6 @@ package com.estate.aop;
 import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.service.RCommRoleAgreementService;
-import com.estate.sdzy.service.SRoleService;
 import com.estate.sdzy.service.SUserRoleService;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;

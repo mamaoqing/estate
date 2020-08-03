@@ -53,7 +53,7 @@ public class SRoleController {
     }
 
     @PutMapping("/updateRole")
-    public Result updateRole(SRole role, String token) {
+    public Result updateRole(SRole role,@RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(roleService.saveOrUpdate(role, token));
 
     }
@@ -64,7 +64,7 @@ public class SRoleController {
     }
 
     @DeleteMapping("/{id}")
-    public Result deleteRole(@PathVariable("id") Long id,String token) {
+    public Result deleteRole(@PathVariable("id") Long id,@RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(roleService.remove(id,token));
     }
 }

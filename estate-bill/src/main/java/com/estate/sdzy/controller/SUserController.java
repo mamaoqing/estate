@@ -59,24 +59,28 @@ public class SUserController {
 
     @PostMapping("/insertUser")
     @ResponseBody
-    public Result insertUser(SUser user, String token) {
+    public Result insertUser(SUser user,@RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(userService.save(user, token));
     }
 
     @DeleteMapping("/{id}")
     @ResponseBody
-    public Result deleteUser(@PathVariable("id") Long id, String token) {
+    public Result deleteUser(@PathVariable("id") Long id,@RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(userService.removeById(id, token));
     }
 
     @PutMapping("/updateUser")
     @ResponseBody
-    public Result updateUser(SUser user, String token) {
+    public Result updateUser(SUser user,@RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(userService.saveOrUpdate(user, token));
     }
 
     @PostMapping("/setUserRole")
-    public Result setUserRole(Long userId, String roleIds, String token) {
+    public Result setUserRole(Long userId, String roleIds,@RequestHeader("Authentication-Token") String token) {
+
+        System.out.println("fdsafdfasd safd ");
+
+
         return ResultUtil.success(userService.setUserRole(userId, roleIds, token));
     }
 

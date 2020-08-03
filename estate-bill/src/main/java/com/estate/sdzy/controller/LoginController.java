@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  * @since 2020-07-24
  */
 @RestController
-@RequestMapping("/api/login")
+@RequestMapping("/sdzy/login")
 public class LoginController {
 
     @Autowired

@@ -1,14 +1,17 @@
 package com.estate.sdzy.service.impl;
 
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SCompany;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.mapper.SCompanyMapper;
 import com.estate.sdzy.service.SCompanyService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * <p>
@@ -30,12 +33,16 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
     @Override
     public boolean save(SCompany company, String token) {
         SUser user = getUserByToken(token);
-        if (null == user) { return false; }
+        if (null == company) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
         company.setCreatedBy(user.getId());
         company.setCreatedName(user.getUserName());
         int insert = companyMapper.insert(company);
-        if (insert>0){
-            log.info("公司添加成功，添加人={}",user.getUserName());
+        if (insert > 0) {
+            log.info("公司添加成功，添加人={}", user.getUserName());
+        } else {
+            throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
         }
         return insert > 0;
     }
@@ -43,32 +50,40 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
     @Override
     public boolean saveOrUpdate(SCompany company, String token) {
         SUser user = getUserByToken(token);
-        if (null == user) { return false; }
+        if (null == company) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
         company.setCreatedBy(user.getId());
         company.setCreatedName(user.getUserName());
         int insert = companyMapper.updateById(company);
-        if (insert>0){
-            log.info("公司修改成功，修改人={}",user.getUserName());
+        if (insert > 0) {
+            log.info("公司修改成功，修改人={}", user.getUserName());
+        } else {
+            throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
         }
-        return insert>0;
+        return insert > 0;
     }
 
     @Override
     public boolean removeById(Long id, String token) {
         SUser user = getUserByToken(token);
-        if (null == user) { return false; }
+        if (StringUtils.isEmpty(id)) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
         int delete = companyMapper.deleteById(id);
-        if (delete > 0){
-            log.info("公司删除成功，删除人={}",user.getUserName());
+        if (delete > 0) {
+            log.info("公司删除成功，删除人={}", user.getUserName());
+        } else {
+            throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
         }
         return delete > 0;
     }
 
-    private SUser getUserByToken(String token){
+    private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {
             log.error("登录失效，请重新登录。");
-            return null;
+            throw new BillException(BillExceptionEnum.LOGIN_TIME_OUT);
         }
         return (SUser) o;
     }
