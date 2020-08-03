@@ -1,13 +1,13 @@
 <?xml version="1.0" ?>
 <configuration debug="false">
-<!--  控制台日志  -->
+    <!--  控制台日志  -->
     <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder>
-                <pattern>%d ---> %msg%n</pattern>
-            </encoder>
+        <encoder>
+            <pattern>%d ---> %p - %c[%L]  %msg%n</pattern>
+        </encoder>
     </appender>
 
-<!--  配置info日志文件  -->
+    <!--  配置info日志文件  -->
     <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
@@ -18,17 +18,19 @@
             <FileNamePattern>logs/info.%d.log</FileNamePattern>
         </rollingPolicy>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss}--> [%thread] %-5level %logger{50} --> %msg%n</pattern>
+            <pattern>%d -->%p %c[%L] --> %msg%n</pattern>
+<!--            <pattern>%d{yyyy-MM-dd HH:mm:ss}&ndash;&gt; [%thread] %-5level %logger{50} &ndash;&gt; %msg%n</pattern>-->
         </encoder>
     </appender>
 
-<!--  配置error日志文件  -->
+    <!--  配置error日志文件  -->
     <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>ERROR</level>
         </filter>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss}--> [%thread] %-5level %logger{50} --> %msg%n</pattern>
+            <!-- d:时间 c:类名 L:行号 msg:日志信息 n:换行 p:日志级别 -->
+            <pattern>%d -->%p %c[%L] --> %msg%n</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <FileNamePattern>logs/error.%d.log</FileNamePattern>
