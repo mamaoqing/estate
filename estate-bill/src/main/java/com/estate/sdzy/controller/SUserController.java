@@ -75,12 +75,16 @@ public class SUserController {
         return ResultUtil.success(userService.saveOrUpdate(user, token));
     }
 
+    @PutMapping("/reSetPassword")
+    @ResponseBody
+    public Result reSetPassword(String oldPassword,String newPassword,Long id,@RequestHeader("Authentication-Token") String token){
+
+        return ResultUtil.success(userService.reSetPassword(newPassword,id,token,oldPassword));
+    }
+
     @PostMapping("/setUserRole")
+    @ResponseBody
     public Result setUserRole(Long userId, String roleIds,@RequestHeader("Authentication-Token") String token) {
-
-        System.out.println("fdsafdfasd safd ");
-
-
         return ResultUtil.success(userService.setUserRole(userId, roleIds, token));
     }
 

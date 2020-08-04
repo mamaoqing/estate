@@ -41,4 +41,14 @@ public interface SUserService extends IService<SUser> {
     boolean saveOrUpdate(SUser user ,String token);
 
     boolean removeById(Long id,String token);
+
+    /**
+     * 重设密码
+     * @param password 新密码
+     * @param id id
+     * @param token 登录凭证
+     * @param oldPassword 旧密码
+     * @return
+     */
+    boolean reSetPassword(String password,Long id,String token,String oldPassword);
 }

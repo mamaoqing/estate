@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class LoginInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private RedisTemplate<String,Object> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private SUserService userService;
@@ -42,17 +42,19 @@ public class LoginInterceptor implements HandlerInterceptor {
         try {
 
             String token = String.valueOf(request.getHeader("Authentication-Token"));
-            SUser user = (SUser)redisTemplate.opsForValue().get(token);
+            SUser user = (SUser) redisTemplate.opsForValue().get(token);
 //            SUser user = (SUser) request.getSession().getAttribute(token);
             if (user != null) {
-                log.info("用户{},登录成功。记录时间{}",user.getUserName(),new Date());
-                redisTemplate.expire(token,5*60,TimeUnit.SECONDS);
+                log.info("用户{},登录成功。记录时间{}", user.getUserName(), new Date());
+                // 重置过期时间。单位秒
+                redisTemplate.expire(token, 50 * 60, TimeUnit.SECONDS);
                 return true;
             }
-//            response.sendRedirect(request.getContextPath()+"你的登陆页地址");
+//            response.sendRedirect(request.getContextPath());
         } catch (Exception e) {
             e.printStackTrace();
         }
+        log.error("未登录，请重新登录后在操作！");
         return false;
     }
 

@@ -6,9 +6,12 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * <p>
@@ -44,6 +47,7 @@ public class SCompany implements Serializable {
     /**
      * 成立日期
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date establishmentDate;
 
     /**
@@ -114,11 +118,13 @@ public class SCompany implements Serializable {
     /**
      * 营业期限开始
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date businessTermBegin;
 
     /**
      * 营业期限结束
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date businessTermEnd;
 
     /**
@@ -147,6 +153,7 @@ public class SCompany implements Serializable {
     private String remark;
 
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createdAt;
 
     private Long createdBy;
@@ -154,6 +161,7 @@ public class SCompany implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date modifiedAt;
 
     private Long modifiedBy;

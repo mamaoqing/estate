@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -124,6 +125,9 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         if (null == user) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
+
+        String psw = PasswdEncryption.encptyPasswd(user.getPassword());
+        user.setPassword(psw);
         int insert = userMapper.insert(user);
         if (insert > 0) {
             log.info("用户添加成功，添加人={}", users.getUserName());
@@ -155,6 +159,37 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
             throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
         }
         return i > 0;
+    }
+
+    @Override
+    public boolean reSetPassword(String password, Long id,String token,String oldPassword) {
+        SUser userByToken = getUserByToken(token);
+        if(StringUtils.isEmpty(password) || StringUtils.isEmpty(id) || StringUtils.isEmpty(oldPassword)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        SUser user = userMapper.selectById(id);
+        String s = PasswdEncryption.dencptyPasswd(user.getPassword());
+        String s1 = null;
+        try {
+            s1 = PasswdEncryption.setMD5String(oldPassword);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        System.out.println(s1 == s);
+
+        if(!s.equals(s1)){
+            throw new BillException(BillExceptionEnum.RESET_PASSWORD_ERROR);
+        }
+
+        String psw = PasswdEncryption.encptyPasswd(password);
+        user.setPassword(psw);
+        int i = userMapper.updateById(user);
+        if(i>0){
+            log.info("密码修改成功,修改人{}",userByToken.getUserName());
+            return true;
+        }else {
+            throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+        }
     }
 
     private SUser getUserByToken(String token) {

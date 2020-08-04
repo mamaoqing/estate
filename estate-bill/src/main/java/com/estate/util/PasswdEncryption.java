@@ -4,6 +4,7 @@ import org.springframework.util.DigestUtils;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.Calendar;
 
@@ -41,6 +42,18 @@ public class PasswdEncryption {
             return null;
         }
 
+    }
+
+    public static String setMD5String(String password) throws UnsupportedEncodingException {
+        StringBuffer sbf = new StringBuffer();
+        sbf.append(password);
+        //在用户输入的密码两头拼接sdzy
+        sbf.insert(0,"sdzy");
+        sbf.insert(password.length()-1,"sdzy");
+        //用md5加密
+        String pwd = DigestUtils.md5DigestAsHex(sbf.toString().getBytes());
+//        byte[] bytes = pwd.getBytes("utf-8");
+        return pwd;//encoder.encode(bytes);
     }
 
     /***
