@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
+
 /**
  * <p>
  * 物业公司表 前端控制器
@@ -28,7 +32,7 @@ import org.springframework.stereotype.Controller;
 @RestController
 @RequestMapping("/sdzy/sCompany")
 @Slf4j
-public class SCompanyController {
+public class SCompanyController extends BaseController{
 
     @Autowired
     private SCompanyService companyService;
@@ -48,20 +52,14 @@ public class SCompanyController {
     }
 
     @PutMapping("/updateCompany")
-    public Result updateCompany(SCompany sCompany, @RequestHeader("Authentication-Token") String token) {
-        return ResultUtil.success(companyService.saveOrUpdate(sCompany));
+    public Result updateCompany(@RequestBody SCompany sCompany, @RequestHeader("Authentication-Token") String token) {
+        System.out.println(sCompany);
+        return ResultUtil.success(companyService.saveOrUpdate(sCompany,token));
     }
 
     @GetMapping("/listCompany")
-    public Result listCompany(Integer pageNo, Integer size) {
-        if (StringUtils.isEmpty(pageNo)) {
-            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
-        }
-        if (StringUtils.isEmpty(size)) {
-            size = 10;
-        }
-        Page<SCompany> p = new Page<>(pageNo, size);
-        return ResultUtil.success(companyService.page(p));
+    public Result listCompany(Integer pageNo, Integer size, HttpServletRequest request) {
+        return ResultUtil.success(companyService.listCompany(super.getParameterMap(request),pageNo,size));
 
     }
 

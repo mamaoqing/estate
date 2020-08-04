@@ -1,5 +1,7 @@
 package com.estate.sdzy.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SCompany;
 import com.estate.sdzy.entity.SUser;
@@ -12,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -59,7 +64,7 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
         if (insert > 0) {
             log.info("公司修改成功，修改人={}", user.getUserName());
         } else {
-            throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+            throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
         }
         return insert > 0;
     }
@@ -77,6 +82,22 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
             throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
         }
         return delete > 0;
+    }
+
+    @Override
+    public Page<SCompany> listCompany(Map<String, String> map, Integer pageNo, Integer size) {
+        if(StringUtils.isEmpty(pageNo)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        if(StringUtils.isEmpty(size)){
+            size = 10;
+        }
+        Page<SCompany> page = new Page<>(pageNo,size);
+        QueryWrapper<SCompany> queryWrapper = new QueryWrapper<>();
+        // 下面放查询条件
+
+        Page<SCompany> sCompanyPage = companyMapper.selectPage(page, queryWrapper);
+        return sCompanyPage;
     }
 
     private SUser getUserByToken(String token) {
