@@ -93,8 +93,4 @@ public class SCompLink implements Serializable {
 
     private String modifiedName;
 
-    @TableLogic
-    private Integer isDelete;
-
-
 }

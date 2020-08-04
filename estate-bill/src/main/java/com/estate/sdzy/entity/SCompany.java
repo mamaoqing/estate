@@ -1,11 +1,11 @@
 package com.estate.sdzy.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
-
+import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
-import java.util.List;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author mq
- * @since 2020-07-23
+ * @since 2020-08-04
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -45,6 +45,36 @@ public class SCompany implements Serializable {
      * 成立日期
      */
     private Date establishmentDate;
+
+    /**
+     * 省
+     */
+    private Long provinceId;
+
+    /**
+     * 市
+     */
+    private Long cityId;
+
+    /**
+     * 县区
+     */
+    private Long districtId;
+
+    /**
+     * 省
+     */
+    private String province;
+
+    /**
+     * 市
+     */
+    private String city;
+
+    /**
+     * 县区
+     */
+    private String district;
 
     /**
      * 公司地址
@@ -79,7 +109,7 @@ public class SCompany implements Serializable {
     /**
      * 公司类型
      */
-    private String ccompType;
+    private String compType;
 
     /**
      * 营业期限开始
@@ -90,6 +120,11 @@ public class SCompany implements Serializable {
      * 营业期限结束
      */
     private Date businessTermEnd;
+
+    /**
+     * 法人
+     */
+    private String legalPerson;
 
     /**
      * 状态
@@ -125,7 +160,6 @@ public class SCompany implements Serializable {
 
     private String modifiedName;
 
-    @TableLogic
     private Integer isDelete;
 
 

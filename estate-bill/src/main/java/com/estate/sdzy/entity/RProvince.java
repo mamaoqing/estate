@@ -1,6 +1,9 @@
 package com.estate.sdzy.entity;
 
 import java.io.Serializable;
+import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -25,6 +28,12 @@ public class RProvince implements Serializable {
     private String provinceCode;
 
     private String provinceName;
+
+    /**
+     * 省下的市的集合
+     */
+    @TableField(exist = false)
+    private List<RCity> cityList;
 
 
 }
