@@ -41,7 +41,7 @@ public class SCompanyController extends BaseController{
     private SUserService userService;
 
     @PostMapping("/insertCompany")
-    public Result insertCompany(SCompany sCompany, @RequestHeader("Authentication-Token") String token) {
+    public Result insertCompany(@RequestBody SCompany sCompany, @RequestHeader("Authentication-Token") String token) {
         boolean save = companyService.save(sCompany, token);
         if (save) {
             log.info("添加公司信息成功，公司id={}", sCompany.getId());

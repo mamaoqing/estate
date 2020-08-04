@@ -95,6 +95,26 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
         Page<SCompany> page = new Page<>(pageNo,size);
         QueryWrapper<SCompany> queryWrapper = new QueryWrapper<>();
         // 下面放查询条件
+        // 名称查询
+        if(!StringUtils.isEmpty(map.get("name"))){
+            queryWrapper.eq("name",map.get("name"));
+        }
+        // 简称查询
+        if(!StringUtils.isEmpty(map.get("abbreviation"))){
+            queryWrapper.eq("abbreviation",map.get("abbreviation"));
+        }
+        // 省
+        if(!StringUtils.isEmpty(map.get("province"))){
+            queryWrapper.eq("province",map.get("province"));
+        }
+        // 市
+        if(!StringUtils.isEmpty(map.get("city"))){
+            queryWrapper.eq("city",map.get("city"));
+        }
+        // 区
+        if(!StringUtils.isEmpty(map.get("district"))){
+            queryWrapper.eq("district",map.get("district"));
+        }
 
         Page<SCompany> sCompanyPage = companyMapper.selectPage(page, queryWrapper);
         return sCompanyPage;
