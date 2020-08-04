@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SCompany;
 import com.estate.sdzy.service.SCompanyService;
+import com.estate.sdzy.service.SOrgService;
 import com.estate.sdzy.service.SUserService;
 import com.estate.util.BillExceptionEnum;
 import com.estate.util.Pinyin;
@@ -40,12 +41,18 @@ public class SCompanyController extends BaseController{
     @Autowired
     private SUserService userService;
 
+    @Autowired
+    private SOrgService orgService;
+
     @PostMapping("/insertCompany")
     public Result insertCompany(@RequestBody SCompany sCompany, @RequestHeader("Authentication-Token") String token) {
         boolean save = companyService.save(sCompany, token);
         if (save) {
             log.info("添加公司信息成功，公司id={}", sCompany.getId());
-            return ResultUtil.success(userService.autoSave(sCompany));
+            Boolean aBoolean = userService.autoSave(sCompany);
+            boolean autoSave = orgService.autoSave(sCompany);
+
+            return ResultUtil.success(autoSave && aBoolean);
         }
 
         return ResultUtil.error("保存公司信息失败！", 1);

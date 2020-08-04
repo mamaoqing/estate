@@ -1,5 +1,6 @@
 package com.estate.sdzy.service;
 
+import com.estate.sdzy.entity.SCompany;
 import com.estate.sdzy.entity.SOrg;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -12,5 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2020-07-23
  */
 public interface SOrgService extends IService<SOrg> {
+
+    boolean autoSave(SCompany company);
 
 }

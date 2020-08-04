@@ -39,19 +39,19 @@ public class RCommRoleAgreementServiceImpl extends ServiceImpl<RCommRoleAgreemen
         //
         for (Long id : ids) {
             QueryWrapper<RCommRoleAgreement> agreementQueryWrapper = new QueryWrapper<>();
-            agreementQueryWrapper.eq("role_id",id);
+            agreementQueryWrapper.eq("role_id", id);
             RCommRoleAgreement commRoleAgreement = commRoleAgreementMapper.selectOne(agreementQueryWrapper);
             // 如果查询接口不为空，表示用户有权限，需要进一步验证权限是否过期
-            if(null != commRoleAgreement){
+            if (null != commRoleAgreement) {
 
                 Date now = new Date();
                 Date beginDate = commRoleAgreement.getBeginDate();
                 Date endDate = commRoleAgreement.getEndDate();
 
-                if(beginDate.before(now) && endDate.after(now)){
+                if (beginDate.before(now) && endDate.after(now)) {
                     flag = true;
+                    break;
                 }
-               break;
             }
         }
 

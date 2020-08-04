@@ -46,7 +46,7 @@ public class SUserController {
     @ResponseBody
     public Result listUser(Integer pageNo, Integer size) {
         if (StringUtils.isEmpty(pageNo)) {
-            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+            throw new BillException(BillExceptionEnum.PAGENO_MISS_ERROR);
         }
         if (StringUtils.isEmpty(size)) {
             size = 10;

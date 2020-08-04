@@ -87,7 +87,7 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
     @Override
     public Page<SCompany> listCompany(Map<String, String> map, Integer pageNo, Integer size) {
         if(StringUtils.isEmpty(pageNo)){
-            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+            throw new BillException(BillExceptionEnum.PAGENO_MISS_ERROR);
         }
         if(StringUtils.isEmpty(size)){
             size = 10;
