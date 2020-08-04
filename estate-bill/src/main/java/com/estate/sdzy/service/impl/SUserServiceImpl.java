@@ -73,7 +73,7 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
 
         int insert = userMapper.insert(user);
         if (insert > 0) {
-            log.info("自动添加公司管理员角色，登录用户名={}admin,密码=123456", userName);
+            log.info("自动添加公司管理员角色，登录用户名={},密码=123456", userName);
         } else {
             log.error("自动添加管理员角色失败,请联系管理员添加账号");
             throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
