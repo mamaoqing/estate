@@ -1,9 +1,15 @@
 package com.estate.sdzy.controller;
 
 
+import com.estate.sdzy.service.RProvinceService;
+import com.estate.util.Result;
+import com.estate.util.ResultUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -13,9 +19,17 @@ import org.springframework.stereotype.Controller;
  * @author mq
  * @since 2020-08-04
  */
-@Controller
+@RestController
 @RequestMapping("/sdzy/rProvince")
 public class RProvinceController {
+
+    @Autowired
+    private RProvinceService provinceService;
+
+    @GetMapping("/get")
+    public Result getProvinces(){
+        return ResultUtil.success(provinceService.listProvinces());
+    }
 
 }
 
