@@ -1,16 +1,13 @@
 package com.estate.sdzy.entity;
 
-import java.math.BigDecimal;
-import com.baomidou.mybatisplus.annotation.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * <p>
@@ -18,7 +15,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author mq
- * @since 2020-07-28
+ * @since 2020-08-05
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -76,6 +73,21 @@ public class RRoom implements Serializable {
     private String roomModel;
 
     /**
+     * 产权证号
+     */
+    private String titleDeedNo;
+
+    /**
+     * 土地证号
+     */
+    private String landDeedNo;
+
+    /**
+     * 购房合同号
+     */
+    private String contractNo;
+
+    /**
      * 建筑面积
      */
     private BigDecimal buildingArea;
@@ -113,9 +125,13 @@ public class RRoom implements Serializable {
     private Long modifiedBy;
 
     private String modifiedName;
-
     @TableLogic
     private Integer isDelete;
+
+    /**
+     * 楼宇id
+     */
+    private Long buildingId;
 
 
 }

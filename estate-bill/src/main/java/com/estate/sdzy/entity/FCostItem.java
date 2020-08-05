@@ -1,15 +1,15 @@
 package com.estate.sdzy.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author mq
- * @since 2020-08-04
+ * @since 2020-08-05
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -51,7 +51,6 @@ public class FCostItem implements Serializable {
     /**
      * 是否删除
      */
-    @TableLogic
     private Integer isDelete;
 
     @TableField(fill = FieldFill.INSERT)

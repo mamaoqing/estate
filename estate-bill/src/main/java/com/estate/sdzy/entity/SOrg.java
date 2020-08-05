@@ -1,12 +1,12 @@
 package com.estate.sdzy.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-
-import java.util.Date;
-import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -14,18 +14,12 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author mq
- * @since 2020-07-23
+ * @since 2020-08-05
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 public class SOrg implements Serializable {
-
-    public SOrg(Long companyId,String abbreviation,String remark){
-        this.compId = companyId;
-        this.name = abbreviation;
-        this.remark = remark;
-    }
 
     private static final long serialVersionUID = 1L;
 
@@ -78,7 +72,6 @@ public class SOrg implements Serializable {
     private Long modifiedBy;
 
     private String modifiedName;
-
     @TableLogic
     private Integer isDelete;
 

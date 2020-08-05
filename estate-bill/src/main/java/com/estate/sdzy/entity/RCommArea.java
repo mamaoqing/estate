@@ -1,17 +1,12 @@
 package com.estate.sdzy.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
-import java.util.List;
-
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -19,7 +14,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author mq
- * @since 2020-07-28
+ * @since 2020-08-05
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -107,12 +102,8 @@ public class RCommArea implements Serializable {
     private Long modifiedBy;
 
     private String modifiedName;
-
     @TableLogic
     private Integer isDelete;
-
-    @TableField(exist = false)
-    private List<RBuilding> childList;
 
 
 }
