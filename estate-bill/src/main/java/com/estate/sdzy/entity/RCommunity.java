@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -155,5 +156,6 @@ public class RCommunity implements Serializable {
     @TableLogic
     private Integer isDelete;
 
-
+    @TableField(exist = false)
+    private List<RCommArea> childList;
 }

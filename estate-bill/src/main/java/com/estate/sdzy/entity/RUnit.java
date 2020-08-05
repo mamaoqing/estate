@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -92,5 +93,7 @@ public class RUnit implements Serializable {
      */
     private Long buildingId;
 
+    @TableField(exist = false)
+    private List<RRoom> childList;
 
 }

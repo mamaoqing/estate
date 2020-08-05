@@ -1,6 +1,7 @@
 package com.estate.sdzy.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -42,6 +43,7 @@ public class SCompany implements Serializable {
     /**
      * 成立日期
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date establishmentDate;
 
     /**
@@ -112,11 +114,13 @@ public class SCompany implements Serializable {
     /**
      * 营业期限开始
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date businessTermBegin;
 
     /**
      * 营业期限结束
      */
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date businessTermEnd;
 
     /**

@@ -21,6 +21,12 @@ import java.util.Date;
 @Accessors(chain = true)
 public class SOrg implements Serializable {
 
+    public SOrg(Long companyId,String abbreviation,String remark){
+        this.compId = companyId;
+        this.name = abbreviation;
+        this.remark = remark;
+    }
+
     private static final long serialVersionUID = 1L;
 
     /**
