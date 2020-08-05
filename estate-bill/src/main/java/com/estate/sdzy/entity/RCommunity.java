@@ -162,7 +162,7 @@ public class RCommunity implements Serializable {
     private Integer isDelete;
 
     @TableField(exist = false)
-    private List<RCommArea> commAreaList;
+    private List<RCommArea> childList;
 
 
 }

@@ -62,7 +62,7 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
         company.setCreatedName(user.getUserName());
         int insert = companyMapper.updateById(company);
         if (insert > 0) {
-            log.info("公司修改成功，修改人={}", user.getUserName());
+            log.info("{} 修改成功，修改人={}", company.getName(),user.getUserName());
         } else {
             throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
         }

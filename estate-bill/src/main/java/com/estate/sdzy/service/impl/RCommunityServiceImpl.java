@@ -124,11 +124,11 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
                         rRoomQueryWrapper.eq("unit_id", r.getId());
                         // 根据单元信息查询所有房间
                         List<RRoom> rRooms = rRoomMapper.selectList(rRoomQueryWrapper);
-                        r.setRoomList(rRooms);
+                        r.setChildList(rRooms);
                         unitList.add(r);
                     }
 
-                    b.setUnitList(unitList);
+                    b.setChildList(unitList);
                     buildingList.add(b);
                 }
 //                QueryWrapper<RUnit> unitQueryWrapper = new QueryWrapper<>();
@@ -136,11 +136,11 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
 //                // 查询单元信息
 //                List<RUnit> rUnits = unitMapper.selectList(unitQueryWrapper);
 //                building.setUnitList(rUnits);
-                x.setBuildingList(buildingList);
+                x.setChildList(buildingList);
                 commAreaList.add(x);
             }
 
-            community.setCommAreaList(commAreaList);
+            community.setChildList(commAreaList);
             communityList.add(community);
         }
 

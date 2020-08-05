@@ -112,7 +112,7 @@ public class RCommArea implements Serializable {
     private Integer isDelete;
 
     @TableField(exist = false)
-    private List<RBuilding> buildingList;
+    private List<RBuilding> childList;
 
 
 }

@@ -99,7 +99,7 @@ public class RBuilding implements Serializable {
     private Integer isDelete;
 
     @TableField(exist = false)
-    private List<RUnit> unitList;
+    private List<RUnit> childList;
 
 
 }

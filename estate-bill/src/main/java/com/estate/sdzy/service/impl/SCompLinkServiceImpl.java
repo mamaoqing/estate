@@ -48,7 +48,7 @@ public class SCompLinkServiceImpl extends ServiceImpl<SCompLinkMapper, SCompLink
         Page<SCompLink> page = new Page<>(pageNo,size);
         QueryWrapper<SCompLink> sCompLinkQueryWrapper = new QueryWrapper<>();
         // 条件查询
-
+        sCompLinkQueryWrapper.eq("comp_id",id);
         return compLinkMapper.selectPage(page, sCompLinkQueryWrapper);
     }
 

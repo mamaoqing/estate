@@ -99,6 +99,6 @@ public class RUnit implements Serializable {
     private Integer isDelete;
 
     @TableField(exist = false)
-    private List<RRoom> roomList;
+    private List<RRoom> childList;
 
 }
