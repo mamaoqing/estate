@@ -56,7 +56,7 @@ public class SOrgServiceImpl extends ServiceImpl<SOrgMapper, SOrg> implements SO
         // 获取公司id，根据公司id查询公司下全部的机构信息
         Long compId = user.getCompId();
         QueryWrapper<SOrg> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("comp_id",compId);
+        queryWrapper.eq("comp_id",compId).select("id","name","parent_id");
         List<SOrg> orgList = orgMapper.selectList(queryWrapper);
         return MenuUtil.orgList(orgList);
     }
