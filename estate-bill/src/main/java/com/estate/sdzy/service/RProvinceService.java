@@ -16,8 +16,14 @@ import java.util.List;
 public interface RProvinceService extends IService<RProvince> {
 
     /**
+     * 获取全国全部的省份 和下属单位
+     * @return
+     */
+    List<RProvince> listProvinces(Long id);
+
+    /**
      * 获取全国全部的省份
      * @return
      */
-    List<RProvince> listProvinces();
+    List<RProvince> listProvince();
 }

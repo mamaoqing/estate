@@ -34,8 +34,10 @@ public class RProvinceServiceImpl extends ServiceImpl<RProvinceMapper, RProvince
     private RDistrictMapper districtMapper;
 
     @Override
-    public List<RProvince> listProvinces() {
-        List<RProvince> rProvinces = provinceMapper.selectList(null);
+    public List<RProvince> listProvinces(Long id) {
+        QueryWrapper<RProvince> queryWrapper = new QueryWrapper();
+        queryWrapper.eq("province_id",id);
+        List<RProvince> rProvinces = provinceMapper.selectList(queryWrapper);
         List<RProvince> provinceList = new ArrayList<>();
         for (RProvince province : rProvinces) {
             Long provinceId = province.getId();
@@ -60,4 +62,11 @@ public class RProvinceServiceImpl extends ServiceImpl<RProvinceMapper, RProvince
 
         return provinceList;
     }
+
+    @Override
+    public List<RProvince> listProvince() {
+        return provinceMapper.selectList(null);
+    }
+
+
 }

@@ -29,7 +29,7 @@ public interface RCommunityService extends IService<RCommunity> {
      * @param list
      * @return
      */
-    List<RCommunity> getUserCommunity(List<Long> list);
+    List<Object> getUserCommunity(List<Long> list);
 
     /**
      * 得到所有的房间

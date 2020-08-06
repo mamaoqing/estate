@@ -6,6 +6,7 @@ import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
@@ -26,9 +27,14 @@ public class RProvinceController {
     @Autowired
     private RProvinceService provinceService;
 
+    @GetMapping("/{id}")
+    public Result getProvinces(@PathVariable("id") Long id){
+        return ResultUtil.success(provinceService.listProvinces(id));
+    }
+
     @GetMapping("/get")
-    public Result getProvinces(){
-        return ResultUtil.success(provinceService.listProvinces());
+    public Result getProvince(){
+        return ResultUtil.success(provinceService.listProvince());
     }
 
 }
