@@ -4,6 +4,7 @@ import com.estate.sdzy.entity.SUserComm;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -21,4 +22,21 @@ public interface SUserCommService extends IService<SUserComm> {
      * @return 社区id集合
      */
     List<Long> getUserCommIdList(String token);
+
+    /**
+     * 设置用户数据权限
+     * @param userId 用户id
+     * @param commIds 用户权限集合
+     * @param token 登录凭证
+     * @param remark 备注
+     * @return 返回一个boolean值
+     */
+    boolean setUserComm(Long userId,String commIds,String token,String remark);
+
+    /**
+     * 通过用户id，查询用户权限
+     * @param id 用户id
+     * @return 返回用户权限的集合
+     */
+    List<Map<String,String>> listUserComm(Long compId,Long id);
 }

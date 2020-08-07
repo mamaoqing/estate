@@ -29,6 +29,8 @@ public interface SOrgService extends IService<SOrg> {
     boolean saveOrUpdate(SOrg org,String token);
     boolean removeById(Long id,String token);
 
+    List<SOrg> getBaseOrg(Long compId);
+
 
 
 }

@@ -2,7 +2,11 @@ package com.estate.sdzy.mapper;
 
 import com.estate.sdzy.entity.SUserComm;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -15,4 +19,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SUserCommMapper extends BaseMapper<SUserComm> {
 
+    List<Map<String,String>> listUserComm(@Param("userId") Long userId,@Param("compId") Long compId);
+
+    List<Map<String,String>> listAllUserComm(@Param("compId") Long compId);
+
+    List<SUserComm> listCommUser(@Param("userId")Long userId);
 }

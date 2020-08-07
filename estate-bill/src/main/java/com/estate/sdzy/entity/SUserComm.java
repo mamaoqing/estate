@@ -27,6 +27,23 @@ public class SUserComm implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 构建实例
+     * @param compId 公司id
+     * @param userId 需要设置权限的用户id
+     * @param commId 社区id
+     * @param remark 备注
+     */
+    public SUserComm(Long compId, Long userId, Long commId, String remark,Long createdBy,String createdName) {
+        this.compId =compId;
+        this.commId = commId;
+        this.userId = userId;
+        this.commId = commId;
+        this.remark = remark;
+        this.createdBy = createdBy;
+        this.createdName = createdName;
+    }
+
+    /**
      * 主键
      */
     @TableId(value = "id", type = IdType.AUTO)
@@ -42,10 +59,6 @@ public class SUserComm implements Serializable {
      */
     private Long userId;
 
-    /**
-     * 类型
-     */
-    private String userType;
 
     /**
      * 社区id

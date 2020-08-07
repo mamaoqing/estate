@@ -61,5 +61,10 @@ public class SOrgController {
     public Result deleteOrg(@PathVariable("id") Long id,@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(orgService.listOrg(token));
     }
+
+    @GetMapping("/getBaseOrg")
+    public Result getBaseOrg(Long compId){
+        return ResultUtil.success(orgService.getBaseOrg(compId));
+    }
 }
 

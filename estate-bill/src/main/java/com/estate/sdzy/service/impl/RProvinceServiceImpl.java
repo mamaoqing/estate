@@ -33,34 +33,30 @@ public class RProvinceServiceImpl extends ServiceImpl<RProvinceMapper, RProvince
     @Autowired
     private RDistrictMapper districtMapper;
 
-    @Override
-    public List<RProvince> listProvinces(Long id) {
+    @Override//id
+    public List<RCity> listProvinces(Long code) {
         QueryWrapper<RProvince> queryWrapper = new QueryWrapper();
-        queryWrapper.eq("province_id",id);
-        List<RProvince> rProvinces = provinceMapper.selectList(queryWrapper);
-        List<RProvince> provinceList = new ArrayList<>();
-        for (RProvince province : rProvinces) {
-            Long provinceId = province.getId();
-            QueryWrapper<RCity> cityQueryWrapper = new QueryWrapper<>();
-            cityQueryWrapper.eq("province_id", provinceId);
-            // 市的列表
-            List<RCity> rCities = cityMapper.selectList(cityQueryWrapper);
-            List<RCity> cityList = new ArrayList<>();
-            for (RCity city : rCities) {
-                QueryWrapper<RDistrict> districtQueryWrapper = new QueryWrapper<>();
-                districtQueryWrapper.eq("city_id",city.getId());
-                // 区的列表
-                List<RDistrict> rDistricts = districtMapper.selectList(districtQueryWrapper);
+        queryWrapper.eq("id", code);
+        RProvince province = provinceMapper.selectOne(queryWrapper);
+        Long provinceId = province.getId();
+        QueryWrapper<RCity> cityQueryWrapper = new QueryWrapper<>();
+        cityQueryWrapper.eq("province_id", provinceId);
+        // 市的列表
+        List<RCity> rCities = cityMapper.selectList(cityQueryWrapper);
+        List<RCity> cityList = new ArrayList<>();
+        for (RCity city : rCities) {
+            QueryWrapper<RDistrict> districtQueryWrapper = new QueryWrapper<>();
+            districtQueryWrapper.eq("city_id", city.getId());
+            // 区的列表
+            List<RDistrict> rDistricts = districtMapper.selectList(districtQueryWrapper);
 
-                city.setDistrictList(rDistricts);
-                cityList.add(city);
-            }
-
-            province.setCityList(cityList);
-            provinceList.add(province);
+            city.setDistrictList(rDistricts);
+            cityList.add(city);
         }
 
-        return provinceList;
+        province.setCityList(cityList);
+
+        return cityList;
     }
 
     @Override

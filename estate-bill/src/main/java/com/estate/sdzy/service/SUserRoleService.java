@@ -4,6 +4,7 @@ import com.estate.sdzy.entity.SUserRole;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -21,4 +22,7 @@ public interface SUserRoleService extends IService<SUserRole> {
      * @return 返回一个用户权限id的集合
      */
     List<Long> listUserRole(String token);
+
+    List<Map<String,String>> listUserRole(Long userId,Long compId);
+
 }

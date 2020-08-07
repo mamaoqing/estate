@@ -28,8 +28,8 @@ public class RProvinceController {
     private RProvinceService provinceService;
 
     @GetMapping("/{id}")
-    public Result getProvinces(@PathVariable("id") Long id){
-        return ResultUtil.success(provinceService.listProvinces(id));
+    public Result getProvinces(@PathVariable("id") Long code){
+        return ResultUtil.success(provinceService.listProvinces(code));
     }
 
     @GetMapping("/get")

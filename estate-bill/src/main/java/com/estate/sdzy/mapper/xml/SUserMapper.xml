@@ -7,4 +7,12 @@
     <select id="findByUserName" resultType="com.estate.sdzy.entity.SUser" parameterType="java.lang.String">
         select * from s_user where user_name =#{username} and is_delete = 0
     </select>
+    <select id="listUser" resultType="com.estate.sdzy.entity.SUser">
+        SELECT aa.id,aa.name,aa.user_name,aa.type,aa.created_at,aa.created_name,aa.modified_at,aa.modified_name,bb.name compName,cc.name orgName,aa.comp_id,aa.org_id
+        FROM s_user aa
+        left join s_company bb on aa.comp_id = bb.id
+        left join s_org cc on aa.org_id = cc.id
+        ${ew.customSqlSegment}
+
+    </select>
 </mapper>

@@ -12,9 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -41,14 +44,55 @@ public class SUserCommServiceImpl extends ServiceImpl<SUserCommMapper, SUserComm
 
         QueryWrapper<SUserComm> query = new QueryWrapper<>();
 //        query.eq("user_id",9);
-        query.eq("user_id",user.getId());
-        List<SUserComm> sUserComms = userCommMapper.selectList(query);
+        query.eq("user_id", user.getId());
+        List<SUserComm> sUserComms = userCommMapper.listCommUser(user.getId());
 
-        for (SUserComm x : sUserComms){
+        for (SUserComm x : sUserComms) {
             list.add(x.getCommId());
         }
 
         return list;
+    }
+
+    @Override
+    @Transactional
+    public boolean setUserComm(Long userId, String commIds, String token, String remark) {
+        SUser user = getUserByToken(token);
+        if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(commIds)) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        // 在更新权限之前。首先将之前存在的权限删除。如果之前没有权限，则直接创建。否则就需要先删除之前的权限在操作
+        // 如果存在之前的权限，但是删除失败了直接抛出异常。
+        QueryWrapper<SUserComm> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId);
+        List<SUserComm> sUserComms = userCommMapper.selectList(queryWrapper);
+        boolean flag = true;
+        if (!sUserComms.isEmpty()) {
+            int delete = userCommMapper.delete(queryWrapper);
+            flag = delete > 0 ? true : false;
+        }
+        if (flag) {
+            String[] commIdArr = commIds.split(",");
+            for (String commId : commIdArr) {
+                SUserComm userComm = new SUserComm(user.getCompId(), userId, Long.valueOf(commId), remark, user.getId(), user.getUserName());
+                int count = userCommMapper.insert(userComm);
+                if (!(count > 0)) {
+                    throw new BillException(BillExceptionEnum.SET_USER_COMM_ERROR);
+                }
+            }
+        } else {
+            throw new BillException(BillExceptionEnum.SET_USER_COMM_ERROR);
+        }
+
+        return true;
+    }
+
+    @Override
+    public List<Map<String, String>> listUserComm(Long compId,Long id) {
+        if (StringUtils.isEmpty(id)) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        return userCommMapper.listUserComm(id,compId);
     }
 
 

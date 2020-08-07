@@ -105,6 +105,18 @@ public class SOrgServiceImpl extends ServiceImpl<SOrgMapper, SOrg> implements SO
         throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
     }
 
+    @Override
+    public List<SOrg> getBaseOrg(Long compId) {
+        if(StringUtils.isEmpty(compId)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        QueryWrapper<SOrg> queryWrapper = new QueryWrapper<SOrg>();
+        queryWrapper.eq("comp_id",compId);
+        queryWrapper.isNull("parent_id").select("id","name","parent_id");
+
+        return orgMapper.selectList(queryWrapper);
+    }
+
 
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);

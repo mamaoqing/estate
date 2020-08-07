@@ -16,8 +16,9 @@ public enum BillExceptionEnum {
     PARAMS_MISS_ERROR ("参数错误",415),
     PAGENO_MISS_ERROR ("参数错误,页码必传",415),
     SET_USER_ROLE_ERROR ("设置用户权限异常",416),
-    SET_ROLE_MENU_ERROR ("设置角色菜单异常",417),
-    RESET_PASSWORD_ERROR ("旧密码输入错误，重设密码失败",418),
+    SET_USER_COMM_ERROR ("设置用户数据权限异常",417),
+    SET_ROLE_MENU_ERROR ("设置角色菜单异常",418),
+    RESET_PASSWORD_ERROR ("旧密码输入错误，重设密码失败",900),
     ;
     private Integer code;
 

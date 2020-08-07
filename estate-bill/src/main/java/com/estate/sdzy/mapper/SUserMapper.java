@@ -1,5 +1,8 @@
 package com.estate.sdzy.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.entity.SUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
@@ -20,4 +23,6 @@ public interface SUserMapper extends BaseMapper<SUser> {
 
     List<SUser> findOne(@Param("id") Integer id);
     SUser findByUserName(@Param("username") String username);
+
+    Page<SUser> listUser(Page page,@Param("ew") QueryWrapper queryWrapper);
 }

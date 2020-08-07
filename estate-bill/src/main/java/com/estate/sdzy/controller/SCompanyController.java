@@ -70,6 +70,12 @@ public class SCompanyController extends BaseController{
 
     }
 
+    @GetMapping("/getComp")
+    public Result getComp(@RequestHeader("Authentication-Token")String token) {
+        return ResultUtil.success(companyService.getComp(token));
+
+    }
+
     @GetMapping("/{id}")
     public Result getCompany(@PathVariable("id") Long id) {
         return ResultUtil.success(companyService.getById(id));

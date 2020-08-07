@@ -24,4 +24,6 @@ public interface SCompanyService extends IService<SCompany> {
     boolean removeById(Long id ,String token);
 
     Page<SCompany> listCompany(Map<String,String> map, Integer pageNo, Integer size);
+
+    List<SCompany> getComp(String token);
 }

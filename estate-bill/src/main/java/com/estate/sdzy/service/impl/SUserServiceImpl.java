@@ -1,6 +1,7 @@
 package com.estate.sdzy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SCompany;
 import com.estate.sdzy.entity.SUser;
@@ -21,6 +22,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -38,10 +40,41 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
     private SUserMapper userMapper;
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
-
     @Autowired
     private SUserRoleMapper userRoleMapper;
 
+
+    @Override
+    public Page<SUser> listUser(String token, Map<String, String> map) {
+        Page<SUser> sUserPage = null;
+        Integer pageNo = Integer.valueOf(map.get("pageNo"));
+        Integer size = 10;
+        if (StringUtils.isEmpty(pageNo)) {
+            throw new BillException(BillExceptionEnum.PAGENO_MISS_ERROR);
+        }
+        if (!StringUtils.isEmpty(map.get("size"))) {
+            size = Integer.valueOf(map.get("size"));
+        }
+        SUser user = getUserByToken(token);
+        // 区分超级管理员跟普通用户
+        Page<SUser> page = new Page<>(pageNo, size);
+        QueryWrapper<SUser> userServiceQueryWrapper = new QueryWrapper<>();
+        // 拼接条件
+        userServiceQueryWrapper.eq(!StringUtils.isEmpty(map.get("compId")), "aa.comp_id", map.get("compId"));
+        userServiceQueryWrapper.eq(!StringUtils.isEmpty(map.get("orgId")), "aa.org_id", map.get("orgId"));
+        userServiceQueryWrapper.eq(!StringUtils.isEmpty(map.get("userName")), "aa.user_name", map.get("userName"));
+        userServiceQueryWrapper.eq(!StringUtils.isEmpty(map.get("name")), "aa.comp_id", map.get("name"));
+        userServiceQueryWrapper.eq( "aa.is_delete", 0);
+        log.info("当前角色为->{}",user.getType());
+        if ("超级管理员".equals(user.getType())) {
+            sUserPage = userMapper.listUser(page,userServiceQueryWrapper);
+//            sUserPage = userMapper.selectPage(page, userServiceQueryWrapper);
+        } else {
+            userServiceQueryWrapper.eq("aa.comp_id", user.getCompId());
+            sUserPage = userMapper.listUser(page,userServiceQueryWrapper);
+        }
+        return sUserPage;
+    }
 
     @Override
     @Transactional
@@ -84,7 +117,7 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
 
     @Override
     @Transactional
-    public boolean setUserRole(Long userId, String roleIds, String token) {
+    public boolean setUserRole(Long userId,Long compId, String roleIds, String token) {
         // 如果参数有一个为空，直接返回
         if (StringUtils.isEmpty(roleIds) || StringUtils.isEmpty(userId)) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
@@ -96,7 +129,7 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         List<SUserRole> sUserRoles = userRoleMapper.selectList(queryWrapper);
         if (!sUserRoles.isEmpty()) {
             int delete = userRoleMapper.delete(queryWrapper);
-            if(!(delete > 0)){
+            if (!(delete > 0)) {
                 throw new BillException(BillExceptionEnum.SET_USER_ROLE_ERROR);
             }
         }
@@ -106,6 +139,7 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         for (String roleId : roleIdArr) {
             SUserRole userRole = new SUserRole();
             userRole.setUserId(userId);
+            userRole.setCompId(compId);
             userRole.setRoleId(Long.valueOf(roleId));
             userRole.setCreatedBy(user.getId());
             userRole.setCreatedName(user.getUserName());
@@ -162,9 +196,9 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
     }
 
     @Override
-    public boolean reSetPassword(String password, Long id,String token,String oldPassword) {
+    public boolean reSetPassword(String password, Long id, String token, String oldPassword) {
         SUser userByToken = getUserByToken(token);
-        if(StringUtils.isEmpty(password) || StringUtils.isEmpty(id) || StringUtils.isEmpty(oldPassword)){
+        if (StringUtils.isEmpty(password) || StringUtils.isEmpty(id) || StringUtils.isEmpty(oldPassword)) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         SUser user = userMapper.selectById(id);
@@ -177,17 +211,17 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         }
         System.out.println(s1 == s);
 
-        if(!s.equals(s1)){
+        if (!s.equals(s1)) {
             throw new BillException(BillExceptionEnum.RESET_PASSWORD_ERROR);
         }
 
         String psw = PasswdEncryption.encptyPasswd(password);
         user.setPassword(psw);
         int i = userMapper.updateById(user);
-        if(i>0){
-            log.info("密码修改成功,修改人{}",userByToken.getUserName());
+        if (i > 0) {
+            log.info("密码修改成功,修改人{}", userByToken.getUserName());
             return true;
-        }else {
+        } else {
             throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
         }
     }

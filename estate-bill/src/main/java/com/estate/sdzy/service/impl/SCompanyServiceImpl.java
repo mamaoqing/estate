@@ -1,6 +1,7 @@
 package com.estate.sdzy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.enums.SqlLike;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SCompany;
@@ -62,7 +63,7 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
         company.setCreatedName(user.getUserName());
         int insert = companyMapper.updateById(company);
         if (insert > 0) {
-            log.info("{} 修改成功，修改人={}", company.getName(),user.getUserName());
+            log.info("{} 修改成功，修改人={}", company.getName(), user.getUserName());
         } else {
             throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
         }
@@ -86,38 +87,47 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
 
     @Override
     public Page<SCompany> listCompany(Map<String, String> map, Integer pageNo, Integer size) {
-        if(StringUtils.isEmpty(pageNo)){
+        if (StringUtils.isEmpty(pageNo)) {
             throw new BillException(BillExceptionEnum.PAGENO_MISS_ERROR);
         }
-        if(StringUtils.isEmpty(size)){
+        if (StringUtils.isEmpty(size)) {
             size = 10;
         }
-        Page<SCompany> page = new Page<>(pageNo,size);
+        Page<SCompany> page = new Page<>(pageNo, size);
         QueryWrapper<SCompany> queryWrapper = new QueryWrapper<>();
         // 下面放查询条件
         // 名称查询
-        if(!StringUtils.isEmpty(map.get("name"))){
-            queryWrapper.eq("name",map.get("name"));
-        }
+        queryWrapper.like(!StringUtils.isEmpty(map.get("name")), "name", map.get("name"));
         // 简称查询
-        if(!StringUtils.isEmpty(map.get("abbreviation"))){
-            queryWrapper.eq("abbreviation",map.get("abbreviation"));
-        }
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("abbreviation")), "abbreviation", map.get("abbreviation"));
         // 省
-        if(!StringUtils.isEmpty(map.get("province"))){
-            queryWrapper.eq("province",map.get("province"));
+        if (!StringUtils.isEmpty(map.get("province"))) {
+            queryWrapper.eq("province", map.get("province"));
         }
         // 市
-        if(!StringUtils.isEmpty(map.get("city"))){
-            queryWrapper.eq("city",map.get("city"));
+        if (!StringUtils.isEmpty(map.get("city"))) {
+            queryWrapper.eq("city", map.get("city"));
         }
         // 区
-        if(!StringUtils.isEmpty(map.get("district"))){
-            queryWrapper.eq("district",map.get("district"));
+        if (!StringUtils.isEmpty(map.get("district"))) {
+            queryWrapper.eq("district", map.get("district"));
         }
 
         Page<SCompany> sCompanyPage = companyMapper.selectPage(page, queryWrapper);
         return sCompanyPage;
+    }
+
+    @Override
+    public List<SCompany> getComp(String token) {
+        SUser user = getUserByToken(token);
+
+        QueryWrapper<SCompany> queryWrapper = new QueryWrapper<>();
+        log.info("当前角色为->{}", user.getType());
+        if (!"超级管理员".equals(user.getType())) {
+            queryWrapper.eq("id", user.getCompId());
+        }
+        queryWrapper.select("name", "id");
+        return companyMapper.selectList(queryWrapper);
     }
 
     private SUser getUserByToken(String token) {

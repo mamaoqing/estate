@@ -1,11 +1,13 @@
 package com.estate.sdzy.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.entity.SCompany;
 import com.estate.sdzy.entity.SUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -16,6 +18,8 @@ import java.util.List;
  * @since 2020-07-23
  */
 public interface SUserService extends IService<SUser> {
+
+    Page<SUser> listUser(String token, Map<String,String> map);
 
     List<SUser> findOne(Integer id);
     SUser findByUserName(String username);
@@ -34,7 +38,7 @@ public interface SUserService extends IService<SUser> {
      * @param roleIds 角色id的string串，中间用“,”隔开
      * @return
      */
-    boolean setUserRole(Long userId,String roleIds,String token);
+    boolean setUserRole(Long userId,Long compId,String roleIds,String token);
 
     boolean save(SUser user ,String token);
 

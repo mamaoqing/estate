@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/sdzy/sUser")
 @Slf4j
-public class SUserController {
+public class SUserController extends BaseController{
 
     @Autowired
     private SUserService userService;
@@ -44,17 +45,8 @@ public class SUserController {
 
     @GetMapping("/listUser")
     @ResponseBody
-    public Result listUser(Integer pageNo, Integer size) {
-        if (StringUtils.isEmpty(pageNo)) {
-            throw new BillException(BillExceptionEnum.PAGENO_MISS_ERROR);
-        }
-        if (StringUtils.isEmpty(size)) {
-            size = 10;
-        }
-        Page<SUser> page = new Page<>(pageNo, size);
-        QueryWrapper<SUser> queryWrapper = new QueryWrapper<>();
-
-        return ResultUtil.success(userService.page(page, queryWrapper));
+    public Result listUser(@RequestHeader("Authentication-Token") String token,HttpServletRequest request) {
+        return ResultUtil.success(userService.listUser(token,super.getParameterMap(request)));
     }
 
     @PostMapping("/insertUser")
@@ -84,8 +76,8 @@ public class SUserController {
 
     @PostMapping("/setUserRole")
     @ResponseBody
-    public Result setUserRole(Long userId, String roleIds,@RequestHeader("Authentication-Token") String token) {
-        return ResultUtil.success(userService.setUserRole(userId, roleIds, token));
+    public Result setUserRole(Long userId,Long compId, String roleIds,@RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(userService.setUserRole(userId,compId, roleIds, token));
     }
 
 }

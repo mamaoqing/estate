@@ -2,10 +2,10 @@ package com.estate.sdzy.controller;
 
 
 import com.estate.sdzy.service.SUserRoleService;
+import com.estate.util.Result;
+import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
 
@@ -19,18 +19,18 @@ import org.springframework.stereotype.Controller;
  * @author mq
  * @since 2020-07-23
  */
-@Controller
+@RestController
 @RequestMapping("/sdzy/sUserRole")
 public class SUserRoleController {
 
     @Autowired
     private SUserRoleService userRoleService;
 
-    @GetMapping("{token}")
-    public String getUserMenu(@PathVariable("token") String UUId){
-
-        return "";
+    @GetMapping("/listUserRole")
+    public Result listUserRole(Long id, Long compId){
+        return ResultUtil.success(userRoleService.listUserRole(id, compId));
     }
+
 
 
 
