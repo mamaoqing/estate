@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.exception.BillException;
-import com.estate.sdzy.entity.SDict;
 import com.estate.sdzy.entity.SDictItem;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.mapper.SDictItemMapper;
@@ -93,8 +92,8 @@ public class SDictItemServiceImpl extends ServiceImpl<SDictItemMapper, SDictItem
     }
 
     @Override
-    public Page<SDictItem> listDictItem(Map<String, String> map, Integer pageNo, Integer size,String token) {
-        if(StringUtils.isEmpty(pageNo)){
+    public List<SDictItem> listDictItem(Map<String, String> map, Integer pageNo, Integer size,String token) {
+        /*if(StringUtils.isEmpty(pageNo)){
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         if(StringUtils.isEmpty(size)){
@@ -128,9 +127,16 @@ public class SDictItemServiceImpl extends ServiceImpl<SDictItemMapper, SDictItem
         }
         queryWrapper.orderByDesc("dict_id");
         queryWrapper.orderByAsc("order_by");
-        Page<SDictItem> sDictItemPage = sDictItemMapper.selectPage(page, queryWrapper);
-
-        return sDictItemPage;
+        Page<SDictItem> sDictItemPage = sDictItemMapper.selectPage(page, queryWrapper);*/
+        String compId="";
+        if(getUserByToken(token).getCompId()!=0){
+            compId = String.valueOf(getUserByToken(token).getCompId());
+        }
+        List<SDictItem> dictItemList = sDictItemMapper.findDictItemList(map.get("name"),map.get("dictId"), null, null,compId);
+        for (int i = 0; i <dictItemList.size() ; i++) {
+            System.out.print(dictItemList.get(i).getId());
+        }
+        return dictItemList;
     }
 
     @Override

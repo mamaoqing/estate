@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.estate.sdzy.mapper.SUserMapper">
+    <select id="findOne" resultType="com.estate.sdzy.entity.SUser" parameterType="java.lang.Integer">
+        select * from s_user where id =#{id}  and is_delete = 0
+    </select>
+    <select id="findByUserName" resultType="com.estate.sdzy.entity.SUser" parameterType="java.lang.String">
+        select * from s_user where user_name =#{username} and is_delete = 0
+    </select>
+    <select id="listUser" resultType="com.estate.sdzy.entity.SUser">
+        SELECT aa.id,aa.name,aa.user_name,aa.type,aa.created_at,aa.created_name,aa.modified_at,aa.modified_name,bb.name compName,cc.name orgName,aa.comp_id,aa.org_id
+        FROM s_user aa
+        left join s_company bb on aa.comp_id = bb.id
+        left join s_org cc on aa.org_id = cc.id
+        ${ew.customSqlSegment}
+
+    </select>
+<!--comp_id = 1 and (parent_id_list like '0,3%' or (parent_id_list = '0,3')) and is_delete = 0 and user_name='cfy' and name='cfy'-->
+    <select id="findUserList" resultType="com.estate.sdzy.entity.SUser">
+        select * from
+        v_s_user_role where 1=1 and is_delete=0
+        <if test="compId != null and compId != ''">
+            and comp_id = #{compId}
+        </if>
+        <if test="userName != null and userName != ''">
+            and user_name = #{userName}
+        </if>
+        <if test="name != null and name != ''">
+            and name = #{name}
+        </if>
+        <if test="parentIdList != null and parentIdList != ''">
+            and (parent_id_list = #{parentIdList} or parent_id_list like CONCAT(#{parentIdList},'%'))
+        </if>
+    </select>
+</mapper>

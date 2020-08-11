@@ -1,0 +1,55 @@
+#
+##spring:
+##  datasource:
+##    driver-class-name: com.p6spy.engine.spy.P6SpyDriver   #org.mariadb.jdbc.Driver
+##    username: root
+##    password: root
+##    url: jdbc:p6spy:mysql://localhost:3306/test_mq #jdbc:mysql://localhost:3306/test_mq
+##  cloud:
+##    nacos:
+##      discovery:
+##        server-addr: localhost:8848
+##        namespace:   命名空间，隔离，
+#server:
+#  port: 9000
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  global-config:
+#    db-config:
+#      logic-delete-field: deleted  # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+#      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+#      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+##spring:
+##  # 当前服务注册到nacos中
+##  cloud:
+##    nacos:
+##      discovery:
+##        #        server-addr: 127.0.0.1:8848
+##
+##        server-addr: localhost:8848
+##  #        namespace: 3c02cff5-63ee-4620-bc28-4e960562af65
+##  application:
+#sharding:
+#  jdbc:
+#    datasource:
+#      names: db0,db1
+#      db0:
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        driverClassName: org.mariadb.jdbc.Driver
+#        url: jdbc:mysql://localhost:3306/cool?useUnicode=true&characterEncoding=utf8&tinyInt1isBit=false&useSSL=false&serverTimezone=GMT
+#        username: root
+#        password: root
+#      db1:
+#        type: com.alibaba.druid.pool.DruidDataSource
+#        driverClassName: org.mariadb.jdbc.Driver
+#        url: jdbc:mysql://localhost:3306/estate?useUnicode=true&characterEncoding=utf8&tinyInt1isBit=false&useSSL=false&serverTimezone=GMT
+#        username: root
+#        password: root
+#    config:
+#      masterslave:
+#        master-data-source-name: db0
+#        slave-data-source-names: db1
+#        load-balance-algorithm-type: round_robin
+#        name: db0
+##    name: 你的项目名称
