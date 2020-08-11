@@ -61,8 +61,10 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
                 QueryWrapper<SMenu> q = new QueryWrapper();
                 q.eq("id", menuId);
                 SMenu sMenu = menuMapper.selectOne(q);
+                if(!list.contains(sMenu)){
+                    list.add(sMenu);
+                }
 
-                list.add(sMenu);
             }
         }
 

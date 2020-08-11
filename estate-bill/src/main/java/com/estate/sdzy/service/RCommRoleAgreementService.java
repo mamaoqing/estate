@@ -1,8 +1,7 @@
 package com.estate.sdzy.service;
 
-import com.estate.sdzy.entity.RCommRoleAgreement;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.estate.sdzy.mapper.RCommRoleAgreementMapper;
+import com.estate.sdzy.entity.RCommRoleAgreement;
 
 import java.util.List;
 
@@ -22,4 +21,6 @@ public interface RCommRoleAgreementService extends IService<RCommRoleAgreement> 
      * @return 有权限返回true 否则返回false
      */
     boolean isPermission(List<Long> ids);
+
+    List<RCommRoleAgreement> getRCommRoleAgreements(String commId);
 }

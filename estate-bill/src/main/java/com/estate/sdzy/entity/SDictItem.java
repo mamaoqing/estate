@@ -1,6 +1,7 @@
 package com.estate.sdzy.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -14,7 +15,7 @@ import java.util.Date;
  * </p>
  *
  * @author mq
- * @since 2020-08-05
+ * @since 2020-07-23
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -38,11 +39,14 @@ public class SDictItem implements Serializable {
      * 公司id
      */
     private Long compId;
-
+    @TableField(exist = false)
+    private String compName;
     /**
      * 字典id
      */
     private Long dictId;
+    @TableField(exist = false)
+    private String dictName;
 
     /**
      * 排序
@@ -60,6 +64,7 @@ public class SDictItem implements Serializable {
     private String remark;
 
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createdAt;
 
     private Long createdBy;
@@ -67,6 +72,7 @@ public class SDictItem implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date modifiedAt;
 
     private Long modifiedBy;

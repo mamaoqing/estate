@@ -1,9 +1,17 @@
 package com.estate.sdzy.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.estate.sdzy.entity.SDictItem;
+import com.estate.sdzy.service.SDictItemService;
+import com.estate.sdzy.service.SUserService;
+import com.estate.util.Result;
+import com.estate.util.ResultUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 /**
  * <p>
@@ -13,9 +21,59 @@ import org.springframework.stereotype.Controller;
  * @author mq
  * @since 2020-07-23
  */
-@Controller
+@RestController
 @RequestMapping("/sdzy/sDictItem")
-public class SDictItemController {
+@Slf4j
+public class SDictItemController extends BaseController{
 
+    @Autowired
+    public SDictItemService sDictItemService;
+
+    @Autowired
+    private SUserService userService;
+
+    @PostMapping("/insertDictItem")
+    public Result insertDictItem(@RequestBody SDictItem sDictItem, @RequestHeader("Authentication-Token") String token) {
+        boolean save = sDictItemService.save(sDictItem, token);
+        if (save) {
+            log.info("添加字典成功，公司id={}", sDictItem.getId());
+            ResultUtil.success("添加字典成功");
+        }
+        System.err.println(new Date());
+        return ResultUtil.error("添加字典失败！", 1);
+    }
+
+    @PutMapping("/updateDictItem")
+    public Result updateDictItem(@RequestBody SDictItem sDictItem, @RequestHeader("Authentication-Token") String token) {
+        //System.out.println(sDict);
+        return ResultUtil.success(sDictItemService.update(sDictItem,token));
+    }
+
+    @GetMapping("/listDictItem")
+    public Result listDictItem(Integer pageNo, Integer size, HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(sDictItemService.listDictItem(super.getParameterMap(request),pageNo,size,token));
+
+    }
+
+    @GetMapping("/findDictItemList")
+    public Result findDictItemList(Integer pageNo, Integer size, HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(sDictItemService.findDictItemList(super.getParameterMap(request),pageNo,size,token));
+
+    }
+
+    @GetMapping("/{id}")
+    public Result getDictItem(@PathVariable("id") Long id) {
+        return ResultUtil.success(sDictItemService.getById(id));
+    }
+
+    @GetMapping("/{dictId}/{name}")
+    public Result checkDictItemName(@PathVariable("dictId") String dictId,@PathVariable("name") String name,@RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(sDictItemService.checkDictItemName(dictId,name,token));//返回为true则表示重复
+    }
+
+    @DeleteMapping("/{id}")
+    public Result deleteDictItem(@PathVariable("id") Long id, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(sDictItemService.removeById(id, token));
+    }
 }
 
