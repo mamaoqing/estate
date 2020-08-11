@@ -17,10 +17,10 @@ public interface SMenuService extends IService<SMenu> {
 
     /**
      * 通过roleid 权限id查询对应的菜单
-     * @param roleIds 权限id的集合
+     * @param token 用户登录凭证
      * @return 返回一个菜单集合
      */
-    List<SMenu> listMenu(List<Long> roleIds);
+    List<SMenu> listMenu(String token);
 
     /**
      * 添加菜单

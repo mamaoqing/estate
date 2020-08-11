@@ -303,7 +303,7 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
                 }
             }
         }
-        List<SMenu> allRoleMenu = MenuUtil.getAllRoleMenu(sMenuService.listMenu(roleIds));
+        List<SMenu> allRoleMenu = MenuUtil.getAllRoleMenu(sMenuService.listMenu(token));
         return allRoleMenu;
     }
 

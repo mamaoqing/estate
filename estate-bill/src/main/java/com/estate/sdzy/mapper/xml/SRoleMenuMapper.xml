@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.estate.sdzy.mapper.SRoleMenuMapper">
-
+    <select id="listMenu" resultType="com.estate.sdzy.entity.SMenu" parameterType="java.lang.Long">
+        SELECT
+    DISTINCT e.id,e.name,e.parent_id,e.parent_id_list,e.url,e.type,e.icon,e.remark,e.created_at,e.created_by,e.created_name,e.modified_at,e.modified_by,e.modified_name
+    FROM
+        s_user u,
+        s_user_role r,
+        s_role_menu m,
+        s_menu e
+    WHERE
+        u.id = r.user_id
+        AND r.role_id = m.role_id
+        AND m.menu_id = e.id  and u.id =#{id} and u.is_delete=0 and e.is_delete=0
+    </select>
 </mapper>
