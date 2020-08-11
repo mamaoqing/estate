@@ -25,4 +25,6 @@ public interface SUserMapper extends BaseMapper<SUser> {
     SUser findByUserName(@Param("username") String username);
 
     Page<SUser> listUser(Page page,@Param("ew") QueryWrapper queryWrapper);
+
+    Page<SUser> findUserList(Page page,@Param("compId") String compId,@Param("userName")String userName,@Param("name")String name,@Param("parentIdList")String parentIdList);
 }

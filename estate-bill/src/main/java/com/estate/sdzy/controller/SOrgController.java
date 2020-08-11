@@ -1,6 +1,7 @@
 package com.estate.sdzy.controller;
 
 
+import com.estate.sdzy.entity.SOrg;
 import com.estate.sdzy.service.SOrgService;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
@@ -49,8 +50,8 @@ public class SOrgController {
     }
 
     @PostMapping("/insertOrg")
-    public Result insertOrg(@RequestHeader("Authentication-Token") String token){
-        return ResultUtil.success(orgService.listOrg(token));
+    public Result insertOrg(@RequestHeader("Authentication-Token") String token,@RequestBody SOrg org){
+        return ResultUtil.success(orgService.save(org,token));
     }
 
     @PutMapping("/updateOrg")
@@ -59,12 +60,19 @@ public class SOrgController {
     }
     @DeleteMapping("/{id}")
     public Result deleteOrg(@PathVariable("id") Long id,@RequestHeader("Authentication-Token") String token){
-        return ResultUtil.success(orgService.listOrg(token));
+        return ResultUtil.success(orgService.removeById(id,token));
     }
 
     @GetMapping("/getBaseOrg")
     public Result getBaseOrg(Long compId){
         return ResultUtil.success(orgService.getBaseOrg(compId));
     }
+
+    @GetMapping("/getOnlyChildOrg")
+    public Result getOnlyChildOrg(Long id){
+        return ResultUtil.success(orgService.getOnlyChildOrg(id));
+    }
+
+
 }
 
