@@ -15,4 +15,21 @@
         ${ew.customSqlSegment}
 
     </select>
+<!--comp_id = 1 and (parent_id_list like '0,3%' or (parent_id_list = '0,3')) and is_delete = 0 and user_name='cfy' and name='cfy'-->
+    <select id="findUserList" resultType="com.estate.sdzy.entity.SUser">
+        select * from
+        v_s_user_role where 1=1 and is_delete=0
+        <if test="compId != null and compId != ''">
+            and comp_id = #{compId}
+        </if>
+        <if test="userName != null and userName != ''">
+            and user_name = #{userName}
+        </if>
+        <if test="name != null and name != ''">
+            and name = #{name}
+        </if>
+        <if test="parentIdList != null and parentIdList != ''">
+            and (parent_id_list = #{parentIdList} or parent_id_list like CONCAT(#{parentIdList},'%'))
+        </if>
+    </select>
 </mapper>

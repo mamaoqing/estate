@@ -1,9 +1,12 @@
 package com.estate.sdzy.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,6 +23,8 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class SOrg implements Serializable {
 
     public SOrg(Long companyId,String abbreviation,String remark){
@@ -67,6 +72,7 @@ public class SOrg implements Serializable {
     private String remark;
 
     @TableField(fill = FieldFill.INSERT)
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date createdAt;
 
     private Long createdBy;
@@ -74,6 +80,7 @@ public class SOrg implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date modifiedAt;
 
     private Long modifiedBy;
@@ -84,5 +91,7 @@ public class SOrg implements Serializable {
 
     @TableField(exist = false)
     private List<SOrg> childList;
+    @TableField(exist = false)
+    private String compName;
 
 }

@@ -5,6 +5,7 @@ import com.estate.sdzy.entity.SOrg;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -31,6 +32,6 @@ public interface SOrgService extends IService<SOrg> {
 
     List<SOrg> getBaseOrg(Long compId);
 
-
+    List<Map<String, String>> getOnlyChildOrg(Long id);
 
 }

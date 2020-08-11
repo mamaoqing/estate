@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -56,7 +57,7 @@ public class SOrgServiceImpl extends ServiceImpl<SOrgMapper, SOrg> implements SO
         // 获取公司id，根据公司id查询公司下全部的机构信息
         Long compId = user.getCompId();
         QueryWrapper<SOrg> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("comp_id",compId).select("id","name","parent_id");
+        queryWrapper.eq("comp_id",compId).select("id","name","parent_id","parent_id_list");
         List<SOrg> orgList = orgMapper.selectList(queryWrapper);
         return MenuUtil.orgList(orgList);
     }
@@ -66,6 +67,7 @@ public class SOrgServiceImpl extends ServiceImpl<SOrgMapper, SOrg> implements SO
         SUser user = getUserByToken(token);
         org.setCreatedBy(user.getId());
         org.setCreatedName(user.getUserName());
+        org.setCompId(user.getCompId());
         int insert = orgMapper.insert(org);
         if(insert > 0){
             log.info("组织机构{}添加成功，添加人{}",org.getName(),user.getUserName());
@@ -94,10 +96,12 @@ public class SOrgServiceImpl extends ServiceImpl<SOrgMapper, SOrg> implements SO
         if (StringUtils.isEmpty(id)) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
+        SOrg sOrg = orgMapper.selectById(id);
+        String concat = sOrg.getParentIdList().concat(",").concat(id + "");
         int i = orgMapper.deleteById(id);
         if(i>0){
             QueryWrapper<SOrg> orgQueryWrapper = new QueryWrapper<>();
-            orgQueryWrapper.like("parent_id_list",id+",");
+            orgQueryWrapper.and(sOrgQueryWrapper -> sOrgQueryWrapper.like("parent_id_list",concat+",").or().eq("parent_id_list",concat));
             int delete = orgMapper.delete(orgQueryWrapper);
             log.info("组织机构{}删除成功，删除人{}",id,user.getUserName());
             return true;
@@ -117,6 +121,13 @@ public class SOrgServiceImpl extends ServiceImpl<SOrgMapper, SOrg> implements SO
         return orgMapper.selectList(queryWrapper);
     }
 
+    @Override
+    public List<Map<String, String>> getOnlyChildOrg(Long id) {
+
+
+        return orgMapper.getOnlyChildOrg(id);
+    }
+
 
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
@@ -126,5 +137,7 @@ public class SOrgServiceImpl extends ServiceImpl<SOrgMapper, SOrg> implements SO
         }
         return (SUser) o;
     }
+
+
 
 }

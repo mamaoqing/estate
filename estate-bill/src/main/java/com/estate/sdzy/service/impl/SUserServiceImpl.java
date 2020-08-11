@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SCompany;
+import com.estate.sdzy.entity.SOrg;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.entity.SUserRole;
+import com.estate.sdzy.mapper.SOrgMapper;
 import com.estate.sdzy.mapper.SUserMapper;
 import com.estate.sdzy.mapper.SUserRoleMapper;
 import com.estate.sdzy.service.SUserService;
@@ -43,6 +45,9 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
     @Autowired
     private SUserRoleMapper userRoleMapper;
 
+    @Autowired
+    private SOrgMapper orgMapper;
+
 
     @Override
     public Page<SUser> listUser(String token, Map<String, String> map) {
@@ -56,24 +61,38 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
             size = Integer.valueOf(map.get("size"));
         }
         SUser user = getUserByToken(token);
+        String concat = null;
+
+        if(!StringUtils.isEmpty(map.get("orgId"))){
+            String orgId = map.get("orgId");
+            // 先查询当前组织的上级
+            QueryWrapper<SOrg> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("id",orgId);
+            SOrg sOrg = orgMapper.selectOne(queryWrapper);
+            concat = sOrg.getParentIdList().concat(",").concat(orgId);
+        }
+
+
+
         // 区分超级管理员跟普通用户
         Page<SUser> page = new Page<>(pageNo, size);
-        QueryWrapper<SUser> userServiceQueryWrapper = new QueryWrapper<>();
-        // 拼接条件
-        userServiceQueryWrapper.eq(!StringUtils.isEmpty(map.get("compId")), "aa.comp_id", map.get("compId"));
-        userServiceQueryWrapper.eq(!StringUtils.isEmpty(map.get("orgId")), "aa.org_id", map.get("orgId"));
-        userServiceQueryWrapper.eq(!StringUtils.isEmpty(map.get("userName")), "aa.user_name", map.get("userName"));
-        userServiceQueryWrapper.eq(!StringUtils.isEmpty(map.get("name")), "aa.comp_id", map.get("name"));
-        userServiceQueryWrapper.eq( "aa.is_delete", 0);
-        log.info("当前角色为->{}",user.getType());
-        if ("超级管理员".equals(user.getType())) {
-            sUserPage = userMapper.listUser(page,userServiceQueryWrapper);
-//            sUserPage = userMapper.selectPage(page, userServiceQueryWrapper);
-        } else {
-            userServiceQueryWrapper.eq("aa.comp_id", user.getCompId());
-            sUserPage = userMapper.listUser(page,userServiceQueryWrapper);
-        }
-        return sUserPage;
+        Page<SUser> userList = userMapper.findUserList(page, map.get("compId"), map.get("userName"), map.get("name"), concat);
+//        QueryWrapper<SUser> userServiceQueryWrapper = new QueryWrapper<>();
+//        // 拼接条件
+//        userServiceQueryWrapper.eq(!StringUtils.isEmpty(map.get("orgId")), "aa.org_id", map.get("orgId"));
+//        String finalConcat = concat;
+//        userServiceQueryWrapper.eq(!StringUtils.isEmpty(map.get("compId")), "aa.comp_id", map.get("compId"))
+//                .eq(!StringUtils.isEmpty(map.get("userName")), "aa.user_name", map.get("userName"))
+//                .eq(!StringUtils.isEmpty(map.get("name")), "aa.name", map.get("name"));
+//        log.info("当前角色为->{}",user.getType());
+//        if ("超级管理员".equals(user.getType())) {
+//            sUserPage = userMapper.listUser(page,userServiceQueryWrapper);
+////            sUserPage = userMapper.selectPage(page, userServiceQueryWrapper);
+//        } else {
+//            userServiceQueryWrapper.eq("aa.comp_id", user.getCompId());
+//            sUserPage = userMapper.listUser(page,userServiceQueryWrapper);
+//        }
+        return userList;
     }
 
     @Override
