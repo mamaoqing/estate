@@ -44,9 +44,7 @@ public class SMenuController extends BaseController {
     @GetMapping("/get")
     @ResponseBody
     public Result getMenuList(@RequestHeader("Authentication-Token") String token) {
-        List<Long> longs = userRoleService.listUserRole(token);
-
-        return ResultUtil.success(MenuUtil.getAllRoleMenu(sMenuService.listMenu(longs)));
+        return ResultUtil.success(MenuUtil.getAllRoleMenu(sMenuService.listMenu(token)));
     }
 
     @PostMapping("/insertMenu")

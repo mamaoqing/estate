@@ -42,33 +42,9 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
     private RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public List<SMenu> listMenu(List<Long> roleIds) {
-        List<SMenu> list = new ArrayList<>();
-        // 如果传递的参数不存在直接返回。
-        if (roleIds.isEmpty()) {
-            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
-        }
-
-        for (Long roleId : roleIds) {
-            // 1.通过roleid查询出菜单id -> menuid,一个权限role可能对应多个菜单menu；
-            QueryWrapper<SRoleMenu> qw = new QueryWrapper<>();
-            qw.eq("role_id", roleId);
-            List<SRoleMenu> sRoleMenus = roleMenuMapper.selectList(qw);
-
-            // 2.遍历得到的权限菜单表，通过菜单id查询该权限下的所有的菜单
-            for (SRoleMenu x : sRoleMenus) {
-                Long menuId = x.getMenuId();
-                QueryWrapper<SMenu> q = new QueryWrapper();
-                q.eq("id", menuId);
-                SMenu sMenu = menuMapper.selectOne(q);
-                if(!list.contains(sMenu)){
-                    list.add(sMenu);
-                }
-
-            }
-        }
-
-        return list;
+    public List<SMenu> listMenu(String token) {
+        SUser user = getUserByToken(token);
+        return roleMenuMapper.listMenu(user.getId());
     }
 
     @Override
