@@ -1,8 +1,13 @@
 package com.estate.sdzy.service;
 
-import com.estate.exception.BillException;
-import com.estate.sdzy.entity.SRole;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.estate.exception.BillException;
+import com.estate.sdzy.entity.SMenu;
+import com.estate.sdzy.entity.SRole;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -17,4 +22,10 @@ public interface SRoleService extends IService<SRole> {
     boolean saveOrUpdate(SRole role,String token) throws BillException;
     boolean save(SRole role,String token) throws BillException;
     boolean remove(Long id,String token) throws BillException;
+    List<SRole> listRole(Map<String,String> map, Integer pageNo, Integer size, String token);
+    Page<SRole> listRoleNum(Map<String,String> map, Integer pageNo, Integer size, String token);
+    String checkRoleMenuUser(Long id) throws BillException;
+    boolean setRoleMenu(String roleId,String menuId, String token);
+    List<SMenu> listRoleMenu(String token);
+    List<Long> getRoleMenuByRoleId(String roleId);
 }

@@ -1,8 +1,11 @@
 package com.estate.sdzy.mapper;
 
-import com.estate.sdzy.entity.SRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.estate.sdzy.entity.SRole;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +18,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SRoleMapper extends BaseMapper<SRole> {
 
+    List<SRole> findRoleList(@Param("name")String name, @Param("type")String type, @Param("compId")List compId ,@Param("compid")String compid , @Param("pageNo")Integer pageNo, @Param("size")Integer size);
 }
