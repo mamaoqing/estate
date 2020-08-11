@@ -42,8 +42,8 @@ public class LoginServiceImpl implements LoginService {
             String key = String.valueOf(UUID.randomUUID());
             String token = key+":"+user.getUserName();
             // 设置过期时间单位秒
-            redisUtil.set(token, user, 50 * 60);
-            return ResultUtil.success(token);
+            redisUtil.set(token, user, 500 * 60);
+            return ResultUtil.success(token+";"+user.getCompId());
         }else{
             return ResultUtil.error("登陆失败，请联系管理员",0);
         }
