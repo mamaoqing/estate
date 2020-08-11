@@ -1,7 +1,10 @@
 package com.estate.sdzy.service;
 
-import com.estate.sdzy.entity.SDict;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.estate.sdzy.entity.SDict;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface SDictService extends IService<SDict> {
 
+    boolean save(SDict sDict,String token);
+    boolean update(SDict sDict,String token);
+    boolean removeById(Long id,String token);
+    Page<SDict> listDict(Map<String,String> map, Integer pageNo, Integer size);
+    boolean checkDictName(String name,String token);
 }
