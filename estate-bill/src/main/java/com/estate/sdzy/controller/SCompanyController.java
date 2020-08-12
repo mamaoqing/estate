@@ -70,7 +70,7 @@ public class SCompanyController extends BaseController{
 
     }
 
-    @GetMapping("/getComp")
+        @GetMapping("/getComp")
     public Result getComp(@RequestHeader("Authentication-Token")String token) {
         return ResultUtil.success(companyService.getComp(token));
 
