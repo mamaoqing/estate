@@ -64,5 +64,33 @@ public class RProvinceServiceImpl extends ServiceImpl<RProvinceMapper, RProvince
         return provinceMapper.selectList(null);
     }
 
+    @Override
+    public List<RProvince> getProvinceChild() {
+        List<RProvince> provinceList = listProvince();
+        List<RProvince> result = new ArrayList<>();
+        for (RProvince province : provinceList){
+            Long provinceId = province.getId();
+            QueryWrapper<RCity> cityQueryWrapper = new QueryWrapper<>();
+            cityQueryWrapper.eq("province_id", provinceId);
+            // 市的列表
+            List<RCity> rCities = cityMapper.selectList(cityQueryWrapper);
+            List<RCity> cityList = new ArrayList<>();
+            for (RCity city : rCities) {
+                QueryWrapper<RDistrict> districtQueryWrapper = new QueryWrapper<>();
+                districtQueryWrapper.eq("city_id", city.getId());
+                // 区的列表
+                List<RDistrict> rDistricts = districtMapper.selectList(districtQueryWrapper);
+
+                city.setDistrictList(rDistricts);
+                cityList.add(city);
+            }
+
+            province.setCityList(cityList);
+            result.add(province);
+        }
+
+        return result;
+    }
+
 
 }
