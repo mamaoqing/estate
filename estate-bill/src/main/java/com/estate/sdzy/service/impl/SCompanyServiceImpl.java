@@ -99,19 +99,14 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
         // 名称查询
         queryWrapper.like(!StringUtils.isEmpty(map.get("name")), "name", map.get("name"));
         // 简称查询
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("abbreviation")), "abbreviation", map.get("abbreviation"));
+        queryWrapper.like(!StringUtils.isEmpty(map.get("abbreviation")), "abbreviation", map.get("abbreviation"));
         // 省
-        if (!StringUtils.isEmpty(map.get("province"))) {
-            queryWrapper.eq("province", map.get("province"));
-        }
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("province")), "province", map.get("province"));
         // 市
-        if (!StringUtils.isEmpty(map.get("city"))) {
-            queryWrapper.eq("city", map.get("city"));
-        }
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("city")), "city", map.get("city"));
         // 区
-        if (!StringUtils.isEmpty(map.get("district"))) {
-            queryWrapper.eq("district", map.get("district"));
-        }
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("district")), "district", map.get("district"));
+
 
         Page<SCompany> sCompanyPage = companyMapper.selectPage(page, queryWrapper);
         return sCompanyPage;

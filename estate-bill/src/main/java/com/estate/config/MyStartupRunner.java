@@ -27,7 +27,7 @@ public class MyStartupRunner {
     @PostConstruct
      public void run() {
         if (StringUtils.isEmpty(redisUtil.get("District_Number"))){
-            redisUtil.set("District_Number",rProvinceService.getProvinceChild(),30, TimeUnit.DAYS);
+//            redisUtil.set("District_Number",rProvinceService.getProvinceChild(),30, TimeUnit.DAYS);
         }else {
             System.out.println("=============================================");
             System.out.println("行政区信息已加载，无需重复加载！！！！");
