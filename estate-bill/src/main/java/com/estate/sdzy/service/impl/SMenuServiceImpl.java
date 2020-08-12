@@ -52,7 +52,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
     @Override
     public boolean insertMenu(SMenu menu, String token) {
         SUser user = getUserByToken(token);
-        if(null == menu){
+        if (null == menu) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         menu.setCreatedBy(user.getId());
@@ -61,7 +61,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
         int insert = menuMapper.insert(menu);
         if (insert > 0) {
             log.info("添加菜单信息成功，添加人={}", user.getName());
-        }else{
+        } else {
             throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
         }
         return insert > 0;
@@ -69,7 +69,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
 
     @Override
     public boolean updateMenu(SMenu menu, String token) {
-        if(null == menu){
+        if (null == menu) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         SUser user = getUserByToken(token);
@@ -78,7 +78,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
         int i = menuMapper.updateById(menu);
         if (i > 0) {
             log.info("修改菜单信息成功，修改人={}", user.getName());
-        }else {
+        } else {
             throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
         }
         return i > 0;
@@ -101,7 +101,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
         int i = menuMapper.deleteById(id);
         if (i > 0) {
             log.info("菜单删除成功，删除人={}", user.getUserName());
-        }else {
+        } else {
             throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
         }
         return i > 0;
@@ -115,19 +115,18 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         pageNo = Integer.valueOf(map.get("pageNo"));
-        size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("pasizegeNo"));
+        size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
 
         SUser user = getUserByToken(token);
 
         QueryWrapper<SMenu> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(!StringUtils.isEmpty(map.get("name")), "name", map.get("name"));
+        queryWrapper.like(!StringUtils.isEmpty(map.get("menuName")), "name", map.get("menuName"));
 
 
         Page<SMenu> page = new Page<>(pageNo, size);
 
         return roleMenuMapper.listMenu(user.getId());
     }
-
 
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
