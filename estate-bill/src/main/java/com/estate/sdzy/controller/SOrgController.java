@@ -55,8 +55,8 @@ public class SOrgController {
     }
 
     @PutMapping("/updateOrg")
-    public Result updateOrg(@RequestHeader("Authentication-Token") String token){
-        return ResultUtil.success(orgService.listOrg(token));
+    public Result updateOrg(@RequestHeader("Authentication-Token") String token,@RequestBody SOrg org){
+        return ResultUtil.success(orgService.saveOrUpdate(org,token));
     }
     @DeleteMapping("/{id}")
     public Result deleteOrg(@PathVariable("id") Long id,@RequestHeader("Authentication-Token") String token){
