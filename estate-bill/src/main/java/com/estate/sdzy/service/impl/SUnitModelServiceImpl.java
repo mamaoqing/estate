@@ -1,7 +1,6 @@
 package com.estate.sdzy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SUnitModel;
@@ -15,6 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,10 +32,11 @@ public class SUnitModelServiceImpl extends ServiceImpl<SUnitModelMapper, SUnitMo
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    public Page<SUnitModel> listUnitModel(Map<String,String> map, Integer pageNo, Integer size, String token){
-        Page<SUnitModel> page = new Page<>();
+    public List<SUnitModel> listUnitModel(Map<String,String> map, Integer pageNo, Integer size, String token){
+        //Page<SUnitModel> page = new Page<>();
         QueryWrapper<SUnitModel> queryWrapper = new QueryWrapper<>();
-        Page<SUnitModel> sUnitModelPage = sUnitModelMapper.selectPage(page, queryWrapper);
+        queryWrapper.eq("is_delete",0);
+        List<SUnitModel> sUnitModelPage = sUnitModelMapper.selectList(queryWrapper);
         return sUnitModelPage;
     }
 
@@ -78,7 +79,13 @@ public class SUnitModelServiceImpl extends ServiceImpl<SUnitModelMapper, SUnitMo
         if(StringUtils.isEmpty(id)){
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
-        int delete = sUnitModelMapper.deleteById(id);
+        SUnitModel sUnitModel = sUnitModelMapper.selectById(id);
+        sUnitModel.setModifiedBy(user.getId());
+        sUnitModel.setModifiedName(user.getUserName());
+        sUnitModel.setIsDelete(1);
+        QueryWrapper<SUnitModel> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",id);
+        int delete = sUnitModelMapper.update(sUnitModel,queryWrapper);
         if(delete>0){
             log.info("单元型号删除成功，删除人={}",user.getUserName());
         }else{
