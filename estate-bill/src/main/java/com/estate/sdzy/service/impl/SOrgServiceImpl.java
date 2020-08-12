@@ -6,6 +6,7 @@ import com.estate.sdzy.entity.SCompany;
 import com.estate.sdzy.entity.SOrg;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.mapper.SOrgMapper;
+import com.estate.sdzy.mapper.SUserMapper;
 import com.estate.sdzy.service.SOrgService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.util.BillExceptionEnum;
@@ -36,6 +37,8 @@ public class SOrgServiceImpl extends ServiceImpl<SOrgMapper, SOrg> implements SO
     private SOrgMapper orgMapper;
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+    @Autowired
+    private SUserMapper userMapper;
 
     @Override
     public boolean autoSave(SCompany company) {
@@ -103,6 +106,7 @@ public class SOrgServiceImpl extends ServiceImpl<SOrgMapper, SOrg> implements SO
             QueryWrapper<SOrg> orgQueryWrapper = new QueryWrapper<>();
             orgQueryWrapper.and(sOrgQueryWrapper -> sOrgQueryWrapper.like("parent_id_list",concat+",").or().eq("parent_id_list",concat));
             int delete = orgMapper.delete(orgQueryWrapper);
+            userMapper.updateUserOrg(id);
             log.info("组织机构{}删除成功，删除人{}",sOrg.getName(),user.getUserName());
             return true;
         }

@@ -27,4 +27,11 @@ public interface SUserMapper extends BaseMapper<SUser> {
     Page<SUser> listUser(Page page,@Param("ew") QueryWrapper queryWrapper);
 
     Page<SUser> findUserList(Page page,@Param("compId") String compId,@Param("userName")String userName,@Param("name")String name,@Param("parentIdList")String parentIdList);
+
+    /**
+     * 根据组织id将删除的组织人员组织置空
+     * @param id
+     * @return
+     */
+    Integer updateUserOrg(Long id);
 }

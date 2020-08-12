@@ -47,13 +47,13 @@ public class SMenuController extends BaseController {
         return ResultUtil.success(MenuUtil.getAllRoleMenu(sMenuService.listMenu(token)));
     }
     @GetMapping("/getMenuListUser")
-    public  Result getMenuListUser(@RequestHeader("Authentication-Token") String token){
-        return ResultUtil.success();
+    public  Result getMenuListUser(@RequestHeader("Authentication-Token") String token,HttpServletRequest request){
+        return ResultUtil.success(sMenuService.getMenuListUser(token,super.getParameterMap(request)));
     }
 
     @PostMapping("/insertMenu")
     @ResponseBody
-    public Result insertMenu(SMenu menu,@RequestHeader("Authentication-Token") String token) {
+    public Result insertMenu(@RequestBody SMenu menu,@RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(sMenuService.insertMenu(menu, token));
     }
 
@@ -66,7 +66,7 @@ public class SMenuController extends BaseController {
 
     @PutMapping("/updateMenu")
     @ResponseBody
-    public Result updateMenu(SMenu menu,@RequestHeader("Authentication-Token") String token) {
+    public Result updateMenu(@RequestBody SMenu menu,@RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(sMenuService.updateMenu(menu, token));
     }
 

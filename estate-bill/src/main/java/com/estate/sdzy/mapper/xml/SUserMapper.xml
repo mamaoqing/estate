@@ -32,4 +32,8 @@
             and (parent_id_list = #{parentIdList} or parent_id_list like CONCAT(#{parentIdList},'%'))
         </if>
     </select>
+
+    <update id="updateUserOrg" parameterType="java.lang.Long">
+        update s_user set org_id = null where org_id = #{id}
+    </update>
 </mapper>

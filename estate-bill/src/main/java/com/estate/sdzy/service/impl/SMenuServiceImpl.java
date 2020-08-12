@@ -91,11 +91,13 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         SUser user = getUserByToken(token);
+        SMenu menu = menuMapper.selectById(id);
+        String concat = menu.getParentIdList().concat(",").concat(id + "");
         // 删除菜单分为两部，1. 删除全部的子菜单如果子菜单存在子菜单继续删除。2.删除当前菜单。
         // 1.删除当前菜单的全部子菜单,父菜单列表之间用","隔开，需要在条件中添加','
-        QueryWrapper<SMenu> qw = new QueryWrapper<>();
-        qw.like("parent_id_list", id + ",");
-        menuMapper.delete(qw);
+        QueryWrapper<SMenu> sMenuQueryWrapper = new QueryWrapper<>();
+        sMenuQueryWrapper.and(queryWrapper -> queryWrapper.like("parent_id_list",concat.concat(",")).or().eq("parent_id_list",concat));
+        menuMapper.delete(sMenuQueryWrapper);
 
         // 2.删除当前菜单
         int i = menuMapper.deleteById(id);
@@ -108,7 +110,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
     }
 
     @Override
-    public List<SMenu> getMenuListUser(String token, Map<String, String> map) {
+    public Page<SMenu> getMenuListUser(String token, Map<String, String> map) {
         Integer pageNo;
         Integer size;
         if (StringUtils.isEmpty(map.get("pageNo"))) {
@@ -116,16 +118,12 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
         }
         pageNo = Integer.valueOf(map.get("pageNo"));
         size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
-
         SUser user = getUserByToken(token);
-
         QueryWrapper<SMenu> queryWrapper = new QueryWrapper<>();
         queryWrapper.like(!StringUtils.isEmpty(map.get("menuName")), "name", map.get("menuName"));
-
-
         Page<SMenu> page = new Page<>(pageNo, size);
 
-        return roleMenuMapper.listMenu(user.getId());
+        return menuMapper.selectPage(page,queryWrapper);
     }
 
     private SUser getUserByToken(String token) {

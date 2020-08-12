@@ -1,5 +1,6 @@
 package com.estate.sdzy.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.entity.SMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -44,5 +45,5 @@ public interface SMenuService extends IService<SMenu> {
      */
     boolean deleteMenuById(Long id,String token);
 
-    List<SMenu> getMenuListUser(String token, Map<String,String> map);
+    Page<SMenu> getMenuListUser(String token, Map<String,String> map);
 }
