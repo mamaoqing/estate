@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.estate.sdzy.mapper.RUnitMapper">
-
-    <select id="listUnitMap" parameterType="java.lang.Long" resultType="java.util.Map">
-        select id,name,'unit'type,'r_building'parenttable,building_id parentid from r_unit where building_id=#{id} and is_delete = 0
-    </select>
-</mapper>
