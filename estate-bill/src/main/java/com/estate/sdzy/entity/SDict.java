@@ -66,7 +66,7 @@ public class SDict implements Serializable {
 
     private String modifiedName;
 
-    @TableLogic
+    //@TableLogic
     private Integer isDelete;
 
 
