@@ -77,7 +77,14 @@ public class SDictServiceImpl extends ServiceImpl<SDictMapper, SDict> implements
         if(StringUtils.isEmpty(id)){
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
-        int delete = sDictMapper.deleteById(id);
+        SDict sDict = sDictMapper.selectById(id);
+        sDict.setModifiedBy(user.getId());
+        sDict.setModifiedName(user.getUserName());
+        sDict.setIsDelete(1);
+        QueryWrapper<SDict> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",id);
+        int delete = sDictMapper.update(sDict,queryWrapper);
+        //int delete = sDictMapper.deleteById(id);
         if(delete>0){
             log.info("字典删除成功，删除人={}",user.getUserName());
         }else{
@@ -97,6 +104,7 @@ public class SDictServiceImpl extends ServiceImpl<SDictMapper, SDict> implements
         Page<SDict> page = new Page<>(pageNo,size);
         QueryWrapper<SDict> queryWrapper = new QueryWrapper<>();
         // 下面放查询条件
+        queryWrapper.eq("is_delete",0);
         // 名称查询
         if(!StringUtils.isEmpty(map.get("name"))){
             queryWrapper.like("name",map.get("name"));
@@ -112,6 +120,7 @@ public class SDictServiceImpl extends ServiceImpl<SDictMapper, SDict> implements
         Page<SDict> page = new Page<>();
         QueryWrapper<SDict> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("name",name);
+        queryWrapper.eq("state","在用");
         Page<SDict> sSDictPage = sDictMapper.selectPage(page, queryWrapper);
         return sSDictPage.getRecords().size()>0;
     }
