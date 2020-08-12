@@ -5,7 +5,6 @@ import com.estate.sdzy.service.SUnitModelService;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,15 +14,16 @@ import javax.servlet.http.HttpServletRequest;
  * @author mzc
  * @since 2020-08-11
  */
-@Controller("/sdzy/sUintModel")
 @RestController
+@RequestMapping("/sdzy/sUnitModel")
+//@Controller
 public class SUintModelController extends BaseController{
 
     @Autowired
     private SUnitModelService sUnitModelService;
 
-    @GetMapping("/listUintModel")
-    public Result listUintModel(Integer pageNo, Integer size, HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
+    @GetMapping("/listUnitModel")
+    public Result listUnitModel(Integer pageNo, Integer size, HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(sUnitModelService.listUnitModel(super.getParameterMap(request),pageNo,size,token));
     }
 
@@ -32,13 +32,13 @@ public class SUintModelController extends BaseController{
         return ResultUtil.success(sUnitModelService.getById(id));
     }
 
-    @PutMapping("/updateUintModel")
-    public Result updateUintModel(SUnitModel sUintModel, @RequestHeader("Authentication-Token") String token) {
+    @PutMapping("/updateUnitModel")
+    public Result updateUintModel(@RequestBody SUnitModel sUintModel, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(sUnitModelService.saveOrUpdate(sUintModel, token));
 
     }
 
-    @PostMapping("/insertRole")
+    @PostMapping("/insertUnitModel")
     public Result insertUintModel(@RequestBody SUnitModel sUintModel, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(sUnitModelService.save(sUintModel,token));
     }
