@@ -68,4 +68,6 @@ public class RCity implements Serializable {
 
     @TableField(exist = false)
     private List<RDistrict> childList;
+    @TableField(exist = false)
+    private String name;
 }
