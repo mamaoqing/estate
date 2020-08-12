@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @program: estate-parent
@@ -24,13 +25,12 @@ public class MyStartupRunner {
     private RProvinceService rProvinceService;
 
     @PostConstruct
-     public void test() {
+     public void run() {
         if (StringUtils.isEmpty(redisUtil.get("District_Number"))){
-            List list = rProvinceService.listProvince();
-            System.out.println(list);
+            redisUtil.set("District_Number",rProvinceService.getProvinceChild(),30, TimeUnit.DAYS);
         }else {
             System.out.println("=============================================");
-            System.out.println("");
+            System.out.println("行政区信息已加载，无需重复加载！！！！");
             System.out.println("=============================================");
         }
     }
