@@ -1,9 +1,6 @@
 package com.estate.sdzy.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -58,4 +55,7 @@ public class SUnitModel implements Serializable {
     private Long modifiedBy;
 
     private String modifiedName;
+
+
+    private Integer isDelete;
 }
