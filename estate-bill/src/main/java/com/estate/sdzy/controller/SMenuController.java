@@ -27,7 +27,7 @@ import java.util.List;
  * @author mq
  * @since 2020-07-23
  */
-@Controller
+@RestController
 @RequestMapping("/sdzy/sMenu")
 @Slf4j
 public class SMenuController extends BaseController {
@@ -45,6 +45,10 @@ public class SMenuController extends BaseController {
     @ResponseBody
     public Result getMenuList(@RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(MenuUtil.getAllRoleMenu(sMenuService.listMenu(token)));
+    }
+    @GetMapping("/getMenuListUser")
+    public  Result getMenuListUser(@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success();
     }
 
     @PostMapping("/insertMenu")

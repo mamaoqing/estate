@@ -1,6 +1,7 @@
 package com.estate.sdzy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SMenu;
 import com.estate.sdzy.entity.SRoleMenu;
@@ -19,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -104,6 +106,28 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
         }
         return i > 0;
     }
+
+    @Override
+    public List<SMenu> getMenuListUser(String token, Map<String, String> map) {
+        Integer pageNo;
+        Integer size;
+        if (StringUtils.isEmpty(map.get("pageNo"))) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        pageNo = Integer.valueOf(map.get("pageNo"));
+        size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("pasizegeNo"));
+
+        SUser user = getUserByToken(token);
+
+        QueryWrapper<SMenu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(!StringUtils.isEmpty(map.get("name")), "name", map.get("name"));
+
+
+        Page<SMenu> page = new Page<>(pageNo, size);
+
+        return roleMenuMapper.listMenu(user.getId());
+    }
+
 
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);

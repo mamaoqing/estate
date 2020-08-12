@@ -66,6 +66,8 @@ public class RDistrict implements Serializable {
     private Long modifiedBy;
 
     private String modifiedName;
+    @TableField(exist = false)
+    private String name;
 
 
 }

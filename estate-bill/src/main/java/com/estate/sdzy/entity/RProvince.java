@@ -60,4 +60,6 @@ public class RProvince implements Serializable {
 
     @TableField(exist = false)
     private List<RCity> childList;
+    @TableField(exist = false)
+    private String name;
 }
