@@ -77,18 +77,32 @@ public class SDictItemServiceImpl extends ServiceImpl<SDictItemMapper, SDictItem
     }
 
     @Override
-    public boolean removeById(Long id, String token) {
+    public String removeById(Long id, String token) {
+        String str = "";
         SUser user = getUserByToken(token);
         if(StringUtils.isEmpty(id)){
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
-        int delete = sDictItemMapper.deleteById(id);
-        if(delete>0){
-            log.info("字典删除成功，删除人={}",user.getUserName());
+        if(user.getCompId()==0){
+            SDictItem sDictItem = sDictItemMapper.selectById(id);
+            sDictItem.setModifiedBy(user.getId());
+            sDictItem.setModifiedName(user.getUserName());
+            sDictItem.setIsDelete(1);
+            QueryWrapper<SDictItem> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("id",id);
+            int delete = sDictItemMapper.update(sDictItem,queryWrapper);
+            //int delete = sDictItemMapper.deleteById(id);
+            if(delete>0){
+                log.info("字典项删除成功，删除人={}",user.getUserName());
+                str = "字典项删除成功";
+            }else{
+                str = "字典项删除失败";
+                throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+            }
         }else{
-            throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+            str = "您没有权限，无法删除，请联系管理员";
         }
-        return delete>0;
+        return str;
     }
 
     @Override
@@ -145,7 +159,7 @@ public class SDictItemServiceImpl extends ServiceImpl<SDictItemMapper, SDictItem
         if(getUserByToken(token).getCompId()!=0){
             compId = String.valueOf(getUserByToken(token).getCompId());
         }
-        System.out.println((pageNo-1)*size+"----------"+size);
+        //System.out.println((pageNo-1)*size+"----------"+size);
         List<SDictItem> dictItemList = sDictItemMapper.findDictItemList(map.get("name"),map.get("dictId"), (pageNo-1)*size, size,compId);
         for (int i = 0; i <dictItemList.size() ; i++) {
             System.out.print(dictItemList.get(i).getId());
