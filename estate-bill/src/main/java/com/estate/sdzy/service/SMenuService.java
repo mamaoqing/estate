@@ -4,6 +4,7 @@ import com.estate.sdzy.entity.SMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -42,4 +43,6 @@ public interface SMenuService extends IService<SMenu> {
      * @return
      */
     boolean deleteMenuById(Long id,String token);
+
+    List<SMenu> getMenuListUser(String token, Map<String,String> map);
 }

@@ -59,5 +59,7 @@ public class RProvince implements Serializable {
     private String modifiedName;
 
     @TableField(exist = false)
-    private List<RCity> cityList;
+    private List<RCity> childList;
+    @TableField(exist = false)
+    private String name;
 }

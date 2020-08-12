@@ -116,12 +116,16 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
         QueryWrapper<SUserRole> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("role_id",id);//根据角色id查询用户角色中间表
         int userRole = userRoleMapper.delete(queryWrapper);
-
+        if(userRole<=0){
+            throw new BillException(BillExceptionEnum.SET_USER_ROLE_ERROR);
+        }
         //同时物理删除用户菜单表
         QueryWrapper<SRoleMenu> queryRoleMenu = new QueryWrapper<>();
         queryRoleMenu.eq("role_id",id);//根据角色id查询角色菜单中间表
         int roleMenu = roleMenuMapper.delete(queryRoleMenu);
-
+        if(roleMenu<=0){
+            throw new BillException(BillExceptionEnum.SET_ROLE_MENU_ERROR);
+        }
         if(delete > 0){
             log.info("角色删除成功，删除人={}",user.getUserName());
         }else{

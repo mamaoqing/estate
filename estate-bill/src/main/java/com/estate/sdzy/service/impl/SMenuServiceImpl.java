@@ -1,6 +1,7 @@
 package com.estate.sdzy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SMenu;
 import com.estate.sdzy.entity.SRoleMenu;
@@ -19,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -50,7 +52,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
     @Override
     public boolean insertMenu(SMenu menu, String token) {
         SUser user = getUserByToken(token);
-        if(null == menu){
+        if (null == menu) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         menu.setCreatedBy(user.getId());
@@ -59,7 +61,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
         int insert = menuMapper.insert(menu);
         if (insert > 0) {
             log.info("添加菜单信息成功，添加人={}", user.getName());
-        }else{
+        } else {
             throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
         }
         return insert > 0;
@@ -67,7 +69,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
 
     @Override
     public boolean updateMenu(SMenu menu, String token) {
-        if(null == menu){
+        if (null == menu) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         SUser user = getUserByToken(token);
@@ -76,7 +78,7 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
         int i = menuMapper.updateById(menu);
         if (i > 0) {
             log.info("修改菜单信息成功，修改人={}", user.getName());
-        }else {
+        } else {
             throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
         }
         return i > 0;
@@ -99,10 +101,31 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
         int i = menuMapper.deleteById(id);
         if (i > 0) {
             log.info("菜单删除成功，删除人={}", user.getUserName());
-        }else {
+        } else {
             throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
         }
         return i > 0;
+    }
+
+    @Override
+    public List<SMenu> getMenuListUser(String token, Map<String, String> map) {
+        Integer pageNo;
+        Integer size;
+        if (StringUtils.isEmpty(map.get("pageNo"))) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        pageNo = Integer.valueOf(map.get("pageNo"));
+        size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
+
+        SUser user = getUserByToken(token);
+
+        QueryWrapper<SMenu> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(!StringUtils.isEmpty(map.get("menuName")), "name", map.get("menuName"));
+
+
+        Page<SMenu> page = new Page<>(pageNo, size);
+
+        return roleMenuMapper.listMenu(user.getId());
     }
 
     private SUser getUserByToken(String token) {

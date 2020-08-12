@@ -2,6 +2,7 @@ package com.estate.sdzy.controller;
 
 
 import com.estate.sdzy.service.RProvinceService;
+import com.estate.util.RedisUtil;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ public class RProvinceController {
 
     @Autowired
     private RProvinceService provinceService;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @GetMapping("/{id}")
     public Result getProvinces(@PathVariable("id") Long code){
@@ -35,6 +38,16 @@ public class RProvinceController {
     @GetMapping("/get")
     public Result getProvince(){
         return ResultUtil.success(provinceService.listProvince());
+    }
+
+    @GetMapping("/getProvinceChild")
+    public Result getProvinceChild(){
+        return ResultUtil.success(provinceService.getProvinceChild());
+    }
+
+    @GetMapping("/getProvinceChildFromRedis")
+    public Result getProvinceChildFromRedis(){
+        return ResultUtil.success(redisUtil.get("District_Number"));
     }
 
 }
