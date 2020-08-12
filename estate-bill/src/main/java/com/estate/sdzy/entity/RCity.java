@@ -67,5 +67,5 @@ public class RCity implements Serializable {
     private String modifiedName;
 
     @TableField(exist = false)
-    private List<RDistrict> districtList;
+    private List<RDistrict> childList;
 }

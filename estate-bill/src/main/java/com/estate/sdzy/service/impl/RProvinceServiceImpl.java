@@ -50,11 +50,11 @@ public class RProvinceServiceImpl extends ServiceImpl<RProvinceMapper, RProvince
             // 区的列表
             List<RDistrict> rDistricts = districtMapper.selectList(districtQueryWrapper);
 
-            city.setDistrictList(rDistricts);
+            city.setChildList(rDistricts);
             cityList.add(city);
         }
 
-        province.setCityList(cityList);
+        province.setChildList(cityList);
 
         return cityList;
     }
@@ -81,11 +81,11 @@ public class RProvinceServiceImpl extends ServiceImpl<RProvinceMapper, RProvince
                 // 区的列表
                 List<RDistrict> rDistricts = districtMapper.selectList(districtQueryWrapper);
 
-                city.setDistrictList(rDistricts);
+                city.setChildList(rDistricts);
                 cityList.add(city);
             }
 
-            province.setCityList(cityList);
+            province.setChildList(cityList);
             result.add(province);
         }
 
