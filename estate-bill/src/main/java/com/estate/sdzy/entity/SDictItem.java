@@ -79,7 +79,7 @@ public class SDictItem implements Serializable {
 
     private String modifiedName;
 
-    @TableLogic
+    //@TableLogic
     private Integer isDelete;
 
 
