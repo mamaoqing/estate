@@ -16,7 +16,9 @@
             and dict.name like CONCAT('%',#{dictId},'%')
         </if>
         ORDER BY dict_id DESC,order_by ASC
+        <if test="pageNo!=null and size!=null">
          limit #{pageNo},#{size}
+        </if>
     </select>
 
 </mapper>
