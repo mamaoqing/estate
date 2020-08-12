@@ -17,7 +17,7 @@ import java.util.Map;
 public interface SDictItemService extends IService<SDictItem> {
     boolean save(SDictItem sDictItem, String token);
     boolean update(SDictItem sDictItem,String token);
-    boolean removeById(Long id,String token);
+    String removeById(Long id,String token);
     List<SDictItem> listDictItem(Map<String,String> map, Integer pageNo, Integer size,String token);
     List<SDictItem> findDictItemList(Map<String,String> map, Integer pageNo, Integer size,String token);
     boolean checkDictItemName(String dictId,String name,String token);
