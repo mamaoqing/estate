@@ -27,4 +27,6 @@ public interface RProvinceService extends IService<RProvince> {
      * @return
      */
     List<RProvince> listProvince();
+
+    List<RProvince> getProvinceChild();
 }

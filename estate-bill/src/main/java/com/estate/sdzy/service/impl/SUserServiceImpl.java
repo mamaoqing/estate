@@ -72,27 +72,12 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
             concat = sOrg.getParentIdList().concat(",").concat(orgId);
         }
 
-
-
         // 区分超级管理员跟普通用户
         Page<SUser> page = new Page<>(pageNo, size);
-        Page<SUser> userList = userMapper.findUserList(page, map.get("compId"), map.get("userName"), map.get("name"), concat);
-//        QueryWrapper<SUser> userServiceQueryWrapper = new QueryWrapper<>();
-//        // 拼接条件
-//        userServiceQueryWrapper.eq(!StringUtils.isEmpty(map.get("orgId")), "aa.org_id", map.get("orgId"));
-//        String finalConcat = concat;
-//        userServiceQueryWrapper.eq(!StringUtils.isEmpty(map.get("compId")), "aa.comp_id", map.get("compId"))
-//                .eq(!StringUtils.isEmpty(map.get("userName")), "aa.user_name", map.get("userName"))
-//                .eq(!StringUtils.isEmpty(map.get("name")), "aa.name", map.get("name"));
-//        log.info("当前角色为->{}",user.getType());
-//        if ("超级管理员".equals(user.getType())) {
-//            sUserPage = userMapper.listUser(page,userServiceQueryWrapper);
-////            sUserPage = userMapper.selectPage(page, userServiceQueryWrapper);
-//        } else {
-//            userServiceQueryWrapper.eq("aa.comp_id", user.getCompId());
-//            sUserPage = userMapper.listUser(page,userServiceQueryWrapper);
-//        }
-        return userList;
+        if(!"超级管理员".equals(user.getType())){
+            map.put("compId",user.getCompId()+"");
+        }
+        return userMapper.findUserList(page, map.get("compId"), map.get("userName"), map.get("name"), concat);
     }
 
     @Override

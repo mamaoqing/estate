@@ -37,5 +37,9 @@ public class RProvinceController {
         return ResultUtil.success(provinceService.listProvince());
     }
 
+    @GetMapping("/getProvinceChild")
+    public Result getProvinceChild(){
+        return ResultUtil.success(provinceService.getProvinceChild());
+    }
 }
 

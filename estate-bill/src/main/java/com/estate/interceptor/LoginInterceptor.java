@@ -45,7 +45,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             if (user != null) {
                 log.info("用户{},登录成功。记录时间{}", user.getUserName(), new Date());
                 // 重置过期时间。单位秒
-                redisTemplate.expire(token, 50 * 60, TimeUnit.SECONDS);
+                redisTemplate.expire(token, 50 * 60 * 60 , TimeUnit.SECONDS);
                 return true;
             }
 //            response.sendRedirect(request.getContextPath());
