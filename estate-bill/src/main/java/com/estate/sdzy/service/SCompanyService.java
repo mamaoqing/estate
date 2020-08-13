@@ -25,5 +25,7 @@ public interface SCompanyService extends IService<SCompany> {
 
     Page<SCompany> listCompany(Map<String,String> map, Integer pageNo, Integer size);
 
+    Page<SCompany> getListCompany(Map<String,String> map, String token);
+
     List<SCompany> getComp(String token);
 }
