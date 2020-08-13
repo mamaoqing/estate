@@ -117,13 +117,13 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
                     // 查询楼栋下面单元信息
                     List<Map<String, Object>> unitMapList = unitMapper.listUnitMap((Long) buildMap.get("id"));
                     List<Map<String, Object>> unitMaps = new ArrayList<>();
-                    for(Map<String, Object> unitMap : unitMapList){
+                    for (Map<String, Object> unitMap : unitMapList) {
                         // 查询单元下的房间信息
                         List<Map<String, Object>> roomMapList = rRoomMapper.listRoomMap((Long) unitMap.get("id"));
-                        unitMap.put("childList",roomMapList);
+                        unitMap.put("childList", roomMapList);
                         unitMaps.add(unitMap);
                     }
-                    buildMap.put("childList",unitMaps);
+                    buildMap.put("childList", unitMaps);
                     buildMaps.add(buildMap);
                 }
                 // 将楼栋信息存放进上级map
@@ -214,6 +214,41 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         Page<RRoom> rRoomPage = rRoomMapper.selectPage(page, roomQueryWrapper);
 
         return rRoomPage;
+    }
+
+    @Override
+    public Page<RCommunity> listCommunity(String token, Map<String, String> map) {
+        Integer pageNo;
+        Integer size;
+        if (StringUtils.isEmpty(map.get("pageNo"))) {
+            throw new BillException(BillExceptionEnum.PAGENO_MISS_ERROR);
+        }
+        pageNo = Integer.valueOf(map.get("pageNo"));
+        size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
+        SUser user = getUserByToken(token);
+        log.info("当前角色为->{}", user.getType());
+        QueryWrapper<RCommunity> queryWrapper = new QueryWrapper<>();
+        // 如果不是超级管理员，只能查看自己公司的社区。
+        if (!"超级管理员".equals(user.getType())) {
+            queryWrapper.eq("comp_id", user.getCompId());
+        } else {
+            // 物业公司
+            queryWrapper.in("comp_id", new ArrayList<>());
+        }
+        // 省
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("")), "province", map.get(""));
+        // 市
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("")), "city", map.get(""));
+        // 县
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("")), "district", map.get(""));
+        // 社区名称
+        queryWrapper.like(!StringUtils.isEmpty(map.get("")), "name", map.get(""));
+
+        // 用途类型
+        queryWrapper.eq("usable_type", map.get(""));
+        Page<RCommunity> page = new Page<>(pageNo, size);
+
+        return communityMapper.selectPage(page, queryWrapper);
     }
 
 
