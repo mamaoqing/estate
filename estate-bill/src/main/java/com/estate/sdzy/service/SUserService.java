@@ -55,4 +55,6 @@ public interface SUserService extends IService<SUser> {
      * @return
      */
     boolean reSetPassword(String password,Long id,String token,String oldPassword);
+
+    boolean reSetPassword(String password,String token,Long id);
 }

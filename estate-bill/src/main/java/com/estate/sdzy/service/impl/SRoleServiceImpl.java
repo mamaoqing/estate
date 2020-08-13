@@ -58,6 +58,9 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
     private SMenuService sMenuService;
 
     @Autowired
+    private SMenuMapper sMenuMapper;
+
+    @Autowired
     private SUserCommService sUserCommServic;
 
     @Override
@@ -147,32 +150,17 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
         // 下面放查询条件
         // 名称查询
         List<String> compId = new ArrayList<>();
-        if(!StringUtils.isEmpty(map.get("compId"))){
-            QueryWrapper<SCompany> queryWrapperCompany = new QueryWrapper<>();
-            queryWrapperCompany.like("name",map.get("compId"));
-            if(getUserByToken(token).getCompId()==0){//开发公司
-                //开发公司不对公司做限制
-            }else{
-                //物业公司只看自己的所在公司和公共的角色
-                queryWrapperCompany.in("id", Arrays.asList(getUserByToken(token).getCompId(),"0"));
-            }
-            List<SCompany> sCompanies = companyMapper.selectList(queryWrapperCompany);
-
-            if(sCompanies.size()>0){
-                for (SCompany company:sCompanies){
-                    compId.add(String.valueOf(company.getId()));
-                }
-
-            }
+        if(!StringUtils.isEmpty(map.get("compId"))){//如果有公司的查询条件则只看查询的公司角色信息
+            compId.add(map.get("compId"));
         }else{
-            if(getUserByToken(token).getCompId()==0){//开发公司
+            if(getUserByToken(token).getCompId()==0){//没有公司的查询条件，开发公司看全部
 
-            }else{
+            }else{//没有公司的查询条件，物业公司看自己和公共的角色
                 compId.add(String.valueOf(getUserByToken(token).getCompId()));
                 compId.add("0");
             }
         }
-        System.out.println(map.get("name"));
+        //System.out.println(map.get("name"));
         List<SRole> sSRolePage = roleMapper.findRoleList(map.get("name"),map.get("type"),compId,map.get("compId"),(pageNo-1)*size, size);
         //Page<SRole> sSRolePage = roleMapper.selectPage(page, queryWrapper);
         return sSRolePage;
@@ -196,29 +184,12 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
         if(!StringUtils.isEmpty(map.get("type"))){
             queryWrapper.like("type",map.get("type"));
         }
-        if(!StringUtils.isEmpty(map.get("compId"))){
-            QueryWrapper<SCompany> queryWrapperCompany = new QueryWrapper<>();
-            queryWrapperCompany.like("name",map.get("compId"));
-            if(getUserByToken(token).getCompId()==0){//开发公司
-                //开发公司不对公司做限制
-            }else{
-                //物业公司只看自己的所在公司和公共的角色
-                queryWrapperCompany.in("id", Arrays.asList(getUserByToken(token).getCompId(),"0"));
-            }
-            List<SCompany> sCompanies = companyMapper.selectList(queryWrapperCompany);
-            List<String> compId = new ArrayList<>();
-            if(sCompanies.size()>0){
-                for (SCompany company:sCompanies){
-                    compId.add(String.valueOf(company.getId()));
-                }
-                queryWrapper.in("comp_id",compId);
-            }else{
-                queryWrapper.eq("comp_id","");
-            }
+        if(!StringUtils.isEmpty(map.get("compId"))){//如果有公司的查询条件则只看查询的公司角色信息
+            queryWrapper.eq("comp_id", map.get("compId"));
         }else{
-            if(getUserByToken(token).getCompId()==0){//开发公司
+            if(getUserByToken(token).getCompId()==0){//没有公司的查询条件，开发公司看全部
 
-            }else{
+            }else{//没有公司的查询条件，物业公司只看自己的所在公司和公共的角色
                 queryWrapper.in("comp_id", Arrays.asList(getUserByToken(token).getCompId(),"0"));
             }
         }
@@ -292,19 +263,13 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
     public List<SMenu> listRoleMenu(String token) {
         SUser user = getUserByToken(token);
         //根据用户的社区id去查所有的授权角色，然后根据授权角色获取授权菜单列表
-        List<Long> userCommIdList = sUserCommServic.getUserCommIdList(token);
-        List<Long> roleIds = new ArrayList<>();
-        for(Long userCommId:userCommIdList){
-            List<RCommRoleAgreement> rCommRoleAgreements = rCommRoleAgreementService.getRCommRoleAgreements(String.valueOf(user.getCompId()));
-            for(RCommRoleAgreement rCommRoleAgreement:rCommRoleAgreements){
-                //需要判断是否在允许的时间范围内
-                if(isEffectiveDate(new Date(),rCommRoleAgreement.getBeginDate(),rCommRoleAgreement.getEndDate())){
-                    roleIds.add(rCommRoleAgreement.getRoleId());
-                }
-            }
+        if(user.getCompId()==0){//如果是开发公司则显示所有的菜单
+            QueryWrapper<SMenu> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("is_delete",0);
+            return MenuUtil.getAllRoleMenu(sMenuService.list(queryWrapper));
+        }else{//如果不是开发公司，根据用户的社区id去查所有的授权角色，然后根据授权角色获取授权菜单列表
+            return MenuUtil.getAllRoleMenu(sMenuMapper.findMenuList(user.getCompId()));
         }
-        List<SMenu> allRoleMenu = MenuUtil.getAllRoleMenu(sMenuService.listMenu(token));
-        return allRoleMenu;
     }
 
     public boolean isEffectiveDate(Date nowTime, Date startTime, Date endTime) {

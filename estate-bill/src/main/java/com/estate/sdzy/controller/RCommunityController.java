@@ -39,24 +39,20 @@ public class RCommunityController extends BaseController {
     private SUserCommService userCommService;
 
     @PostMapping("/insertCommunity")
-    public Result insertCommunity(RCommunity community, @RequestHeader("Authentication-Token") String token) {
+    public Result insertCommunity(@RequestBody RCommunity community, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(communityService.save(community, token));
     }
 
     @GetMapping("/listCommunity")
-    public Result listCommunity(Integer pageNo, Integer size) {
-        if (StringUtils.isEmpty(pageNo)) {
-            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
-        }
-        if (StringUtils.isEmpty(size)) {
-            size = 10;
-        }
-        Page<RCommunity> page = new Page<>(pageNo, size);
-        return ResultUtil.success(communityService.page(page));
+    public Result listCommunity(@RequestHeader("Authentication-Token") String token,HttpServletRequest request) {
+        Page<RCommunity> rCommunityPage = communityService.listCommunity(token, super.getParameterMap(request));
+
+        System.out.println(rCommunityPage.getRecords().size());
+        return ResultUtil.success(rCommunityPage);
     }
 
     @PutMapping("/updateCommunity")
-    public Result updateCommunity(RCommunity community, @RequestHeader("Authentication-Token") String token) {
+    public Result updateCommunity(@RequestBody RCommunity community, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(communityService.saveOrUpdate(community, token));
     }
 
@@ -80,6 +76,11 @@ public class RCommunityController extends BaseController {
     public Result getCommunityById(HttpServletRequest request) {
         Map<String, String> map = super.getParameterMap(request);
         return ResultUtil.success(communityService.getRoomByMap(map));
+    }
+
+    @GetMapping("/getUsersComm")
+    public Result getUsersComm(@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(communityService.getUsersComm(token));
     }
 
 }

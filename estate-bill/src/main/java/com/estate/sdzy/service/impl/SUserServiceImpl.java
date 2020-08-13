@@ -76,6 +76,8 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         Page<SUser> page = new Page<>(pageNo, size);
         if(!"超级管理员".equals(user.getType())){
             map.put("compId",user.getCompId()+"");
+        }else{
+            map.put("compId",null);
         }
         return userMapper.findUserList(page, map.get("compId"), map.get("userName"), map.get("name"), concat);
     }
@@ -213,7 +215,6 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        System.out.println(s1 == s);
 
         if (!s.equals(s1)) {
             throw new BillException(BillExceptionEnum.RESET_PASSWORD_ERROR);
@@ -228,6 +229,25 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         } else {
             throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
         }
+    }
+
+    @Override
+    public boolean reSetPassword(String password,String token,Long id) {
+        SUser user = getUserByToken(token);
+        if (StringUtils.isEmpty(password)) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        SUser sUser = userMapper.selectById(id);
+        String psw = PasswdEncryption.encptyPasswd(password);
+        sUser.setModifiedName(user.getUserName());
+        sUser.setModifiedBy(user.getId());
+        sUser.setPassword(psw);
+        int i = userMapper.updateById(sUser);
+        if(i>0){
+            log.info("用户{}密码重置成功,操作人{}",sUser.getUserName(),user.getUserName());
+            return true;
+        }
+        throw new BillException(BillExceptionEnum.RESET_PASSWORD_ERROR_SYSTEM);
     }
 
     private SUser getUserByToken(String token) {

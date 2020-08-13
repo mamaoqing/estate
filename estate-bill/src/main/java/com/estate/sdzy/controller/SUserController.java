@@ -73,6 +73,12 @@ public class SUserController extends BaseController{
 
         return ResultUtil.success(userService.reSetPassword(newPassword,id,token,oldPassword));
     }
+    @PutMapping("/reSetPasswordAdmin")
+    @ResponseBody
+    public Result reSetPasswordAdmin(String password,Long id,@RequestHeader("Authentication-Token") String token){
+
+        return ResultUtil.success(userService.reSetPassword(password,token,id));
+    }
 
     @PostMapping("/setUserRole")
     @ResponseBody

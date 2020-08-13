@@ -1,8 +1,11 @@
 package com.estate.sdzy.mapper;
 
-import com.estate.sdzy.entity.SMenu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.estate.sdzy.entity.SMenu;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +18,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SMenuMapper extends BaseMapper<SMenu> {
 
+    List<SMenu> findMenuList(@Param("compId")Long name);
 }
