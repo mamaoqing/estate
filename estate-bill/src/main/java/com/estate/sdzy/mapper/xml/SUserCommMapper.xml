@@ -3,7 +3,7 @@
 <mapper namespace="com.estate.sdzy.mapper.SUserCommMapper">
     <select id="listUserComm" resultType="java.util.Map">
         select id,name, case when id in(select comm_id from s_user_comm aa where aa.user_id=#{userId})
-        then true else false end flag from r_community where comp_id = #{compId}
+        then true else false end flag from r_community where comp_id = #{compId} and is_delete = 0
     </select>
     <select id="listAllUserComm" resultType="java.util.Map" parameterType="java.lang.Long">
         select id,name from r_community where comp_id = #{compId}

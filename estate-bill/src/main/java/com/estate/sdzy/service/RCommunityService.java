@@ -39,4 +39,7 @@ public interface RCommunityService extends IService<RCommunity> {
     Page<RRoom> getRoomByMap(Map<String,String> map);
 
     Page<RCommunity> listCommunity(String token,Map<String,String> map);
+
+
+    List<RCommunity> getUsersComm(String token);
 }
