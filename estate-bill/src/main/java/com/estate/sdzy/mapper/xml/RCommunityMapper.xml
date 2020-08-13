@@ -10,4 +10,15 @@
 
         ${ew.customSqlSegment}
     </select>
+
+    <select id="getUsersComm" parameterType="java.lang.Long" resultType="com.estate.sdzy.entity.RCommunity">
+        SELECT
+	*
+FROM
+	r_community
+	LEFT JOIN s_user_comm ON r_community.id = s_user_comm.comm_id
+WHERE
+	s_user_comm.user_id = #{id}
+	AND r_community.is_delete = 0
+    </select>
 </mapper>
