@@ -1,14 +1,13 @@
 package com.estate.sdzy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.enums.SqlLike;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SCompany;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.mapper.SCompanyMapper;
 import com.estate.sdzy.service.SCompanyService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +107,19 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
         queryWrapper.eq(!StringUtils.isEmpty(map.get("district")), "district", map.get("district"));
 
 
+        Page<SCompany> sCompanyPage = companyMapper.selectPage(page, queryWrapper);
+        return sCompanyPage;
+    }
+
+    @Override
+    public Page<SCompany> getListCompany(Map<String, String> map, String token) {
+        SUser use = getUserByToken(token);
+        Page<SCompany> page = new Page<>();
+        QueryWrapper<SCompany> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("district")), "district", map.get("district"));
+        if(!(use.getCompId()==0)){
+            queryWrapper.eq("id",use.getCompId());
+        }
         Page<SCompany> sCompanyPage = companyMapper.selectPage(page, queryWrapper);
         return sCompanyPage;
     }

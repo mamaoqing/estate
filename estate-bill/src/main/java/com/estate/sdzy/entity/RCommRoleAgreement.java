@@ -43,6 +43,10 @@ public class RCommRoleAgreement implements Serializable {
      * 角色id
      */
     private Long roleId;
+    /**
+     * 编号
+     */
+    private String no;
 
     private Date beginDate;
 

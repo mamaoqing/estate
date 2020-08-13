@@ -45,7 +45,7 @@ public class SDictItemServiceImpl extends ServiceImpl<SDictItemMapper, SDictItem
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         sDictItem.setCompId(user.getCompId());
-        sDictItem.setState("0");
+        //sDictItem.setState("0");
         sDictItem.setCreatedBy(user.getId());
         sDictItem.setCreatedName(user.getUserName());
         sDictItem.setModifiedBy(user.getId());

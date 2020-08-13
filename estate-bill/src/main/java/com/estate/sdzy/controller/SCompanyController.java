@@ -1,26 +1,17 @@
 package com.estate.sdzy.controller;
 
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.estate.exception.BillException;
 import com.estate.sdzy.entity.SCompany;
 import com.estate.sdzy.service.SCompanyService;
 import com.estate.sdzy.service.SOrgService;
 import com.estate.sdzy.service.SUserService;
-import com.estate.util.BillExceptionEnum;
-import com.estate.util.Pinyin;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -67,6 +58,12 @@ public class SCompanyController extends BaseController{
     @GetMapping("/listCompany")
     public Result listCompany(Integer pageNo, Integer size, HttpServletRequest request) {
         return ResultUtil.success(companyService.listCompany(super.getParameterMap(request),pageNo,size));
+
+    }
+
+    @GetMapping("/getListCompany")
+    public Result getListCompany(HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(companyService.getListCompany(super.getParameterMap(request),token));
 
     }
 
