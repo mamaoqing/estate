@@ -158,4 +158,7 @@ public class RCommunity implements Serializable {
 
     @TableField(exist = false)
     private List<RCommArea> childList;
+
+    @TableField(exist = false)
+    private String compName;
 }

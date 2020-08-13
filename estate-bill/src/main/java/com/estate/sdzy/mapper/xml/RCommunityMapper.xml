@@ -5,4 +5,9 @@
     <select id="communityMap" resultType="java.util.HashMap" parameterType="java.lang.Long">
         select id,name,'community' type,''parenttype ,''parentid from r_community where id = #{id} and is_delete=0
     </select>
+    <select id="listCommunity" resultType="com.estate.sdzy.entity.RCommunity">
+        SELECT * FROM r_community_company
+
+        ${ew.customSqlSegment}
+    </select>
 </mapper>

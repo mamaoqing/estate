@@ -8,16 +8,14 @@ import com.estate.sdzy.mapper.*;
 import com.estate.sdzy.service.RCommunityService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.util.BillExceptionEnum;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -29,22 +27,19 @@ import java.util.Map;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor(onConstructor = @_(@Autowired))
 public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommunity> implements RCommunityService {
 
-    @Autowired
-    private RCommunityMapper communityMapper;
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RCommunityMapper communityMapper;
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    @Autowired
-    private RCommAreaMapper commAreaMapper;
-    @Autowired
-    private RBuildingMapper buildingMapper;
+    private final RCommAreaMapper commAreaMapper;
+    private final RBuildingMapper buildingMapper;
 
-    @Autowired
-    private RUnitMapper unitMapper;
-    @Autowired
-    private RRoomMapper rRoomMapper;
+    private final RUnitMapper unitMapper;
+    private final RRoomMapper rRoomMapper;
+
+    private final SUserCommMapper userCommMapper;
 
     @Override
     public boolean save(RCommunity community, String token) {
@@ -58,10 +53,9 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         int insert = communityMapper.insert(community);
         if (insert > 0) {
             log.info("社区信息添加成功，添加人={}", user.getUserName());
-        } else {
-            throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+            return true;
         }
-        return insert > 0;
+        throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
     }
 
     @Override
@@ -72,14 +66,14 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         }
         community.setCreatedBy(user.getId());
         community.setCreatedName(user.getUserName());
-
+        community.setModifiedBy(user.getId());
+        community.setModifiedName(user.getUserName());
         int update = communityMapper.updateById(community);
         if (update > 0) {
             log.info("社区信息修改成功，修改人={}", user.getUserName());
-        } else {
-            throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+            return true;
         }
-        return update > 0;
+        throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
     }
 
     @Override
@@ -91,10 +85,10 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         int delete = communityMapper.deleteById(id);
         if (delete > 0) {
             log.info("社区信息删除成功，删除人={}", user.getUserName());
-        } else {
-            throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+            return true;
         }
-        return delete > 0;
+        throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+
     }
 
     @Override
@@ -134,52 +128,7 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
             // 将社区分区集合放入社区map
             map.put("childList", areaMaps);
             communityList.add(map);
-//            RCommunity community = communityMapper.selectById(l);
-//            QueryWrapper<RCommArea> areaQueryWrapper = new QueryWrapper<>();
-//            areaQueryWrapper.eq("comm_id", community.getId());
-//            // 查询社区下的分区，比如南区北区
-//            List<RCommArea> commAreas = commAreaMapper.selectList(areaQueryWrapper);
-//            List<RCommArea> commAreaList = new ArrayList<>();
-//            for (RCommArea x : commAreas) {
-//                // 查询分区下的楼栋信息，#1，#2，#3，#4
-//                QueryWrapper<RBuilding> buildQueryWrapper = new QueryWrapper<>();
-//                buildQueryWrapper.eq("comm_area_id", x.getId());
-//                List<RBuilding> rBuildings = buildingMapper.selectList(buildQueryWrapper);
-//                List<RBuilding> buildingList = new ArrayList<>();
-//                for (RBuilding b : rBuildings) {
-//                    QueryWrapper<RUnit> unitQueryWrapper = new QueryWrapper<>();
-//                    unitQueryWrapper.eq("building_id", b.getId());
-//                    // 根据楼栋id查询单元 一单元，二单元
-//                    List<RUnit> rUnits = unitMapper.selectList(unitQueryWrapper);
-//                    List<RUnit> unitList = new ArrayList<>();
-//                    for (RUnit r : rUnits) {
-//                        QueryWrapper<RRoom> rRoomQueryWrapper = new QueryWrapper<>();
-//                        rRoomQueryWrapper.eq("unit_id", r.getId());
-//                        // 根据单元信息查询所有房间
-//                        List<RRoom> rRooms = rRoomMapper.selectList(rRoomQueryWrapper);
-//                        r.setChildList(rRooms);
-//                        unitList.add(r);
-//                    }
-//
-//                    b.setChildList(unitList);
-//                    buildingList.add(b);
-//                }
-////                QueryWrapper<RUnit> unitQueryWrapper = new QueryWrapper<>();
-////                unitQueryWrapper.eq("building_id",building.getId());
-////                // 查询单元信息
-////                List<RUnit> rUnits = unitMapper.selectList(unitQueryWrapper);
-////                building.setUnitList(rUnits);
-//                x.setChildList(buildingList);
-//                commAreaList.add(x);
-//            }
-//
-//            community.setChildList(commAreaList);
-//            communityList.add(community);
         }
-
-        /**
-         * name id type childList
-         */
 
         return communityList;
     }
@@ -194,23 +143,13 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
 
         QueryWrapper<RRoom> roomQueryWrapper = new QueryWrapper<>();
-        if (!StringUtils.isEmpty(map.get("commId"))) {
-            roomQueryWrapper.eq("comm_id", map.get("commId"));
-        }
-        if (!StringUtils.isEmpty(map.get("commAreaId"))) {
-            roomQueryWrapper.eq("comm_area_id", map.get("commId"));
-        }
-        if (!StringUtils.isEmpty(map.get("buildingId"))) {
-            roomQueryWrapper.eq("building_id", map.get("commId"));
-        }
-        if (!StringUtils.isEmpty(map.get("unitId"))) {
-            roomQueryWrapper.eq("unit_id", map.get("commId"));
-        }
-        if (!StringUtils.isEmpty(map.get("roomNo"))) {
-            roomQueryWrapper.eq("room_no", map.get("roomNo"));
-        }
+        roomQueryWrapper.eq(!StringUtils.isEmpty(map.get("commId")), "comm_id", map.get("commId"));
+        roomQueryWrapper.eq(!StringUtils.isEmpty(map.get("commAreaId")), "comm_area_id", map.get("commId"));
+        roomQueryWrapper.eq(!StringUtils.isEmpty(map.get("buildingId")), "building_id", map.get("commId"));
+        roomQueryWrapper.eq(!StringUtils.isEmpty(map.get("unitId")), "unit_id", map.get("commId"));
+        roomQueryWrapper.eq(!StringUtils.isEmpty(map.get("roomNo")), "room_no", map.get("roomNo"));
+
         Page<RRoom> page = new Page<>(pageNo, size);
-//        rRoomMapper.selectPage();
         Page<RRoom> rRoomPage = rRoomMapper.selectPage(page, roomQueryWrapper);
 
         return rRoomPage;
@@ -228,27 +167,28 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         SUser user = getUserByToken(token);
         log.info("当前角色为->{}", user.getType());
         QueryWrapper<RCommunity> queryWrapper = new QueryWrapper<>();
-        // 如果不是超级管理员，只能查看自己公司的社区。
+        // 如果不是超级管理员，只能查看自己公司的社区。并且只能是自己有权限的社区。
         if (!"超级管理员".equals(user.getType())) {
             queryWrapper.eq("comp_id", user.getCompId());
+            // 添加只能查看存在权限的社区条件
+            queryWrapper.in("id",userCommMapper.commIds(user.getId()));
         } else {
             // 物业公司
-            queryWrapper.in("comp_id", new ArrayList<>());
+//            queryWrapper.in("comp_id", new ArrayList<>());
         }
         // 省
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("")), "province", map.get(""));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("province")), "province", map.get("province"));
         // 市
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("")), "city", map.get(""));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("city")), "city", map.get("city"));
         // 县
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("")), "district", map.get(""));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("district")), "district", map.get("district"));
         // 社区名称
-        queryWrapper.like(!StringUtils.isEmpty(map.get("")), "name", map.get(""));
-
+        queryWrapper.like(!StringUtils.isEmpty(map.get("name")), "name", map.get("name"));
         // 用途类型
-        queryWrapper.eq("usable_type", map.get(""));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("usableType")), "usable_type", map.get("usableType"));
         Page<RCommunity> page = new Page<>(pageNo, size);
-
-        return communityMapper.selectPage(page, queryWrapper);
+        Page<RCommunity> rCommunityPage = communityMapper.listCommunity(page, queryWrapper);
+        return rCommunityPage;
     }
 
 

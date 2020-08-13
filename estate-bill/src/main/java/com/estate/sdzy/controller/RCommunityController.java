@@ -44,15 +44,11 @@ public class RCommunityController extends BaseController {
     }
 
     @GetMapping("/listCommunity")
-    public Result listCommunity(Integer pageNo, Integer size) {
-        if (StringUtils.isEmpty(pageNo)) {
-            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
-        }
-        if (StringUtils.isEmpty(size)) {
-            size = 10;
-        }
-        Page<RCommunity> page = new Page<>(pageNo, size);
-        return ResultUtil.success(communityService.page(page));
+    public Result listCommunity(@RequestHeader("Authentication-Token") String token,HttpServletRequest request) {
+        Page<RCommunity> rCommunityPage = communityService.listCommunity(token, super.getParameterMap(request));
+
+        System.out.println(rCommunityPage.getRecords().size());
+        return ResultUtil.success(rCommunityPage);
     }
 
     @PutMapping("/updateCommunity")
