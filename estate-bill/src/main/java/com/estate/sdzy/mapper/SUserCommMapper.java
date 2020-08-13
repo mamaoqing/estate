@@ -24,4 +24,6 @@ public interface SUserCommMapper extends BaseMapper<SUserComm> {
     List<Map<String,String>> listAllUserComm(@Param("compId") Long compId);
 
     List<SUserComm> listCommUser(@Param("userId")Long userId);
+
+    String commIds(@Param("id") Long userId);
 }

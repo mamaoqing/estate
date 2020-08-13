@@ -11,4 +11,7 @@
     <select id="listCommUser" parameterType="java.lang.Long" resultType="com.estate.sdzy.entity.SUserComm">
         select * from s_user_comm where user_id=#{userId}
     </select>
+    <select id="commIds" resultType="java.lang.String" parameterType="java.lang.Long">
+        select GROUP_CONCAT(comm_id) as ids from s_user_comm where user_id=#{id}
+    </select>
 </mapper>
