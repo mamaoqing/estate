@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Configuration
-@MapperScan("com.estate.sdzy.mapper")
+@MapperScan("com.estate.sdzy.*.mapper")
 public class MybatisPlusConfig {
 
 

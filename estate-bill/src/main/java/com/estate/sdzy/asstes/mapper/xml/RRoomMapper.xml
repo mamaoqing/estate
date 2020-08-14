@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.estate.sdzy.asstes.mapper.RRoomMapper">
+    <select id="listRoomMap" resultType="java.util.Map" parameterType="java.lang.Long">
+        select id,room_no name,'room'type,'r_unit'parenttable,unit_id parentid from r_room where unit_id=#{id} and is_delete = 0
+    </select>
+</mapper>
