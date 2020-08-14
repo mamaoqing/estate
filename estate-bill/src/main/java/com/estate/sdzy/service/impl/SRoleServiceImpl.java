@@ -174,7 +174,7 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
         if(StringUtils.isEmpty(size)){
             size = 10;
         }
-        Page<SRole> page = new Page<>(pageNo,size);
+        Page<SRole> page = new Page<>();
         QueryWrapper<SRole> queryWrapper = new QueryWrapper<>();
         // 下面放查询条件
         // 名称查询
