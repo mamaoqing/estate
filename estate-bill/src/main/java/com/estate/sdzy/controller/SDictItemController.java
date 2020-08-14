@@ -61,6 +61,11 @@ public class SDictItemController extends BaseController{
 
     }
 
+    @GetMapping("/getDictItemByDictId/{dictId}")
+    public Result getDictItemByDictId(@PathVariable("dictId") Long dictId) {
+        return ResultUtil.success(sDictItemService.getDictItemByDictId(dictId));
+    }
+
     @GetMapping("/{id}")
     public Result getDictItem(@PathVariable("id") Long id) {
         return ResultUtil.success(sDictItemService.getById(id));

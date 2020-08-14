@@ -7,6 +7,7 @@ import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,8 +43,7 @@ public class LoginController {
     }
 
     @GetMapping("/logout")
-    public Result logout(String token){
-
+    public Result logout(@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(loginService.logout(token));
     }
 

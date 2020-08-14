@@ -58,8 +58,7 @@ public class LoginServiceImpl implements LoginService {
         if(null == o){
             return true;
         }
-        redisUtil.delete(token);
-        return true;
+        return  redisUtil.delete(token);
     }
 
 

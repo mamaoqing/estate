@@ -108,7 +108,8 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         for (Long l : list) {
             // 查询社区的map
             Map<String, Object> map = communityMapper.communityMap(l);
-            if (map.isEmpty()) {
+            if (null == map) {
+                System.out.println(l);
                 return null;
             }
             // 查询社区下的分区map
@@ -140,6 +141,7 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
             map.put("childList", areaMaps);
             communityList.add(map);
         }
+        System.out.println(communityList);
 
         return communityList;
     }
@@ -182,23 +184,30 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         if (!"超级管理员".equals(user.getType())) {
             queryWrapper.eq("comp_id", user.getCompId());
             // 添加只能查看存在权限的社区条件
+            queryWrapper.eq("is_delete", 0);
 //            queryWrapper.in("id",userCommMapper.commIds(user.getId()));
             queryWrapper.inSql("id","select  c.comm_id from s_user_comm c where r_community_company.id=c.comm_id and c.user_id= "+user.getId());
         } else {
             // 物业公司
 //            queryWrapper.in("comp_id", new ArrayList<>());
+            // 删除状态
+            queryWrapper.eq(StringUtils.isEmpty(map.get("isDelete")), "is_delete", 0);
+            queryWrapper.eq(!StringUtils.isEmpty(map.get("isDelete")), "is_delete", map.get("isDelete"));
+            queryWrapper.eq(!StringUtils.isEmpty(map.get("compId")),"comp_id", map.get("compId"));
         }
         // 省
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("province")), "province", map.get("province"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("provinceId")), "province_id", map.get("provinceId"));
         // 市
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("city")), "city", map.get("city"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("cityId")), "city_id", map.get("cityId"));
         // 县
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("district")), "district", map.get("district"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("districtId")), "district_id", map.get("districtId"));
         // 社区名称
         queryWrapper.like(!StringUtils.isEmpty(map.get("name")), "name", map.get("name"));
+
         // 用途类型
         queryWrapper.eq(!StringUtils.isEmpty(map.get("usableType")), "usable_type", map.get("usableType"));
         Page<RCommunity> page = new Page<>(pageNo, size);
+
         Page<RCommunity> rCommunityPage = communityMapper.listCommunity(page, queryWrapper);
         return rCommunityPage;
     }

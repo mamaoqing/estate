@@ -1,7 +1,5 @@
 package com.estate.sdzy.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.estate.exception.BillException;
 import com.estate.sdzy.entity.RCommArea;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.mapper.RBuildingMapper;
@@ -33,6 +31,7 @@ import java.util.Map;
 @Slf4j
 @Service
 public class RCommAreaServiceImpl extends ServiceImpl<RCommAreaMapper, RCommArea> implements RCommAreaService {
+
     @Autowired
     private RCommAreaMapper commAreaMapper;
     @Autowired
@@ -44,6 +43,13 @@ public class RCommAreaServiceImpl extends ServiceImpl<RCommAreaMapper, RCommArea
     @Autowired
     private RRoomMapper rRoomMapper;
 
+    @Override
+    public List<RCommArea> getCommArea(Long commId) {
+        QueryWrapper<RCommArea> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comm_id",commId);
+        List<RCommArea> rCommAreas = commAreaMapper.selectList(queryWrapper);
+        return rCommAreas;
+    }
     public List<Map<String,Object>> getAllArea(Long id){
         return commAreaMapper.listCommAreaMap(id);
     }
@@ -110,4 +116,10 @@ public class RCommAreaServiceImpl extends ServiceImpl<RCommAreaMapper, RCommArea
         throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
     }
 
+
+    @Override
+    public RCommArea getCommAreaContent(Long id) {
+        RCommArea rCommArea = commAreaMapper.selectById(id);
+        return rCommArea;
+    }
 }
