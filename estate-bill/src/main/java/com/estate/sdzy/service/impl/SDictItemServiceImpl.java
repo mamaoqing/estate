@@ -192,6 +192,14 @@ public class SDictItemServiceImpl extends ServiceImpl<SDictItemMapper, SDictItem
         return sDictItemPage.getRecords().size()>0;
     }
 
+    @Override
+    public List<SDictItem> getDictItemByDictId(Long dictId) {
+        QueryWrapper<SDictItem> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("dict_id",dictId);
+        List<SDictItem> sDictItems = sDictItemMapper.selectList(queryWrapper);
+        return sDictItems;
+    }
+
 
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
