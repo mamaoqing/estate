@@ -2,6 +2,7 @@ package com.estate.sdzy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.estate.exception.BillException;
+import com.estate.sdzy.entity.RCommunity;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.entity.SUserComm;
 import com.estate.sdzy.mapper.SUserCommMapper;
@@ -93,6 +94,11 @@ public class SUserCommServiceImpl extends ServiceImpl<SUserCommMapper, SUserComm
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         return userCommMapper.listUserComm(id,compId);
+    }
+
+    @Override
+    public List<RCommunity> getUserComm(Long userId, Long compId) {
+        return userCommMapper.getUserComm(userId,compId);
     }
 
 
