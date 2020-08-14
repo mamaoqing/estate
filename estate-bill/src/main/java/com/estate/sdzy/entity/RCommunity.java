@@ -92,11 +92,6 @@ public class RCommunity implements Serializable {
     private Date deliverDate;
 
     /**
-     * 服务类型
-     */
-    private String serviceType;
-
-    /**
      * 用途类型
      */
     private String usableType;
