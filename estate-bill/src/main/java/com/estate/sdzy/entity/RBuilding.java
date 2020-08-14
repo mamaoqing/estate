@@ -1,6 +1,7 @@
 package com.estate.sdzy.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -33,28 +34,37 @@ public class RBuilding implements Serializable {
     private String name;
 
     /**
+     * 编号
+     */
+    private String no;
+    /**
      * 物业公司
      */
     private Long compId;
-
+    @TableField(exist = false)
+    private String compName;
     /**
      * 社区id
      */
     private Long commId;
-
+    @TableField(exist = false)
+    private String commName;
     /**
      * 区id
      */
     private Long commAreaId;
-
+    @TableField(exist = false)
+    private String commAreaName;
     /**
      * 建造日期
      */
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date buildedDate;
 
     /**
      * 交付日期
      */
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date deliverDate;
 
     /**
@@ -78,6 +88,7 @@ public class RBuilding implements Serializable {
     private String remark;
 
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date createdAt;
 
     private Long createdBy;
@@ -85,6 +96,7 @@ public class RBuilding implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date modifiedAt;
 
     private Long modifiedBy;
@@ -97,6 +109,8 @@ public class RBuilding implements Serializable {
      * 建筑类型
      */
     private String type;
+    @TableField(exist = false)
+    private String dictName;
 
     @TableField(exist = false)
     private List<RUnit> childList;
