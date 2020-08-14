@@ -3,6 +3,7 @@ package com.estate.sdzy.mapper;
 import com.estate.sdzy.entity.RCommArea;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.Map;
  * @author mq
  * @since 2020-07-28
  */
+@Repository
 public interface RCommAreaMapper extends BaseMapper<RCommArea> {
 
     /**
@@ -23,4 +25,5 @@ public interface RCommAreaMapper extends BaseMapper<RCommArea> {
      * @return
      */
     List<Map<String,Object>> listCommAreaMap(@Param("id") Long commId);
+    List<Map<String,Object>> listAreaMapByUserId(@Param("userId") Long userId);
 }

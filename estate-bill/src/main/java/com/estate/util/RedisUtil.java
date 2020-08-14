@@ -31,6 +31,11 @@ public class RedisUtil {
         redisTemplate.opsForValue().set(key,value,seconds, TimeUnit.SECONDS);
     }
 
+    //设置key-value 加时长
+    public void set(String key,Object value,int seconds,TimeUnit tm){
+        redisTemplate.opsForValue().set(key,value,seconds, tm);
+    }
+
     //获取value
     public Object get(String key){
         return redisTemplate.opsForValue().get(key);

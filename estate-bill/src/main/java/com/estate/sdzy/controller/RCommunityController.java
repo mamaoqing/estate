@@ -39,7 +39,7 @@ public class RCommunityController extends BaseController {
     private SUserCommService userCommService;
 
     @PostMapping("/insertCommunity")
-    public Result insertCommunity(RCommunity community, @RequestHeader("Authentication-Token") String token) {
+    public Result insertCommunity(@RequestBody RCommunity community, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(communityService.save(community, token));
     }
 
@@ -52,7 +52,7 @@ public class RCommunityController extends BaseController {
     }
 
     @PutMapping("/updateCommunity")
-    public Result updateCommunity(RCommunity community, @RequestHeader("Authentication-Token") String token) {
+    public Result updateCommunity(@RequestBody RCommunity community, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(communityService.saveOrUpdate(community, token));
     }
 
@@ -76,6 +76,11 @@ public class RCommunityController extends BaseController {
     public Result getCommunityById(HttpServletRequest request) {
         Map<String, String> map = super.getParameterMap(request);
         return ResultUtil.success(communityService.getRoomByMap(map));
+    }
+
+    @GetMapping("/getUsersComm")
+    public Result getUsersComm(@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(communityService.getUsersComm(token));
     }
 
 }
