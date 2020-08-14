@@ -1,10 +1,15 @@
 package com.estate.sdzy.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.sdzy.entity.RCommArea;
 import com.estate.sdzy.mapper.RCommAreaMapper;
 import com.estate.sdzy.service.RCommAreaService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -16,15 +21,15 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class RCommAreaServiceImpl extends ServiceImpl<RCommAreaMapper, RCommArea> implements RCommAreaService {
+
     @Autowired
     private RCommAreaMapper commAreaMapper;
-
 
     @Override
     public List<RCommArea> getCommArea(Long commId) {
         QueryWrapper<RCommArea> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("comm_id",commId);
-        List<RCommArea> rCommAreas = rCommAreaMapper.selectList(queryWrapper);
+        List<RCommArea> rCommAreas = commAreaMapper.selectList(queryWrapper);
         return rCommAreas;
     }
     public List<Map<String,Object>> getAllArea(Long id){
@@ -34,5 +39,11 @@ public class RCommAreaServiceImpl extends ServiceImpl<RCommAreaMapper, RCommArea
     @Override
     public List<Map<String, Object>> listAreaMapByUserId(Long userId) {
         return commAreaMapper.listAreaMapByUserId(userId);
+    }
+
+    @Override
+    public RCommArea getCommAreaContent(Long id) {
+        RCommArea rCommArea = commAreaMapper.selectById(id);
+        return rCommArea;
     }
 }
