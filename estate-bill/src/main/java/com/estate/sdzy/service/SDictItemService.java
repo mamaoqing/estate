@@ -21,4 +21,5 @@ public interface SDictItemService extends IService<SDictItem> {
     List<SDictItem> listDictItem(Map<String,String> map, Integer pageNo, Integer size,String token);
     List<SDictItem> findDictItemList(Map<String,String> map, Integer pageNo, Integer size,String token);
     boolean checkDictItemName(String dictId,String name,String token);
+    List<SDictItem> getDictItemByDictId(Long dictId);
 }
