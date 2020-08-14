@@ -1,7 +1,8 @@
 package com.estate.sdzy.service;
 
-import com.estate.sdzy.entity.SUserComm;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.estate.sdzy.entity.RCommunity;
+import com.estate.sdzy.entity.SUserComm;
 
 import java.util.List;
 import java.util.Map;
@@ -39,4 +40,13 @@ public interface SUserCommService extends IService<SUserComm> {
      * @return 返回用户权限的集合
      */
     List<Map<String,String>> listUserComm(Long compId,Long id);
+
+    /**
+     * 通过用户id，查询出用户有权限的社区
+     * @auth mzc
+     * @param userId
+     * @param compId
+     * @return
+     */
+    List<RCommunity> getUserComm(Long userId, Long compId);
 }
