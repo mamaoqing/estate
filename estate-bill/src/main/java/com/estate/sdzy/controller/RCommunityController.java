@@ -83,5 +83,10 @@ public class RCommunityController extends BaseController {
         return ResultUtil.success(communityService.getUsersComm(token));
     }
 
+    @GetMapping("/getAllComm")
+    public Result getAllComm(@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(communityService.getAllComm(token));
+    }
+
 }
 

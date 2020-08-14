@@ -217,6 +217,14 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         return communityMapper.getUsersComm(getUserByToken(token).getId());
     }
 
+    @Override
+    public List<RCommunity> getAllComm(String token) {
+        SUser user = getUserByToken(token);
+        if (!"超级管理员".equals(user.getType())) {
+            return communityMapper.getUsersComm(getUserByToken(token).getId());
+        }
+        return communityMapper.selectList(null);
+    }
 
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);

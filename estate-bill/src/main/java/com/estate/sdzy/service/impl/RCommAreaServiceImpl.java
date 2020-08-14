@@ -1,5 +1,8 @@
 package com.estate.sdzy.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.RCommArea;
 import com.estate.sdzy.entity.SUser;
 import com.estate.sdzy.mapper.RBuildingMapper;
@@ -55,8 +58,18 @@ public class RCommAreaServiceImpl extends ServiceImpl<RCommAreaMapper, RCommArea
     }
 
     @Override
-    public List<RCommArea> listAreaMapByUserId(Map map) {
-        return commAreaMapper.listAreaMapByUserId(map);
+    public List<RCommArea> listAreaByUserId(Map map) {
+        return commAreaMapper.listAreaByUserId(map);
+    }
+
+    @Override
+    public Integer selectPageTotal(Map map) {
+        return commAreaMapper.selectPageTotal(map);
+    }
+
+    @Override
+    public List<Map<String, Object>> listAreaMapByUserId(Long userId) {
+        return commAreaMapper.listAreaMapByUserId(userId);
     }
 
     @Override

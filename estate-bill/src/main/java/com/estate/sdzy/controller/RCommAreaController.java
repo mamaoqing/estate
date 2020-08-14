@@ -41,11 +41,12 @@ public class RCommAreaController {
     private SCompanyService companyService;
 
     @RequestMapping("/getAllAreaByUserId")
-    public Result getAllArea(@RequestBody RCommArea commArea,@Param("pageNo") Long pageNo,@Param("size") Long size, @RequestHeader("Authentication-Token") String token) {
+    public Result getAllArea(@RequestParam("commId") Long commId,@RequestParam("pageNo") Long pageNo,@RequestParam("size") Long size, @RequestHeader("Authentication-Token") String token) {
         SUser user = (SUser) redisUtil.get(token);
         Map<String,Object> map = new HashMap<>();
-        if(!StringUtils.isEmpty(commArea.getCommId())){
-            map.put("commId",commArea.getCommId());
+        Map<String,Object> dataMap = new HashMap<>();
+        if(!StringUtils.isEmpty(commId)){
+            map.put("commId",commId);
         }
 
         if(!StringUtils.isEmpty(pageNo)&&!StringUtils.isEmpty(size)){
@@ -54,14 +55,14 @@ public class RCommAreaController {
             map.put("size",size);
         }
         if (!"超级管理员".equals(user.getType())) {
-            // 添加只能查看存在权限的社区条件
+            // 添加只能查看存在权限
             if(!StringUtils.isEmpty(user)){
                 map.put("userId",user.getId());
             }
         }
-
-        System.out.println(map);
-        return ResultUtil.success(commAreaService.listAreaMapByUserId(map));
+        dataMap.put("data",commAreaService.listAreaByUserId(map));
+        dataMap.put("pageTotal",commAreaService.selectPageTotal(map));
+        return ResultUtil.success(dataMap);
     }
 
     @RequestMapping("/insertArea")
@@ -90,5 +91,6 @@ public class RCommAreaController {
     public Result update(@RequestBody RCommArea commArea,@RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(commAreaService.update(commArea, token));
     }
+
 }
 

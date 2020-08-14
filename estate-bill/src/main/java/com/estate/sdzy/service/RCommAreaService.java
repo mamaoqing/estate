@@ -18,7 +18,8 @@ public interface RCommAreaService extends IService<RCommArea> {
 
     List<RCommArea> getCommArea(Long commId);
     List<Map<String,Object>> getAllArea(Long id);
-    List<RCommArea> listAreaMapByUserId(Map map);
+    List<RCommArea> listAreaByUserId(Map map);
+    Integer selectPageTotal(Map map);
     List<Map<String,Object>> listAreaMapByUserId(Long userId);
     RCommArea getCommAreaContent(Long id);
     boolean insert(RCommArea commArea,String token);
