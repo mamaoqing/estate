@@ -5,6 +5,10 @@
         select id,name, case when id in(select comm_id from s_user_comm aa where aa.user_id=#{userId})
         then true else false end flag from r_community where comp_id = #{compId}
     </select>
+    <select id="getUserComm" resultType="com.estate.sdzy.entity.RCommunity">
+        select r.id,r.name from r_community r,s_user_comm u where u.user_id=#{userId} and r.comp_id=#{comId}
+        and r.id=u.comm_id and r.is_delete='0'
+    </select>
     <select id="listAllUserComm" resultType="java.util.Map" parameterType="java.lang.Long">
         select id,name from r_community where comp_id = #{compId}
     </select>
