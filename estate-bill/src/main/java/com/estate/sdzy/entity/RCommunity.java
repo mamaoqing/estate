@@ -96,6 +96,11 @@ public class RCommunity implements Serializable {
      */
     private String usableType;
 
+    @TableField(exist = false)
+    private Long usableTypeId;
+    @TableField(exist = false)
+    private Long stateId;
+
     /**
      * 状态
      */
