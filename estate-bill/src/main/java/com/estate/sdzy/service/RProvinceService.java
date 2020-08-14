@@ -1,6 +1,7 @@
 package com.estate.sdzy.service;
 
 import com.estate.sdzy.entity.RCity;
+import com.estate.sdzy.entity.RDistrict;
 import com.estate.sdzy.entity.RProvince;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -29,4 +30,7 @@ public interface RProvinceService extends IService<RProvince> {
     List<RProvince> listProvince();
 
     List<RProvince> getProvinceChild();
+
+    List<RCity> getCityList(Long id);
+    List<RDistrict> getDistList(Long id);
 }

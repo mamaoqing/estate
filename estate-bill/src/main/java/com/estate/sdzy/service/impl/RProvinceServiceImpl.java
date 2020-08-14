@@ -1,6 +1,7 @@
 package com.estate.sdzy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.estate.exception.BillException;
 import com.estate.sdzy.entity.RCity;
 import com.estate.sdzy.entity.RDistrict;
 import com.estate.sdzy.entity.RProvince;
@@ -9,8 +10,10 @@ import com.estate.sdzy.mapper.RDistrictMapper;
 import com.estate.sdzy.mapper.RProvinceMapper;
 import com.estate.sdzy.service.RProvinceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.util.BillExceptionEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,5 +102,24 @@ public class RProvinceServiceImpl extends ServiceImpl<RProvinceMapper, RProvince
         return result;
     }
 
+    @Override
+    public List<RCity> getCityList(Long id) {
+        if (StringUtils.isEmpty(id)) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        QueryWrapper<RCity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("province_id",id);
 
+        return cityMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public List<RDistrict> getDistList(Long id) {
+        if (StringUtils.isEmpty(id)) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        QueryWrapper<RDistrict> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("city_id",id);
+        return districtMapper.selectList(queryWrapper);
+    }
 }
