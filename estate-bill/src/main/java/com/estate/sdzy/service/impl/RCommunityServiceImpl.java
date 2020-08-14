@@ -108,7 +108,8 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         for (Long l : list) {
             // 查询社区的map
             Map<String, Object> map = communityMapper.communityMap(l);
-            if (map.isEmpty()) {
+            if (null == map) {
+                System.out.println(l);
                 return null;
             }
             // 查询社区下的分区map
@@ -140,6 +141,7 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
             map.put("childList", areaMaps);
             communityList.add(map);
         }
+        System.out.println(communityList);
 
         return communityList;
     }
@@ -194,11 +196,11 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
             queryWrapper.eq(!StringUtils.isEmpty(map.get("compId")),"comp_id", map.get("compId"));
         }
         // 省
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("province")), "province", map.get("province"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("provinceId")), "province_id", map.get("provinceId"));
         // 市
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("city")), "city", map.get("city"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("cityId")), "city_id", map.get("cityId"));
         // 县
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("district")), "district", map.get("district"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("districtId")), "district_id", map.get("districtId"));
         // 社区名称
         queryWrapper.like(!StringUtils.isEmpty(map.get("name")), "name", map.get("name"));
 

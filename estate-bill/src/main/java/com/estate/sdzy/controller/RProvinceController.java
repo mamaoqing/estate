@@ -50,5 +50,15 @@ public class RProvinceController {
         return ResultUtil.success(redisUtil.get("District_Number"));
     }
 
+    @GetMapping("/getCityList")
+    public Result getCityList(Long provinceId){
+        return ResultUtil.success(provinceService.getCityList(provinceId));
+    }
+
+    @GetMapping("/getDistList")
+    public Result getDistList(Long cityId){
+        return ResultUtil.success(provinceService.getDistList(cityId));
+    }
+
 }
 
