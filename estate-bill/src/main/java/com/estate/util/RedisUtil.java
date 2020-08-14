@@ -42,8 +42,8 @@ public class RedisUtil {
     }
 
     //获取value转对象
-    public void delete(String key){
-        redisTemplate.delete(key);
+    public Boolean delete(String key){
+        return redisTemplate.delete(key);
     }
 
     public void expire(String key,int seconds) {
