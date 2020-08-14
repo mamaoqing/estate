@@ -25,5 +25,5 @@ public interface RCommAreaMapper extends BaseMapper<RCommArea> {
      * @return
      */
     List<Map<String,Object>> listCommAreaMap(@Param("id") Long commId);
-    List<Map<String,Object>> listAreaMapByUserId(@Param("userId") Long userId);
+    List<RCommArea> listAreaMapByUserId(Map map);
 }

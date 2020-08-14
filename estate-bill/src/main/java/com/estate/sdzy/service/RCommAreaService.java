@@ -2,6 +2,7 @@ package com.estate.sdzy.service;
 
 import com.estate.sdzy.entity.RCommArea;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.estate.util.Result;
 
 import java.util.List;
 import java.util.Map;
@@ -16,5 +17,8 @@ import java.util.Map;
  */
 public interface RCommAreaService extends IService<RCommArea> {
     List<Map<String,Object>> getAllArea(Long id);
-    List<Map<String,Object>> listAreaMapByUserId(Long userId);
+    List<RCommArea> listAreaMapByUserId(Map map);
+    boolean insert(RCommArea commArea,String token);
+    boolean delete(Long id,String token);
+    boolean update(RCommArea commArea,String token);
 }
