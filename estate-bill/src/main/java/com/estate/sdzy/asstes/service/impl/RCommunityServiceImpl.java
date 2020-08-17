@@ -220,6 +220,16 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         return communityMapper.getUsersComm(getUserByToken(token).getId());
     }
 
+    @Override
+    public List<RCommunity> getByCompId(long id) {
+        if(StringUtils.isEmpty(id)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        QueryWrapper<RCommunity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comp_id",id);
+        return communityMapper.selectList(queryWrapper);
+    }
+
 
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
