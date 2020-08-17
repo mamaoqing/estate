@@ -1,7 +1,7 @@
 package com.estate.sdzy.asstes.service;
 
-import com.estate.sdzy.asstes.entity.RUnit;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.estate.sdzy.asstes.entity.RUnit;
 
 /**
  * <p>
@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface RUnitService extends IService<RUnit> {
 
+    boolean save(RUnit rUnit, String token);
 }
