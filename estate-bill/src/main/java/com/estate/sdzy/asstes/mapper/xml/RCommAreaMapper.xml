@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.estate.sdzy.asstes.mapper.RCommAreaMapper">
+
+    <select id="listCommAreaMap" parameterType="java.lang.Long" resultType="java.util.Map">
+        select id,name,'commarea' type,'r_community'parenttable,comm_id parentid from r_comm_area WHERE comm_id = #{id} and is_delete=0
+    </select>
+    <select id="listAreaMapByUserId" parameterType="java.lang.Long" resultType="java.util.Map">
+	    SELECT
+			s_company.name as comp_name,
+			r_community.name as comm_name,
+            r_comm_area.*
+        FROM
+            r_comm_area
+            LEFT JOIN r_community ON r_comm_area.comm_id = r_community.id
+            LEFT JOIN s_user_comm ON r_community.id = s_user_comm.comm_id
+			LEFT JOIN s_company on r_community.comp_id = s_company.id
+        WHERE
+            s_user_comm.user_id = #{userId}
+        and r_comm_area.is_delete=0
+    </select>
+
+    <select id="listAreaByUserId" parameterType="java.util.Map" resultType="com.estate.sdzy.entity.RCommArea">
+        SELECT
+        s_company.name as comp_name,
+        r_community.name as comm_name,
+        r_comm_area.*
+        FROM
+        r_comm_area
+        LEFT JOIN r_community ON r_comm_area.comm_id = r_community.id
+        <if test="userId!=null">
+            LEFT JOIN s_user_comm ON r_community.id = s_user_comm.comm_id
+        </if>
+        LEFT JOIN s_company on r_community.comp_id = s_company.id
+        WHERE
+        1=1
+        <if test="userId!=null">
+            and s_user_comm.user_id = #{userId}
+        </if>
+
+        <if test="commId!=null">
+            and r_comm_area.comm_id = #{commId}
+        </if>
+        and r_comm_area.is_delete=0
+        <if test="pageNo!=null and size!=null">
+            LIMIT #{pageNo},#{size}
+        </if>
+    </select>
+
+    <select id="selectPageTotal" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count (r_comm_area.id)
+        FROM
+        r_comm_area
+        LEFT JOIN r_community ON r_comm_area.comm_id = r_community.id
+        <if test="userId!=null">
+            LEFT JOIN s_user_comm ON r_community.id = s_user_comm.comm_id
+        </if>
+        LEFT JOIN s_company on r_community.comp_id = s_company.id
+        WHERE
+        1=1
+        <if test="userId!=null">
+            and s_user_comm.user_id = #{userId}
+        </if>
+
+        <if test="commId!=null">
+            and r_comm_area.comm_id = #{commId}
+        </if>
+        and r_comm_area.is_delete=0
+    </select>
+
+</mapper>

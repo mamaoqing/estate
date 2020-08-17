@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.estate.sdzy.asstes.mapper.RCommunityMapper">
+
+    <select id="communityMap" resultType="java.util.HashMap" parameterType="java.lang.Long">
+        select id,name,'community' type,''parenttype ,''parentid from r_community where id = #{id} and is_delete=0
+    </select>
+    <select id="listCommunity" resultType="com.estate.sdzy.asstes.entity.RCommunity">
+        SELECT * FROM r_community_company
+
+        ${ew.customSqlSegment}
+    </select>
+
+    <select id="getUsersComm" parameterType="java.lang.Long" resultType="com.estate.sdzy.asstes.entity.RCommunity">
+        SELECT
+	*
+FROM
+	r_community
+	LEFT JOIN s_user_comm ON r_community.id = s_user_comm.comm_id
+WHERE
+	s_user_comm.user_id = #{id}
+	AND r_community.is_delete = 0
+    </select>
+</mapper>

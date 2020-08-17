@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.estate.sdzy.mapper.SMenuMapper">
-
-    <select id="findMenuList" resultType="com.estate.sdzy.entity.SMenu" >
-        select distinct m.* from s_menu m,r_comm_role_agreement a, s_role_menu r where m.is_delete='0' and m.id=r.menu_id and r.role_id=a.role_id
-        and a.comp_id=#{compId} and CURRENT_TIMESTAMP BETWEEN a.begin_date and a.end_date
-    </select>
-</mapper>

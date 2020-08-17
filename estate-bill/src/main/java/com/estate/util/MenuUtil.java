@@ -1,7 +1,7 @@
 package com.estate.util;
 
-import com.estate.sdzy.entity.SMenu;
-import com.estate.sdzy.entity.SOrg;
+import com.estate.sdzy.system.entity.SMenu;
+import com.estate.sdzy.system.entity.SOrg;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;

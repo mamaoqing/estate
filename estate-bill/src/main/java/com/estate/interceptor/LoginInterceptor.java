@@ -1,7 +1,7 @@
 package com.estate.interceptor;
 
-import com.estate.sdzy.entity.SUser;
-import com.estate.sdzy.service.SUserService;
+import com.estate.sdzy.system.entity.SUser;
+import com.estate.sdzy.system.service.SUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

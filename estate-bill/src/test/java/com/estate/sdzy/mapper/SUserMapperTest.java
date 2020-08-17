@@ -1,6 +1,7 @@
 package com.estate.sdzy.mapper;
 
-import com.estate.sdzy.entity.SUser;
+import com.estate.sdzy.system.entity.SUser;
+import com.estate.sdzy.system.mapper.SUserMapper;
 import com.estate.util.PasswdEncryption;
 import junit.framework.TestCase;
 import org.junit.Test;
