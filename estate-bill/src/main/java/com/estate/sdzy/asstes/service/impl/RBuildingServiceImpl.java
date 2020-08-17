@@ -4,18 +4,21 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.exception.BillException;
 import com.estate.sdzy.asstes.entity.RBuilding;
+import com.estate.sdzy.asstes.entity.RCommunity;
+import com.estate.sdzy.asstes.entity.RRoom;
+import com.estate.sdzy.asstes.entity.RUnit;
 import com.estate.sdzy.asstes.mapper.RBuildingMapper;
 import com.estate.sdzy.asstes.mapper.RCommunityMapper;
 import com.estate.sdzy.asstes.mapper.RRoomMapper;
 import com.estate.sdzy.asstes.mapper.RUnitMapper;
 import com.estate.sdzy.asstes.service.RBuildingService;
+import com.estate.sdzy.asstes.service.RRoomService;
+import com.estate.sdzy.asstes.service.RUnitService;
 import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.system.service.SUserCommService;
-import com.estate.sdzy.asstes.entity.RCommunity;
-import com.estate.sdzy.asstes.entity.RRoom;
-import com.estate.sdzy.asstes.entity.RUnit;
 import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -52,6 +55,12 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
 
     @Autowired
     private RUnitMapper rUnitMapper;
+
+    @Autowired
+    private RUnitService rUnitService;
+
+    @Autowired
+    private RRoomService rRoomService;
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
@@ -97,6 +106,34 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
 
         }
         return message;
+    }
+
+    @Override
+    @Transactional
+    public String copyBuildings(RBuilding rBuilding, String token) {
+        RBuilding rBuildingCopy = new RBuilding();
+        BeanUtils.copyProperties(rBuilding,rBuildingCopy);
+        boolean save = save(rBuildingCopy, token);
+        if(save){
+            //建筑的所有单元信息、该建筑的所有房间信息复制成一条新的建筑信息
+            List<RUnit> units = getUnits(rBuilding.getId());
+            for (RUnit rUnit:units){
+                RUnit rUnitCopy = new RUnit();
+                BeanUtils.copyProperties(rUnit,rUnitCopy);
+                rUnitCopy.setBuildingId(rBuildingCopy.getId());
+                rUnitService.save(rUnitCopy,token);
+            }
+            List<RRoom> rooms = getRooms(rBuilding.getId());
+            for (RRoom rRoom:rooms){
+                RRoom rRoomCopy = new RRoom();
+                BeanUtils.copyProperties(rRoom,rRoomCopy);
+                rRoomCopy.setBuildingId(rBuildingCopy.getId());
+                rRoomService.save(rRoomCopy,token);
+            }
+        }else{
+            return "建筑复制失败";
+        }
+        return "建筑复制成功";
     }
 
     public List<RRoom> getRooms(Long buildingId){
@@ -174,6 +211,7 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
         RBuilding rBuilding = rBuildingMapper.selectById(id);
         rBuilding.setModifiedBy(user.getId());
         rBuilding.setModifiedName(user.getUserName());
+        rBuilding.setIsDelete(1);
         QueryWrapper<RBuilding> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("id",id);
         int delete = rBuildingMapper.update(rBuilding,queryWrapper);
@@ -184,6 +222,7 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
             queryRoom.eq("id",room.getId());
             room.setModifiedBy(user.getId());
             room.setModifiedName(user.getUserName());
+            room.setIsDelete(1);
             rRoomMapper.update(room,queryRoom);
         }
         List<RUnit> rUnits = getUnits(id);
@@ -192,6 +231,7 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
             queryUnit.eq("id",unit.getId());
             unit.setModifiedBy(user.getId());
             unit.setModifiedName(user.getUserName());
+            unit.setIsDelete(1);
             rUnitMapper.update(unit,queryUnit);
         }
         //int delete = sDictMapper.deleteById(id);
@@ -204,20 +244,32 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
     }
 
     @Override
-    public List<RBuilding> list(Map<String, String> map, Integer pageNo, Integer size) {
+    public List<RBuilding> list(Map<String, String> map, Integer pageNo, Integer size,String token) {
         if(StringUtils.isEmpty(pageNo)){
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         if(StringUtils.isEmpty(size)){
             size = 10;
         }
-        List<RBuilding> listBuilding = rBuildingMapper.getListBuilding(map.get("name"),map.get("no"),map.get("type"),map.get("compName"),map.get("commName"),map.get("commAreaName") ,(pageNo-1)*size,size);
-        return listBuilding;
+        SUser user = getUserByToken(token);
+        if(user.getCompId()==0){
+            List<RBuilding> listBuilding = rBuildingMapper.getListBuilding(map.get("name"),map.get("no"),map.get("type"),map.get("compName"),map.get("commName"),map.get("commAreaName") ,(pageNo-1)*size,size,null);
+            return listBuilding;
+        }else{
+            List<RBuilding> listBuilding = rBuildingMapper.getListBuilding(map.get("name"),map.get("no"),map.get("type"),map.get("compName"),map.get("commName"),map.get("commAreaName") ,(pageNo-1)*size,size,user.getId());
+            return listBuilding;
+        }
     }
 
-    public Integer listNum(Map<String, String> map) {
-        List<RBuilding> listBuilding = rBuildingMapper.getListBuilding(map.get("name"),map.get("no"),map.get("type"),map.get("compName"),map.get("commName"),map.get("commAreaName") ,null,null);
-        return listBuilding.size();
+    public Integer listNum(Map<String, String> map,String token) {
+        SUser user = getUserByToken(token);
+        if(user.getCompId()==0){
+            List<RBuilding> listBuilding = rBuildingMapper.getListBuilding(map.get("name"),map.get("no"),map.get("type"),map.get("compName"),map.get("commName"),map.get("commAreaName") ,null,null,null);
+            return listBuilding.size();
+        }else{
+            List<RBuilding> listBuilding = rBuildingMapper.getListBuilding(map.get("name"),map.get("no"),map.get("type"),map.get("compName"),map.get("commName"),map.get("commAreaName") ,null,null,user.getId());
+            return listBuilding.size();
+        }
     }
 
 
