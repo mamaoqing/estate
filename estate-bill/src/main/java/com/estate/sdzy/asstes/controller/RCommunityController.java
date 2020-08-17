@@ -58,7 +58,7 @@ public class RCommunityController extends BaseController {
 
     @GetMapping("/{id}")
     public Result insertCommunity(@PathVariable("id") Long id, @RequestHeader("Authentication-Token") String token) {
-        return ResultUtil.success(communityService.getById(id));
+        return ResultUtil.success(communityService.getByCompId(id));
     }
 
     @GetMapping("/userCommunity")
