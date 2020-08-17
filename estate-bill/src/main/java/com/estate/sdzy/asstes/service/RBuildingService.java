@@ -20,8 +20,9 @@ public interface RBuildingService extends IService<RBuilding> {
     boolean save(RBuilding rBuilding,String token);
     boolean update(RBuilding rBuilding,String token);
     boolean delete(Long id,String token);
-    List<RBuilding> list(Map<String,String> map,Integer pageNo, Integer size);
-    Integer listNum(Map<String,String> map);
+    List<RBuilding> list(Map<String,String> map,Integer pageNo, Integer size,String token);
+    Integer listNum(Map<String,String> map,String token);
     List<RCommunity> getUserComm(String token, Long compId);
     String checkBuildingRoomUnit(Long compId);
+    String copyBuildings(RBuilding rBuilding,String token);
 }
