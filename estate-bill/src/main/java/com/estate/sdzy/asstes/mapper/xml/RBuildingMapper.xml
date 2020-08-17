@@ -7,7 +7,10 @@
     <select id="getListBuilding" resultType="com.estate.sdzy.asstes.entity.RBuilding">
         select r.*,comp.name as compName,comm.name as commName,area.name as commAreaName,d.name as dictName
         from r_building r ,s_company comp,r_community comm,r_comm_area area,s_dict_item d
-        where r.comp_id=comp.id and r.comm_id=comm.id and r.comm_area_id=area.id and r.type=d.id and d.dict_id='10' and r.is_delete='0'
+        <if test="userId!=''and userId!=null">
+        ,s_user_comm u
+        </if>
+         where r.comp_id=comp.id and r.comm_id=comm.id and r.comm_area_id=area.id and r.type=d.id and d.dict_id='10' and r.is_delete='0'
         <if test="name!=''and name!=null">
             and r.name like CONCAT('%',#{name},'%')
         </if>
@@ -25,6 +28,9 @@
         </if>
         <if test="commAreaId!=''and commAreaId!=null">
             and r.comm_area_id = #{commAreaId}
+        </if>
+        <if test="userId!=''and userId!=null">
+            and u.user_id='40' and r.comm_id=u.comm_id
         </if>
         ORDER BY id DESC
         <if test="pageNo!=null and size!=null">
