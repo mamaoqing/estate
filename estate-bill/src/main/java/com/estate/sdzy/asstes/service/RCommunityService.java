@@ -42,4 +42,6 @@ public interface RCommunityService extends IService<RCommunity> {
 
 
     List<RCommunity> getUsersComm(String token);
+
+    List<RCommunity> getByCompId(long id);
 }

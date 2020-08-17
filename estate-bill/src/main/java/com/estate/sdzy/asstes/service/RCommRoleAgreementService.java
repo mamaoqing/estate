@@ -1,9 +1,11 @@
 package com.estate.sdzy.asstes.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.estate.sdzy.asstes.entity.RCommRoleAgreement;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -23,4 +25,10 @@ public interface RCommRoleAgreementService extends IService<RCommRoleAgreement> 
     boolean isPermission(List<Long> ids);
 
     List<RCommRoleAgreement> getRCommRoleAgreements(String commId);
+
+    Boolean save(RCommRoleAgreement rCommRoleAgreement ,String token);
+    Boolean saveOrUpdate(RCommRoleAgreement rCommRoleAgreement ,String token);
+    Boolean removeById(Long id ,String token);
+
+    Page<RCommRoleAgreement> listCommRoleAgreement(Map<String,String> map , String token);
 }
