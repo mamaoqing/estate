@@ -6,7 +6,7 @@
         then true else false end flag from r_community where comp_id = #{compId} and is_delete = 0
     </select>
     <select id="getUserComm" resultType="com.estate.sdzy.asstes.entity.RCommunity">
-        select r.id,r.name from r_community r,s_user_comm u where u.user_id=#{userId} and r.comp_id=#{comId}
+        select r.id,r.name from r_community r,s_user_comm u where u.user_id=#{userId} and r.comp_id=#{compId}
         and r.id=u.comm_id and r.is_delete='0'
     </select>
     <select id="listAllUserComm" resultType="java.util.Map" parameterType="java.lang.Long">
