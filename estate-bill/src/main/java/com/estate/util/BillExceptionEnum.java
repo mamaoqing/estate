@@ -20,6 +20,7 @@ public enum BillExceptionEnum {
     SET_ROLE_MENU_ERROR ("设置角色菜单异常",418),
     RESET_PASSWORD_ERROR ("旧密码输入错误，重设密码失败",900),
     RESET_PASSWORD_ERROR_SYSTEM ("重设密码失败",900),
+    TREE_MENU_ERROR_SYSTEM ("社区树获取信息异常，请检查数据是否正确！",601),
     ;
     private Integer code;
 

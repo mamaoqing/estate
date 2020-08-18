@@ -49,4 +49,6 @@ public interface RCommunityService extends IService<RCommunity> {
 
     List<Map<String,String>> listArea(Long id);
 
+    List<RCommunity> listComm(Long id);
+
 }
