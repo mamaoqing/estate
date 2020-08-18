@@ -32,6 +32,7 @@ public class RCommAreaServiceImpl extends ServiceImpl<RCommAreaMapper, RCommArea
         List<RCommArea> rCommAreas = commAreaMapper.selectList(queryWrapper);
         return rCommAreas;
     }
+    @Override
     public List<Map<String,Object>> getAllArea(Long id){
         return commAreaMapper.listCommAreaMap(id);
     }

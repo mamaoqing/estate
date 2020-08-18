@@ -11,6 +11,7 @@ import com.estate.sdzy.asstes.mapper.RProvinceMapper;
 import com.estate.sdzy.asstes.service.RProvinceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.util.BillExceptionEnum;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -27,14 +28,12 @@ import java.util.List;
  * @since 2020-08-04
  */
 @Service
+@RequiredArgsConstructor(onConstructor = @_(@Autowired))
 public class RProvinceServiceImpl extends ServiceImpl<RProvinceMapper, RProvince> implements RProvinceService {
 
-    @Autowired
-    private RProvinceMapper provinceMapper;
-    @Autowired
-    private RCityMapper cityMapper;
-    @Autowired
-    private RDistrictMapper districtMapper;
+    private final RProvinceMapper provinceMapper;
+    private final RCityMapper cityMapper;
+    private final RDistrictMapper districtMapper;
 
     @Override//id
     public List<RCity> listProvinces(Long code) {
