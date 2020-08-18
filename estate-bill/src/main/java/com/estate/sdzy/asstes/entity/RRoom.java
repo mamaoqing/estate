@@ -41,21 +41,29 @@ public class RRoom implements Serializable {
      * 物业公司
      */
     private Long compId;
+    @TableField(exist = false)
+    private String compName;
 
     /**
      * 社区id
      */
     private Long commId;
+    @TableField(exist = false)
+    private String commName;
 
     /**
      * 区id
      */
     private Long commAreaId;
+    @TableField(exist = false)
+    private String commAreaName;
 
     /**
      * 单元id
      */
     private Long unitId;
+    @TableField(exist = false)
+    private String unitName;
 
     /**
      * 状态
@@ -63,15 +71,55 @@ public class RRoom implements Serializable {
     private String state;
 
     /**
-     * 楼层数
+     * 楼层
      */
     private Integer floor;
+    /**
+     * 楼层数
+     */
+    @TableField(exist = false)
+    private Integer floorNum;
+    /**
+     * 电梯数
+     */
+    @TableField(exist = false)
+    private Integer elevatorNum;
+    /**
+     * 房间数
+     */
+    @TableField(exist = false)
+    private Integer roomNum;
 
     /**
      * 房型
      */
     private String roomModel;
-
+    @TableField(exist = false)
+    private String roomModelName;
+    /**
+     * 房屋类型
+     */
+    private String roomType;
+    @TableField(exist = false)
+    private String roomTypeName;
+    /**
+     * 产权性质
+     */
+    private String propertyRightNature;
+    @TableField(exist = false)
+    private String propertyRightNatureName;
+    /**
+     * 朝向
+     */
+    private String direction;
+    @TableField(exist = false)
+    private String directionName;
+    /**
+     * 装修程度
+     */
+    private String renovationLevel;
+    @TableField(exist = false)
+    private String renovationLevelName;
     /**
      * 产权证号
      */
@@ -106,6 +154,8 @@ public class RRoom implements Serializable {
      * 用途
      */
     private String usable;
+    @TableField(exist = false)
+    private String usableName;
 
     /**
      * 备注
@@ -125,13 +175,15 @@ public class RRoom implements Serializable {
     private Long modifiedBy;
 
     private String modifiedName;
-    @TableLogic
+    //@TableLogic
     private Integer isDelete;
 
     /**
      * 楼宇id
      */
     private Long buildingId;
+    @TableField(exist = false)
+    private String buildingName;
 
 
 }

@@ -42,19 +42,24 @@ public class RBuildingController extends BaseController {
         return ResultUtil.error("添加字典失败！", 1);
     }
 
+    @PostMapping("/copyBuilding")
+    public Result copyBuilding(@RequestBody RBuilding rBuilding, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(rBuildingService.copyBuildings(rBuilding,token));
+    }
+
     @PutMapping("/updateBuilding")
     public Result updateBuilding(@RequestBody RBuilding rBuilding, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(rBuildingService.update(rBuilding,token));
     }
 
     @GetMapping("/listBuilding")
-    public Result listBuilding(Integer pageNo, Integer size, HttpServletRequest request) {
-        return ResultUtil.success(rBuildingService.list(super.getParameterMap(request),pageNo,size));
+    public Result listBuilding(Integer pageNo, Integer size, HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(rBuildingService.list(super.getParameterMap(request),pageNo,size,token));
     }
 
     @GetMapping("/listBuildingNum")
-    public Result listBuildingNum(HttpServletRequest request) {
-        return ResultUtil.success(rBuildingService.listNum(super.getParameterMap(request)));
+    public Result listBuildingNum(HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(rBuildingService.listNum(super.getParameterMap(request),token));
     }
 
     @DeleteMapping("/{id}")

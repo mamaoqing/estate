@@ -23,5 +23,5 @@ public interface RBuildingMapper extends BaseMapper<RBuilding> {
     @Sql("update r_building set is_delete='1',modified_by=#{id},modified_name=#{name} where id=#{id}")
     int update(@Param("id") Long id,@Param("name") String name);
 
-    List<RBuilding> getListBuilding(@Param("name") String name,@Param("no") String no,@Param("type") String type, @Param("compId") String compId,@Param("commId") String  commId,@Param("commAreaId") String commAreaId ,@Param("pageNo") Integer pageNo,@Param("size") Integer size);
+    List<RBuilding> getListBuilding(@Param("name") String name,@Param("no") String no,@Param("type") String type, @Param("compId") String compId,@Param("commId") String  commId,@Param("commAreaId") String commAreaId ,@Param("pageNo") Integer pageNo,@Param("size") Integer size,@Param("userId") Long userId);
 }
