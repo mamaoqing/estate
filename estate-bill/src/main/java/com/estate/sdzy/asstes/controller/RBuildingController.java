@@ -2,9 +2,9 @@ package com.estate.sdzy.asstes.controller;
 
 
 import com.estate.sdzy.asstes.entity.RBuilding;
-import com.estate.sdzy.common.controller.BaseController;
 import com.estate.sdzy.asstes.service.RBuildingService;
 import com.estate.sdzy.asstes.service.RCommAreaService;
+import com.estate.sdzy.common.controller.BaseController;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -75,6 +75,16 @@ public class RBuildingController extends BaseController {
     @GetMapping("/getCommArea/{commId}")
     public Result getCommArea(@PathVariable("commId") Long commId) {
         return ResultUtil.success(rCommAreaService.getCommArea(commId));//返回为true则表示重复
+    }
+
+    @GetMapping("/getBuildings/{commAreaId}")
+    public Result getBuildings(@PathVariable("commAreaId") Long commAreaId) {
+        return ResultUtil.success(rBuildingService.getList(commAreaId));//返回为true则表示重复
+    }
+
+    @GetMapping("/getUnits/{buildingId}")
+    public Result getUnits(@PathVariable("buildingId") Long buildingId) {
+        return ResultUtil.success(rBuildingService.getUnitList(buildingId));//返回为true则表示重复
     }
 
     @GetMapping("/getCommAreaContent/{commAreaId}")
