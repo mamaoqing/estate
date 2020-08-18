@@ -78,6 +78,16 @@ public class RCommunityController extends BaseController {
         return ResultUtil.success(communityService.getUsersComm(token));
     }
 
+    @GetMapping("/listUser/{id}")
+    public Result listUser(@PathVariable("id") Long id){
+        return ResultUtil.success(communityService.listUser(id));
+    }
+
+    @GetMapping("/listArea/{id}")
+    public Result listArea(@PathVariable("id") Long id){
+        return ResultUtil.success(communityService.listArea(id));
+    }
+
     @GetMapping("/getAllComm")
     public Result getAllComm(@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(communityService.getAllComm(token));

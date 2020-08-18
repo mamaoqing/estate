@@ -221,6 +221,34 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
     }
 
     @Override
+    public List<RCommunity> getByCompId(long id) {
+        if(StringUtils.isEmpty(id)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        QueryWrapper<RCommunity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comp_id",id);
+        return communityMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public List<Map<String, String>> listUser(Long id) {
+
+        if(StringUtils.isEmpty(id)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+
+        return communityMapper.listUser(id);
+    }
+
+    @Override
+    public List<Map<String, String>> listArea(Long id) {
+        if(StringUtils.isEmpty(id)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        return communityMapper.listArea(id);
+    }
+
+    @Override
     public List<RCommunity> getAllComm(String token) {
         SUser user = getUserByToken(token);
         if (!"超级管理员".equals(user.getType())) {

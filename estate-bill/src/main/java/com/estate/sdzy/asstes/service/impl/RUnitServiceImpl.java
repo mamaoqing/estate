@@ -1,18 +1,18 @@
 package com.estate.sdzy.asstes.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.quer
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.exception.BillException;
 import com.estate.sdzy.asstes.entity.RBuilding;
 import com.estate.sdzy.asstes.entity.RUnit;
-import com.estate.sdzy.asstes.mapper.RBuildingMapper;
 import com.estate.sdzy.asstes.mapper.RUnitMapper;
 import com.estate.sdzy.asstes.service.RUnitService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.sdzy.system.entity.SUnitModel;
 import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.system.mapper.SUnitModelMapper;
 import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
+import com.estate.sdzy.asstes.mapper.RBuildingMapper
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -88,6 +88,24 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
             return true;
         }
         throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+    }
+    @Override
+    public boolean save(RUnit rUnit, String token) {
+        SUser user = getUserByToken(token);
+        if (null == rUnit) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        rUnit.setCreatedBy(user.getId());
+        rUnit.setCreatedName(user.getUserName());
+        rUnit.setModifiedBy(user.getId());
+        rUnit.setModifiedName(user.getUserName());
+        int insert = rUnitMapper.insert(rUnit);
+        if (insert > 0) {
+            log.info("建筑添加成功，添加人={}", user.getUserName());
+        } else {
+            throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+        }
+        return insert > 0;
     }
 
 }

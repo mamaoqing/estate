@@ -30,4 +30,8 @@ public interface RCommunityMapper extends BaseMapper<RCommunity> {
 
     List<RCommunity> getUsersComm(@Param("id") Long userId);
 
+    List<Map<String,String>> listUser(@Param("id")Long id);
+
+    List<Map<String,String>> listArea(@Param("id")Long id);
+
 }

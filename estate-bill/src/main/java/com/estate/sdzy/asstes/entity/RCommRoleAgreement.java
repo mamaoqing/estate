@@ -1,9 +1,11 @@
 package com.estate.sdzy.asstes.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -48,8 +50,12 @@ public class RCommRoleAgreement implements Serializable {
      */
     private String no;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date beginDate;
 
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
 
     private String state;
@@ -62,6 +68,8 @@ public class RCommRoleAgreement implements Serializable {
     private String remark;
 
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date createdAt;
 
     private Long createdBy;
@@ -69,6 +77,8 @@ public class RCommRoleAgreement implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date modifiedAt;
 
     private Long modifiedBy;
@@ -76,6 +86,14 @@ public class RCommRoleAgreement implements Serializable {
     private String modifiedName;
     @TableLogic
     private Integer isDelete;
+
+    @TableField(exist = false)
+    private String commName;
+
+    @TableField(exist = false)
+    private String compName;
+    @TableField(exist = false)
+    private String roleName;
 
 
 }

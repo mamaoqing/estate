@@ -88,7 +88,7 @@ public class RUnit implements Serializable {
     private Long modifiedBy;
 
     private String modifiedName;
-    @TableLogic
+    //@TableLogic
     private Integer isDelete;
 
     /**
