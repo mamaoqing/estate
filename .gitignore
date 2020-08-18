@@ -8,5 +8,6 @@ target
 estate-autocode
 log.log
 logs
+pom.xml
 # Created by .ignore support plugin (hsz.mobi)
 /estate-bill/src/test/

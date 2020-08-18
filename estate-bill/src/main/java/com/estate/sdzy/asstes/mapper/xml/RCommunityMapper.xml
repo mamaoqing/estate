@@ -21,4 +21,21 @@ WHERE
 	s_user_comm.user_id = #{id}
 	AND r_community.is_delete = 0
     </select>
+
+    <select id="listUser" resultType="java.util.Map" parameterType="java.lang.Long">
+        select dd.name compName,cc.name areaName,aa.name userName,ee.name orgName,aa.type,aa.state from s_user aa
+        left join s_user_comm bb on aa.id = bb.user_id
+        left join r_community cc on bb.comm_id = cc.id
+        left join s_company dd on aa.comp_id = dd.id
+        left join s_org ee on aa.org_id = ee.id
+        where cc.id = #{id} and aa.is_delete=0
+    </select>
+
+    <select id="listArea" resultType="java.util.Map" parameterType="java.lang.Long">
+        SELECT bb.name areaName,cc.name compName,dd.name roleName ,aa.id,aa.begin_date,aa.end_date,aa.no,aa.type,aa.state,aa.remark FROM `r_comm_role_agreement` aa
+        left join r_community bb on aa.comm_id = bb.id
+        left join s_company cc on aa.comp_id = cc.id
+        left join s_role dd on aa.role_id = dd.id
+        where aa.comm_id = #{id} and aa.is_delete=0
+    </select>
 </mapper>

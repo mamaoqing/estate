@@ -230,6 +230,24 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         return communityMapper.selectList(queryWrapper);
     }
 
+    @Override
+    public List<Map<String, String>> listUser(Long id) {
+
+        if(StringUtils.isEmpty(id)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+
+        return communityMapper.listUser(id);
+    }
+
+    @Override
+    public List<Map<String, String>> listArea(Long id) {
+        if(StringUtils.isEmpty(id)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        return communityMapper.listArea(id);
+    }
+
 
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
