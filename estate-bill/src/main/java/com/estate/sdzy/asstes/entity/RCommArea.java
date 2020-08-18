@@ -1,4 +1,4 @@
-package com.estate.sdzy.entity;
+package com.estate.sdzy.asstes.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;

@@ -1,19 +1,19 @@
 package com.estate.sdzy.asstes.controller;
 
 
+import com.estate.sdzy.asstes.entity.RCommArea;
 import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.asstes.service.RCommAreaService;
+import com.estate.sdzy.system.service.SCompanyService;
 import com.estate.util.RedisUtil;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,6 +86,11 @@ public class RCommAreaController {
     @PostMapping("/update")
     public Result update(@RequestBody RCommArea commArea,@RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(commAreaService.update(commArea, token));
+    }
+
+    @GetMapping("/getArea/{commId}")
+    public Result getAllArea(@PathVariable("commId") Long commId,@RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(commAreaService.getArea(commId,token));
     }
 
 }

@@ -2,9 +2,18 @@ package com.estate.sdzy.asstes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.exception.BillException;
 import com.estate.sdzy.asstes.entity.RCommArea;
+import com.estate.sdzy.asstes.entity.RCommunity;
+import com.estate.sdzy.asstes.mapper.RBuildingMapper;
 import com.estate.sdzy.asstes.mapper.RCommAreaMapper;
+import com.estate.sdzy.asstes.mapper.RRoomMapper;
+import com.estate.sdzy.asstes.mapper.RUnitMapper;
 import com.estate.sdzy.asstes.service.RCommAreaService;
+import com.estate.sdzy.system.entity.SUser;
+import com.estate.util.BillExceptionEnum;
+import com.estate.util.RedisUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -116,6 +125,15 @@ public class RCommAreaServiceImpl extends ServiceImpl<RCommAreaMapper, RCommArea
             return true;
         }
         throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+    }
+
+    @Override
+    public List<RCommArea> getArea(Long commId,String token) {
+        SUser user = (SUser) redisUtil.get(token);
+        QueryWrapper<RCommArea> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comm_id",commId);
+        queryWrapper.eq("is_delete",0);
+        return commAreaMapper.selectList(queryWrapper);
     }
 
 

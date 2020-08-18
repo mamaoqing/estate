@@ -20,7 +20,7 @@
         and r_comm_area.is_delete=0
     </select>
 
-    <select id="listAreaByUserId" parameterType="java.util.Map" resultType="com.estate.sdzy.entity.RCommArea">
+    <select id="listAreaByUserId" parameterType="java.util.Map" resultType="com.estate.sdzy.asstes.entity.RCommArea">
         SELECT
         s_company.name as comp_name,
         r_community.name as comm_name,
@@ -68,5 +68,14 @@
         </if>
         and r_comm_area.is_delete=0
     </select>
-
+    <select id="getAllArea" parameterType="java.lang.Long" resultType="com.estate.sdzy.asstes.entity.RCommArea">
+        SELECT
+            *
+        FROM
+            r_comm_area
+            LEFT JOIN s_user_comm ON r_comm_area.comm_id = s_user_comm.comm_id
+        WHERE
+            s_user_comm.user_id = #{userId}
+            AND r_comm_area.is_delete = 0
+    </select>
 </mapper>

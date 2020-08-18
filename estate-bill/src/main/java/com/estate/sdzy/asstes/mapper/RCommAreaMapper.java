@@ -28,4 +28,5 @@ public interface RCommAreaMapper extends BaseMapper<RCommArea> {
     List<RCommArea> listAreaByUserId(Map map);
     List<Map<String,Object>> listAreaMapByUserId(@Param("userId") Long userId);
     Integer selectPageTotal(Map map);
+    List<RCommArea> getAllArea(Long userId);
 }

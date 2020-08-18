@@ -5,4 +5,31 @@
     <select id="listUnitMap" parameterType="java.lang.Long" resultType="java.util.Map">
         select id,name,'unit'type,'r_building'parenttable,building_id parentid from r_unit where building_id=#{id} and is_delete = 0
     </select>
+    <select id="getAllUnit" parameterType="java.lang.Long" resultType="com.estate.sdzy.asstes.entity.RUnit">
+        SELECT
+            s_company.NAME AS comp_name,
+            r_community.NAME comm_name,
+            r_comm_area.NAME area_name,
+            r_building.NAME building_name,
+            r_building.NO building_no,
+            s_unit_model.NAME AS model_name,
+            s_unit_model.elevator_num AS ele_num,
+            s_unit_model.room_num AS rm_num,
+            r_unit.*
+        FROM
+            r_unit
+            LEFT JOIN s_user_comm ON s_user_comm.comm_id = r_unit.comm_id
+            LEFT JOIN s_company ON s_company.id = r_unit.comp_id
+            LEFT JOIN r_community ON r_community.id = r_unit.comp_id
+            LEFT JOIN r_comm_area ON r_comm_area.id = r_unit.comm_area_id
+            LEFT JOIN r_building ON r_building.id = r_unit.building_id
+            LEFT JOIN s_unit_model ON s_unit_model.id = r_unit.model
+        WHERE
+            1 = 1
+            <if test="userId!=null">
+                AND s_user_comm.user_id = #{userId}
+            </if>
+            AND r_unit.is_delete = 0
+
+    </select>
 </mapper>

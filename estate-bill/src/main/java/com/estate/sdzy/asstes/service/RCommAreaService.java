@@ -25,4 +25,5 @@ public interface RCommAreaService extends IService<RCommArea> {
     boolean insert(RCommArea commArea,String token);
     boolean delete(Long id,String token);
     boolean update(RCommArea commArea,String token);
+    List<RCommArea> getArea(Long commId,String token);
 }
