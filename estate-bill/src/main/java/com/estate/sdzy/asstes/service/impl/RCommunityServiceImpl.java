@@ -112,8 +112,7 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
             // 查询社区的map
             Map<String, Object> map = communityMapper.communityMap(l);
             if (null == map) {
-                System.out.println(l);
-                return null;
+                throw new BillException(BillExceptionEnum.TREE_MENU_ERROR_SYSTEM);
             }
             // 查询社区下的分区map
             List<Map<String, Object>> areaMapList = commAreaMapper.listCommAreaMap((Long) map.get("id"));
@@ -144,7 +143,6 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
             map.put("childList", areaMaps);
             communityList.add(map);
         }
-        System.out.println(communityList);
 
         return communityList;
     }
@@ -256,6 +254,16 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         }
         return communityMapper.selectList(null);
     }
+    @Override
+    public List<RCommunity> listComm(Long id) {
+        if(StringUtils.isEmpty(id)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        QueryWrapper<RCommunity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comp_id",id);
+        return communityMapper.selectList(queryWrapper);
+    }
+
 
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
