@@ -1,5 +1,5 @@
 # Created by .ignore support plugin (hsz.mobi)
-#.gitignore
+.gitignore
 *.git
 *.idea
 *.iml
@@ -8,6 +8,8 @@ target
 estate-autocode
 log.log
 logs
+pom.xml
+*.xml
 # Created by .ignore support plugin (hsz.mobi)
 /estate-bill/src/test/
 pom.xml

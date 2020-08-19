@@ -255,12 +255,15 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         return communityMapper.selectList(null);
     }
     @Override
-    public List<RCommunity> listComm(Long id) {
+    public List<RCommunity> listComm(Long id,String token) {
+        SUser user = getUserByToken(token);
         if(StringUtils.isEmpty(id)){
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         QueryWrapper<RCommunity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("comp_id",id);
+
+        String sql = "select  c.comm_id from s_user_comm c where  c.user_id= "+user.getId();
+        queryWrapper.eq("comp_id",id).inSql("id",sql);
         return communityMapper.selectList(queryWrapper);
     }
 

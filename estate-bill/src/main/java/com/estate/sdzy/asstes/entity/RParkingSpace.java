@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 
+import com.estate.sdzy.common.annotation.ExcelAnnotation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,6 +33,7 @@ public class RParkingSpace implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    @ExcelAnnotation(value = "编号",master = true)
     private String no;
 
     /**
@@ -39,6 +41,7 @@ public class RParkingSpace implements Serializable {
      */
     private Long compId;
     @TableField(exist = false)
+    @ExcelAnnotation(value = "物业公司",master = true)
     private String compName;
 
     /**
@@ -46,6 +49,7 @@ public class RParkingSpace implements Serializable {
      */
     private Long commId;
     @TableField(exist = false)
+    @ExcelAnnotation(value = "社区名",master = true)
     private String commName;
 
     /**
@@ -54,56 +58,67 @@ public class RParkingSpace implements Serializable {
     private Long commAreaId;
 
     @TableField(exist = false)
-    private String commAreaName;
+    @ExcelAnnotation(value = "分区名称",master = true)
+    private String areaName;
 
     /**
      * 位置
      */
+    @ExcelAnnotation(value = "位置")
     private String position;
 
     /**
      * 建筑属性
      */
+    @ExcelAnnotation(value = "建筑属性",dist = "34")
     private String buildingProperty;
 
     /**
      * 使用属性
      */
+    @ExcelAnnotation(value = "使用属性",dist = "35")
     private String useProperty;
 
     /**
      * 车辆类型
      */
+    @ExcelAnnotation(value = "车辆类型",dist = "36")
     private String vehicleType;
 
     /**
      * 高度
      */
+    @ExcelAnnotation(value = "高度",dist = "38")
     private String height;
 
     /**
      * 尺寸
      */
+    @ExcelAnnotation(value = "尺寸",dist = "37")
     private String size;
 
     /**
      * 排列形式
      */
+    @ExcelAnnotation(value = "排列形式",dist = "39")
     private String array;
 
     /**
      * 可用时间
      */
+    @ExcelAnnotation(value = "可用时间",dist = "40")
     private String usableTime;
 
     /**
      * 占用状态
      */
+    @ExcelAnnotation(value = "占用状态",dist = "41")
     private String occupyState;
 
     /**
      * 入位方式
      */
+    @ExcelAnnotation(value = "入位方式",dist = "42")
     private String inMode;
 
     /**

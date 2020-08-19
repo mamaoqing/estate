@@ -88,8 +88,8 @@ public class RCommunityController extends BaseController {
         return ResultUtil.success(communityService.listArea(id));
     }
     @GetMapping("/listComm/{id}")
-    public Result listComm(@PathVariable(value = "id",required = false) Long id){
-        return ResultUtil.success(communityService.listComm(id));
+    public Result listComm(@PathVariable(value = "id",required = false) Long id,@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(communityService.listComm(id,token));
     }
 
     @GetMapping("/getAllComm")

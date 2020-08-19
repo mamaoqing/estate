@@ -93,5 +93,11 @@ public class RCommAreaController {
         return ResultUtil.success(commAreaService.getArea(commId,token));
     }
 
+    @GetMapping("/listArea/{id}")
+    public Result listArea(@PathVariable("id") Long id){
+
+        return ResultUtil.success(commAreaService.listArea(id));
+    }
+
 }
 
