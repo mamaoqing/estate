@@ -102,7 +102,7 @@ public class ImportExcel extends ExcelUtil {
                             if(cellNum == commId){
                                 log.info("社区称是:{}",getCellValue(cell));
                                 Long commIdByName = parkingSpaceMapper.getCommIdByName(getCellValue(cell));
-                                map.put("compId",commIdByName);
+                                map.put("commId",commIdByName);
                             }
                             if(cellNum == areaId){
                                 log.info("分区名称是:{}",getCellValue(cell));
