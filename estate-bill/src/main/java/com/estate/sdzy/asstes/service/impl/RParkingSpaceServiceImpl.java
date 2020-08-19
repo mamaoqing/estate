@@ -7,6 +7,7 @@ import com.estate.sdzy.asstes.entity.RParkingSpace;
 import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
 import com.estate.sdzy.asstes.service.RParkingSpaceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.sdzy.common.excel.ExportExcel;
 import com.estate.sdzy.system.entity.SUser;
 import com.estate.util.BillExceptionEnum;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletResponse;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -58,6 +61,7 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
             queryWrapper.eq(!StringUtils.isEmpty(map.get("isDelete")), "aa.is_delete", map.get("isDelete"));
             queryWrapper.eq(!StringUtils.isEmpty(map.get("compId")),"aa.comp_id", map.get("compId"));
         }
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("commId")),"aa.comm_id",map.get("commId"));
         queryWrapper.eq(!StringUtils.isEmpty(map.get("no")),"no",map.get("no"));
         queryWrapper.eq(!StringUtils.isEmpty(map.get("buildProp")),"building_property",map.get("buildProp"));
         queryWrapper.eq(!StringUtils.isEmpty(map.get("useProp")),"use_property",map.get("useProp"));
@@ -112,6 +116,17 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
             return true;
         }
         throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+    }
+
+    @Override
+    public void writeOut(HttpServletResponse response, String token, String className) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+//        SUser user = getUserByToken(token);
+        QueryWrapper<RParkingSpace> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("aa.is_delete",0);
+        Page<RParkingSpace> page = new Page<>();
+        Page<RParkingSpace> rParkingSpacePage = parkingSpaceMapper.listPark(page, queryWrapper);
+        List<RParkingSpace> records = rParkingSpacePage.getRecords();
+        ExportExcel.writeOut(response,"停车位信息列表",className,records,"导出人：mmq");
     }
 
 

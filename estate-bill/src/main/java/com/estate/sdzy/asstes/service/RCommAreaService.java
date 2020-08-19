@@ -20,4 +20,6 @@ public interface RCommAreaService extends IService<RCommArea> {
     List<Map<String,Object>> getAllArea(Long id);
     List<Map<String,Object>> listAreaMapByUserId(Long userId);
     RCommArea getCommAreaContent(Long id);
+
+    List<RCommArea> listArea(Long id);
 }
