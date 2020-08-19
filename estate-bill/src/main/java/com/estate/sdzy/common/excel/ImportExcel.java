@@ -2,27 +2,25 @@ package com.estate.sdzy.common.excel;
 
 import com.alibaba.fastjson.JSON;
 import com.estate.exception.BillException;
-import com.estate.sdzy.asstes.entity.RParkingSpace;
 import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
 import com.estate.sdzy.common.annotation.ExcelAnnotation;
 import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 导入excel
@@ -48,9 +46,13 @@ public class ImportExcel extends ExcelUtil {
         Field[] fields1 = c.getDeclaredFields();
         Annotation[] annotations = c.getAnnotations();
         List<String> fields = new ArrayList<>();
+        List<String> masterField = new ArrayList<>();
         for (Field field : fields1) {
             if (field.isAnnotationPresent(ExcelAnnotation.class)){
                 fields.add(field.getName());
+                if(field.getAnnotation(ExcelAnnotation.class).master()){
+                    masterField.add(field.getName());
+                }
             }
         }
         Integer compId = 0;
@@ -93,7 +95,11 @@ public class ImportExcel extends ExcelUtil {
                         Map<String, Object> map = new HashMap<>(16);
                         for (int cellNum = firstCellNum; cellNum < lastCellNum; cellNum++) {
                             Cell cell = row.getCell(cellNum);
-                            map.put(fields.get(cellNum), getCellValue(cell));
+                            String s = fields.get(cellNum);
+                            if(masterField.contains(s) && StringUtils.isEmpty(getCellValue(cell))){
+                                throw new BillException(BillExceptionEnum.FILE_MASTER_FIELDNO_ERROR);
+                            }
+                            map.put(s, getCellValue(cell));
                             if(cellNum == compId){
                                 log.info("公司名称是:{}",getCellValue(cell));
                                 Long compIdByName = parkingSpaceMapper.getCompIdByName(getCellValue(cell));
@@ -153,7 +159,13 @@ public class ImportExcel extends ExcelUtil {
         CellType cellTypeEnum = cell.getCellTypeEnum();
         switch (cellTypeEnum) {
             case STRING:
+                cellValue = String.valueOf(cell);
+                break;
+            case NUMERIC:
                 cellValue = cell.toString();
+                break;
+            case BLANK:
+                cellValue = "";
                 break;
         }
         return cellValue;
