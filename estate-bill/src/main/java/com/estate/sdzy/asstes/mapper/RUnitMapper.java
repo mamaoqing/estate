@@ -18,5 +18,6 @@ import java.util.Map;
 public interface RUnitMapper extends BaseMapper<RUnit> {
 
     List<Map<String,Object>> listUnitMap(@Param("id") Long buildId);
-    List<RUnit> getAllUnit(@Param("userId") Long userId);
+    List<RUnit> getAllUnit(Map map);
+    Integer getPageTotal(Map map);
 }

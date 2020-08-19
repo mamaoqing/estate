@@ -5,7 +5,7 @@
     <select id="listUnitMap" parameterType="java.lang.Long" resultType="java.util.Map">
         select id,name,'unit'type,'r_building'parenttable,building_id parentid from r_unit where building_id=#{id} and is_delete = 0
     </select>
-    <select id="getAllUnit" parameterType="java.lang.Long" resultType="com.estate.sdzy.asstes.entity.RUnit">
+    <select id="getAllUnit" parameterType="java.util.Map" resultType="com.estate.sdzy.asstes.entity.RUnit">
         SELECT
             s_company.NAME AS comp_name,
             r_community.NAME comm_name,
@@ -18,7 +18,9 @@
             r_unit.*
         FROM
             r_unit
-            LEFT JOIN s_user_comm ON s_user_comm.comm_id = r_unit.comm_id
+            <if test="userId!=null">
+                LEFT JOIN s_user_comm ON s_user_comm.comm_id = r_unit.comm_id
+            </if>
             LEFT JOIN s_company ON s_company.id = r_unit.comp_id
             LEFT JOIN r_community ON r_community.id = r_unit.comp_id
             LEFT JOIN r_comm_area ON r_comm_area.id = r_unit.comm_area_id
@@ -29,7 +31,60 @@
             <if test="userId!=null">
                 AND s_user_comm.user_id = #{userId}
             </if>
+            <if test="commId!=null">
+                and r_unit.comm_id = #{commId}
+            </if>
+            <if test="commAreaId!=null">
+                and r_unit.comm_area_id = #{commAreaId}
+            </if>
+            <if test="buildingId!=null">
+                and r_unit.building_id = #{buildingId}
+            </if>
+            <if test="no!=null">
+                and r_unit.no like '%${no}%'
+            </if>
+            <if test="name!=null">
+                and r_unit.name like '%${name}%'
+            </if>
             AND r_unit.is_delete = 0
+            <if test="pageNo!=null and size!=null">
+                LIMIT #{pageNo},#{size}
+            </if>
+    </select>
 
+    <select id="getPageTotal" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(r_unit.id)
+        FROM
+        r_unit
+        <if test="userId!=null">
+            LEFT JOIN s_user_comm ON s_user_comm.comm_id = r_unit.comm_id
+        </if>
+        LEFT JOIN s_company ON s_company.id = r_unit.comp_id
+        LEFT JOIN r_community ON r_community.id = r_unit.comp_id
+        LEFT JOIN r_comm_area ON r_comm_area.id = r_unit.comm_area_id
+        LEFT JOIN r_building ON r_building.id = r_unit.building_id
+        LEFT JOIN s_unit_model ON s_unit_model.id = r_unit.model
+        WHERE
+        1 = 1
+        <if test="userId!=null">
+            AND s_user_comm.user_id = #{userId}
+        </if>
+        <if test="commId!=null">
+            and r_unit.comm_id = #{commId}
+        </if>
+        <if test="commAreaId!=null">
+            and r_unit.comm_area_id = #{commAreaId}
+        </if>
+        <if test="buildingId!=null">
+            and r_unit.building_id = #{buildingId}
+        </if>
+        <if test="no!=null">
+            and r_unit.no like '%${no}%'
+        </if>
+        <if test="name!=null">
+            and r_unit.name like '%${name}%'
+        </if>
+        AND r_unit.is_delete = 0
     </select>
 </mapper>

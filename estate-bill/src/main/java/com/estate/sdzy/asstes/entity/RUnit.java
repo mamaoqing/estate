@@ -34,6 +34,11 @@ public class RUnit implements Serializable {
     private String name;
 
     /**
+     * 编号
+     */
+    private String no;
+
+    /**
      * 物业公司
      */
     private Long compId;
