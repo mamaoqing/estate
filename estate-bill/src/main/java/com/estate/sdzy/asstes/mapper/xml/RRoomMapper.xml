@@ -4,4 +4,58 @@
     <select id="listRoomMap" resultType="java.util.Map" parameterType="java.lang.Long">
         select id,room_no name,'room'type,'r_unit'parenttable,unit_id parentid from r_room where unit_id=#{id} and is_delete = 0
     </select>
+    <select id="getListRoom" resultType="com.estate.sdzy.asstes.entity.RRoom">
+        select r.*,comp.name as compName,comm.name as commName,a.name as commAreaName,b.name as buildingName,u.name as unitName,
+        u.floor_num as floorNum,m.elevator_num as elevatorNum,m.room_num as roomNum,d.name as roomModelName,d1.name as roomTypeName,
+        d2.name as propertyRightNatureName,d3.name as directionName,d4.name as renovationLevelName,d5.name as usableName
+        from r_room r,s_company comp,r_community comm,r_comm_area a,r_building b,r_unit u,s_unit_model m,s_dict_item d,s_dict_item d1,
+        s_dict_item d2,s_dict_item d3,s_dict_item d4,s_dict_item d5
+        <if test="userId!=''and userId!=null">
+            ,s_user_comm u
+        </if>
+        where r.comp_id=comp.id and r.comm_id=comm.id and r.comm_area_id=a.id and r.building_id=b.id and r.unit_id=u.id and u.model=m.id
+        and d.id=r.room_model and d1.id=r.room_type and d2.id=r.property_right_nature and d3.id=r.direction and d4.id= r.renovation_level
+        and d5.id=r.usable and r.is_delete='0'
+        <if test="compName!=''and compName!=null">
+            and r.comp_id = #{compName}
+        </if>
+        <if test="commName!=''and commName!=null">
+            and r.comm_id = #{commName}
+        </if>
+        <if test="commAreaName!=''and commAreaName!=null">
+            and r.comm_area_id = #{commAreaName}
+        </if>
+        <if test="buildingName!=''and buildingName!=null">
+            and r.building_id = #{buildingName}
+        </if>
+        <if test="unitName!=''and unitName!=null">
+            and r.unit_id = #{unitName}
+        </if>
+        <if test="roomNo!=''and roomNo!=null">
+            and r.room_no like CONCAT('%',#{roomNo},'%')
+        </if>
+        <if test="roomModel!=''and roomModel!=null">
+            and r.room_model = #{roomModel}
+        </if>
+        <if test="usable!=''and usable!=null">
+            and r.usable = #{usable}
+        </if>
+        <if test="userId!=''and userId!=null">
+            and u.user_id=#{userId} and r.comm_id=u.comm_id
+        </if>
+         ORDER BY id DESC
+        <if test="pageNo!=null and size!=null">
+            limit #{pageNo},#{size}
+        </if>
+    </select>
+
+    <update id="updateBatch">
+        update r_room set is_delete='1',modified_at=CURRENT_TIME,modified_by=#{userId},modified_name=#{userName}
+        <where>
+            <foreach collection="ids" separator="or" item="item">
+                id=#{item}
+            </foreach>
+        </where>
+    </update>
+
 </mapper>

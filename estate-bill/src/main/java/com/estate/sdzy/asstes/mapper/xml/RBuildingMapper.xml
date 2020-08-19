@@ -30,7 +30,7 @@
             and r.comm_area_id = #{commAreaId}
         </if>
         <if test="userId!=''and userId!=null">
-            and u.user_id='40' and r.comm_id=u.comm_id
+            and u.user_id=#{userId} and r.comm_id=u.comm_id
         </if>
         ORDER BY id DESC
         <if test="pageNo!=null and size!=null">

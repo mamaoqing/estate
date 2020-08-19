@@ -3,6 +3,7 @@ package com.estate.sdzy.asstes.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.estate.sdzy.asstes.entity.RBuilding;
 import com.estate.sdzy.asstes.entity.RCommunity;
+import com.estate.sdzy.asstes.entity.RUnit;
 
 import java.util.List;
 import java.util.Map;
@@ -25,4 +26,6 @@ public interface RBuildingService extends IService<RBuilding> {
     List<RCommunity> getUserComm(String token, Long compId);
     String checkBuildingRoomUnit(Long compId);
     String copyBuildings(RBuilding rBuilding,String token);
+    List<RBuilding> getList(Long commAreaId);
+    List<RUnit> getUnitList(Long buildingId);
 }

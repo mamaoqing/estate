@@ -136,6 +136,24 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
         return "建筑复制成功";
     }
 
+    @Override
+    public List<RBuilding> getList(Long commAreaId) {
+        QueryWrapper<RBuilding> queryBuilding = new QueryWrapper<>();
+        queryBuilding.eq("is_delete",0);
+        queryBuilding.eq("comm_area_id",commAreaId);
+        List<RBuilding> rBuildings = rBuildingMapper.selectList(queryBuilding);
+        return rBuildings;
+    }
+
+    @Override
+    public List<RUnit> getUnitList(Long buildingId) {
+        QueryWrapper<RUnit> queryUnit = new QueryWrapper<>();
+        queryUnit.eq("is_delete",0);
+        queryUnit.eq("building_id",buildingId);
+        List<RUnit> rRUnits = rUnitMapper.selectList(queryUnit);
+        return rRUnits;
+    }
+
     public List<RRoom> getRooms(Long buildingId){
         QueryWrapper<RRoom> queryroom= new QueryWrapper<>();
         queryroom.eq("building_id",buildingId);
