@@ -2,7 +2,9 @@ package com.estate.sdzy.common.excel;
 
 
 import com.estate.exception.BillException;
+import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
 import com.estate.sdzy.common.annotation.ExcelAnnotation;
+import com.estate.sdzy.system.mapper.SDictMapper;
 import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -11,6 +13,8 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -58,26 +62,40 @@ public abstract class ExcelUtil {
      * @throws ClassNotFoundException
      */
     public static List<String> getClassFirld(String className) throws ClassNotFoundException {
-        Class<?> aClass = Class.forName(className);
-        Field[] fields = aClass.getDeclaredFields();
+        Field[] fields = ExcelUtil.getClassObject(className);
         List<String> list = new ArrayList<>();
         for (Field field : fields) {
             if (field.isAnnotationPresent(ExcelAnnotation.class)) {
                 ExcelAnnotation annotation = field.getAnnotation(ExcelAnnotation.class);
                 String value = annotation.value();
-                boolean export = annotation.export();
-                boolean master = annotation.master();
-                String dist = annotation.dist();
-                System.out.println(field.getName());
-                System.out.println(value);
-                System.out.println(dist);
-                System.out.println(master);
-                System.out.println(export);
-                System.out.println("----------");
+//                boolean export = annotation.export();
+//                boolean master = annotation.master();
+//                String dist = annotation.dist();
+
                 list.add(value);
             }
         }
         return list;
+    }
+
+    public static Map<String,String> getDistfield(String className) throws ClassNotFoundException {
+        Field[] fields = ExcelUtil.getClassObject(className);
+        Map<String,String> map = new HashMap<>(16);
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(ExcelAnnotation.class)) {
+                ExcelAnnotation annotation = field.getAnnotation(ExcelAnnotation.class);
+                String dist = annotation.dist();
+                String name = annotation.value();
+                map.put(name,dist);
+            }
+        }
+        return  map;
+    }
+
+    public static Field[] getClassObject(String className) throws ClassNotFoundException {
+        Class<?> aClass = Class.forName(className);
+        Field[] fields = aClass.getDeclaredFields();
+        return fields;
     }
 
     /**
@@ -109,5 +127,7 @@ public abstract class ExcelUtil {
             }
         }
     }
+
+
 
 }

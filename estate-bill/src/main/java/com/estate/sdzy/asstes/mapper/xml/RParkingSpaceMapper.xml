@@ -3,12 +3,9 @@
 <mapper namespace="com.estate.sdzy.asstes.mapper.RParkingSpaceMapper">
 
     <select id="listPark" resultType="com.estate.sdzy.asstes.entity.RParkingSpace" >
-        select aa.*,bb.name compName,cc.name commName,dd.name areaName from r_parking_space aa
-        left join s_company bb on aa.comp_id = bb.id
-        left join r_community cc on aa.comm_id = cc.id
-        left join r_comm_area dd on aa.comm_area_id = dd.id
-
+        select aa.*,bb.name compName,cc.name commName,dd.name areaName from r_parking_space aa,s_company bb,r_community cc,r_comm_area dd
          ${ew.customSqlSegment}
+        and aa.comp_id = bb.id and aa.comm_id = cc.id and aa.comm_area_id = dd.id
     </select>
 
     <select id="getCommIdByName" parameterType="java.lang.String" resultType="java.lang.Long">

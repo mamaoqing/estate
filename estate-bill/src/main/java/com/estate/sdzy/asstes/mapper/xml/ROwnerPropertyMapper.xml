@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.estate.sdzy.asstes.mapper.ROwnerPropertyMapper">
     <select id="ownerProByParkId" resultType="com.estate.sdzy.asstes.entity.ROwner">
-        select aa.name,aa.owner_type,aa.owner_addr,aa.tel,aa.e_mail,aa.cert_type,aa.cert_number from r_owner aa
-        left join r_owner_property bb on aa.id = bb.owner_id
-        left join r_parking_space cc on bb.property_id=cc.id
+        select aa.name,aa.owner_type,aa.owner_addr,aa.tel,aa.e_mail,aa.cert_type,aa.cert_number
+        from r_owner aa,r_owner_property bb,r_parking_space cc
+        where  aa.id = bb.owner_id and bb.property_id=cc.id
+        and cc.id=#{id} and bb.property_type=#{type} and bb.is_delete=#{del} and cc.is_delete=#{del}
 
-        ${ew.customSqlSegment}
     </select>
 </mapper>

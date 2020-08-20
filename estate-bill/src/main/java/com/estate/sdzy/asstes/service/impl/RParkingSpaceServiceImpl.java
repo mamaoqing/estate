@@ -129,14 +129,23 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
     }
 
     @Override
-    public void writeOut(HttpServletResponse response, String token, String className) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-//        SUser user = getUserByToken(token);
+    public void writeOut(HttpServletResponse response, String token, Map<String,String> map) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        SUser user = getUserByToken(token);
+        if(StringUtils.isEmpty(map.get("className"))){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        Integer size = !StringUtils.isEmpty(map.get("pageTotal")) ? Integer.valueOf(map.get("pageTotal")) : 10;
         QueryWrapper<RParkingSpace> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("aa.is_delete",0);
-        Page<RParkingSpace> page = new Page<>();
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("commId")),"aa.comm_id",map.get("commId"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("no")),"no",map.get("no"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("buildProp")),"building_property",map.get("buildProp"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("useProp")),"use_property",map.get("useProp"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("occupyProp")),"occupy_state",map.get("occupyProp"));
+        Page<RParkingSpace> page = new Page<>(1,size);
         Page<RParkingSpace> rParkingSpacePage = parkingSpaceMapper.listPark(page, queryWrapper);
         List<RParkingSpace> records = rParkingSpacePage.getRecords();
-        ExportExcel.writeOut(response,"停车位信息列表",className,records,"导出人：mmq");
+        ExportExcel.writeOut(response,"停车位信息列表",map.get("className"),records,"导出人： "+user.getName());
     }
 
     @Override

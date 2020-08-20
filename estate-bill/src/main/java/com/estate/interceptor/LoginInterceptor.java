@@ -53,7 +53,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             e.printStackTrace();
         }
         log.error("未登录，请重新登录后在操作！");
-        return true;
+        return false;
     }
 
     @Override

@@ -72,9 +72,9 @@ public class RParkingSpaceController extends BaseController {
 
 
     @GetMapping("/exportFile")
-    public void exportFile(HttpServletResponse response,String className) {
+    public void exportFile(HttpServletResponse response,HttpServletRequest request,@RequestHeader("Authentication-Token") String token) {
         try {
-            parkingSpaceService.writeOut(response, null, className);
+            parkingSpaceService.writeOut(response, token, super.getParameterMap(request));
         }catch (Exception e){
             e.printStackTrace();
         }
