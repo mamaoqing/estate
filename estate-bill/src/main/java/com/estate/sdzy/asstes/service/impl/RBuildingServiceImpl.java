@@ -118,8 +118,10 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
         if(save){
 
             //查询新的unit
-            List<RUnit> rUnits = rUnitMapper.selectUnitByBuildingId(rBuilding.getId());
-
+            List<RUnit> rUnits = rUnitMapper.selectUnitByBuildingId(rBuilding.getId(),rBuildingCopy.getId());
+            for(RUnit rUnit:rUnits){
+                rUnit.setId(null);
+            }
             Integer newUnitId = rBuildingMapper.insertUnitCopy(user.getId(), user.getUserName(), rUnits,rBuildingCopy.getId());
             for(RUnit rUnit:rUnits){
                 System.out.println(rUnit.getId());
