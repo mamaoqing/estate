@@ -20,4 +20,10 @@
     <select id="getAreaIdByName" parameterType="java.lang.String" resultType="java.lang.Long">
         select id from r_comm_area where name=#{name} and is_delete = 0
     </select>
+    <select id="getBuildingIdByName" parameterType="java.lang.String" resultType="java.lang.Long">
+        select id from r_building where name=#{name} and is_delete = 0
+    </select>
+    <select id="getUnitIdByName" parameterType="java.lang.String" resultType="java.lang.Long">
+        select id from r_unit where name=#{name} and is_delete = 0
+    </select>
 </mapper>
