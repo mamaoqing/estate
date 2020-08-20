@@ -29,6 +29,7 @@ public class ProvinceCityAreaController {
                     CellStyle style = workbook.createCellStyle();
                     style.setFillForegroundColor(IndexedColors.RED.getIndex());
 //                    style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+                    style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                     //List<UserInfo> userInfoList = new ArrayList<UserInfo>();
                     int rowCount = 0;
                     boolean temp = true;

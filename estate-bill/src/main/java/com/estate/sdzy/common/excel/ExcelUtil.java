@@ -5,6 +5,7 @@ import com.estate.exception.BillException;
 import com.estate.sdzy.common.annotation.ExcelAnnotation;
 import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -77,6 +78,36 @@ public abstract class ExcelUtil {
             }
         }
         return list;
+    }
+
+    /**
+     * 根据不同类型设置表格内的值
+     * @param cell 表格对象
+     * @param value 需要填写的值
+     * @param type 实体中的属性类型.
+     * @param fmt 如果存在时间格式，就按照时间格式转，否则就是 yyyy-MM-dd的格式
+     */
+    public static void setCellValue(HSSFCell cell, Object value, String type, String fmt){
+        if(null == value){
+            cell.setCellValue("");
+        }else{
+            if(INTEGER.equals(type)){
+                cell.setCellValue((Integer)value);
+            }
+            if(DOUBLE.equals(type)){
+                cell.setCellValue((Double)value);
+            }
+            if(BOOLEAN.equals(type)){
+                cell.setCellValue((Boolean)value);
+            }
+            if(STRING.equals(type)){
+                cell.setCellValue(String.valueOf(value));
+            }
+            if(DATE.equals(type)){
+                String date = new SimpleDateFormat(fmt != null ? fmt:"yyyy-MM-dd").format((Date)value);
+                cell.setCellValue(date.toString());
+            }
+        }
     }
 
 }

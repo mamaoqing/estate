@@ -55,6 +55,11 @@ public class RParkingSpaceController extends BaseController {
         return ResultUtil.success(parkingSpaceService.removeById(id,token));
     }
 
+    @DeleteMapping("/deleteAll/{ids}")
+    public Result deleteAll(@PathVariable("ids") String ids ,@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(parkingSpaceService.removeByIds(ids,token));
+    }
+
     @GetMapping("/qrcode")
     public void qrcode(HttpServletRequest request , HttpServletResponse response) throws IOException, WriterException {
 
@@ -75,11 +80,15 @@ public class RParkingSpaceController extends BaseController {
         }
     }
     @PostMapping("/fileUpload")
-    public void uploadFile(@RequestParam("file") MultipartFile file, String className) throws IOException, ClassNotFoundException {
+    public Result uploadFile(@RequestParam("file") MultipartFile file, String className) throws IOException, ClassNotFoundException {
         List<Object> fileData = ImportExcel.getFileData(file, className);
         fileData.forEach(x->{
+//            RParkingSpace s = (RParkingSpace)x;
+//            parkingSpaceService.save(s);
             System.out.println((RParkingSpace)x);
+
         });
+        return ResultUtil.success();
     }
 
 }

@@ -32,16 +32,6 @@ public class RRoom implements Serializable {
     private Long id;
 
     /**
-     * 名称
-     */
-    private String name;
-
-    /**
-     * 房间号
-     */
-    private String roomNo;
-
-    /**
      * 物业公司
      */
     private Long compId;
@@ -61,18 +51,28 @@ public class RRoom implements Serializable {
     private Long commAreaId;
     @TableField(exist = false)
     private String commAreaName;
-
+    /**
+     * 楼宇id
+     */
+    private Long buildingId;
+    @TableField(exist = false)
+    private String buildingName;
     /**
      * 单元id
      */
     private Long unitId;
     @TableField(exist = false)
     private String unitName;
+    /**
+     * 名称
+     */
+    private String name;
 
     /**
-     * 状态
+     * 房间号
      */
-    private String state;
+    private String roomNo;
+
 
     /**
      * 楼层
@@ -112,6 +112,7 @@ public class RRoom implements Serializable {
     private String propertyRightNature;
     @TableField(exist = false)
     private String propertyRightNatureName;
+
     /**
      * 朝向
      */
@@ -124,6 +125,13 @@ public class RRoom implements Serializable {
     private String renovationLevel;
     @TableField(exist = false)
     private String renovationLevelName;
+    /**
+     * 用途
+     */
+    private String usable;
+    @TableField(exist = false)
+    private String usableName;
+
     /**
      * 产权证号
      */
@@ -138,7 +146,10 @@ public class RRoom implements Serializable {
      * 购房合同号
      */
     private String contractNo;
-
+    /**
+     * 状态
+     */
+    private String state;
     /**
      * 建筑面积
      */
@@ -154,12 +165,7 @@ public class RRoom implements Serializable {
      */
     private BigDecimal gardenArea;
 
-    /**
-     * 用途
-     */
-    private String usable;
-    @TableField(exist = false)
-    private String usableName;
+
 
     /**
      * 备注
@@ -169,9 +175,7 @@ public class RRoom implements Serializable {
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date createdAt;
-
     private Long createdBy;
-
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
@@ -179,17 +183,11 @@ public class RRoom implements Serializable {
     private Date modifiedAt;
 
     private Long modifiedBy;
-
     private String modifiedName;
     //@TableLogic
     private Integer isDelete;
 
-    /**
-     * 楼宇id
-     */
-    private Long buildingId;
-    @TableField(exist = false)
-    private String buildingName;
+
 
 
 }
