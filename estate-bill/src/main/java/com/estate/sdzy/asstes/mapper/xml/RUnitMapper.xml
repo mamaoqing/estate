@@ -87,4 +87,7 @@
         </if>
         AND r_unit.is_delete = 0
     </select>
+    <select id="selectUnitByBuildingId" resultType="com.estate.sdzy.asstes.entity.RUnit" >
+        select *,id as oldUnitId,building_id as oldBuildingId from r_unit where building_id=#{buildingId} and is_delete='0'
+    </select>
 </mapper>
