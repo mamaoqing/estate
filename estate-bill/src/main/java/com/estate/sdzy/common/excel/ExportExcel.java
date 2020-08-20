@@ -112,6 +112,13 @@ public class ExportExcel extends ExcelUtil {
         // 设置样式
         HSSFCellStyle style = getColumnTopStyle(wb);
         // 冻结三行,即excel表的前三行不随鼠标滚动而滚动
+        /**
+         * colsplit : 冻结的行
+         * rowsplit : 冻结的列
+         * leftmostcolum : 未冻结的第一列
+         * toprow : 未冻结的第一行
+         *
+         */
         sheet.createFreezePane(0, 3, 0, 3);
 
         // 创建第一行
