@@ -1,6 +1,7 @@
 package com.estate.sdzy.asstes.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.estate.sdzy.common.annotation.ExcelAnnotation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,12 +36,17 @@ public class RCommunity implements Serializable {
     /**
      * 小区名称
      */
+    @ExcelAnnotation(value = "小区名称",master = true)
     private String name;
 
     /**
      * 物业公司
      */
     private Long compId;
+
+    @ExcelAnnotation(value = "物业公司",master = true)
+    @TableField(exist = false)
+    private String compName;
 
     /**
      * 省
@@ -60,21 +66,25 @@ public class RCommunity implements Serializable {
     /**
      * 省
      */
+    @ExcelAnnotation(value = "省",master = true)
     private String province;
 
     /**
      * 市
      */
+    @ExcelAnnotation(value = "市")
     private String city;
 
     /**
      * 县区
      */
+    @ExcelAnnotation(value = "县区")
     private String district;
 
     /**
      * 详细地址
      */
+    @ExcelAnnotation(value = "详细地址")
     private String detailedAddress;
 
     /**
@@ -82,6 +92,7 @@ public class RCommunity implements Serializable {
      */
     @JsonFormat(pattern = "yyyy-MM-dd" ,timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+
     private Date buildedDate;
 
     /**
@@ -89,11 +100,13 @@ public class RCommunity implements Serializable {
      */
     @JsonFormat(pattern = "yyyy-MM-dd" ,timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @ExcelAnnotation(value = "交付日期")
     private Date deliverDate;
 
     /**
      * 用途类型
      */
+    @ExcelAnnotation(value = "用途类型")
     private String usableType;
 
     @TableField(exist = false)
@@ -109,11 +122,13 @@ public class RCommunity implements Serializable {
     /**
      * 电话
      */
+    @ExcelAnnotation(value = "tel")
     private String tel;
 
     /**
      * 邮箱
      */
+    @ExcelAnnotation(value = "邮箱")
     private String eMail;
 
     /**
@@ -167,6 +182,5 @@ public class RCommunity implements Serializable {
     @TableField(exist = false)
     private List<RCommArea> childList;
 
-    @TableField(exist = false)
-    private String compName;
+
 }

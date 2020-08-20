@@ -3,6 +3,7 @@ package com.estate.sdzy.asstes.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.asstes.entity.RParkingSpace;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.poi.ss.formula.functions.T;
 
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.InvocationTargetException;
@@ -27,4 +28,7 @@ public interface RParkingSpaceService extends IService<RParkingSpace> {
 
     void writeOut(HttpServletResponse response, String token, String className) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException;
 
+    boolean removeByIds(String ids ,String token);
+
+    boolean insertBatch(List<T>list);
 }

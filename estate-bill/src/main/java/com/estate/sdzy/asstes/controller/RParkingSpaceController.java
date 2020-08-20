@@ -55,6 +55,11 @@ public class RParkingSpaceController extends BaseController {
         return ResultUtil.success(parkingSpaceService.removeById(id,token));
     }
 
+    @DeleteMapping("/deleteAll/{ids}")
+    public Result deleteAll(@PathVariable("ids") String ids ,@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(parkingSpaceService.removeByIds(ids,token));
+    }
+
     @GetMapping("/qrcode")
     public void qrcode(HttpServletRequest request , HttpServletResponse response) throws IOException, WriterException {
 

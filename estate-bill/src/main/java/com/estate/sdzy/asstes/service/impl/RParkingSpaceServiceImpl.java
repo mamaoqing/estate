@@ -3,7 +3,9 @@ package com.estate.sdzy.asstes.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.exception.BillException;
+import com.estate.sdzy.asstes.entity.ROwnerProperty;
 import com.estate.sdzy.asstes.entity.RParkingSpace;
+import com.estate.sdzy.asstes.mapper.ROwnerPropertyMapper;
 import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
 import com.estate.sdzy.asstes.service.RParkingSpaceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -15,10 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +40,7 @@ import java.util.Map;
 public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, RParkingSpace> implements RParkingSpaceService {
 
     private final RParkingSpaceMapper parkingSpaceMapper;
+    private final ROwnerPropertyMapper ownerPropertyMapper;
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
@@ -105,6 +110,7 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
     }
 
     @Override
+    @Transactional
     public boolean removeById(Long id, String token) {
         SUser user = getUserByToken(token);
         if (null == id) {
@@ -113,6 +119,9 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
         int delete = parkingSpaceMapper.deleteById(id);
         if(delete > 0){
             log.info("停车位信息删除成功，删除人{}",user.getUserName());
+            QueryWrapper<ROwnerProperty> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("property_id",id).eq("property_type","停车位");
+            ownerPropertyMapper.delete(queryWrapper);
             return true;
         }
         throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
@@ -129,6 +138,28 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
         ExportExcel.writeOut(response,"停车位信息列表",className,records,"导出人：mmq");
     }
 
+    @Override
+    @Transactional
+    public boolean removeByIds(String ids, String token) {
+        System.out.println(ids);
+        if(StringUtils.isEmpty(ids)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        SUser user = getUserByToken(token);
+        QueryWrapper<RParkingSpace> queryWrapper = new QueryWrapper<>();
+        String[] split = ids.split(",");
+        List<String> strings = Arrays.asList(split);
+        queryWrapper.in("id",strings);
+        int delete = parkingSpaceMapper.delete(queryWrapper);
+        if(delete>0){
+            log.info("停车位信息批量删除成功，删除人{}",user.getUserName());
+            QueryWrapper<ROwnerProperty> qw = new QueryWrapper<>();
+            qw.in("property_id",strings).eq("property_type","停车位");
+            ownerPropertyMapper.delete(qw);
+            return true;
+        }
+        throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+    }
 
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
