@@ -21,6 +21,7 @@ public enum BillExceptionEnum {
     FILE_NOTFOUND_ERROR ("文件找不到",450),
     FILE_MASTER_FIELDNO_ERROR ("必填属性不能为空",450),
     FILE_TYPE_ERROR ("文件类型不正确",451),
+    DATA_EXIST_ERROR ("数据重复",452),
     RESET_PASSWORD_ERROR ("旧密码输入错误，重设密码失败",900),
     RESET_PASSWORD_ERROR_SYSTEM ("重设密码失败",900),
     TREE_MENU_ERROR_SYSTEM ("社区树获取信息异常，请检查数据是否正确！",601),
