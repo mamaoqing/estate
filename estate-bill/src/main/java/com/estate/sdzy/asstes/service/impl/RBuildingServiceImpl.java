@@ -111,6 +111,7 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
     @Override
     @Transactional
     public String copyBuildings(RBuilding rBuilding, String token) {
+        SUser user = getUserByToken(token);
         RBuilding rBuildingCopy = new RBuilding();
         BeanUtils.copyProperties(rBuilding,rBuildingCopy);
         boolean save = save(rBuildingCopy, token);
@@ -118,17 +119,8 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
             //建筑的所有单元信息、该建筑的所有房间信息复制成一条新的建筑信息
             List<RUnit> units = getUnits(rBuilding.getId());
             for (RUnit rUnit:units){
-                RUnit rUnitCopy = new RUnit();
-                BeanUtils.copyProperties(rUnit,rUnitCopy);
-                rUnitCopy.setBuildingId(rBuildingCopy.getId());
-                rUnitService.save(rUnitCopy,token);
-            }
-            List<RRoom> rooms = getRooms(rBuilding.getId());
-            for (RRoom rRoom:rooms){
-                RRoom rRoomCopy = new RRoom();
-                BeanUtils.copyProperties(rRoom,rRoomCopy);
-                rRoomCopy.setBuildingId(rBuildingCopy.getId());
-                rRoomService.save(rRoomCopy,token);
+                Integer newUnitId = rBuildingMapper.insertUnitCopy(user.getId(), user.getUserName(), rUnit.getId(),rBuildingCopy.getId());
+                rBuildingMapper.insertRoomCopy(user.getId(), user.getUserName(), newUnitId,rUnit.getId(),rBuildingCopy.getId());
             }
         }else{
             return "建筑复制失败";

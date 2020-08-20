@@ -37,4 +37,24 @@
             limit #{pageNo},#{size}
         </if>
     </select>
+    <sql id="aaaa">
+        (select @@IDENTITY)+1 as id
+    </sql>
+    <insert id="insertUnitCopy" useGeneratedKeys="true" keyProperty="id" >
+        insert into r_unit (id,no,name,comp_id,comm_id,comm_area_id,state,floor_num,model,room_num,remark,
+        building_id,modified_at,created_at,created_by,created_name,modified_by,modified_name)
+        select <include refid="aaaa"></include>,no,name,comp_id,comm_id,comm_area_id,state,floor_num,model,room_num,remark,
+        #{buildingId} as building_id,CURRENT_TIME as modified_at,CURRENT_TIME as created_at,#{userId} as created_by,#{userName} as created_name,
+         #{userId} as modified_by,#{userName} as modified_name from r_unit where id=#{unitId}
+    </insert>
+    <insert id="insertRoomCopy" keyProperty="id">
+        insert into r_room (name,room_no,comp_id,comm_id,comm_area_id,unit_id,state,floor,room_model,room_type,property_right_nature,
+        direction,renovation_level,title_deed_no,land_deed_no,contract_no,building_area,usable_area,garden_area,usable,remark,created_at,
+        created_by,created_name,modified_at,modified_by,modified_name,is_delete,building_id)
+        select name,room_no,comp_id,comm_id,comm_area_id,#{newUnitId} as unit_id,state,floor,room_model,room_type,property_right_nature,
+        direction,renovation_level,title_deed_no,land_deed_no,contract_no,building_area,usable_area,garden_area,usable,remark,
+        CURRENT_TIME as created_at,#{userId} as created_by,#{userName} as created_name,CURRENT_TIME as modified_at,
+         #{userId} as modified_by,#{userName} as modified_name,is_delete,#{buildingId} as building_id
+         from r_room where unit_id=#{unitId} and is_delete='0'
+    </insert>
 </mapper>

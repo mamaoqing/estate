@@ -2,7 +2,9 @@ package com.estate.sdzy.asstes.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.estate.sdzy.asstes.entity.RRoom;
+import com.estate.util.Result;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -22,4 +24,6 @@ public interface RRoomService extends IService<RRoom> {
     List<RRoom> list(Map<String,String> map, Integer pageNo, Integer size, String token);
     Integer listNum(Map<String,String> map,String token);
     String checkRoomOwer(String roomId);
+    List<RRoom> list(Map<String,String> map,String token);
+    Result importExcel(HttpServletRequest request, String token);
 }
