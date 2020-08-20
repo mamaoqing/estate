@@ -134,6 +134,7 @@ public class ROwner implements Serializable {
     private Long modifiedBy;
 
     private String modifiedName;
-
+    @TableField(exist = false)
+    private String compName;
 
 }

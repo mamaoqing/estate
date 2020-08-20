@@ -11,6 +11,5 @@
             <if test="compId != 0">
                 where r_owner.comp_id = #{compId}
             </if>
-
     </select>
 </mapper>

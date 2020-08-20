@@ -14,6 +14,7 @@ import com.estate.sdzy.system.entity.SUser;
 import com.estate.util.BillExceptionEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -159,6 +160,11 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
             return true;
         }
         throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+    }
+
+    @Override
+    public boolean insertBatch(List<T> list) {
+        return false;
     }
 
     private SUser getUserByToken(String token) {
