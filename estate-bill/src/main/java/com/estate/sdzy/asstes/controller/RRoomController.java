@@ -9,10 +9,9 @@ import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.InputStream;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * <p>
@@ -66,20 +65,29 @@ public class RRoomController extends BaseController {
     }
 
     @PostMapping("/upload")
-    public Result upload(@PathVariable("file") MultipartFile file,HttpServletRequest request){
-        //获取原始的文件名
-        String originalFilename = file.getOriginalFilename();
-        String fileType = originalFilename.substring(originalFilename.lastIndexOf(".") + 1, originalFilename.length());
-        //默认从第一行开始读取
-        Integer startRows = 1;
-        try {
-            //获取输入流
-            InputStream is = file.getInputStream();
-
-        }catch (Exception e){
-
-        }
-        return ResultUtil.success();
+    public Result upload(HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
+        return rRoomService.importExcel(request,token);
     }
+
+    @RequestMapping("/export")
+    public void testExprotExcel(HttpServletResponse response,HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
+
+        //创建一个数组用于设置表头
+        /*List<String> str = new ArrayList<>();
+        try{
+            Class<?> aClass = Class.forName("com.estate.sdzy.asstes.entity.RRoom");
+            Excel[] annotation = aClass.getAnnotationsByType(Excel.class);
+            for(int i=0;i<annotation.length;i++){
+                str.add(annotation[i].name());
+            }
+        }catch (Exception e){
+        }
+        String[] arr=str.toArray(new String[str.size()]);
+
+        //调用Excel导出工具类
+        ExcelExport.export(response,rRoomService.list(super.getParameterMap(request),token),arr);*/
+
+    }
+
 }
 
