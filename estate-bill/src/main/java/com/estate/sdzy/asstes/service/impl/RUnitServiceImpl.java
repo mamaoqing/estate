@@ -8,6 +8,7 @@ import com.estate.sdzy.asstes.entity.RRoom;
 import com.estate.sdzy.asstes.entity.RUnit;
 import com.estate.sdzy.asstes.mapper.RRoomMapper;
 import com.estate.sdzy.asstes.mapper.RUnitMapper;
+import com.estate.sdzy.asstes.service.RRoomService;
 import com.estate.sdzy.asstes.service.RUnitService;
 import com.estate.sdzy.system.entity.SUnitModel;
 import com.estate.sdzy.system.entity.SUser;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +50,8 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
     private SUnitModelMapper modelMapper;
     @Autowired
     private RRoomMapper roomMapper;
+    @Autowired
+    private RRoomService roomService;
     @Override
     public List<RUnit> getAllUnit(Map map) {
         return mapper.getAllUnit(map);
@@ -93,6 +97,28 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
         }
         throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
     }
+
+    @Override
+    public boolean copyUnit(RUnit unit, String token) {
+        getUserByToken(token);
+        SUser user = getUserByToken(token);
+        if (null == unit) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        unit.setCreatedBy(user.getId());
+        unit.setCreatedName(user.getUserName());
+        int insert = mapper.insert(unit);
+        if (insert > 0) {
+            log.info("单元信息添加成功，创建人={}", user.getUserName());
+            log.info("===========================，创建人={}", user.getUserName());
+            log.info("===========================，创建人={}", user.getUserName());
+            log.info("===========================，创建人={}", user.getUserName());
+
+            return true;
+        }
+        throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+    }
+
     @Override
     public boolean delete(Long id,String token) {
         getUserByToken(token);
@@ -168,6 +194,7 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
         }
         int start = Integer.parseInt(map.get("start").toString());
         int end = Integer.parseInt(map.get("end").toString());
+        List<RRoom> rooms = new ArrayList<>();
         for (int i=start;i<=end;i++){
 
             RRoom room = new RRoom();
@@ -205,12 +232,13 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
             if (rRooms.size()>0){
                 return ResultUtil.error(i+"层"+roomNo.toString()+"已存在",1);
             }
-            int insert = roomMapper.insert(room);
-            if (insert > 0) {
-                log.info("房间添加成功，添加人={}", user.getUserName());
-            } else {
-                throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
-            }
+            rooms.add(room);
+        }
+        boolean b = roomService.saveBatch(rooms);
+        if (b) {
+            log.info("房间添加成功，添加人={}", user.getUserName());
+        } else {
+            throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
         }
         return ResultUtil.success();
     }

@@ -37,8 +37,8 @@ public class ROwnerPropertyServiceImpl extends ServiceImpl<ROwnerPropertyMapper,
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         QueryWrapper<ROwner> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("cc.id",id).eq("bb.property_type","停车位").eq("bb.is_delete",0).eq("cc.is_delete",0);
+        queryWrapper.eq("cc.id",id).eq(" ","停车位").eq("bb.is_delete",0).eq("cc.is_delete",0);
 
-        return ownerPropertyMapper.ownerProByParkId(queryWrapper);
+        return ownerPropertyMapper.ownerProByParkId(id,"停车位",0);
     }
 }

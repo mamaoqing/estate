@@ -18,6 +18,6 @@ import java.util.List;
  */
 public interface ROwnerPropertyMapper extends BaseMapper<ROwnerProperty> {
 
-    List<ROwner> ownerProByParkId(@Param("ew") QueryWrapper<ROwner> queryWrapper);
+    List<ROwner> ownerProByParkId(@Param("id") Long id,@Param("type")String type,@Param("del")Integer del);
 
 }

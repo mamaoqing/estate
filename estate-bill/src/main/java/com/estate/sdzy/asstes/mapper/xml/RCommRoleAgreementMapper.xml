@@ -6,11 +6,10 @@
                 aa.no,aa.begin_date,aa.end_date,aa.state,aa.type,aa.remark,
                 aa.created_at,aa.created_by,aa.created_name,aa.modified_at,aa.modified_by,aa.modified_name,
                 bb.name compName,cc.name commName,dd.name roleName
-        from r_comm_role_agreement aa
-        left join s_company bb on aa.comp_id = bb.id
-        left join r_community cc ON aa.comm_id = cc.ID
-        left join s_role dd on aa.role_id = dd.id
+        from r_comm_role_agreement aa,s_company bb,r_community cc,s_role dd
 
         ${ew.customSqlSegment}
+
+        and aa.comp_id = bb.id and aa.comm_id = cc.ID and  aa.role_id = dd.id
     </select>
 </mapper>

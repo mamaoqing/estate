@@ -1,9 +1,15 @@
 package com.estate.sdzy.asstes.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.estate.sdzy.asstes.entity.ROwner;
+import com.estate.sdzy.asstes.service.ROwnerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -13,9 +19,16 @@ import org.springframework.stereotype.Controller;
  * @author mq
  * @since 2020-08-04
  */
-@Controller
+@RestController
 @RequestMapping("/sdzy/rOwner")
 public class ROwnerController {
 
+    @Autowired
+    private ROwnerService ownerService;
+
+    @PostMapping("/getOwenerList")
+    public List<ROwner> getOwenerList(@RequestBody  Map<String, String> map, @RequestHeader("Authentication-Token") String token){
+        return ownerService.getOwenerList(map,token);
+    }
 }
 

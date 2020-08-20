@@ -2,7 +2,9 @@ package com.estate.sdzy.common.excel;
 
 import com.alibaba.druid.util.StringUtils;
 import com.estate.exception.BillException;
+import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
 import com.estate.sdzy.common.annotation.ExcelAnnotation;
+import com.estate.sdzy.system.mapper.SDictMapper;
 import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.*;
@@ -10,7 +12,11 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.util.StringUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -25,13 +31,18 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 导出excel
  */
 @Slf4j
+@Component
 public class ExportExcel extends ExcelUtil {
 
+    private static SDictMapper dictMapper;
+
+    private static RParkingSpaceMapper parkingSpaceMapper;
     /**
      *
      * @param response 返回
@@ -47,7 +58,8 @@ public class ExportExcel extends ExcelUtil {
     public static void writeOut(HttpServletResponse response, String fileName, String className,List<?> dataList,String auth) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         List<String> list = ExcelUtil.getClassFirld(className);
         Class<?> c = Class.forName(className);
-        HSSFWorkbook workbook = createHSSFWorkbook(fileName,list,auth,dataList,c);
+        Map<String, String> map = getDistfield(className);
+        HSSFWorkbook workbook = createHSSFWorkbook(fileName,list,auth,dataList,c,map);
         //将excel的数据写入文件
         ByteArrayOutputStream fos = null;
         byte[] retArr = null;
@@ -61,6 +73,7 @@ public class ExportExcel extends ExcelUtil {
             response.setContentType("application/octet-stream; charset=utf-8");
             //解决中文名称乱码问题,要保存的文件名
             response.setHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes(), "iso-8859-1") + ".xls");
+            log.info("文件导出成功，导出人："+auth);
             os.write(retArr);
             os.flush();
         } catch (IOException e) {
@@ -92,7 +105,7 @@ public class ExportExcel extends ExcelUtil {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    public static HSSFWorkbook createHSSFWorkbook(String fileName, List<String> list, String auth, List<?> dataList,Class c) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+    public static HSSFWorkbook createHSSFWorkbook(String fileName, List<String> list, String auth, List<?> dataList,Class c,Map<String, String> map) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         // 创建表格
         HSSFWorkbook wb = new HSSFWorkbook();
         //默认宽，默认高
@@ -100,6 +113,13 @@ public class ExportExcel extends ExcelUtil {
         // 设置样式
         HSSFCellStyle style = getColumnTopStyle(wb);
         // 冻结三行,即excel表的前三行不随鼠标滚动而滚动
+        /**
+         * colsplit : 冻结的行
+         * rowsplit : 冻结的列
+         * leftmostcolum : 未冻结的第一列
+         * toprow : 未冻结的第一行
+         *
+         */
         sheet.createFreezePane(0, 3, 0, 3);
 
         // 创建第一行
@@ -119,11 +139,31 @@ public class ExportExcel extends ExcelUtil {
         // 合并单元格
         sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, list.size() - 1));
         // 循环创建第三行内容,表头
+        Integer rows = 999;
+        if(!CollectionUtils.isEmpty(dataList)){
+            rows = dataList.size();
+        }
         HSSFRow rowm3 = sheet.createRow(2);
         for (int i = 0, count = list.size(); i < count; i++) {
+            String value = list.get(i);
+            String dist = map.get(value);
             HSSFCell cellTitle = rowm3.createCell(i);
             cellTitle.setCellStyle(style);
-            cellTitle.setCellValue(list.get(i));
+            cellTitle.setCellValue(value);
+            // 如果dist不是空的，表示该字段是下拉列表
+            if(!StringUtils.isEmpty(dist)){
+                // 创建新的下拉框从第三行开始如果数据集合长度为空,就到999行.否则就到集合大小的长度
+                CellRangeAddressList regions = new CellRangeAddressList(3,3+rows,i,i);
+                List<String> dictNames = dictMapper.listDictName(dist);
+                String [] arr = new String[dictNames.size()];
+                for (int j = 0; j < dictNames.size(); j++) {
+                    arr[j] = dictNames.get(j);
+                }
+                DVConstraint constraint = DVConstraint.createExplicitListConstraint(arr);
+                HSSFDataValidation dataValidation = new HSSFDataValidation(regions,constraint);
+
+                sheet.addValidationData(dataValidation);
+            }
         }
         if (dataList != null) {
             createData(dataList,sheet,style,c,list);
@@ -226,5 +266,14 @@ public class ExportExcel extends ExcelUtil {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
+    @Autowired
+    public void setDictMapper(SDictMapper dictMapper) {
+        ExportExcel.dictMapper = dictMapper;
+    }
+
+    @Autowired
+    public void setParkingSpaceMapper(RParkingSpaceMapper parkingSpaceMapper) {
+        ExportExcel.parkingSpaceMapper = parkingSpaceMapper;
+    }
 
 }

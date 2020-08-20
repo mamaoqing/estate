@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.estate.exception.BillException;
 import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
 import com.estate.sdzy.common.annotation.ExcelAnnotation;
+import com.estate.sdzy.system.mapper.SDictMapper;
 import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -30,6 +31,8 @@ import java.util.Map;
 @Component
 public class ImportExcel extends ExcelUtil {
 
+    private static SDictMapper dictMapper;
+
     private static RParkingSpaceMapper parkingSpaceMapper;
 
     /**
@@ -48,11 +51,18 @@ public class ImportExcel extends ExcelUtil {
         Annotation[] annotations = c.getAnnotations();
         List<String> fields = new ArrayList<>();
         List<String> masterField = new ArrayList<>();
+        // 存在字典属性的
+        Map<String,String> distMap = new HashMap<>();
+
         for (Field field : fields1) {
             if (field.isAnnotationPresent(ExcelAnnotation.class)){
                 fields.add(field.getName());
                 if(field.getAnnotation(ExcelAnnotation.class).master()){
                     masterField.add(field.getName());
+                }
+                String dist = field.getAnnotation(ExcelAnnotation.class).dist();
+                if(!StringUtils.isEmpty(dist)){
+                    distMap.put(field.getName(),dist);
                 }
             }
         }
@@ -106,7 +116,12 @@ public class ImportExcel extends ExcelUtil {
                         Map<String, Object> map = new HashMap<>(16);
                         for (int cellNum = firstCellNum; cellNum < lastCellNum; cellNum++) {
                             Cell cell = row.getCell(cellNum);
+                            // 判断该属性是否是字典属性,存在字典属性，必须与字典一致，否则就置空。
                             String s = fields.get(cellNum);
+                            if(distMap.containsKey(s)){
+                                String dictName = dictMapper.getDictName(cell.toString(), distMap.get(s));
+                                cell.setCellValue(dictName);
+                            }
                             if(masterField.contains(s) && StringUtils.isEmpty(getCellValue(cell))){
                                 throw new BillException(BillExceptionEnum.FILE_MASTER_FIELDNO_ERROR);
                             }
@@ -182,7 +197,7 @@ public class ImportExcel extends ExcelUtil {
                 cellValue = String.valueOf(cell);
                 break;
             case NUMERIC:
-                cellValue = cell.toString();
+                cellValue = String.valueOf(cell);
                 break;
             case BLANK:
                 cellValue = "";
@@ -193,7 +208,13 @@ public class ImportExcel extends ExcelUtil {
     }
 
     @Autowired
+    public void setDictMapper(SDictMapper dictMapper) {
+        ImportExcel.dictMapper = dictMapper;
+    }
+
+    @Autowired
     public void setParkingSpaceMapper(RParkingSpaceMapper parkingSpaceMapper) {
         ImportExcel.parkingSpaceMapper = parkingSpaceMapper;
     }
+
 }

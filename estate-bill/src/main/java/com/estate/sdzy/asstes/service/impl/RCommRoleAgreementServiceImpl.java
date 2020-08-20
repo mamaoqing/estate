@@ -104,8 +104,8 @@ public class RCommRoleAgreementServiceImpl extends ServiceImpl<RCommRoleAgreemen
         rCommRoleAgreement.setModifiedBy(user.getId());
         rCommRoleAgreement.setModifiedName(user.getUserName());
         int i = commRoleAgreementMapper.updateById(rCommRoleAgreement);
-        if(i>0){
-            log.info("协议信息更新成功，修改人{}",user.getUserName());
+        if (i > 0) {
+            log.info("协议信息更新成功，修改人{}", user.getUserName());
             return true;
         }
         throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
@@ -118,15 +118,15 @@ public class RCommRoleAgreementServiceImpl extends ServiceImpl<RCommRoleAgreemen
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         int i = commRoleAgreementMapper.deleteById(id);
-        if(i>0){
-            log.info("协议信息删除成功，删除id={},删除人{}",id,user.getUserName());
+        if (i > 0) {
+            log.info("协议信息删除成功，删除id={},删除人{}", id, user.getUserName());
             return true;
         }
         throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
     }
 
     @Override
-    public Page<RCommRoleAgreement> listCommRoleAgreement(Map<String,String> map , String token) {
+    public Page<RCommRoleAgreement> listCommRoleAgreement(Map<String, String> map, String token) {
         SUser user = getUserByToken(token);
         if (StringUtils.isEmpty(map.get("pageNo"))) {
             log.error("参数错误，请输入页码");
@@ -135,34 +135,33 @@ public class RCommRoleAgreementServiceImpl extends ServiceImpl<RCommRoleAgreemen
         Integer pageNo = Integer.valueOf(map.get("pageNo"));
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
         QueryWrapper<RCommRoleAgreement> queryWrapper = new QueryWrapper<>();
-        Page<RCommRoleAgreement> page = new Page<>(pageNo,size);
+        Page<RCommRoleAgreement> page = new Page<>(pageNo, size);
 
         if (!"超级管理员".equals(user.getType())) {
             queryWrapper.eq("aa.comp_id", user.getCompId());
             // 数据权限，只能查看自己有权限的数据
-            queryWrapper.inSql("comm_id","SELECT c.comm_id FROM s_user_comm c WHERE  c.user_id =  "+user.getId());
-        }else{
-            queryWrapper.eq(!StringUtils.isEmpty(map.get("compId")),"aa.comp_id",map.get("compId"));
+            queryWrapper.inSql("comm_id", "SELECT c.comm_id FROM s_user_comm c WHERE  c.user_id =  " + user.getId());
+        } else {
+            queryWrapper.eq(!StringUtils.isEmpty(map.get("compId")), "aa.comp_id", map.get("compId"));
         }
-
-        queryWrapper.eq("aa.is_delete",0);
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("type")),"aa.type",map.get("type"));
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("roleId")),"role_id",map.get("roleId"));
+        queryWrapper.eq("aa.is_delete", 0);
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("type")), "aa.type", map.get("type"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("roleId")), "role_id", map.get("roleId"));
 
         // 当前时间大于结束时间或者小于开始时间，都是已经过期的
-        if(!StringUtils.isEmpty(map.get("state")) && map.get("state").equals("over")){
-            queryWrapper.and(queryWrappers -> queryWrappers.lt("end_date",new Date())
-                    .or().gt("begin_date",new Date()));
+        if (!StringUtils.isEmpty(map.get("state")) && map.get("state").equals("over")) {
+            queryWrapper.and(queryWrappers -> queryWrappers.lt("end_date", new Date())
+                    .or().gt("begin_date", new Date()));
         }
         // 快过期，结束时间
-        if(!StringUtils.isEmpty(map.get("state")) && map.get("state").equals("danger")){
-            queryWrapper.lt("end_date", TimeUtil.getBeforeDate(30)).gt("end_date",new Date());
+        if (!StringUtils.isEmpty(map.get("state")) && map.get("state").equals("danger")) {
+            queryWrapper.lt("end_date", TimeUtil.getBeforeDate(30)).gt("end_date", new Date());
         }
         // 当前时间小于结束时间，大于开始时间，都是有效的。
-        queryWrapper.lt(!StringUtils.isEmpty(map.get("state")) && map.get("state").equals("effect"),"begin_date",new Date())
-                .gt(!StringUtils.isEmpty(map.get("state")) && map.get("state").equals("effect"),"end_date",new Date());
+        queryWrapper.lt(!StringUtils.isEmpty(map.get("state")) && map.get("state").equals("effect"), "begin_date", new Date())
+                .gt(!StringUtils.isEmpty(map.get("state")) && map.get("state").equals("effect"), "end_date", new Date());
 
-        return commRoleAgreementMapper.listCommRoleAgreement(page,queryWrapper);
+        return commRoleAgreementMapper.listCommRoleAgreement(page, queryWrapper);
     }
 
     private SUser getUserByToken(String token) {
@@ -173,7 +172,6 @@ public class RCommRoleAgreementServiceImpl extends ServiceImpl<RCommRoleAgreemen
         }
         return (SUser) o;
     }
-
 
 
 }
