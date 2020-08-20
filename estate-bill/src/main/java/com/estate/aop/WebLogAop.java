@@ -40,7 +40,7 @@ public class WebLogAop {
     private SUserRoleService userRoleService;
 
 
-    @Pointcut("execution(public * com.estate.sdzy.controller.*.bill*(..))")
+    @Pointcut("execution(public * com.estate.sdzy.*.controller.*.bill*(..))")
     public void aopLog() {
     }
 
@@ -69,7 +69,7 @@ public class WebLogAop {
         //log.info("=============我来源与after========================");
     }
 
-    @Pointcut("execution(public * com.estate.sdzy.controller.*.*(..))")
+    @Pointcut("execution(public * com.estate.sdzy.*.controller.*.*(..))")
     public void allLog() {
     }
 

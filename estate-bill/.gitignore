@@ -12,3 +12,4 @@ pom.xml
 *.xml
 # Created by .ignore support plugin (hsz.mobi)
 /estate-bill/src/test/
+pom.xml

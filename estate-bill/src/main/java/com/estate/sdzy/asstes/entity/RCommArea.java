@@ -54,13 +54,13 @@ public class RCommArea implements Serializable {
     /**
      * 建造日期
      */
-    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd" ,timezone = "GMT+8")
     private Date buildedDate;
 
     /**
      * 交付日期
      */
-    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd" ,timezone = "GMT+8")
     private Date deliverDate;
 
     /**
@@ -94,6 +94,7 @@ public class RCommArea implements Serializable {
     private String remark;
 
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss" ,timezone = "GMT+8")
     private Date createdAt;
 
     private Long createdBy;
@@ -101,6 +102,7 @@ public class RCommArea implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss" ,timezone = "GMT+8")
     private Date modifiedAt;
 
     private Long modifiedBy;
@@ -108,6 +110,12 @@ public class RCommArea implements Serializable {
     private String modifiedName;
     @TableLogic
     private Integer isDelete;
+
+    @TableField(exist = false)
+    private String commName;
+
+    @TableField(exist = false)
+    private String compName;
 
     @TableField(exist = false)
     private List<RBuilding> childList;

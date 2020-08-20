@@ -40,7 +40,7 @@ public interface RCommunityService extends IService<RCommunity> {
 
     Page<RCommunity> listCommunity(String token,Map<String,String> map);
 
-
+    List<RCommunity> getAllComm(String token);
     List<RCommunity> getUsersComm(String token);
 
     List<RCommunity> getByCompId(long id);

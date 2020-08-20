@@ -58,7 +58,7 @@ public class RCommunityController extends BaseController {
 
     @GetMapping("/{id}")
     public Result insertCommunity(@PathVariable("id") Long id, @RequestHeader("Authentication-Token") String token) {
-        return ResultUtil.success(communityService.getByCompId(id));
+        return ResultUtil.success(communityService.getById(id));
     }
 
     @GetMapping("/userCommunity")
@@ -90,6 +90,11 @@ public class RCommunityController extends BaseController {
     @GetMapping("/listComm/{id}")
     public Result listComm(@PathVariable(value = "id",required = false) Long id,@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(communityService.listComm(id,token));
+    }
+
+    @GetMapping("/getAllComm")
+    public Result getAllComm(@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(communityService.getAllComm(token));
     }
 
 }

@@ -247,6 +247,14 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
     }
 
     @Override
+    public List<RCommunity> getAllComm(String token) {
+        SUser user = getUserByToken(token);
+        if (!"超级管理员".equals(user.getType())) {
+            return communityMapper.getUsersComm(getUserByToken(token).getId());
+        }
+        return communityMapper.selectList(null);
+    }
+    @Override
     public List<RCommunity> listComm(Long id,String token) {
         SUser user = getUserByToken(token);
         if(StringUtils.isEmpty(id)){
