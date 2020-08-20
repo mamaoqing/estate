@@ -16,6 +16,7 @@ import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -131,6 +132,9 @@ public class ExportExcel extends ExcelUtil {
         sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, list.size() - 1));
         // 循环创建第三行内容,表头
         Integer rows = 999;
+        if(!CollectionUtils.isEmpty(dataList)){
+            rows = dataList.size();
+        }
         HSSFRow rowm3 = sheet.createRow(2);
         for (int i = 0, count = list.size(); i < count; i++) {
             String value = list.get(i);
