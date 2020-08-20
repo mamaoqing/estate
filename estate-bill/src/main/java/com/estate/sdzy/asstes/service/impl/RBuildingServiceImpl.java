@@ -116,12 +116,15 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
         BeanUtils.copyProperties(rBuilding,rBuildingCopy);
         boolean save = save(rBuildingCopy, token);
         if(save){
-            //建筑的所有单元信息、该建筑的所有房间信息复制成一条新的建筑信息
-            List<RUnit> units = getUnits(rBuilding.getId());
-            for (RUnit rUnit:units){
-                Integer newUnitId = rBuildingMapper.insertUnitCopy(user.getId(), user.getUserName(), rUnit.getId(),rBuildingCopy.getId());
-                rBuildingMapper.insertRoomCopy(user.getId(), user.getUserName(), newUnitId,rUnit.getId(),rBuildingCopy.getId());
+
+            //查询新的unit
+            List<RUnit> rUnits = rUnitMapper.selectUnitByBuildingId(rBuilding.getId());
+
+            Integer newUnitId = rBuildingMapper.insertUnitCopy(user.getId(), user.getUserName(), rUnits,rBuildingCopy.getId());
+            for(RUnit rUnit:rUnits){
+                System.out.println(rUnit.getId());
             }
+            //rBuildingMapper.insertRoomCopy(user.getId(), user.getUserName(), rUnit.getOldUnitId(),rUnit.getId(),rBuildingCopy.getId());
         }else{
             return "建筑复制失败";
         }
