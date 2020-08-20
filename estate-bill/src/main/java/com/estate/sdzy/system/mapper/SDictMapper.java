@@ -2,7 +2,10 @@ package com.estate.sdzy.system.mapper;
 
 import com.estate.sdzy.system.entity.SDict;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +18,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface SDictMapper extends BaseMapper<SDict> {
 
+    String getDictName(@Param("name") String name,@Param("id") String id);
+
+    List<String> listDictName(@Param("id") String id);
 }
