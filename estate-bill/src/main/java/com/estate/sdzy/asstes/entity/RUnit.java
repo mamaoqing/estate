@@ -105,6 +105,11 @@ public class RUnit implements Serializable {
     private List<RRoom> childList;
 
     @TableField(exist = false)
+    private Long oldBuildingId;
+    @TableField(exist = false)
+    private Long oldUnitId;
+
+    @TableField(exist = false)
     private String compName;
 
     @TableField(exist = false)

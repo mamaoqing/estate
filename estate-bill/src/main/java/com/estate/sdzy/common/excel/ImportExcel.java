@@ -7,7 +7,6 @@ import com.estate.sdzy.common.annotation.ExcelAnnotation;
 import com.estate.sdzy.system.mapper.SDictMapper;
 import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -20,8 +19,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 导入excel
@@ -68,6 +69,8 @@ public class ImportExcel extends ExcelUtil {
         Integer compId = 0;
         Integer commId = 0;
         Integer areaId = 0;
+        Integer buildingId = 0;
+        Integer unitId = 0;
         if (fields.contains("compName")) {
             compId = fields.indexOf("compName");
         }
@@ -76,6 +79,14 @@ public class ImportExcel extends ExcelUtil {
         }
         if (fields.contains("areaName")) {
             areaId = fields.indexOf("areaName");
+        }else if(fields.contains("commAreaName")){
+            areaId = fields.indexOf("commAreaName");
+        }
+        if (fields.contains("buildingName")) {
+            buildingId = fields.indexOf("buildingName");
+        }
+        if (fields.contains("unitName")) {
+            unitId = fields.indexOf("unitName");
         }
 
         List<Object> list = new ArrayList<>();
@@ -129,6 +140,15 @@ public class ImportExcel extends ExcelUtil {
                                 log.info("分区名称是:{}",getCellValue(cell));
                                 Long commIdByName = parkingSpaceMapper.getAreaIdByName(getCellValue(cell));
                                 map.put("commAreaId",commIdByName);
+                            }if(cellNum == buildingId){
+                                log.info("建筑名称是:{}",getCellValue(cell));
+                                Long buildingIdByName = parkingSpaceMapper.getBuildingIdByName(getCellValue(cell));
+                                map.put("buildingId",buildingIdByName);
+                            }
+                            if(cellNum == unitId){
+                                log.info("单元名称是:{}",getCellValue(cell));
+                                Long unitIdByName = parkingSpaceMapper.getUnitIdByName(getCellValue(cell));
+                                map.put("buildingId",unitIdByName);
                             }
                         }
                         Object aClass = JSON.parseObject(JSON.toJSONString(map), c);

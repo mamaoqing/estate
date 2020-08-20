@@ -1,17 +1,23 @@
 package com.estate.sdzy.asstes.controller;
 
 
+import com.estate.sdzy.asstes.entity.RParkingSpace;
 import com.estate.sdzy.asstes.entity.RRoom;
 import com.estate.sdzy.asstes.service.RRoomService;
 import com.estate.sdzy.common.controller.BaseController;
+import com.estate.sdzy.common.excel.ExportExcel;
+import com.estate.sdzy.common.excel.ImportExcel;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * <p>
@@ -65,28 +71,25 @@ public class RRoomController extends BaseController {
     }
 
     @PostMapping("/upload")
-    public Result upload(HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
-        return rRoomService.importExcel(request,token);
+    public Result upload(@RequestParam("file") MultipartFile file, @RequestHeader("Authentication-Token") String token) throws IOException, ClassNotFoundException{
+        List<Object> fileData = ImportExcel.getFileData(file, "com.estate.sdzy.entity.RRoom");
+        fileData.forEach(x->{
+//            RParkingSpace s = (RParkingSpace)x;
+//            parkingSpaceService.save(s);
+            System.out.println((RParkingSpace)x);
+
+        });
+        return ResultUtil.success();
     }
 
     @RequestMapping("/export")
     public void testExprotExcel(HttpServletResponse response,HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
-
-        //创建一个数组用于设置表头
-        /*List<String> str = new ArrayList<>();
-        try{
-            Class<?> aClass = Class.forName("com.estate.sdzy.asstes.entity.RRoom");
-            Excel[] annotation = aClass.getAnnotationsByType(Excel.class);
-            for(int i=0;i<annotation.length;i++){
-                str.add(annotation[i].name());
-            }
+        //rRoomService.list(super.getParameterMap(request),token);
+        try {
+            ExportExcel.writeOut(response,"停车位信息列表","com.estate.sdzy.entity.RRoom",rRoomService.list(super.getParameterMap(request),token),"导出人：mmq");
         }catch (Exception e){
+            e.printStackTrace();
         }
-        String[] arr=str.toArray(new String[str.size()]);
-
-        //调用Excel导出工具类
-        ExcelExport.export(response,rRoomService.list(super.getParameterMap(request),token),arr);*/
-
     }
 
 }

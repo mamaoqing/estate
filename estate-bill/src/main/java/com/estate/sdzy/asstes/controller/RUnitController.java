@@ -88,6 +88,11 @@ public class RUnitController {
     public Result addUnit(@RequestBody RUnit unit, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(unitService.insert(unit, token));
     }
+
+    @PostMapping("/copyUnit")
+    public Result copyUnit(@RequestBody RUnit unit, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(unitService.copyUnit(unit, token));
+    }
     @DeleteMapping("/delUnit/{id}")
     public Result delUnit(@PathVariable Long id, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(unitService.delete(id, token));

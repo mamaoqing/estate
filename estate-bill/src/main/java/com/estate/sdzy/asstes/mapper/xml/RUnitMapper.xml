@@ -60,11 +60,6 @@
         <if test="userId!=null">
             LEFT JOIN s_user_comm ON s_user_comm.comm_id = r_unit.comm_id
         </if>
-        LEFT JOIN s_company ON s_company.id = r_unit.comp_id
-        LEFT JOIN r_community ON r_community.id = r_unit.comp_id
-        LEFT JOIN r_comm_area ON r_comm_area.id = r_unit.comm_area_id
-        LEFT JOIN r_building ON r_building.id = r_unit.building_id
-        LEFT JOIN s_unit_model ON s_unit_model.id = r_unit.model
         WHERE
         1 = 1
         <if test="userId!=null">
@@ -86,5 +81,8 @@
             and r_unit.name like '%${name}%'
         </if>
         AND r_unit.is_delete = 0
+    </select>
+    <select id="selectUnitByBuildingId" resultType="com.estate.sdzy.asstes.entity.RUnit" >
+        select *,id as oldUnitId,building_id as oldBuildingId from r_unit where building_id=#{buildingId} and is_delete='0'
     </select>
 </mapper>
