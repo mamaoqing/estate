@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.estate.sdzy.system.mapper.SDictMapper">
     <select id="getDictName" resultType="java.lang.String">
-        select name from s_dict_item where dict_id=#{id} and name =#{name}
+        select name from s_dict_item where dict_id=#{id} and name =#{name} and is_delete=0
     </select>
 
     <select id="listDictName" parameterType="java.lang.String" resultType="java.lang.String">
-        select name from s_dict_item where dict_id=#{id}
+        select name from s_dict_item where dict_id=#{id} and is_delete=0
     </select>
 </mapper>

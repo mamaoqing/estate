@@ -26,7 +26,7 @@ public interface RParkingSpaceService extends IService<RParkingSpace> {
     boolean saveOrUpdate(String token,RParkingSpace parkingSpace);
     boolean removeById(Long id ,String token);
 
-    void writeOut(HttpServletResponse response, String token, String className) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException;
+    void writeOut(HttpServletResponse response, String token, Map<String,String> map) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException;
 
     boolean removeByIds(String ids ,String token);
 

@@ -73,6 +73,7 @@ public class ExportExcel extends ExcelUtil {
             response.setContentType("application/octet-stream; charset=utf-8");
             //解决中文名称乱码问题,要保存的文件名
             response.setHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes(), "iso-8859-1") + ".xls");
+            log.info("文件导出成功，导出人："+auth);
             os.write(retArr);
             os.flush();
         } catch (IOException e) {
