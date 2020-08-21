@@ -39,11 +39,11 @@ public class ImportExcel extends ExcelUtil {
     /**
      * 解析表格中的数据
      *
-     * @param file
-     * @param className
-     * @return
-     * @throws IOException
-     * @throws ClassNotFoundException
+     * @param file 导入的问价
+     * @param className 类的完全限定名
+     * @return 返回一个object的集合，object是参数className的类型
+     * @throws IOException io异常
+     * @throws ClassNotFoundException 找不到类异常
      */
     public static List<Object> getFileData(MultipartFile file, String className) throws IOException, ClassNotFoundException {
         checkFile(file);
@@ -112,6 +112,9 @@ public class ImportExcel extends ExcelUtil {
     public static Workbook getWorkBook(MultipartFile file) {
         //获得文件名
         String fileName = file.getOriginalFilename();
+        if(StringUtils.isEmpty(fileName)){
+            throw new BillException(BillExceptionEnum.FILE_NOTFOUND_ERROR);
+        }
         //创建Workbook工作薄对象，表示整个excel
         Workbook workbook = null;
         try {
