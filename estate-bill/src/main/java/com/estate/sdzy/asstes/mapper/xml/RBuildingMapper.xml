@@ -38,9 +38,12 @@
         </if>
     </select>
     <sql id="aaaa">
-        (select @@IDENTITY)+1 as id
+        (select @@IDENTITY)+1
     </sql>
-    <insert id="insertUnitCopy" useGeneratedKeys="true" >
+    <insert id="insertUnitCopy" >
+        <selectKey resultType ="java.lang.Integer" keyProperty= "id" order= "AFTER">
+            (select @@IDENTITY)+1
+        </selectKey >
         insert into r_unit (no,name,comp_id,comm_id,comm_area_id,state,floor_num,model,room_num,remark,
         building_id,modified_at,created_at,created_by,created_name,modified_by,modified_name)
         values
