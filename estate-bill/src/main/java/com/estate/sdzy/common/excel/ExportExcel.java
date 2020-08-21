@@ -8,6 +8,7 @@ import com.estate.sdzy.system.mapper.SDictMapper;
 import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -109,7 +110,7 @@ public class ExportExcel extends ExcelUtil {
         // 创建表格
         HSSFWorkbook wb = new HSSFWorkbook();
         //默认宽，默认高
-        HSSFSheet sheet = setSheetBaseInfoExcel(fileName, 15, 40, wb);
+        HSSFSheet sheet = setSheetBaseInfoExcel(fileName, 15, 20, wb);
         // 设置样式
         HSSFCellStyle style = getColumnTopStyle(wb);
         // 冻结三行,即excel表的前三行不随鼠标滚动而滚动
@@ -250,6 +251,10 @@ public class ExportExcel extends ExcelUtil {
 
         // 设置样式;
         HSSFCellStyle style = workbook.createCellStyle();
+        style.setBorderBottom(BorderStyle.DASH_DOT); //下边框
+        style.setBorderLeft(BorderStyle.DASH_DOT);//左边框
+        style.setBorderTop(BorderStyle.DASH_DOT);//上边框
+        style.setBorderRight(BorderStyle.DASH_DOT);//右边框
         // 在样式用应用设置的字体;
         style.setFont(font);
         // 设置自动换行;

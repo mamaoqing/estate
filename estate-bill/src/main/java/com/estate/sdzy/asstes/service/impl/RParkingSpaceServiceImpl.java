@@ -197,8 +197,7 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
                    throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
                 }
             }else{
-                log.error("导入数据重复，请查证并修改后在重新导入！重复数据编号：<{}>",s.getNo());
-                throw new BillException(BillExceptionEnum.DATA_EXIST_ERROR);
+                parkingSpaceMapper.update(s,queryWrapper);
             }
 
         });
