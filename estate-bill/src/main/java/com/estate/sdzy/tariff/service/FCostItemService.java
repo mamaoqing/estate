@@ -1,7 +1,12 @@
 package com.estate.sdzy.tariff.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.tariff.entity.FCostItem;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.estate.sdzy.tariff.entity.FCostType;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +18,13 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface FCostItemService extends IService<FCostItem> {
 
+    Page<FCostItem> listCostItem(Map<String,String> map,String token);
+
+    boolean save(FCostItem item,String token);
+
+    boolean saveOrUpdate(FCostItem item,String token);
+
+    boolean removeById(Long id ,String token);
+
+    List<FCostType> costTypeList();
 }
