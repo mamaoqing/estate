@@ -76,8 +76,6 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         Page<SUser> page = new Page<>(pageNo, size);
         if (!"超级管理员".equals(user.getType())) {
             map.put("compId", user.getCompId() + "");
-        } else {
-            map.put("compId", null);
         }
         return userMapper.findUserList(page, map.get("compId"), map.get("userName"), map.get("name"), concat);
     }

@@ -62,8 +62,6 @@ public class RCommRoleAgreement implements Serializable {
 
     private String type;
 
-    @TableField(exist = false)
-    private String typeName;
 
     /**
      * 备注
