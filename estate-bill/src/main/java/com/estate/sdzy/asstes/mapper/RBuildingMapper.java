@@ -28,4 +28,6 @@ public interface RBuildingMapper extends BaseMapper<RBuilding> {
     Integer insertUnitCopy(@Param("userId")Long userId, @Param("userName")String userName, @Param("rUnits")List<RUnit> rUnits, @Param("buildingId")Long buildingId);
 
     Integer insertRoomCopy(@Param("userId")Long userId,@Param("userName")String userName,@Param("newUnitId")Integer newUnitId,@Param("unitId")Long unitId,@Param("buildingId")Long buildingId);
+    Integer checkName(@Param("name")String name,@Param("commAreaId")Long commAreaId);
+    Integer checkNo(@Param("no")String no,@Param("commAreaId")Long commAreaId);
 }

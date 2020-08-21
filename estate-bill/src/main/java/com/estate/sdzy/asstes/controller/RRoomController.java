@@ -1,7 +1,6 @@
 package com.estate.sdzy.asstes.controller;
 
 
-import com.estate.sdzy.asstes.entity.RParkingSpace;
 import com.estate.sdzy.asstes.entity.RRoom;
 import com.estate.sdzy.asstes.service.RRoomService;
 import com.estate.sdzy.common.controller.BaseController;
@@ -72,21 +71,18 @@ public class RRoomController extends BaseController {
 
     @PostMapping("/upload")
     public Result upload(@RequestParam("file") MultipartFile file, @RequestHeader("Authentication-Token") String token) throws IOException, ClassNotFoundException{
-        List<Object> fileData = ImportExcel.getFileData(file, "com.estate.sdzy.entity.RRoom");
+        List<Object> fileData = ImportExcel.getFileData(file, "com.estate.sdzy.asstes.entity.RRoom");
         fileData.forEach(x->{
-//            RParkingSpace s = (RParkingSpace)x;
-//            parkingSpaceService.save(s);
-            System.out.println((RParkingSpace)x);
-
+            rRoomService.saveOrUpdateRoom((RRoom)x,token);
         });
         return ResultUtil.success();
     }
 
-    @RequestMapping("/export")
+    @PostMapping("/export")
     public void testExprotExcel(HttpServletResponse response,HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
         //rRoomService.list(super.getParameterMap(request),token);
         try {
-            ExportExcel.writeOut(response,"停车位信息列表","com.estate.sdzy.entity.RRoom",rRoomService.list(super.getParameterMap(request),token),"导出人：mmq");
+            ExportExcel.writeOut(response,"停车位信息列表","com.estate.sdzy.asstes.entity.RRoom",rRoomService.list(super.getParameterMap(request),token),"导出人：mmq");
         }catch (Exception e){
             e.printStackTrace();
         }

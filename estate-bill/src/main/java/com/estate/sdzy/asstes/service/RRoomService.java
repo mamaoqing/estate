@@ -19,6 +19,7 @@ import java.util.Map;
 public interface RRoomService extends IService<RRoom> {
 
     boolean save(RRoom rRoom, String token);
+    void saveOrUpdateRoom(RRoom rRoom, String token);
     boolean update(RRoom rRoom, String token);
     boolean delete(String id,String token);
     List<RRoom> list(Map<String,String> map, Integer pageNo, Integer size, String token);

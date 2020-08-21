@@ -4,6 +4,7 @@ import com.estate.sdzy.asstes.entity.ROwner;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -15,5 +16,5 @@ import java.util.List;
  */
 public interface ROwnerMapper extends BaseMapper<ROwner> {
 
-    public List<ROwner> getOwenerList(Long compId);
+    List<ROwner> getOwenerList(Map map);
 }

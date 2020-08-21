@@ -99,7 +99,7 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
     }
 
     @Override
-    public boolean copyUnit(RUnit unit, String token) {
+    public boolean copyUnit(RUnit unit,Long oldId ,String token) {
         getUserByToken(token);
         SUser user = getUserByToken(token);
         if (null == unit) {
@@ -110,9 +110,22 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
         int insert = mapper.insert(unit);
         if (insert > 0) {
             log.info("单元信息添加成功，创建人={}", user.getUserName());
-            log.info("===========================，创建人={}", user.getUserName());
-            log.info("===========================，创建人={}", user.getUserName());
-            log.info("===========================，创建人={}", user.getUserName());
+            QueryWrapper<RRoom> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("unit_id",oldId);
+            List<RRoom> rooms = roomMapper.selectList(queryWrapper);
+            if (rooms.size()>0){
+                for (int i =0;i<rooms.size();i++){
+                    rooms.get(i).setId(null);
+                    rooms.get(i).setUnitId(unit.getId());
+
+                }
+                boolean b = roomService.saveBatch(rooms);
+                if (b) {
+                    log.info("房间添加成功，添加人={}", user.getUserName());
+                } else {
+                    throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+                }
+            }
 
             return true;
         }
@@ -226,6 +239,7 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
             roomNo.append(map.get("suffix"));
             room.setRoomNo(roomNo.toString());
             QueryWrapper<RRoom> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("unit_id",room.getUnitId());
             queryWrapper.eq("floor",i);
             queryWrapper.eq("room_no",roomNo.toString());
             List<RRoom> rRooms = roomMapper.selectList(queryWrapper);

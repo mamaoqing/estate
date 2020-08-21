@@ -42,6 +42,11 @@ public class RBuildingController extends BaseController {
         return ResultUtil.error("添加字典失败！", 1);
     }
 
+    @PostMapping("/checkBulidingNameNo")
+    public Result checkBulidingNameNo(@RequestBody RBuilding rBuilding, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(rBuildingService.checkBulidingNameNo(rBuilding));
+    }
+
     @PostMapping("/copyBuilding")
     public Result copyBuilding(@RequestBody RBuilding rBuilding, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(rBuildingService.copyBuildings(rBuilding,token));
