@@ -45,7 +45,7 @@ public class ImportExcel extends ExcelUtil {
      * @throws ClassNotFoundException
      */
     public static List<Object> getFileData(MultipartFile file, String className) throws IOException, ClassNotFoundException {
-
+        checkFile(file);
         Class<?> c = Class.forName(className);
         Field[] fields1 = c.getDeclaredFields();
         Annotation[] annotations = c.getAnnotations();
