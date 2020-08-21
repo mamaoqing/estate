@@ -183,7 +183,7 @@ public class RRoom implements Serializable {
     /**
      * 花园面积
      */
-    @ExcelAnnotation(value = "花园面积",master = true)
+    @ExcelAnnotation(value = "花园面积")
     private BigDecimal gardenArea;
 
     /**
