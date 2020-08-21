@@ -23,7 +23,7 @@ public interface RUnitService extends IService<RUnit> {
     List<RBuilding> getAllBuilding(Long areaId,String token);
     List<SUnitModel> getAllModel(String token);
     boolean insert(RUnit unit,String token);
-    boolean copyUnit(RUnit unit,String token);
+    boolean copyUnit(RUnit unit,Long oldId,String token);
     boolean save(RUnit rUnit, String token);
     Result PlAddRoom(Map map, String token);
     boolean delete(Long id, String token);

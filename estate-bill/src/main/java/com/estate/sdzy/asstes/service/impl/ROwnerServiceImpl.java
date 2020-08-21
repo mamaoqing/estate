@@ -36,8 +36,9 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
         if (null == user.getCompId()) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
-        return mapper.getOwenerList(user.getCompId());
+        return mapper.getOwenerList(map);
     }
+
 
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);

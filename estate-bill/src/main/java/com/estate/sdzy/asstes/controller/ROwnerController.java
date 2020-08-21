@@ -3,6 +3,8 @@ package com.estate.sdzy.asstes.controller;
 
 import com.estate.sdzy.asstes.entity.ROwner;
 import com.estate.sdzy.asstes.service.ROwnerService;
+import com.estate.util.Result;
+import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

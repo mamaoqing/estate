@@ -91,7 +91,9 @@ public class RUnitController {
 
     @PostMapping("/copyUnit")
     public Result copyUnit(@RequestBody RUnit unit, @RequestHeader("Authentication-Token") String token) {
-        return ResultUtil.success(unitService.copyUnit(unit, token));
+        Long oldId = unit.getId();
+        unit.setId(null);
+        return ResultUtil.success(unitService.copyUnit(unit,oldId, token));
     }
     @DeleteMapping("/delUnit/{id}")
     public Result delUnit(@PathVariable Long id, @RequestHeader("Authentication-Token") String token) {

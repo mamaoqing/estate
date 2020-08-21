@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.estate.sdzy.asstes.mapper.ROwnerMapper">
-    <select id="getOwenerList" parameterType="java.lang.Long" resultType="com.estate.sdzy.asstes.entity.ROwner">
+    <select id="getOwenerList" parameterType="java.util.Map" resultType="com.estate.sdzy.asstes.entity.ROwner">
         SELECT
             s_company.name as comp_name,
             r_owner.*
         FROM
             r_owner
             LEFT JOIN s_company on r_owner.comp_id = s_company.id
-            <if test="compId != 0">
+            <if test="commId != null and commId !=''">
+                LEFT JOIN r_owner_property  on r_owner_property.owner_id= r_owner.id
+            </if>
+            <if test="compId != null and compId !=''">
                 where r_owner.comp_id = #{compId}
+            </if>
+            <if test="commId != null and commId !=''">
+                and r_owner_property.comm_id = #{commId}
             </if>
     </select>
 </mapper>

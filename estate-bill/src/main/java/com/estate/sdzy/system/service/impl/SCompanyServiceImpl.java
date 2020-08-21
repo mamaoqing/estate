@@ -99,12 +99,19 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
         queryWrapper.like(!StringUtils.isEmpty(map.get("name")), "name", map.get("name"));
         // 简称查询
         queryWrapper.like(!StringUtils.isEmpty(map.get("abbreviation")), "abbreviation", map.get("abbreviation"));
+//        // 省
+//        queryWrapper.eq(!StringUtils.isEmpty(map.get("province")), "province", map.get("province"));
+//        // 市
+//        queryWrapper.eq(!StringUtils.isEmpty(map.get("city")), "city", map.get("city"));
+//        // 区
+//        queryWrapper.eq(!StringUtils.isEmpty(map.get("district")), "district", map.get("district"));
+
         // 省
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("province")), "province", map.get("province"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("provinceId")), "province_id", map.get("provinceId"));
         // 市
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("city")), "city", map.get("city"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("cityId")), "city_id", map.get("cityId"));
         // 区
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("district")), "district", map.get("district"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("districtId")), "district_id", map.get("districtId"));
 
 
         Page<SCompany> sCompanyPage = companyMapper.selectPage(page, queryWrapper);
