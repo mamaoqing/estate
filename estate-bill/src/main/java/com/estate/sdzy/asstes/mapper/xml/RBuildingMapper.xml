@@ -63,4 +63,10 @@
          #{userId} as modified_by,#{userName} as modified_name,is_delete,#{buildingId} as building_id
          from r_room where unit_id=#{unitId} and is_delete='0'
     </insert>
+    <select id="checkName">
+        select count(id) from r_building where name=#{name} and comm_area_id=#{commAreaId} and is_delete='0'
+    </select>
+    <select id="checkNo">
+        select count(id) from r_building where no=#{no} and comm_area_id=#{commAreaId} and is_delete='0'
+    </select>
 </mapper>
