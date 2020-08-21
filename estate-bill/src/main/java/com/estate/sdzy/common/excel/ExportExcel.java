@@ -251,10 +251,6 @@ public class ExportExcel extends ExcelUtil {
 
         // 设置样式;
         HSSFCellStyle style = workbook.createCellStyle();
-        style.setBorderBottom(BorderStyle.DASH_DOT); //下边框
-        style.setBorderLeft(BorderStyle.DASH_DOT);//左边框
-        style.setBorderTop(BorderStyle.DASH_DOT);//上边框
-        style.setBorderRight(BorderStyle.DASH_DOT);//右边框
         // 在样式用应用设置的字体;
         style.setFont(font);
         // 设置自动换行;

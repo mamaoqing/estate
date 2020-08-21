@@ -181,7 +181,8 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
 
     @Override
     @Transactional
-    public boolean fileUpload(MultipartFile file, String className) throws IOException, ClassNotFoundException {
+    public boolean fileUpload(MultipartFile file, String className,String token) throws IOException, ClassNotFoundException {
+        SUser user = getUserByToken(token);
         if(StringUtils.isEmpty(className)){
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
@@ -196,11 +197,18 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
                 if(!(insert > 0)){
                    throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
                 }
+                log.info("-----停车位信息添加成功-----");
             }else{
-                parkingSpaceMapper.update(s,queryWrapper);
+                s.setId(rParkingSpace.getId());
+                int i = parkingSpaceMapper.updateById(s);
+                if (!(i>0)){
+                    throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+                }
+                log.info("-----停车位信息更新成功-----");
             }
 
         });
+        log.info("数据导入成功，导入人：{}",user.getUserName());
         return true;
     }
 

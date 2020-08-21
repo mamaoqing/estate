@@ -34,5 +34,5 @@ public interface RParkingSpaceService extends IService<RParkingSpace> {
 
     boolean insertBatch(List<T>list);
 
-    boolean fileUpload(MultipartFile file, String className) throws IOException, ClassNotFoundException;
+    boolean fileUpload(MultipartFile file, String className,String token) throws IOException, ClassNotFoundException;
 }

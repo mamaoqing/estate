@@ -80,8 +80,8 @@ public class RParkingSpaceController extends BaseController {
         }
     }
     @PostMapping("/fileUpload")
-    public Result uploadFile(@RequestParam("file") MultipartFile file, String className) throws IOException, ClassNotFoundException {
-        return ResultUtil.success(parkingSpaceService.fileUpload(file, className));
+    public Result uploadFile(@RequestParam("file") MultipartFile file, String className,@RequestHeader("Authentication-Token") String token) throws IOException, ClassNotFoundException {
+        return ResultUtil.success(parkingSpaceService.fileUpload(file, className,token));
     }
 
 }

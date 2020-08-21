@@ -17,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,48 +45,18 @@ public class ImportExcel extends ExcelUtil {
      */
     public static List<Object> getFileData(MultipartFile file, String className) throws IOException, ClassNotFoundException {
         checkFile(file);
+        // 反射得到实体类中的所有的属性
         Class<?> c = Class.forName(className);
         Field[] fields1 = c.getDeclaredFields();
-        Annotation[] annotations = c.getAnnotations();
-        List<String> fields = new ArrayList<>();
-        List<String> masterField = new ArrayList<>();
+        // 需要导出的字段
+        List<String> fields = (List<String>) ImportExcel.getFieldMap(fields1).get("fields");
+        // 必填的字段
+        List<String> masterField = (List<String>) ImportExcel.getFieldMap(fields1).get("masterField");
         // 存在字典属性的
-        Map<String,String> distMap = new HashMap<>();
+        Map<String,String> distMap = (Map<String, String>) ImportExcel.getFieldMap(fields1).get("distMap");
 
-        for (Field field : fields1) {
-            if (field.isAnnotationPresent(ExcelAnnotation.class)){
-                fields.add(field.getName());
-                if(field.getAnnotation(ExcelAnnotation.class).master()){
-                    masterField.add(field.getName());
-                }
-                String dist = field.getAnnotation(ExcelAnnotation.class).dist();
-                if(!StringUtils.isEmpty(dist)){
-                    distMap.put(field.getName(),dist);
-                }
-            }
-        }
-        Integer compId = 0;
-        Integer commId = 0;
-        Integer areaId = 0;
-        Integer buildingId = 0;
-        Integer unitId = 0;
-        if (fields.contains("compName")) {
-            compId = fields.indexOf("compName");
-        }
-        if (fields.contains("commName")) {
-            commId = fields.indexOf("commName");
-        }
-        if (fields.contains("areaName")) {
-            areaId = fields.indexOf("areaName");
-        }else if(fields.contains("commAreaName")){
-            areaId = fields.indexOf("commAreaName");
-        }
-        if (fields.contains("buildingName")) {
-            buildingId = fields.indexOf("buildingName");
-        }
-        if (fields.contains("unitName")) {
-            unitId = fields.indexOf("unitName");
-        }
+
+        Map<String, Integer> index = ImportExcel.getFieldIndex(fields);
 
         List<Object> list = new ArrayList<>();
         // excel文件,
@@ -125,44 +94,18 @@ public class ImportExcel extends ExcelUtil {
                             if(masterField.contains(s) && StringUtils.isEmpty(getCellValue(cell))){
                                 throw new BillException(BillExceptionEnum.FILE_MASTER_FIELDNO_ERROR);
                             }
+                            // 将结果放入map中
                             map.put(s, getCellValue(cell));
-                            if(cellNum == compId){
-                                log.info("公司名称是:{}",getCellValue(cell));
-                                Long compIdByName = parkingSpaceMapper.getCompIdByName(getCellValue(cell));
-                                map.put("compId",compIdByName);
-                            }
-                            if(cellNum == commId){
-                                log.info("社区称是:{}",getCellValue(cell));
-                                Long commIdByName = parkingSpaceMapper.getCommIdByName(getCellValue(cell));
-                                map.put("commId",commIdByName);
-                            }
-                            if(cellNum == areaId){
-                                log.info("分区名称是:{}",getCellValue(cell));
-                                Long commIdByName = parkingSpaceMapper.getAreaIdByName(getCellValue(cell));
-                                map.put("commAreaId",commIdByName);
-                            }if(cellNum == buildingId){
-                                log.info("建筑名称是:{}",getCellValue(cell));
-                                Long buildingIdByName = parkingSpaceMapper.getBuildingIdByName(getCellValue(cell));
-                                map.put("buildingId",buildingIdByName);
-                            }
-                            if(cellNum == unitId){
-                                log.info("单元名称是:{}",getCellValue(cell));
-                                Long unitIdByName = parkingSpaceMapper.getUnitIdByName(getCellValue(cell));
-                                map.put("buildingId",unitIdByName);
-                            }
+                            ImportExcel.setMapValue(index,cellNum,map,cell);
                         }
                         Object aClass = JSON.parseObject(JSON.toJSONString(map), c);
                         list.add(aClass);
                     }
-
                 }
-
             }
         }
-
         return list;
     }
-
 
     public static Workbook getWorkBook(MultipartFile file) {
         //获得文件名
@@ -205,6 +148,111 @@ public class ImportExcel extends ExcelUtil {
         }
         return cellValue;
 
+    }
+
+    /**
+     * 根据所有需要转编码的字段的位置，将
+     * @param map 所有下标位置的键值对，key:名称 value:名称出现在数组的下标
+     * @param value 当前下标
+     * @param resultMap 结果map
+     * @param cell 单元格
+     */
+    public static void setMapValue(Map<String,Integer> map,Integer value,Map<String, Object> resultMap,Cell cell){
+        if(map.get("compName") == value){
+            log.info("公司名称是:{}",getCellValue(cell));
+            Long compIdByName = parkingSpaceMapper.getCompIdByName(getCellValue(cell));
+            resultMap.put("compId",compIdByName);
+        }
+        if(map.get("commName") == value){
+            log.info("社区称是:{}",getCellValue(cell));
+            Long commIdByName = parkingSpaceMapper.getCommIdByName(getCellValue(cell));
+            resultMap.put("commId",commIdByName);
+        }
+        if(map.get("areaName") == value){
+            log.info("分区名称是:{}",getCellValue(cell));
+            Long commIdByName = parkingSpaceMapper.getAreaIdByName(getCellValue(cell));
+            resultMap.put("commAreaId",commIdByName);
+        }
+        if(map.get("buildingName") == value){
+            log.info("建筑名称是:{}",getCellValue(cell));
+            Long buildingIdByName = parkingSpaceMapper.getBuildingIdByName(getCellValue(cell));
+            resultMap.put("buildingId",buildingIdByName);
+        }
+        if(map.get("unitName") == value){
+            log.info("单元名称是:{}",getCellValue(cell));
+            Long unitIdByName = parkingSpaceMapper.getUnitIdByName(getCellValue(cell));
+            resultMap.put("buildingId",unitIdByName);
+        }
+        if(map.get("commAreaName") == value){
+            log.info("分区名称是:{}",getCellValue(cell));
+            Long commIdByName = parkingSpaceMapper.getAreaIdByName(getCellValue(cell));
+            resultMap.put("commAreaId",commIdByName);
+        }
+
+    }
+    /**
+     * 将文字转编码。比如公司名称-->公司id，如果以后还有需要转编码的，需要在这里面进行配置。
+     * 返回一个map集合。
+     * @param fields 实体类中所有带注解的属性的集合
+     * @return 返回一个map，所有下标位置的键值对，key:名称 value:名称出现在数组的下标
+     */
+    public static Map<String,Integer> getFieldIndex(List<String> fields){
+        Map<String,Integer> map = new HashMap<>(16);
+        Integer index = 0;
+        if (fields.contains("compName")) {
+            index = fields.indexOf("compName");
+            map.put("compName",index);
+        }
+        if (fields.contains("commName")) {
+            index = fields.indexOf("commName");
+            map.put("commName",index);
+        }
+        if (fields.contains("areaName")) {
+            index = fields.indexOf("areaName");
+            map.put("areaName",index);
+        }
+        if(fields.contains("commAreaName")){
+            index = fields.indexOf("commAreaName");
+            map.put("commAreaName",index);
+        }
+        if (fields.contains("buildingName")) {
+            index = fields.indexOf("buildingName");
+            map.put("buildingName",index);
+        }
+        if (fields.contains("unitName")) {
+            index = fields.indexOf("unitName");
+            map.put("unitName",index);
+        }
+        return map;
+    }
+
+    /**
+     * 将实体类中的属性整合，方便以后使用
+     * @param fields1 实体类中的所有的属性
+     * @return 返回一个自己需要的map，里面包括所有导出的集合，所有必填的集合，所有有字典的map
+     */
+    public static Map<String,Object> getFieldMap(Field [] fields1){
+        Map<String,Object> map = new HashMap<>(16);
+        List<String> fields = new ArrayList<>();
+        List<String> masterField = new ArrayList<>();
+        // 存在字典属性的
+        Map<String,String> distMap = new HashMap<>();
+        for (Field field : fields1) {
+            if (field.isAnnotationPresent(ExcelAnnotation.class)){
+                fields.add(field.getName());
+                if(field.getAnnotation(ExcelAnnotation.class).master()){
+                    masterField.add(field.getName());
+                }
+                String dist = field.getAnnotation(ExcelAnnotation.class).dist();
+                if(!StringUtils.isEmpty(dist)){
+                    distMap.put(field.getName(),dist);
+                }
+            }
+        }
+        map.put("fields",fields);
+        map.put("masterField",masterField);
+        map.put("distMap",distMap);
+        return map;
     }
 
     @Autowired
