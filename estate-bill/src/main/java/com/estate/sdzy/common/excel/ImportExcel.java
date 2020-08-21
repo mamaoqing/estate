@@ -2,6 +2,8 @@ package com.estate.sdzy.common.excel;
 
 import com.alibaba.fastjson.JSON;
 import com.estate.exception.BillException;
+import com.estate.sdzy.asstes.entity.RBuilding;
+import com.estate.sdzy.asstes.entity.RUnit;
 import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
 import com.estate.sdzy.common.annotation.ExcelAnnotation;
 import com.estate.sdzy.system.mapper.SDictMapper;
@@ -96,7 +98,7 @@ public class ImportExcel extends ExcelUtil {
                             }
                             // 将结果放入map中
                             map.put(s, getCellValue(cell));
-                            ImportExcel.setMapValue(index,cellNum,map,cell);
+                            ImportExcel.setMapValue(index,cellNum,map,cell,rowNum);
                         }
                         Object aClass = JSON.parseObject(JSON.toJSONString(map), c);
                         list.add(aClass);
@@ -157,7 +159,7 @@ public class ImportExcel extends ExcelUtil {
      * @param resultMap 结果map
      * @param cell 单元格
      */
-    public static void setMapValue(Map<String,Integer> map,Integer value,Map<String, Object> resultMap,Cell cell){
+    public static void setMapValue(Map<String,Integer> map,Integer value,Map<String, Object> resultMap,Cell cell,int rowNum){
         if(map.get("compName") == value){
             log.info("公司名称是:{}",getCellValue(cell));
             Long compIdByName = parkingSpaceMapper.getCompIdByName(getCellValue(cell));
@@ -175,13 +177,22 @@ public class ImportExcel extends ExcelUtil {
         }
         if(map.get("buildingName") == value){
             log.info("建筑名称是:{}",getCellValue(cell));
-            Long buildingIdByName = parkingSpaceMapper.getBuildingIdByName(getCellValue(cell));
-            resultMap.put("buildingId",buildingIdByName);
+            List<RBuilding> buildings= parkingSpaceMapper.getBuildingByName(getCellValue(cell),(Long) resultMap.get("commAreaId"));
+            if(buildings.size()==1){
+                resultMap.put("buildingId",buildings.get(0).getId());
+            }else{
+                throw new BillException(415,"第"+(rowNum+1)+"行建筑名称错误，导入失败");
+            }
+
         }
         if(map.get("unitName") == value){
             log.info("单元名称是:{}",getCellValue(cell));
-            Long unitIdByName = parkingSpaceMapper.getUnitIdByName(getCellValue(cell));
-            resultMap.put("buildingId",unitIdByName);
+            List<RUnit> units= parkingSpaceMapper.getUnitByName(getCellValue(cell),(Long) resultMap.get("buildingId"));
+            if(units.size()==1){
+                resultMap.put("unitId",units.get(0).getId());
+            }else{
+                throw new BillException(415,"第"+(rowNum+1)+"行单元名称错误，导入失败");
+            }
         }
         if(map.get("commAreaName") == value){
             log.info("分区名称是:{}",getCellValue(cell));
