@@ -8,6 +8,7 @@ import com.estate.sdzy.system.mapper.SDictMapper;
 import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -109,7 +110,7 @@ public class ExportExcel extends ExcelUtil {
         // 创建表格
         HSSFWorkbook wb = new HSSFWorkbook();
         //默认宽，默认高
-        HSSFSheet sheet = setSheetBaseInfoExcel(fileName, 15, 40, wb);
+        HSSFSheet sheet = setSheetBaseInfoExcel(fileName, 15, 20, wb);
         // 设置样式
         HSSFCellStyle style = getColumnTopStyle(wb);
         // 冻结三行,即excel表的前三行不随鼠标滚动而滚动

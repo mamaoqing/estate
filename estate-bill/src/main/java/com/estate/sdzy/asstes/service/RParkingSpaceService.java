@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.asstes.entity.RParkingSpace;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.apache.poi.ss.formula.functions.T;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
@@ -31,4 +33,6 @@ public interface RParkingSpaceService extends IService<RParkingSpace> {
     boolean removeByIds(String ids ,String token);
 
     boolean insertBatch(List<T>list);
+
+    boolean fileUpload(MultipartFile file, String className,String token) throws IOException, ClassNotFoundException;
 }

@@ -1,11 +1,13 @@
 package com.estate.sdzy.asstes.service.impl;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.exception.BillException;
 import com.estate.sdzy.asstes.entity.*;
 import com.estate.sdzy.asstes.mapper.*;
 import com.estate.sdzy.asstes.service.RRoomService;
+import com.estate.sdzy.common.annotation.ExcelAnnotation;
 import com.estate.sdzy.system.entity.SCompany;
 import com.estate.sdzy.system.entity.SDictItem;
 import com.estate.sdzy.system.entity.SUser;
@@ -257,6 +259,32 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
             throw new BillException(BillExceptionEnum.LOGIN_TIME_OUT);
         }
         return (SUser) o;
+    }
+
+    public void saveOrUpdateRoom(RRoom room,String token){
+        //保存前进行判断是否已经存在数据
+        room.setRoomModel(room.getRoomModelName());
+        room.setRoomType(room.getRoomTypeName());
+        room.setPropertyRightNature(room.getPropertyRightNatureName());
+        room.setDirection(room.getDirectionName());
+        room.setRenovationLevel(room.getRenovationLevelName());
+        room.setUsable(room.getUsableName());
+        QueryWrapper<RRoom> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comp_id",room.getCompId());
+        queryWrapper.eq("comm_id",room.getCommId());
+        queryWrapper.eq("comm_area_id",room.getCommAreaId());
+        queryWrapper.eq("unit_id",room.getUnitId());
+        queryWrapper.eq("building_id",room.getBuildingId());
+        queryWrapper.eq("name",room.getName());
+        queryWrapper.eq("room_no",room.getRoomNo());
+        queryWrapper.eq("is_delete",0);
+        List<RRoom> rRooms = rRoomMapper.selectList(queryWrapper);
+        if(rRooms.size()>0){//执行update
+            room.setId(rRooms.get(0).getId());
+            update(room,token);
+        }else{//执行新增
+            save(room,token);
+        }
     }
 
     @Override

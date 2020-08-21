@@ -116,12 +116,17 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
         BeanUtils.copyProperties(rBuilding,rBuildingCopy);
         boolean save = save(rBuildingCopy, token);
         if(save){
-            //建筑的所有单元信息、该建筑的所有房间信息复制成一条新的建筑信息
-            List<RUnit> units = getUnits(rBuilding.getId());
-            for (RUnit rUnit:units){
-                Integer newUnitId = rBuildingMapper.insertUnitCopy(user.getId(), user.getUserName(), rUnit.getId(),rBuildingCopy.getId());
-                rBuildingMapper.insertRoomCopy(user.getId(), user.getUserName(), newUnitId,rUnit.getId(),rBuildingCopy.getId());
+
+            //查询新的unit
+            List<RUnit> rUnits = rUnitMapper.selectUnitByBuildingId(rBuilding.getId(),rBuildingCopy.getId());
+            for(RUnit rUnit:rUnits){
+                rUnit.setId(null);
             }
+            Integer newUnitId = rBuildingMapper.insertUnitCopy(user.getId(), user.getUserName(), rUnits,rBuildingCopy.getId());
+            for(RUnit rUnit:rUnits){
+                System.out.println(rUnit.getId());
+            }
+            //rBuildingMapper.insertRoomCopy(user.getId(), user.getUserName(), rUnit.getOldUnitId(),rUnit.getId(),rBuildingCopy.getId());
         }else{
             return "建筑复制失败";
         }
@@ -179,6 +184,22 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
             throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
         }
         return insert > 0;
+    }
+
+    public String checkBulidingNameNo(RBuilding rBuilding){
+        rBuilding.getName();
+        rBuilding.getNo();
+        Integer checkName = rBuildingMapper.checkName(rBuilding.getName(),rBuilding.getCommAreaId());
+        Integer checkNo = rBuildingMapper.checkNo(rBuilding.getNo(),rBuilding.getCommAreaId());
+        if(checkName>0&&checkNo>0){
+            return "建筑名称和编号重复";
+        }else if(checkName>0){
+            return "建筑名称重复";
+        }else if(checkNo>0){
+            return "建筑编号重复";
+        }else{
+            return "";
+        }
     }
 
     @Override

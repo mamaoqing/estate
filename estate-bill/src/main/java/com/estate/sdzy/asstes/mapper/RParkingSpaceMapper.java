@@ -1,9 +1,11 @@
 package com.estate.sdzy.asstes.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.estate.sdzy.asstes.entity.RParkingSpace;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.sdzy.asstes.entity.RBuilding;
+import com.estate.sdzy.asstes.entity.RParkingSpace;
+import com.estate.sdzy.asstes.entity.RUnit;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -28,4 +30,8 @@ public interface RParkingSpaceMapper extends BaseMapper<RParkingSpace> {
     Long getCompIdByName(@Param("name") String compName);
 
     Long getAreaIdByName(@Param("name") String areaName);
+
+    List<RBuilding> getBuildingByName(@Param("name") String buildingName, @Param("commAreaId") Long commAreaId);
+
+    List<RUnit>  getUnitByName(@Param("name") String unitName, @Param("buildingId") Long buildingId);
 }

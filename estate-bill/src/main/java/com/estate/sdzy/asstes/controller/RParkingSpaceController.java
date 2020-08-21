@@ -80,15 +80,8 @@ public class RParkingSpaceController extends BaseController {
         }
     }
     @PostMapping("/fileUpload")
-    public Result uploadFile(@RequestParam("file") MultipartFile file, String className) throws IOException, ClassNotFoundException {
-        List<Object> fileData = ImportExcel.getFileData(file, className);
-        fileData.forEach(x->{
-//            RParkingSpace s = (RParkingSpace)x;
-//            parkingSpaceService.save(s);
-            System.out.println((RParkingSpace)x);
-
-        });
-        return ResultUtil.success();
+    public Result uploadFile(@RequestParam("file") MultipartFile file, String className,@RequestHeader("Authentication-Token") String token) throws IOException, ClassNotFoundException {
+        return ResultUtil.success(parkingSpaceService.fileUpload(file, className,token));
     }
 
 }

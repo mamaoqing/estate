@@ -10,6 +10,7 @@ import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
 import com.estate.sdzy.asstes.service.RParkingSpaceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.sdzy.common.excel.ExportExcel;
+import com.estate.sdzy.common.excel.ImportExcel;
 import com.estate.sdzy.system.entity.SUser;
 import com.estate.util.BillExceptionEnum;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
@@ -174,6 +177,39 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
     @Override
     public boolean insertBatch(List<T> list) {
         return false;
+    }
+
+    @Override
+    @Transactional
+    public boolean fileUpload(MultipartFile file, String className,String token) throws IOException, ClassNotFoundException {
+        SUser user = getUserByToken(token);
+        if(StringUtils.isEmpty(className)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        List<Object> fileData = ImportExcel.getFileData(file, className);
+        fileData.forEach(x->{
+            RParkingSpace s = (RParkingSpace)x;
+            QueryWrapper<RParkingSpace> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("no",s.getNo()).eq("comm_area_id",s.getCommAreaId());
+            RParkingSpace rParkingSpace = parkingSpaceMapper.selectOne(queryWrapper);
+            if(rParkingSpace == null){
+                int insert = parkingSpaceMapper.insert(s);
+                if(!(insert > 0)){
+                   throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+                }
+                log.info("-----停车位信息添加成功-----");
+            }else{
+                s.setId(rParkingSpace.getId());
+                int i = parkingSpaceMapper.updateById(s);
+                if (!(i>0)){
+                    throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+                }
+                log.info("-----停车位信息更新成功-----");
+            }
+
+        });
+        log.info("数据导入成功，导入人：{}",user.getUserName());
+        return true;
     }
 
     private SUser getUserByToken(String token) {

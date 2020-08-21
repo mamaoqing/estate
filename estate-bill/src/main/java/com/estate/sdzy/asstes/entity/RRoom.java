@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.estate.sdzy.common.annotation.ExcelAnnotation;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -36,6 +37,7 @@ public class RRoom implements Serializable {
      */
     private Long compId;
     @TableField(exist = false)
+    @ExcelAnnotation(value = "物业公司",master = true)
     private String compName;
 
     /**
@@ -43,6 +45,7 @@ public class RRoom implements Serializable {
      */
     private Long commId;
     @TableField(exist = false)
+    @ExcelAnnotation(value = "社区",master = true)
     private String commName;
 
     /**
@@ -50,48 +53,57 @@ public class RRoom implements Serializable {
      */
     private Long commAreaId;
     @TableField(exist = false)
+    @ExcelAnnotation(value = "分区",master = true)
     private String commAreaName;
     /**
      * 楼宇id
      */
     private Long buildingId;
     @TableField(exist = false)
+    @ExcelAnnotation(value = "建筑",master = true)
     private String buildingName;
     /**
      * 单元id
      */
     private Long unitId;
     @TableField(exist = false)
+    @ExcelAnnotation(value = "单元",master = true)
     private String unitName;
     /**
      * 名称
      */
+    @ExcelAnnotation(value = "房间名称",master = true)
     private String name;
 
     /**
      * 房间号
      */
+    @ExcelAnnotation(value = "房间号",master = true)
     private String roomNo;
 
 
     /**
      * 楼层
      */
+    @ExcelAnnotation(value = "楼层")
     private Integer floor;
     /**
      * 楼层数
      */
+    @ExcelAnnotation(value = "楼层数")
     @TableField(exist = false)
     private Integer floorNum;
     /**
      * 电梯数
      */
     @TableField(exist = false)
+    @ExcelAnnotation(value = "电梯数")
     private Integer elevatorNum;
     /**
      * 房间数
      */
     @TableField(exist = false)
+    @ExcelAnnotation(value = "每层房间数")
     private Integer roomNum;
 
     /**
@@ -99,18 +111,21 @@ public class RRoom implements Serializable {
      */
     private String roomModel;
     @TableField(exist = false)
+    @ExcelAnnotation(value = "房型",dist = "44")
     private String roomModelName;
     /**
      * 房屋类型
      */
     private String roomType;
     @TableField(exist = false)
+    @ExcelAnnotation(value = "房屋类型",dist = "1")
     private String roomTypeName;
     /**
      * 产权性质
      */
     private String propertyRightNature;
     @TableField(exist = false)
+    @ExcelAnnotation(value = "产权性质",dist = "27")
     private String propertyRightNatureName;
 
     /**
@@ -118,71 +133,87 @@ public class RRoom implements Serializable {
      */
     private String direction;
     @TableField(exist = false)
+    @ExcelAnnotation(value = "朝向",dist = "30")
     private String directionName;
     /**
      * 装修程度
      */
     private String renovationLevel;
     @TableField(exist = false)
+    @ExcelAnnotation(value = "装修程度",dist = "31")
     private String renovationLevelName;
     /**
      * 用途
      */
     private String usable;
     @TableField(exist = false)
+    @ExcelAnnotation(value = "用途",dist = "7")
     private String usableName;
 
     /**
      * 产权证号
      */
+    @ExcelAnnotation(value = "产权证号")
     private String titleDeedNo;
 
     /**
      * 土地证号
      */
+    @ExcelAnnotation(value = "土地证号")
     private String landDeedNo;
 
     /**
      * 购房合同号
      */
+    @ExcelAnnotation(value = "购房合同号")
     private String contractNo;
-    /**
-     * 状态
-     */
-    private String state;
+
     /**
      * 建筑面积
      */
+    @ExcelAnnotation(value = "建筑面积",master = true)
     private BigDecimal buildingArea;
 
     /**
      * 使用面积
      */
+    @ExcelAnnotation(value = "使用面积",master = true)
     private BigDecimal usableArea;
 
     /**
      * 花园面积
      */
+    @ExcelAnnotation(value = "花园面积")
     private BigDecimal gardenArea;
 
-
+    /**
+     * 状态
+     */
+    @ExcelAnnotation(value = "状态",master = true)
+    private String state;
 
     /**
      * 备注
      */
+    @ExcelAnnotation(value = "备注")
     private String remark;
 
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @ExcelAnnotation(value = "录入时间")
     private Date createdAt;
+
     private Long createdBy;
+    @ExcelAnnotation(value = "录入人")
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @ExcelAnnotation(value = "修改时间")
     private Date modifiedAt;
 
     private Long modifiedBy;
+    @ExcelAnnotation(value = "修改人")
     private String modifiedName;
     //@TableLogic
     private Integer isDelete;
