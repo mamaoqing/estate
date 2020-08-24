@@ -117,16 +117,15 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
         boolean save = save(rBuildingCopy, token);
         if(save){
 
-            //查询新的unit
+            //查询原unit并复制
             List<RUnit> rUnits = rUnitMapper.selectUnitByBuildingId(rBuilding.getId(),rBuildingCopy.getId());
             for(RUnit rUnit:rUnits){
                 rUnit.setId(null);
+                rUnitService.save(rUnit);
             }
-            Integer newUnitId = rBuildingMapper.insertUnitCopy(user.getId(), user.getUserName(), rUnits,rBuildingCopy.getId());
-            for(RUnit rUnit:rUnits){
-                System.out.println(rUnit.getId());
-            }
-            //rBuildingMapper.insertRoomCopy(user.getId(), user.getUserName(), rUnit.getOldUnitId(),rUnit.getId(),rBuildingCopy.getId());
+            //#{item.id}
+            //rBuildingMapper.insertUnitCopy(user.getId(), user.getUserName(), rUnits1,rBuildingCopy.getId());
+            if(rUnits.size()>0)rBuildingMapper.insertRoomCopy(user.getId(), user.getUserName(), rUnits,rBuildingCopy.getId());
         }else{
             return "建筑复制失败";
         }
@@ -207,10 +206,6 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
         SUser user = getUserByToken(token);
         if (null == rBuilding) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
-        }
-        RBuilding before = rBuildingMapper.selectById(rBuilding.getId());
-        if(isNum(rBuilding.getDictName())){
-            rBuilding.setType(rBuilding.getDictName());
         }
         rBuilding.setModifiedBy(user.getId());
         rBuilding.setModifiedName(user.getUserName());
@@ -295,11 +290,13 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
     public Integer listNum(Map<String, String> map,String token) {
         SUser user = getUserByToken(token);
         if(user.getCompId()==0){
-            List<RBuilding> listBuilding = rBuildingMapper.getListBuilding(map.get("name"),map.get("no"),map.get("type"),map.get("compName"),map.get("commName"),map.get("commAreaName") ,null,null,null);
-            return listBuilding.size();
+            System.out.println("-----------------------------------------------");
+            Integer list = rBuildingMapper.getListBuildingNum(map.get("name"),map.get("no"),map.get("type"),map.get("compName"),map.get("commName"),map.get("commAreaName") ,null,null,null);
+            System.out.println("-----------------------------------------------"+list);
+            return list;
         }else{
-            List<RBuilding> listBuilding = rBuildingMapper.getListBuilding(map.get("name"),map.get("no"),map.get("type"),map.get("compName"),map.get("commName"),map.get("commAreaName") ,null,null,user.getId());
-            return listBuilding.size();
+            Integer list = rBuildingMapper.getListBuildingNum(map.get("name"),map.get("no"),map.get("type"),map.get("compName"),map.get("commName"),map.get("commAreaName") ,null,null,user.getId());
+            return list;
         }
     }
 
