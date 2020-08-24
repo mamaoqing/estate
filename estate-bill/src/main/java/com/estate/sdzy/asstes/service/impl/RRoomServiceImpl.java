@@ -1,13 +1,11 @@
 package com.estate.sdzy.asstes.service.impl;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.exception.BillException;
 import com.estate.sdzy.asstes.entity.*;
 import com.estate.sdzy.asstes.mapper.*;
 import com.estate.sdzy.asstes.service.RRoomService;
-import com.estate.sdzy.common.annotation.ExcelAnnotation;
 import com.estate.sdzy.system.entity.SCompany;
 import com.estate.sdzy.system.entity.SDictItem;
 import com.estate.sdzy.system.entity.SUser;
@@ -101,24 +99,6 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
         }
         rRoom.setModifiedBy(user.getId());
         rRoom.setModifiedName(user.getUserName());
-        if(isNum(rRoom.getRoomModelName())){
-            rRoom.setRoomModel(rRoom.getRoomModelName());
-        }
-        if(isNum(rRoom.getRoomTypeName())){
-            rRoom.setRoomType(rRoom.getRoomTypeName());
-        }
-        if(isNum(rRoom.getPropertyRightNatureName())){
-            rRoom.setPropertyRightNature(rRoom.getPropertyRightNatureName());
-        }
-        if(isNum(rRoom.getDirectionName())){
-            rRoom.setDirection(rRoom.getDirectionName());
-        }
-        if(isNum(rRoom.getRenovationLevelName())){
-            rRoom.setRenovationLevel(rRoom.getRenovationLevelName());
-        }
-        if(isNum(rRoom.getUsableName())){
-            rRoom.setUsable(rRoom.getUsableName());
-        }
         int update = rRoomMapper.updateById(rRoom);
         if (update > 0) {
             log.info("房间修改成功，修改人={}", user.getUserName());
@@ -200,17 +180,17 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
     public Integer listNum(Map<String, String> map, String token) {
         SUser user = getUserByToken(token);
         if(user.getCompId()==0) {
-            List<RRoom> rRooms = rRoomMapper.getListRoom(map.get("compName"), map.get("commName"), map.get("commAreaName"),
+            Integer rRooms = rRoomMapper.getListRoomNum(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
                     map.get("roomModel"), map.get("usable"),
                     null, null, null);
-            return rRooms.size();
+            return rRooms;
         }else{
-            List<RRoom> rRooms = rRoomMapper.getListRoom(map.get("compName"), map.get("commName"), map.get("commAreaName"),
+            Integer rRooms = rRoomMapper.getListRoomNum(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
                     map.get("roomModel"), map.get("usable"),
                     null, null, user.getId());
-            return rRooms.size();
+            return rRooms;
         }
     }
 
@@ -263,12 +243,6 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
 
     public void saveOrUpdateRoom(RRoom room,String token){
         //保存前进行判断是否已经存在数据
-        room.setRoomModel(room.getRoomModelName());
-        room.setRoomType(room.getRoomTypeName());
-        room.setPropertyRightNature(room.getPropertyRightNatureName());
-        room.setDirection(room.getDirectionName());
-        room.setRenovationLevel(room.getRenovationLevelName());
-        room.setUsable(room.getUsableName());
         QueryWrapper<RRoom> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("comp_id",room.getCompId());
         queryWrapper.eq("comm_id",room.getCommId());
