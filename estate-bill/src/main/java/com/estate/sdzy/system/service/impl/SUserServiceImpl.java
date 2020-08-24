@@ -63,21 +63,19 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         SUser user = getUserByToken(token);
         String concat = null;
 
-        if(!StringUtils.isEmpty(map.get("orgId"))){
+        if (!StringUtils.isEmpty(map.get("orgId"))) {
             String orgId = map.get("orgId");
             // 先查询当前组织的上级
             QueryWrapper<SOrg> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("id",orgId);
+            queryWrapper.eq("id", orgId);
             SOrg sOrg = orgMapper.selectOne(queryWrapper);
             concat = sOrg.getParentIdList().concat(",").concat(orgId);
         }
 
         // 区分超级管理员跟普通用户
         Page<SUser> page = new Page<>(pageNo, size);
-        if(!"超级管理员".equals(user.getType())){
-            map.put("compId",user.getCompId()+"");
-        }else{
-            map.put("compId",null);
+        if (!"超级管理员".equals(user.getType())) {
+            map.put("compId", user.getCompId() + "");
         }
         return userMapper.findUserList(page, map.get("compId"), map.get("userName"), map.get("name"), concat);
     }
@@ -113,17 +111,17 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         int insert = userMapper.insert(user);
         if (insert > 0) {
             log.info("自动添加公司管理员角色，登录用户名={},密码=123456", userName);
-        } else {
-            log.error("自动添加管理员角色失败,请联系管理员添加账号");
-            throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+            return insert > 0;
         }
+        log.error("自动添加管理员角色失败,请联系管理员添加账号");
+        throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
 
-        return insert > 0;
+
     }
 
     @Override
     @Transactional
-    public boolean setUserRole(Long userId,Long compId, String roleIds, String token) {
+    public boolean setUserRole(Long userId, Long compId, String roleIds, String token) {
         // 如果参数有一个为空，直接返回
         if (StringUtils.isEmpty(roleIds) || StringUtils.isEmpty(userId)) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
@@ -162,31 +160,31 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
     @Override
     public boolean save(SUser user, String token) {
         SUser users = getUserByToken(token);
-        if (null == user) {
-            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
-        }
-
         String psw = PasswdEncryption.encptyPasswd(user.getPassword());
         user.setPassword(psw);
+        user.setCreatedBy(users.getId());
+        user.setCreatedName(users.getUserName());
         int insert = userMapper.insert(user);
         if (insert > 0) {
             log.info("用户添加成功，添加人={}", users.getUserName());
-        } else {
-            throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+            return true;
         }
-        return insert > 0;
+        throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+
     }
 
     @Override
     public boolean saveOrUpdate(SUser user, String token) {
         SUser users = getUserByToken(token);
+        user.setModifiedBy(users.getId());
+        user.setModifiedName(users.getUserName());
         int i = userMapper.updateById(user);
         if (i > 0) {
             log.info("用户更新成功，修改人={}", users.getUserName());
-        } else {
-            throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+            return true;
         }
-        return i > 0;
+        throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+
     }
 
     @Override
@@ -195,10 +193,10 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         int i = userMapper.deleteById(id);
         if (i > 0) {
             log.info("用户删除成功，删除人={}", users.getUserName());
-        } else {
-            throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+            return true;
         }
-        return i > 0;
+        throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+
     }
 
     @Override
@@ -226,13 +224,12 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         if (i > 0) {
             log.info("密码修改成功,修改人{}", userByToken.getUserName());
             return true;
-        } else {
-            throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
         }
+        throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
     }
 
     @Override
-    public boolean reSetPassword(String password,String token,Long id) {
+    public boolean reSetPassword(String password, String token, Long id) {
         SUser user = getUserByToken(token);
         if (StringUtils.isEmpty(password)) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
@@ -243,8 +240,8 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
         sUser.setModifiedBy(user.getId());
         sUser.setPassword(psw);
         int i = userMapper.updateById(sUser);
-        if(i>0){
-            log.info("用户{}密码重置成功,操作人{}",sUser.getUserName(),user.getUserName());
+        if (i > 0) {
+            log.info("用户{}密码重置成功,操作人{}", sUser.getUserName(), user.getUserName());
             return true;
         }
         throw new BillException(BillExceptionEnum.RESET_PASSWORD_ERROR_SYSTEM);

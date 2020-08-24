@@ -109,11 +109,6 @@ public class RCommunity implements Serializable {
     @ExcelAnnotation(value = "用途类型")
     private String usableType;
 
-    @TableField(exist = false)
-    private Long usableTypeId;
-    @TableField(exist = false)
-    private Long stateId;
-
     /**
      * 状态
      */
