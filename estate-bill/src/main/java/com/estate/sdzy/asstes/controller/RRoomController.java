@@ -6,6 +6,7 @@ import com.estate.sdzy.asstes.service.RRoomService;
 import com.estate.sdzy.common.controller.BaseController;
 import com.estate.sdzy.common.excel.ExportExcel;
 import com.estate.sdzy.common.excel.ImportExcel;
+import com.estate.sdzy.system.entity.SUser;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -80,9 +81,10 @@ public class RRoomController extends BaseController {
 
     @PostMapping("/export")
     public void testExprotExcel(HttpServletResponse response,HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
-        //rRoomService.list(super.getParameterMap(request),token);
+        SUser user = rRoomService.getUserByToken(token);
         try {
-            ExportExcel.writeOut(response,"停车位信息列表","com.estate.sdzy.asstes.entity.RRoom",rRoomService.list(super.getParameterMap(request),token),"导出人：mmq");
+            ExportExcel.writeOut(response,"停车位信息列表","com.estate.sdzy.asstes.entity.RRoom",
+                    rRoomService.list(super.getParameterMap(request),token),"导出人："+user.getUserName());
         }catch (Exception e){
             e.printStackTrace();
         }
