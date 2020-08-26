@@ -18,6 +18,9 @@
         <if test="compName!=''and compName!=null">
             and r.comp_id = #{compName}
         </if>
+        <if test="name!=''and name!=null">
+            and r.name like CONCAT('%',#{name},'%')
+        </if>
         <if test="commName!=''and commName!=null">
             and r.comm_id = #{commName}
         </if>
@@ -58,6 +61,9 @@
         and r.is_delete='0'
         <if test="compName!=''and compName!=null">
             and r.comp_id = #{compName}
+        </if>
+        <if test="name!=''and name!=null">
+            and r.name like CONCAT('%',#{name},'%')
         </if>
         <if test="commName!=''and commName!=null">
             and r.comm_id = #{commName}
