@@ -29,8 +29,33 @@ public class ROwnerController {
     private ROwnerService ownerService;
 
     @PostMapping("/getOwenerList")
-    public List<ROwner> getOwenerList(@RequestBody  Map<String, String> map, @RequestHeader("Authentication-Token") String token){
-        return ownerService.getOwenerList(map,token);
+    public List<ROwner> getOwenerList(@RequestBody Map<String, String> map, @RequestHeader("Authentication-Token") String token) {
+        return ownerService.getOwenerList(map, token);
+    }
+
+    @PostMapping("/insert")
+    public Result insert(@RequestBody ROwner owner, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(ownerService.insert(owner, token));
+    }
+
+    @PostMapping("/update")
+    public Result update(@RequestBody ROwner owner, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(ownerService.update(owner, token));
+    }
+
+    @PostMapping("/getCount")
+    public Result getCount(@RequestBody ROwner owner, @RequestHeader("Authentication-Token") String token) {
+        ROwner count = ownerService.getCount(owner, token);
+        if (count != null) {
+            return ResultUtil.success(count);
+        } else {
+            return ResultUtil.error("未找到相关信息", 1);
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public Result delete(@PathVariable Long id, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(ownerService.delete(id, token));
     }
 }
 
