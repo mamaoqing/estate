@@ -25,7 +25,7 @@
             LEFT JOIN r_community ON r_community.id = r_unit.comp_id
             LEFT JOIN r_comm_area ON r_comm_area.id = r_unit.comm_area_id
             LEFT JOIN r_building ON r_building.id = r_unit.building_id
-            LEFT JOIN s_unit_model ON s_unit_model.id = r_unit.model
+            LEFT JOIN s_unit_model ON s_unit_model.id = r_unit.model_id
         WHERE
             1 = 1
             <if test="userId!=null">
@@ -83,7 +83,7 @@
         AND r_unit.is_delete = 0
     </select>
     <select id="selectUnitByBuildingId" resultType="com.estate.sdzy.asstes.entity.RUnit" >
-        select id,no,name,comp_id,comm_id,comm_area_id,state,floor_num,model,room_num,remark,is_delete,id as oldUnitId,
+        select id,no,name,comp_id,comm_id,comm_area_id,state,floor_num,model_id,room_num,remark,is_delete,id as oldUnitId,
         building_id as oldBuildingId,#{newBuildingId} as building_id from r_unit where building_id=#{buildingId} and is_delete='0'
     </select>
 </mapper>

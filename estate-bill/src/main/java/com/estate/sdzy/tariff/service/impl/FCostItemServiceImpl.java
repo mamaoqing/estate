@@ -115,6 +115,16 @@ public class FCostItemServiceImpl extends ServiceImpl<FCostItemMapper, FCostItem
         return costTypeService.costTypeList();
     }
 
+    @Override
+    public List<FCostItem> costItemList(Long compId) {
+        if(StringUtils.isEmpty(compId)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        QueryWrapper<FCostItem> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("cost_type_id","id","name").eq("comp_id",compId);
+        return costItemMapper.selectList(queryWrapper);
+    }
+
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {

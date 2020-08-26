@@ -2,7 +2,10 @@ package com.estate.sdzy.tariff.controller;
 
 
 import com.estate.sdzy.common.controller.BaseController;
+import com.estate.sdzy.tariff.entity.FCostRule;
+import com.estate.sdzy.tariff.service.FCostItemService;
 import com.estate.sdzy.tariff.service.FCostRuleService;
+import com.estate.sdzy.tariff.service.FCostTypeService;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,25 +29,32 @@ public class FCostRuleController extends BaseController {
 
     @Autowired
     private FCostRuleService costRuleService;
+    @Autowired
+    private FCostItemService costItemService;
 
     @GetMapping("/listCostRule")
     public Result listCostRule(HttpServletRequest request,@RequestHeader("Authentication-Token") String token){
-        return ResultUtil.success();
+        return ResultUtil.success(costRuleService.listCostRule(super.getParameterMap(request),token));
     }
 
     @PostMapping("/insertCostRule")
-    public Result insertCostRule(HttpServletRequest request,@RequestHeader("Authentication-Token") String token){
-        return ResultUtil.success();
+    public Result insertCostRule(@RequestBody FCostRule rule, @RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(costRuleService.save(rule,token));
     }
 
     @PutMapping("/updateCostRule")
-    public Result updateCostRule(HttpServletRequest request,@RequestHeader("Authentication-Token") String token){
-        return ResultUtil.success();
+    public Result updateCostRule(@RequestBody FCostRule rule,@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(costRuleService.saveOrUpdate(rule,token));
     }
 
     @DeleteMapping("/{id}")
     public Result deleteCostRule(@PathVariable("id")Long id,@RequestHeader("Authentication-Token") String token){
-        return ResultUtil.success();
+        return ResultUtil.success(costRuleService.removeById(id,token));
+    }
+
+    @GetMapping("/costItemList/{compId}")
+    public Result costItemList(@PathVariable("compId") Long compId){
+        return ResultUtil.success(costItemService.costItemList(compId));
     }
 }
 

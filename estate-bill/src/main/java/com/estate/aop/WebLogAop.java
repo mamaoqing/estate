@@ -4,6 +4,7 @@ import com.estate.exception.BillException;
 import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.asstes.service.RCommRoleAgreementService;
 import com.estate.sdzy.system.service.SUserRoleService;
+import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -58,7 +59,7 @@ public class WebLogAop {
 
         if(!flag){
             // 在这里进行数据权限的控制
-            throw new BillException(1,"抱歉您没有权限访问，或者权限已过期");
+            throw new BillException(BillExceptionEnum.USER_ROLE_OUT_TIME);
         }
 
 
