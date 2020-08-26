@@ -2,6 +2,7 @@ package com.estate.sdzy.asstes.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.estate.sdzy.asstes.entity.RRoom;
+import com.estate.sdzy.system.entity.SUser;
 import com.estate.util.Result;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,10 +22,11 @@ public interface RRoomService extends IService<RRoom> {
     boolean save(RRoom rRoom, String token);
     void saveOrUpdateRoom(RRoom rRoom, String token);
     boolean update(RRoom rRoom, String token);
-    boolean delete(String id,String token);
+    boolean delete(Long[] id,String token);
     List<RRoom> list(Map<String,String> map, Integer pageNo, Integer size, String token);
     Integer listNum(Map<String,String> map,String token);
-    String checkRoomOwer(String roomId);
+    String checkRoomOwer(Long[] roomId);
     List<RRoom> list(Map<String,String> map,String token);
     Result importExcel(HttpServletRequest request, String token);
+    SUser getUserByToken(String token);
 }

@@ -20,8 +20,12 @@ public interface RRoomMapper extends BaseMapper<RRoom> {
     List<Map<String,Object>> listRoomMap(@Param("id") Long unitId);
     List<RRoom> getListRoom(@Param("compName")String compName, @Param("commName")String commName, @Param("commAreaName")String commAreaName,
                             @Param("buildingName")String buildingName, @Param("unitName")String unitName, @Param("roomNo")String roomNo,
-                            @Param("roomModel")String roomModel, @Param("usable")String usable,
+                            @Param("roomModel")String roomModel, @Param("usable")String usable,@Param("name")String name,
                             @Param("pageNo") Integer pageNo, @Param("size") Integer size, @Param("userId") Long userId);
-    int updateBatch(@Param("userId")Long userId,@Param("userName")String userName,@Param("ids")String[] ids);
-    int updateOwnerProperty(@Param("userId")Long userId,@Param("userName")String userName,@Param("ids")String[] ids);
+    Integer getListRoomNum(@Param("compName")String compName, @Param("commName")String commName, @Param("commAreaName")String commAreaName,
+                           @Param("buildingName")String buildingName, @Param("unitName")String unitName, @Param("roomNo")String roomNo,
+                           @Param("roomModel")String roomModel, @Param("usable")String usable,@Param("name")String name,
+                           @Param("pageNo") Integer pageNo, @Param("size") Integer size, @Param("userId") Long userId);
+    int updateBatch(@Param("userId")Long userId,@Param("userName")String userName,@Param("ids")Long[] ids);
+    int updateOwnerProperty(@Param("userId")Long userId,@Param("userName")String userName,@Param("ids")Long[] ids);
 }

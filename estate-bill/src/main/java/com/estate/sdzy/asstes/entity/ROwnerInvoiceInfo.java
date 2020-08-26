@@ -3,6 +3,7 @@ package com.estate.sdzy.asstes.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -34,10 +35,6 @@ public class ROwnerInvoiceInfo implements Serializable {
      */
     private String taxpayerType;
 
-    /**
-     * 发票类型
-     */
-    private String invoiceType;
 
     /**
      * 开票名称
@@ -75,6 +72,7 @@ public class ROwnerInvoiceInfo implements Serializable {
     private String remark;
 
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss" ,timezone = "GMT+8")
     private Date createdAt;
 
     private Long createdBy;
@@ -82,6 +80,7 @@ public class ROwnerInvoiceInfo implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss" ,timezone = "GMT+8")
     private Date modifiedAt;
 
     private Long modifiedBy;

@@ -5,12 +5,13 @@
         select id,name,'build' type,'r_comm_area'parenttable,comm_area_id parentid from r_building where comm_area_id = #{id} and is_delete=0
     </select>
     <select id="getListBuilding" resultType="com.estate.sdzy.asstes.entity.RBuilding">
-        select r.*,comp.name as compName,comm.name as commName,area.name as commAreaName,d.name as dictName
-        from r_building r ,s_company comp,r_community comm,r_comm_area area,s_dict_item d
+        select r.id,r.no,r.name,r.builded_date,r.deliver_date,r.state,r.floor_num,r.unit_num,r.remark,r.created_at,r.created_name,r.modified_at,
+        r.type,r.modified_name,comp.name as compName,comm.name as commName,area.name as commAreaName
+        from r_building r ,s_company comp,r_community comm,r_comm_area area
         <if test="userId!=''and userId!=null">
         ,s_user_comm u
         </if>
-         where r.comp_id=comp.id and r.comm_id=comm.id and r.comm_area_id=area.id and r.type=d.id and d.dict_id='10' and r.is_delete='0'
+         where r.comp_id=comp.id and r.comm_id=comm.id and r.comm_area_id=area.id  and r.is_delete='0'
         <if test="name!=''and name!=null">
             and r.name like CONCAT('%',#{name},'%')
         </if>
@@ -37,13 +38,42 @@
             limit #{pageNo},#{size}
         </if>
     </select>
+    <select id="getListBuildingNum" resultType="java.lang.Integer">
+        select count(r.id)
+        from r_building r ,s_company comp,r_community comm,r_comm_area area
+        <if test="userId!=''and userId!=null">
+            ,s_user_comm u
+        </if>
+        where r.comp_id=comp.id and r.comm_id=comm.id and r.comm_area_id=area.id  and r.is_delete='0'
+        <if test="name!=''and name!=null">
+            and r.name like CONCAT('%',#{name},'%')
+        </if>
+        <if test="no!=''and no!=null">
+            and r.no like CONCAT('%',#{no},'%')
+        </if>
+        <if test="type!=''and type!=null">
+            and r.type = #{type}
+        </if>
+        <if test="compId!=''and compId!=null">
+            and r.comp_id = #{compId}
+        </if>
+        <if test="commId!=''and commId!=null">
+            and r.comm_id = #{commId}
+        </if>
+        <if test="commAreaId!=''and commAreaId!=null">
+            and r.comm_area_id = #{commAreaId}
+        </if>
+        <if test="userId!=''and userId!=null">
+            and u.user_id=#{userId} and r.comm_id=u.comm_id
+        </if>
+        <if test="pageNo!=null and size!=null">
+            limit #{pageNo},#{size}
+        </if>
+    </select>
     <sql id="aaaa">
         (select @@IDENTITY)+1
     </sql>
-    <insert id="insertUnitCopy" >
-        <selectKey resultType ="java.lang.Integer" keyProperty= "id" order= "AFTER">
-            (select @@IDENTITY)+1
-        </selectKey >
+    <insert id="insertUnitCopy" useGeneratedKeys="true" >
         insert into r_unit (no,name,comp_id,comm_id,comm_area_id,state,floor_num,model,room_num,remark,
         building_id,modified_at,created_at,created_by,created_name,modified_by,modified_name)
         values
@@ -52,21 +82,28 @@
             #{item.remark}, #{item.buildingId}, CURRENT_TIME, CURRENT_TIME, #{userId}, #{userName}, #{userId},
             #{userName})
         </foreach>
+        <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+            select last_insert_id() as id
+        </selectKey>
     </insert>
     <insert id="insertRoomCopy" keyProperty="id">
+
         insert into r_room (name,room_no,comp_id,comm_id,comm_area_id,unit_id,state,floor,room_model,room_type,property_right_nature,
         direction,renovation_level,title_deed_no,land_deed_no,contract_no,building_area,usable_area,garden_area,usable,remark,created_at,
         created_by,created_name,modified_at,modified_by,modified_name,is_delete,building_id)
-        select name,room_no,comp_id,comm_id,comm_area_id,#{newUnitId} as unit_id,state,floor,room_model,room_type,property_right_nature,
-        direction,renovation_level,title_deed_no,land_deed_no,contract_no,building_area,usable_area,garden_area,usable,remark,
-        CURRENT_TIME as created_at,#{userId} as created_by,#{userName} as created_name,CURRENT_TIME as modified_at,
-         #{userId} as modified_by,#{userName} as modified_name,is_delete,#{buildingId} as building_id
-         from r_room where unit_id=#{unitId} and is_delete='0'
+
+        <foreach collection="rUnits" item="item" index="i" separator="union all">
+            (select name,room_no,comp_id,comm_id,comm_area_id,#{item.id} as unit_id,state,floor,room_model,room_type,property_right_nature,
+            direction,renovation_level,title_deed_no,land_deed_no,contract_no,building_area,usable_area,garden_area,usable,remark,
+            CURRENT_TIME as created_at,#{userId} as created_by,#{userName} as created_name,CURRENT_TIME as modified_at,
+             #{userId} as modified_by,#{userName} as modified_name,is_delete,#{item.buildingId} as building_id
+             from r_room where unit_id=#{item.oldUnitId} and is_delete='0')
+        </foreach>
     </insert>
-    <select id="checkName">
+    <select id="checkName" resultType="java.lang.Integer">
         select count(id) from r_building where name=#{name} and comm_area_id=#{commAreaId} and is_delete='0'
     </select>
-    <select id="checkNo">
+    <select id="checkNo" resultType="java.lang.Integer">
         select count(id) from r_building where no=#{no} and comm_area_id=#{commAreaId} and is_delete='0'
     </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.estate.sdzy.asstes.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -30,6 +31,11 @@ public class ROwner implements Serializable {
      * 业主类型
      */
     private String ownerType;
+
+    /**
+     * 物业公司
+     */
+    private Long compId;
 
     /**
      * 业主名称
@@ -81,6 +87,17 @@ public class ROwner implements Serializable {
     private String nativePlace;
 
     /**
+     * 行业
+     */
+    private String industry;
+
+    /**
+     * 性别
+     */
+    private String sex;
+
+
+    /**
      * 学历
      */
     private String education;
@@ -122,6 +139,7 @@ public class ROwner implements Serializable {
     private String remark;
 
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss" ,timezone = "GMT+8")
     private Date createdAt;
 
     private Long createdBy;
@@ -129,6 +147,7 @@ public class ROwner implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss" ,timezone = "GMT+8")
     private Date modifiedAt;
 
     private Long modifiedBy;

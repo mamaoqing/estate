@@ -109,8 +109,6 @@ public class RBuilding implements Serializable {
      * 建筑类型
      */
     private String type;
-    @TableField(exist = false)
-    private String dictName;
 
     @TableField(exist = false)
     private List<RUnit> childList;

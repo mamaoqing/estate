@@ -16,4 +16,8 @@ import java.util.Map;
  */
 public interface ROwnerService extends IService<ROwner> {
     List<ROwner> getOwenerList(Map map, String token);
+    boolean insert(ROwner owner, String token);
+    boolean update(ROwner owner, String token);
+    boolean delete(Long id, String token);
+    ROwner getCount(ROwner owner, String token);
 }

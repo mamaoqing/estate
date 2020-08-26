@@ -6,6 +6,7 @@ import com.estate.sdzy.asstes.service.RRoomService;
 import com.estate.sdzy.common.controller.BaseController;
 import com.estate.sdzy.common.excel.ExportExcel;
 import com.estate.sdzy.common.excel.ImportExcel;
+import com.estate.sdzy.system.entity.SUser;
 import com.estate.util.Result;
 import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -60,12 +61,12 @@ public class RRoomController extends BaseController {
     }
 
     @GetMapping("/checkRoomOwer/{roomId}")
-    public Result checkRoomOwer(@PathVariable("roomId") String roomId) {
+    public Result checkRoomOwer(@PathVariable("roomId") Long[] roomId) {
         return ResultUtil.success(rRoomService.checkRoomOwer(roomId));
     }
 
     @DeleteMapping("/{id}")
-    public Result deleteRoom(@PathVariable("id") String id, @RequestHeader("Authentication-Token") String token) {
+    public Result deleteRoom(@PathVariable("id") Long[] id, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(rRoomService.delete(id, token));
     }
 
@@ -80,9 +81,10 @@ public class RRoomController extends BaseController {
 
     @PostMapping("/export")
     public void testExprotExcel(HttpServletResponse response,HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
-        //rRoomService.list(super.getParameterMap(request),token);
+        SUser user = rRoomService.getUserByToken(token);
         try {
-            ExportExcel.writeOut(response,"停车位信息列表","com.estate.sdzy.asstes.entity.RRoom",rRoomService.list(super.getParameterMap(request),token),"导出人：mmq");
+            ExportExcel.writeOut(response,"停车位信息列表","com.estate.sdzy.asstes.entity.RRoom",
+                    rRoomService.list(super.getParameterMap(request),token),"导出人："+user.getUserName());
         }catch (Exception e){
             e.printStackTrace();
         }

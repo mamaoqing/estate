@@ -227,17 +227,18 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
             room.setRoomModel(map.get("roomModelName").toString());
             room.setUsable(map.get("usableName").toString());
             room.setState(map.get("state").toString());
-            room.setName(map.get("suffix").toString());
+
             StringBuffer roomNo = new StringBuffer();
             if(!StringUtils.isEmpty(map.get("prefix"))){
                 roomNo.append(map.get("prefix"));
             }
-            roomNo.append(i);
             if(!StringUtils.isEmpty(map.get("separator"))){
                 roomNo.append(map.get("separator"));
             }
+            roomNo.append(i);
             roomNo.append(map.get("suffix"));
             room.setRoomNo(roomNo.toString());
+            room.setName(roomNo.toString());
             QueryWrapper<RRoom> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("unit_id",room.getUnitId());
             queryWrapper.eq("floor",i);
