@@ -133,10 +133,11 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
     }
 
     @Override
-    public List<RBuilding> getList(Long commAreaId) {
+    public List<RBuilding> getList(Long commAreaId,Long commId) {
         QueryWrapper<RBuilding> queryBuilding = new QueryWrapper<>();
         queryBuilding.eq("is_delete",0);
-        queryBuilding.eq("comm_area_id",commAreaId);
+        if(!StringUtils.isEmpty(commAreaId))queryBuilding.eq("comm_area_id",commAreaId);
+        if(!StringUtils.isEmpty(commId))queryBuilding.eq("comm_id",commId);
         List<RBuilding> rBuildings = rBuildingMapper.selectList(queryBuilding);
         return rBuildings;
     }
@@ -290,9 +291,7 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
     public Integer listNum(Map<String, String> map,String token) {
         SUser user = getUserByToken(token);
         if(user.getCompId()==0){
-            System.out.println("-----------------------------------------------");
             Integer list = rBuildingMapper.getListBuildingNum(map.get("name"),map.get("no"),map.get("type"),map.get("compName"),map.get("commName"),map.get("commAreaName") ,null,null,null);
-            System.out.println("-----------------------------------------------"+list);
             return list;
         }else{
             Integer list = rBuildingMapper.getListBuildingNum(map.get("name"),map.get("no"),map.get("type"),map.get("compName"),map.get("commName"),map.get("commAreaName") ,null,null,user.getId());
