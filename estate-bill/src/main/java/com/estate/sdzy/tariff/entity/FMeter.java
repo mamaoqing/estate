@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -31,9 +32,12 @@ public class FMeter implements Serializable {
     private Long id;
 
     private Long compId;
+    @TableField(exist = false)
+    private String compName;
 
     private Long commId;
-
+    @TableField(exist = false)
+    private String commName;
     /**
      * 物业类型：房产、停车位
      */
@@ -43,21 +47,37 @@ public class FMeter implements Serializable {
      * 物业id：房产id、停车位id
      */
     private Long propertyId;
+    @TableField(exist = false)
+    private String propertyName;
 
     /**
      * 仪表类型（水表、电表、煤气表）
      */
     private String type;
+    /**
+     * 仪表编号
+     */
+    private String no;
 
     /**
      * 当前数量
      */
     private BigDecimal newNum;
+    /**
+     * 抄表时间
+     */
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    private Date meterReadTime;
 
     /**
      * 前次数量（生成账单）
      */
-    private Date oldNum;
+    private BigDecimal billNum;
+    /**
+     * 账单日期
+     */
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    private Date billDate;
 
     /**
      * 状态
@@ -70,6 +90,7 @@ public class FMeter implements Serializable {
     private String remark;
 
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date createdAt;
 
     private Long createdBy;
@@ -77,11 +98,12 @@ public class FMeter implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     private Date modifiedAt;
 
     private Long modifiedBy;
 
     private String modifiedName;
 
-
+    private Integer isDelete;
 }
