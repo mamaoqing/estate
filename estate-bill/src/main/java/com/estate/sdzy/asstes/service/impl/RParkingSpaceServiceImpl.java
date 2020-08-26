@@ -192,7 +192,10 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
             QueryWrapper<RParkingSpace> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("no",s.getNo()).eq("comm_area_id",s.getCommAreaId());
             RParkingSpace rParkingSpace = parkingSpaceMapper.selectOne(queryWrapper);
+            // 判断如果已经存在数据  就是更新操作，否则添加
             if(rParkingSpace == null){
+                s.setCreatedBy(user.getId());
+                s.setCreatedName(user.getUserName());
                 int insert = parkingSpaceMapper.insert(s);
                 if(!(insert > 0)){
                    throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
@@ -200,6 +203,8 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
                 log.info("-----停车位信息添加成功-----");
             }else{
                 s.setId(rParkingSpace.getId());
+                s.setModifiedBy(user.getId());
+                s.setModifiedName(user.getUserName());
                 int i = parkingSpaceMapper.updateById(s);
                 if (!(i>0)){
                     throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);

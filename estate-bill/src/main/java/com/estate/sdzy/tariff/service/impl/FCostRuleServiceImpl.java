@@ -4,9 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.exception.BillException;
 import com.estate.sdzy.system.entity.SUser;
+import com.estate.sdzy.tariff.entity.FCostItem;
 import com.estate.sdzy.tariff.entity.FCostRule;
 import com.estate.sdzy.tariff.entity.FCostType;
+import com.estate.sdzy.tariff.mapper.FCostItemMapper;
 import com.estate.sdzy.tariff.mapper.FCostRuleMapper;
+import com.estate.sdzy.tariff.mapper.FCostTypeMapper;
 import com.estate.sdzy.tariff.service.FCostRuleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.util.BillExceptionEnum;
@@ -17,6 +20,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,6 +37,7 @@ import java.util.Map;
 public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule> implements FCostRuleService {
     private final FCostRuleMapper costRuleMapper;
     private final RedisTemplate redisTemplate;
+    private final FCostItemMapper costItemMapper;
 
     @Override
     public Page<FCostRule> listCostRule(Map<String, String> map, String token) {
@@ -60,12 +65,22 @@ public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule
                     .eq(!StringUtils.isEmpty(map.get("compId")),"comp_id", map.get("compId"));
         }
         queryWrapper.eq(!StringUtils.isEmpty(map.get("costTypeId")),"cost_item_id", map.get("costTypeId"));
+        Page<FCostRule> fCostRulePage = costRuleMapper.listCostRule(page, queryWrapper);
+        List<FCostRule> records = fCostRulePage.getRecords();
+        records.forEach(s->{
+            System.out.println(s);
+        });
         return costRuleMapper.listCostRule(page,queryWrapper);
     }
 
     @Override
     public boolean save(FCostRule rule, String token) {
         SUser user = getUserByToken(token);
+        Long costItemId = rule.getCostItemId();
+        QueryWrapper<FCostItem> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("id",costItemId);
+        FCostItem fCostItem = costItemMapper.selectOne(queryWrapper);
+        rule.setCostTypeId(fCostItem.getCostTypeId());
         rule.setCreatedBy(user.getId());
         rule.setCreatedName(user.getUserName());
         int insert = costRuleMapper.insert(rule);
