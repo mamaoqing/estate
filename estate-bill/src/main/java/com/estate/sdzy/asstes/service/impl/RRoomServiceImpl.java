@@ -1,13 +1,11 @@
 package com.estate.sdzy.asstes.service.impl;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.exception.BillException;
 import com.estate.sdzy.asstes.entity.*;
 import com.estate.sdzy.asstes.mapper.*;
 import com.estate.sdzy.asstes.service.RRoomService;
-import com.estate.sdzy.common.annotation.ExcelAnnotation;
 import com.estate.sdzy.system.entity.SCompany;
 import com.estate.sdzy.system.entity.SDictItem;
 import com.estate.sdzy.system.entity.SUser;
@@ -101,24 +99,6 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
         }
         rRoom.setModifiedBy(user.getId());
         rRoom.setModifiedName(user.getUserName());
-        if(isNum(rRoom.getRoomModelName())){
-            rRoom.setRoomModel(rRoom.getRoomModelName());
-        }
-        if(isNum(rRoom.getRoomTypeName())){
-            rRoom.setRoomType(rRoom.getRoomTypeName());
-        }
-        if(isNum(rRoom.getPropertyRightNatureName())){
-            rRoom.setPropertyRightNature(rRoom.getPropertyRightNatureName());
-        }
-        if(isNum(rRoom.getDirectionName())){
-            rRoom.setDirection(rRoom.getDirectionName());
-        }
-        if(isNum(rRoom.getRenovationLevelName())){
-            rRoom.setRenovationLevel(rRoom.getRenovationLevelName());
-        }
-        if(isNum(rRoom.getUsableName())){
-            rRoom.setUsable(rRoom.getUsableName());
-        }
         int update = rRoomMapper.updateById(rRoom);
         if (update > 0) {
             log.info("房间修改成功，修改人={}", user.getUserName());
@@ -139,21 +119,27 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
 
     @Override
     @Transactional
-    public boolean delete(String id, String token) {
+    public boolean delete(Long[] ids, String token) {
         SUser user = getUserByToken(token);
         //if(id.indexOf(",")!=-1){//多选删除
-        String[] ids = id.split(",");
         int delete = rRoomMapper.updateBatch(user.getId(),user.getUserName(),ids);
-        List<ROwnerProperty> rOwners = getROwnerProperty(id);
+        List<ROwnerProperty> rOwners = getROwnerProperty(ids);
         int delOwnerProperty=0;
         if(rOwners.size()>0){
             delOwnerProperty = rRoomMapper.updateOwnerProperty(user.getId(), user.getUserName(), ids);
-        }
-        if(delete>0&&delOwnerProperty>0){
-            log.info("房间删除成功，删除人={}",user.getUserName());
+            if(delete>0&&delOwnerProperty>0){
+                log.info("房间删除成功，删除人={}",user.getUserName());
+            }else{
+                throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+            }
         }else{
-            throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+            if(delete>0){
+                log.info("房间删除成功，删除人={}",user.getUserName());
+            }else{
+                throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+            }
         }
+
         return delete>0;
         /*}else{
             if(StringUtils.isEmpty(id)){
@@ -184,13 +170,13 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
         if(user.getCompId()==0) {
             List<RRoom> rRooms = rRoomMapper.getListRoom(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
-                    map.get("roomModel"), map.get("usable"),
+                    map.get("roomModel"), map.get("usable"),map.get("name"),
                     (pageNo - 1) * size, size, null);
             return rRooms;
         }else{
             List<RRoom> rRooms = rRoomMapper.getListRoom(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
-                    map.get("roomModel"), map.get("usable"),
+                    map.get("roomModel"), map.get("usable"),map.get("name"),
                     (pageNo - 1) * size, size, user.getId());
             return rRooms;
         }
@@ -200,22 +186,22 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
     public Integer listNum(Map<String, String> map, String token) {
         SUser user = getUserByToken(token);
         if(user.getCompId()==0) {
-            List<RRoom> rRooms = rRoomMapper.getListRoom(map.get("compName"), map.get("commName"), map.get("commAreaName"),
+            Integer rRooms = rRoomMapper.getListRoomNum(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
-                    map.get("roomModel"), map.get("usable"),
+                    map.get("roomModel"), map.get("usable"),map.get("name"),
                     null, null, null);
-            return rRooms.size();
+            return rRooms;
         }else{
-            List<RRoom> rRooms = rRoomMapper.getListRoom(map.get("compName"), map.get("commName"), map.get("commAreaName"),
+            Integer rRooms = rRoomMapper.getListRoomNum(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
-                    map.get("roomModel"), map.get("usable"),
+                    map.get("roomModel"), map.get("usable"),map.get("name"),
                     null, null, user.getId());
-            return rRooms.size();
+            return rRooms;
         }
     }
 
     @Override
-    public String checkRoomOwer(String roomId) {
+    public String checkRoomOwer(Long[] roomId) {
         //查询该房间下的用户需要验证是否有业主，如果有业主需要提示给用户，如果用户确认删除，进行逻辑删除，房间与业主的关联关系也进行逻辑删除
         //批量查询
         List<ROwnerProperty> rOwners = getROwnerProperty(roomId);
@@ -232,27 +218,27 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
         if(user.getCompId()==0) {
             List<RRoom> rRooms = rRoomMapper.getListRoom(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
-                    map.get("roomModel"), map.get("usable"),
+                    map.get("roomModel"), map.get("usable"),map.get("name"),
                     null, null, null);
             return rRooms;
         }else{
             List<RRoom> rRooms = rRoomMapper.getListRoom(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
-                    map.get("roomModel"), map.get("usable"),
+                    map.get("roomModel"), map.get("usable"),map.get("name"),
                     null, null, user.getId());
             return rRooms;
         }
     }
 
-    private List<ROwnerProperty> getROwnerProperty(String roomId){
+    private List<ROwnerProperty> getROwnerProperty(Long[] roomId){
         QueryWrapper<ROwnerProperty> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("is_delete",0);
         queryWrapper.eq("property_type",113);//字典项房产id
-        queryWrapper.in("property_id",roomId.split(","));
+        queryWrapper.in("property_id",roomId);
         return rOwnerPropertyMapper.selectList(queryWrapper);
     }
 
-    private SUser getUserByToken(String token) {
+    public SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {
             log.error("登录失效，请重新登录。");
@@ -263,12 +249,6 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
 
     public void saveOrUpdateRoom(RRoom room,String token){
         //保存前进行判断是否已经存在数据
-        room.setRoomModel(room.getRoomModelName());
-        room.setRoomType(room.getRoomTypeName());
-        room.setPropertyRightNature(room.getPropertyRightNatureName());
-        room.setDirection(room.getDirectionName());
-        room.setRenovationLevel(room.getRenovationLevelName());
-        room.setUsable(room.getUsableName());
         QueryWrapper<RRoom> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("comp_id",room.getCompId());
         queryWrapper.eq("comm_id",room.getCommId());

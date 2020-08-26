@@ -28,11 +28,15 @@ public class FCostRule implements Serializable {
     private Long id;
 
     private Long costTypeId;
+    @TableField(exist = false)
+    private String costTypeName;
 
     /**
      * 费用项目id
      */
     private Long costItemId;
+    @TableField(exist = false)
+    private String costItemName;
 
     /**
      * 费用规则名称
@@ -40,6 +44,8 @@ public class FCostRule implements Serializable {
     private String name;
 
     private Long compId;
+    @TableField(exist = false)
+    private String compName;
 
     /**
      * 开始日期

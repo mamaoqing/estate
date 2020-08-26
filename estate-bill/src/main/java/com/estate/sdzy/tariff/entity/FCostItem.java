@@ -1,12 +1,11 @@
 package com.estate.sdzy.tariff.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -30,6 +29,8 @@ public class FCostItem implements Serializable {
     private Long id;
 
     private Long costTypeId;
+    @TableField(exist = false)
+    private String costTypeName;
 
     /**
      * 费用项目编号
@@ -42,6 +43,8 @@ public class FCostItem implements Serializable {
     private String name;
 
     private Long compId;
+    @TableField(exist = false)
+    private String compName;
 
     /**
      * 备注
@@ -51,9 +54,12 @@ public class FCostItem implements Serializable {
     /**
      * 是否删除
      */
+    @TableLogic
     private Integer isDelete;
 
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date createdAt;
 
     private Long createdBy;
@@ -61,6 +67,8 @@ public class FCostItem implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date modifiedAt;
 
     private Long modifiedBy;

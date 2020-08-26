@@ -109,46 +109,35 @@ public class RRoom implements Serializable {
     /**
      * 房型
      */
-    private String roomModel;
-    @TableField(exist = false)
     @ExcelAnnotation(value = "房型",dist = "44")
-    private String roomModelName;
+    private String roomModel;
     /**
      * 房屋类型
      */
+    @ExcelAnnotation(value = "房屋类型",dist = "1")
     private String roomType;
     @TableField(exist = false)
-    @ExcelAnnotation(value = "房屋类型",dist = "1")
-    private String roomTypeName;
     /**
      * 产权性质
      */
-    private String propertyRightNature;
-    @TableField(exist = false)
     @ExcelAnnotation(value = "产权性质",dist = "27")
-    private String propertyRightNatureName;
+    private String propertyRightNature;
 
     /**
      * 朝向
      */
-    private String direction;
-    @TableField(exist = false)
     @ExcelAnnotation(value = "朝向",dist = "30")
-    private String directionName;
+    private String direction;
     /**
      * 装修程度
      */
-    private String renovationLevel;
-    @TableField(exist = false)
     @ExcelAnnotation(value = "装修程度",dist = "31")
-    private String renovationLevelName;
+    private String renovationLevel;
     /**
      * 用途
      */
-    private String usable;
-    @TableField(exist = false)
     @ExcelAnnotation(value = "用途",dist = "7")
-    private String usableName;
+    private String usable;
 
     /**
      * 产权证号
