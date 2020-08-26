@@ -114,13 +114,13 @@ public class SCompany implements Serializable {
     /**
      * 营业期限开始
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date businessTermBegin;
 
     /**
      * 营业期限结束
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date businessTermEnd;
 
     /**

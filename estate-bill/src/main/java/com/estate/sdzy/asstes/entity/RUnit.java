@@ -66,7 +66,7 @@ public class RUnit implements Serializable {
     /**
      * 型号
      */
-    private String model;
+    private Long modelId;
 
     /**
      * 房间数
@@ -93,7 +93,7 @@ public class RUnit implements Serializable {
     private Long modifiedBy;
 
     private String modifiedName;
-    //@TableLogic
+    @TableLogic
     private Integer isDelete;
 
     /**

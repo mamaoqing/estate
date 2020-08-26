@@ -55,6 +55,8 @@ public class SCompLinkServiceImpl extends ServiceImpl<SCompLinkMapper, SCompLink
         SUser user = getUserByToken(token);
         sCompLink.setCreatedBy(user.getId());
         sCompLink.setCreatedName(user.getUserName());
+        sCompLink.setModifiedBy(user.getId());
+        sCompLink.setModifiedName(user.getUserName());
         int insert = compLinkMapper.insert(sCompLink);
         if(insert > 0){
             log.info("添加公司联系人成功。添加联系人为{}",sCompLink.getName());

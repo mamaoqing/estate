@@ -43,6 +43,8 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
         }
         company.setCreatedBy(user.getId());
         company.setCreatedName(user.getUserName());
+        company.setModifiedBy(user.getId());
+        company.setModifiedName(user.getUserName());
         int insert = companyMapper.insert(company);
         if (insert > 0) {
             log.info("公司添加成功，添加人={}", user.getUserName());
@@ -58,8 +60,8 @@ public class SCompanyServiceImpl extends ServiceImpl<SCompanyMapper, SCompany> i
         if (null == company) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
-        company.setCreatedBy(user.getId());
-        company.setCreatedName(user.getUserName());
+        company.setModifiedBy(user.getId());
+        company.setModifiedName(user.getUserName());
         int insert = companyMapper.updateById(company);
         if (insert > 0) {
             log.info("{} 修改成功，修改人={}", company.getName(), user.getUserName());
