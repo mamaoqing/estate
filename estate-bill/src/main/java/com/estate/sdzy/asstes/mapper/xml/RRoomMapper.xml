@@ -13,7 +13,7 @@
         <if test="userId!=''and userId!=null">
             ,s_user_comm u
         </if>
-        where r.comp_id=comp.id and r.comm_id=comm.id and r.comm_area_id=a.id and r.building_id=b.id and r.unit_id=u.id and u.model=m.id
+        where r.comp_id=comp.id and r.comm_id=comm.id and r.comm_area_id=a.id and r.building_id=b.id and r.unit_id=u.id and u.model_id=m.id
          and r.is_delete='0'
         <if test="compName!=''and compName!=null">
             and r.comp_id = #{compName}
@@ -57,7 +57,7 @@
         <if test="userId!=''and userId!=null">
             ,s_user_comm u
         </if>
-        where r.comp_id=comp.id and r.comm_id=comm.id and r.comm_area_id=a.id and r.building_id=b.id and r.unit_id=u.id and u.model=m.id
+        where r.comp_id=comp.id and r.comm_id=comm.id and r.comm_area_id=a.id and r.building_id=b.id and r.unit_id=u.id and u.model_id=m.id
         and r.is_delete='0'
         <if test="compName!=''and compName!=null">
             and r.comp_id = #{compName}
