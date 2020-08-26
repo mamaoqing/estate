@@ -43,7 +43,7 @@ public class SCompany implements Serializable {
     /**
      * 成立日期
      */
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd")
     private Date establishmentDate;
 
     /**
