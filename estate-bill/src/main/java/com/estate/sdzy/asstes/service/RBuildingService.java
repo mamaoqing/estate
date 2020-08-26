@@ -26,7 +26,7 @@ public interface RBuildingService extends IService<RBuilding> {
     List<RCommunity> getUserComm(String token, Long compId);
     String checkBuildingRoomUnit(Long compId);
     String copyBuildings(RBuilding rBuilding,String token);
-    List<RBuilding> getList(Long commAreaId);
+    List<RBuilding> getList(Long commAreaId,Long commId);
     List<RUnit> getUnitList(Long buildingId);
     String checkBulidingNameNo(RBuilding rBuilding);
 }
