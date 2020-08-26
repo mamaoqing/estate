@@ -61,12 +61,12 @@ public class RRoomController extends BaseController {
     }
 
     @GetMapping("/checkRoomOwer/{roomId}")
-    public Result checkRoomOwer(@PathVariable("roomId") String roomId) {
+    public Result checkRoomOwer(@PathVariable("roomId") Long[] roomId) {
         return ResultUtil.success(rRoomService.checkRoomOwer(roomId));
     }
 
     @DeleteMapping("/{id}")
-    public Result deleteRoom(@PathVariable("id") String id, @RequestHeader("Authentication-Token") String token) {
+    public Result deleteRoom(@PathVariable("id") Long[] id, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(rRoomService.delete(id, token));
     }
 
