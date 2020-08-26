@@ -1,7 +1,10 @@
 package com.estate.sdzy.tariff.service;
 
-import com.estate.sdzy.tariff.entity.FMeter;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.estate.sdzy.tariff.entity.FMeter;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +16,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface FMeterService extends IService<FMeter> {
 
+    boolean save(FMeter fMeter, String token);
+    void saveOrUpdateMeter(FMeter fMeter, String token);
+    boolean update(FMeter fMeter, String token);
+    boolean delete(String id,String token);
+    List<FMeter> list(Map<String,String> map, Integer pageNo, Integer size, String token);
+    Integer listNum(Map<String,String> map,String token);
+    List<FMeter> listAll(Map<String, String> parameterMap, String token);
 }
