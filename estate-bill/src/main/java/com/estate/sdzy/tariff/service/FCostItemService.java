@@ -27,4 +27,6 @@ public interface FCostItemService extends IService<FCostItem> {
     boolean removeById(Long id ,String token);
 
     List<FCostType> costTypeList();
+
+    List<FCostItem> costItemList(Long compId);
 }

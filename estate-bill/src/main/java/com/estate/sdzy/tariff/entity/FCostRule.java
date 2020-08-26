@@ -1,9 +1,11 @@
 package com.estate.sdzy.tariff.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -50,11 +52,15 @@ public class FCostRule implements Serializable {
     /**
      * 开始日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date beginDate;
 
     /**
      * 结束日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
 
     /**
@@ -80,7 +86,7 @@ public class FCostRule implements Serializable {
     /**
      * 价格单位
      */
-    private BigDecimal priceUnit;
+    private String priceUnit;
 
     /**
      * 备注
@@ -96,7 +102,7 @@ public class FCostRule implements Serializable {
     /**
      * 是否有违约金
      */
-    private Integer isLiquidatedDamages;
+    private String isLiquidatedDamages;
 
     /**
      * 违约金计算方式
@@ -114,6 +120,8 @@ public class FCostRule implements Serializable {
     private String billDay;
 
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date createdAt;
 
     private Long createdBy;
@@ -121,6 +129,8 @@ public class FCostRule implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date modifiedAt;
 
     private Long modifiedBy;

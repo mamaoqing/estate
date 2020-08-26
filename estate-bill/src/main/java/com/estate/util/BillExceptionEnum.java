@@ -25,6 +25,7 @@ public enum BillExceptionEnum {
     RESET_PASSWORD_ERROR ("旧密码输入错误，重设密码失败",900),
     RESET_PASSWORD_ERROR_SYSTEM ("重设密码失败",900),
     TREE_MENU_ERROR_SYSTEM ("社区树获取信息异常，请检查数据是否正确！",601),
+    USER_ROLE_OUT_TIME ("用户角色权限已经过期！",1001),
     ;
     private Integer code;
 
