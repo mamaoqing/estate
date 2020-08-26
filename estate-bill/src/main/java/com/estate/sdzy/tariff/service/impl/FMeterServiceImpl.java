@@ -118,11 +118,11 @@ public class FMeterServiceImpl extends ServiceImpl<FMeterMapper, FMeter> impleme
         }
         SUser user = getUserByToken(token);
         if(user.getCompId()==0){
-            List<FMeter> listMeter = fMeterMapper.getListMeter(map.get("compId"),map.get("commId"),map.get("propertyType"),map.get("propertyName"),
+            List<FMeter> listMeter = fMeterMapper.getListMeter(map.get("compName"),map.get("commName"),map.get("propertyType"),map.get("propertyName"),
                     map.get("type"),map.get("no") ,(pageNo-1)*size,size,null);
             return listMeter;
         }else{
-            List<FMeter> listMeter = fMeterMapper.getListMeter(map.get("compId"),map.get("commId"),map.get("propertyType"),map.get("propertyName"),
+            List<FMeter> listMeter = fMeterMapper.getListMeter(map.get("compName"),map.get("commName"),map.get("propertyType"),map.get("propertyName"),
                     map.get("type"),map.get("no") ,(pageNo-1)*size,size,user.getId());
             return listMeter;
         }
@@ -132,11 +132,11 @@ public class FMeterServiceImpl extends ServiceImpl<FMeterMapper, FMeter> impleme
     public Integer listNum(Map<String, String> map, String token) {
         SUser user = getUserByToken(token);
         if(user.getCompId()==0){
-            Integer list = fMeterMapper.getListMeterNum(map.get("compId"),map.get("commId"),map.get("propertyType"),map.get("propertyName"),
+            Integer list = fMeterMapper.getListMeterNum(map.get("compName"),map.get("commName"),map.get("propertyType"),map.get("propertyName"),
                     map.get("type"),map.get("no") ,null,null,null);
             return list;
         }else{
-            Integer list = fMeterMapper.getListMeterNum(map.get("compId"),map.get("commId"),map.get("propertyType"),map.get("propertyName"),
+            Integer list = fMeterMapper.getListMeterNum(map.get("compName"),map.get("commName"),map.get("propertyType"),map.get("propertyName"),
                     map.get("type"),map.get("no") ,null,null,user.getId());
             return list;
         }

@@ -8,7 +8,7 @@
         select r.id,comp.name as compName,comm.name as commName,a.name as commAreaName,b.name as buildingName,u.name as unitName,
         u.floor_num as floorNum,m.elevator_num as elevatorNum,m.room_num as roomNum,r.name,r.room_no,r.state,r.floor,r.room_model,
         r.room_type,r.property_right_nature,r.direction,r.renovation_level,r.title_deed_no,r.land_deed_no,r.contract_no,r.building_area,
-        r.usable_area,r.garden_area,r.usable,r.remark,r.created_at,r.created_name,r.modified_at,r.modified_name
+        r.usable_area,r.garden_area,r.usable,r.remark,r.created_at,r.created_name,r.modified_at,r.modified_name,b.no as buildingNo,u.no as unitNo
         from r_room r,s_company comp,r_community comm,r_comm_area a,r_building b,r_unit u,s_unit_model m
         <if test="userId!=''and userId!=null">
             ,s_user_comm u

@@ -38,10 +38,10 @@ public class FMeterController extends BaseController {
     public Result insertMeter(@RequestBody FMeter fMeter, @RequestHeader("Authentication-Token") String token) {
         boolean save = fMeterService.save(fMeter, token);
         if (save) {
-            log.info("添加字典成功，公司id={}", fMeter.getId());
-            ResultUtil.success("添加字典成功");
+            log.info("添加仪表成功，公司id={}", fMeter.getId());
+            return ResultUtil.success("添加仪表成功");
         }
-        return ResultUtil.error("添加字典失败！", 1);
+        return ResultUtil.error("添加仪表失败！", 1);
     }
 
     @PutMapping("/updateMeter")
