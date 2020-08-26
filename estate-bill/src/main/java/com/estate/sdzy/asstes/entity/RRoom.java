@@ -62,6 +62,8 @@ public class RRoom implements Serializable {
     @TableField(exist = false)
     @ExcelAnnotation(value = "建筑",master = true)
     private String buildingName;
+    @TableField(exist = false)
+    private String buildingNo;
     /**
      * 单元id
      */
@@ -69,6 +71,8 @@ public class RRoom implements Serializable {
     @TableField(exist = false)
     @ExcelAnnotation(value = "单元",master = true)
     private String unitName;
+    @TableField(exist = false)
+    private String unitNo;
     /**
      * 名称
      */
