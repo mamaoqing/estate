@@ -26,6 +26,6 @@ public interface RRoomMapper extends BaseMapper<RRoom> {
                            @Param("buildingName")String buildingName, @Param("unitName")String unitName, @Param("roomNo")String roomNo,
                            @Param("roomModel")String roomModel, @Param("usable")String usable,@Param("name")String name,
                            @Param("pageNo") Integer pageNo, @Param("size") Integer size, @Param("userId") Long userId);
-    int updateBatch(@Param("userId")Long userId,@Param("userName")String userName,@Param("ids")String[] ids);
-    int updateOwnerProperty(@Param("userId")Long userId,@Param("userName")String userName,@Param("ids")String[] ids);
+    int updateBatch(@Param("userId")Long userId,@Param("userName")String userName,@Param("ids")Long[] ids);
+    int updateOwnerProperty(@Param("userId")Long userId,@Param("userName")String userName,@Param("ids")Long[] ids);
 }

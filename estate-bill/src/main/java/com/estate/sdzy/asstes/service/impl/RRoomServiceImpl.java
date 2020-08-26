@@ -119,12 +119,11 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
 
     @Override
     @Transactional
-    public boolean delete(String id, String token) {
+    public boolean delete(Long[] ids, String token) {
         SUser user = getUserByToken(token);
         //if(id.indexOf(",")!=-1){//多选删除
-        String[] ids = id.split(",");
         int delete = rRoomMapper.updateBatch(user.getId(),user.getUserName(),ids);
-        List<ROwnerProperty> rOwners = getROwnerProperty(id);
+        List<ROwnerProperty> rOwners = getROwnerProperty(ids);
         int delOwnerProperty=0;
         if(rOwners.size()>0){
             delOwnerProperty = rRoomMapper.updateOwnerProperty(user.getId(), user.getUserName(), ids);
@@ -202,7 +201,7 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
     }
 
     @Override
-    public String checkRoomOwer(String roomId) {
+    public String checkRoomOwer(Long[] roomId) {
         //查询该房间下的用户需要验证是否有业主，如果有业主需要提示给用户，如果用户确认删除，进行逻辑删除，房间与业主的关联关系也进行逻辑删除
         //批量查询
         List<ROwnerProperty> rOwners = getROwnerProperty(roomId);
@@ -231,11 +230,11 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
         }
     }
 
-    private List<ROwnerProperty> getROwnerProperty(String roomId){
+    private List<ROwnerProperty> getROwnerProperty(Long[] roomId){
         QueryWrapper<ROwnerProperty> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("is_delete",0);
         queryWrapper.eq("property_type",113);//字典项房产id
-        queryWrapper.in("property_id",roomId.split(","));
+        queryWrapper.in("property_id",roomId);
         return rOwnerPropertyMapper.selectList(queryWrapper);
     }
 

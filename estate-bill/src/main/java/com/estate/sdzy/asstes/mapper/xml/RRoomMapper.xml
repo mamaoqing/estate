@@ -106,7 +106,7 @@
     <update id="updateOwnerProperty">
         update r_owner_property set is_delete='1',modified_at=CURRENT_TIME,modified_by=#{userId},modified_name=#{userName}
         <where>
-            property_type='113' and
+            property_type='房产' and
             <foreach collection="ids" separator="or" item="item">
                 property_id=#{item}
             </foreach>
