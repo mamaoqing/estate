@@ -3,15 +3,16 @@
 <mapper namespace="com.estate.sdzy.tariff.mapper.FMeterMapper">
 
     <select id="getListMeter" resultType="com.estate.sdzy.tariff.entity.FMeter">
-        select distinct m.id,m.property_type,com.name as compName,comm.name as commName,m.type,m.no,m.name,
-        m.state,m.remark,m.created_at,m.created_name,m.modified_at,m.modified_name,
-        case when m.property_type='房产' then r.room_no else p.no end as propertyName
-        from f_meter m,s_company com,r_community comm,r_room r ,r_parking_space p
+        SELECT m.propertyName,
+        m.id,m.property_type,m.compName,m.commName,m.type,m.no,m.name,
+        m.state,m.remark,m.created_at,m.created_name,m.modified_at,m.modified_name,m.new_num,
+        m.meter_read_time,m.bill_num,m.bill_date
+        FROM
+        v_f_meter m
         <if test="userId!=''and userId!=null">
             ,s_user_comm u
         </if>
-        where m.comp_id=com.id and m.comm_id=comm.id and m.is_delete='0'
-        and case when m.property_type='房产' then r.id=m.property_id else p.id=m.property_id end
+        where 1=1
         <if test="compId!=''and compId!=null">
             and m.comp_id = #{compId}
         </if>
@@ -22,31 +23,30 @@
             and m.property_type = #{propertyType}
         </if>
         <if test="propertyName!=''and propertyName!=null">
-            and m.property_name = #{propertyName}
+            and m.propertyName like CONCAT('%',#{propertyName},'%')
         </if>
         <if test="type!=''and type!=null">
             and m.type = #{type}
         </if>
         <if test="no!=''and no!=null">
-            and m.no = #{no}
+            and m.no like CONCAT('%',#{no},'%')
         </if>
         <if test="userId!=''and userId!=null">
             and u.user_id=#{userId} and r.comm_id=u.comm_id
         </if>
-        ORDER BY id DESC
         <if test="pageNo!=null and size!=null">
             limit #{pageNo},#{size}
         </if>
     </select>
 
     <select id="getListMeterNum" resultType="java.lang.Integer">
-        select count(distinct m.id)
-        from f_meter m,s_company com,r_community comm,r_room r ,r_parking_space p
+        SELECT count(m.id)
+        FROM
+        v_f_meter m
         <if test="userId!=''and userId!=null">
             ,s_user_comm u
         </if>
-        where m.comp_id=com.id and m.comm_id=comm.id and m.is_delete='0'
-        and case when m.property_type='房产' then r.id=m.property_id else p.id=m.property_id end
+        where 1=1
         <if test="compId!=''and compId!=null">
             and m.comp_id = #{compId}
         </if>
@@ -57,13 +57,13 @@
             and m.property_type = #{propertyType}
         </if>
         <if test="propertyName!=''and propertyName!=null">
-            and m.property_name = #{propertyName}
+            and m.propertyName like CONCAT('%',#{propertyName},'%')
         </if>
         <if test="type!=''and type!=null">
             and m.type = #{type}
         </if>
         <if test="no!=''and no!=null">
-            and m.no = #{no}
+            and m.no like CONCAT('%',#{no},'%')
         </if>
         <if test="userId!=''and userId!=null">
             and u.user_id=#{userId} and r.comm_id=u.comm_id
