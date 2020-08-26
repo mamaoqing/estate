@@ -84,7 +84,12 @@ public class RBuildingController extends BaseController {
 
     @GetMapping("/getBuildings/{commAreaId}")
     public Result getBuildings(@PathVariable("commAreaId") Long commAreaId) {
-        return ResultUtil.success(rBuildingService.getList(commAreaId));//返回为true则表示重复
+        return ResultUtil.success(rBuildingService.getList(commAreaId,null));//返回为true则表示重复
+    }
+
+    @GetMapping("/getBuildingsByCommId/{commId}")
+    public Result getBuildingsByCommId(@PathVariable("commId") Long commId) {
+        return ResultUtil.success(rBuildingService.getList(null,commId));//返回为true则表示重复
     }
 
     @GetMapping("/getUnits/{buildingId}")
