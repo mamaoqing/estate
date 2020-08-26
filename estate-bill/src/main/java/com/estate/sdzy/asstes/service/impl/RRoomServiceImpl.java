@@ -128,12 +128,19 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
         int delOwnerProperty=0;
         if(rOwners.size()>0){
             delOwnerProperty = rRoomMapper.updateOwnerProperty(user.getId(), user.getUserName(), ids);
-        }
-        if(delete>0&&delOwnerProperty>0){
-            log.info("房间删除成功，删除人={}",user.getUserName());
+            if(delete>0&&delOwnerProperty>0){
+                log.info("房间删除成功，删除人={}",user.getUserName());
+            }else{
+                throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+            }
         }else{
-            throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+            if(delete>0){
+                log.info("房间删除成功，删除人={}",user.getUserName());
+            }else{
+                throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+            }
         }
+
         return delete>0;
         /*}else{
             if(StringUtils.isEmpty(id)){
@@ -164,13 +171,13 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
         if(user.getCompId()==0) {
             List<RRoom> rRooms = rRoomMapper.getListRoom(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
-                    map.get("roomModel"), map.get("usable"),
+                    map.get("roomModel"), map.get("usable"),map.get("name"),
                     (pageNo - 1) * size, size, null);
             return rRooms;
         }else{
             List<RRoom> rRooms = rRoomMapper.getListRoom(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
-                    map.get("roomModel"), map.get("usable"),
+                    map.get("roomModel"), map.get("usable"),map.get("name"),
                     (pageNo - 1) * size, size, user.getId());
             return rRooms;
         }
@@ -182,13 +189,13 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
         if(user.getCompId()==0) {
             Integer rRooms = rRoomMapper.getListRoomNum(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
-                    map.get("roomModel"), map.get("usable"),
+                    map.get("roomModel"), map.get("usable"),map.get("name"),
                     null, null, null);
             return rRooms;
         }else{
             Integer rRooms = rRoomMapper.getListRoomNum(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
-                    map.get("roomModel"), map.get("usable"),
+                    map.get("roomModel"), map.get("usable"),map.get("name"),
                     null, null, user.getId());
             return rRooms;
         }
@@ -212,13 +219,13 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
         if(user.getCompId()==0) {
             List<RRoom> rRooms = rRoomMapper.getListRoom(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
-                    map.get("roomModel"), map.get("usable"),
+                    map.get("roomModel"), map.get("usable"),map.get("name"),
                     null, null, null);
             return rRooms;
         }else{
             List<RRoom> rRooms = rRoomMapper.getListRoom(map.get("compName"), map.get("commName"), map.get("commAreaName"),
                     map.get("buildingName"), map.get("unitName"), map.get("roomNo"),
-                    map.get("roomModel"), map.get("usable"),
+                    map.get("roomModel"), map.get("usable"),map.get("name"),
                     null, null, user.getId());
             return rRooms;
         }
@@ -232,7 +239,7 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
         return rOwnerPropertyMapper.selectList(queryWrapper);
     }
 
-    private SUser getUserByToken(String token) {
+    public SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {
             log.error("登录失效，请重新登录。");
