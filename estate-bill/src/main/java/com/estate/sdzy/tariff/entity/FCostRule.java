@@ -120,8 +120,8 @@ public class FCostRule implements Serializable {
     private String billDay;
 
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdAt;
 
     private Long createdBy;
@@ -129,8 +129,8 @@ public class FCostRule implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss",timezone = "GMT+8")
-    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date modifiedAt;
 
     private Long modifiedBy;

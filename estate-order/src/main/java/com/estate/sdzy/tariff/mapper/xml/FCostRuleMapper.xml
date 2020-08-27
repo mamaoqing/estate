@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.estate.sdzy.tariff.mapper.FCostRuleMapper">
+    <select id="listCostRule" resultType="com.estate.sdzy.tariff.entity.FCostRule">
+        select aa.*,bb.type_name costTypeName,cc.name costItemName,dd.name compName
+        from f_cost_rule aa ,f_cost_type bb,f_cost_item cc,s_company dd
+        ${ew.customSqlSegment}
+        and aa.comp_id = dd.id and aa.cost_type_id = bb.id and aa.cost_item_id = cc.id
+    </select>
+</mapper>

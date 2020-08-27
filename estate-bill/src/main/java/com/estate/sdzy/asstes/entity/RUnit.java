@@ -79,7 +79,7 @@ public class RUnit implements Serializable {
     private String remark;
 
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss" ,timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createdAt;
 
     private Long createdBy;
@@ -87,7 +87,7 @@ public class RUnit implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss" ,timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date modifiedAt;
 
     private Long modifiedBy;
