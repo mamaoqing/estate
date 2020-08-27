@@ -1,9 +1,11 @@
 package com.estate.sdzy.tariff.controller;
 
 
+import com.estate.sdzy.asstes.service.RRoomService;
 import com.estate.sdzy.common.controller.BaseController;
 import com.estate.sdzy.common.excel.ExportExcel;
 import com.estate.sdzy.common.excel.ImportExcel;
+import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.tariff.entity.FMeter;
 import com.estate.sdzy.tariff.service.FMeterService;
 import com.estate.util.Result;
@@ -33,6 +35,9 @@ public class FMeterController extends BaseController {
 
     @Autowired
     private FMeterService fMeterService;
+
+    @Autowired
+    private RRoomService rRoomService;
 
     @PostMapping("/insertMeter")
     public Result insertMeter(@RequestBody FMeter fMeter, @RequestHeader("Authentication-Token") String token) {
@@ -64,6 +69,11 @@ public class FMeterController extends BaseController {
         return ResultUtil.success(fMeterService.delete(id, token));
     }
 
+    @PostMapping("/checkMeterNo")
+    public Result checkMeterNo(@RequestBody FMeter fMeter, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(fMeterService.checkMeterNo(fMeter));
+    }
+
     @PostMapping("/upload")
     public Result upload(@RequestParam("file") MultipartFile file, @RequestHeader("Authentication-Token") String token) throws IOException, ClassNotFoundException{
         List<Object> fileData = ImportExcel.getFileData(file, "com.estate.sdzy.tariff.entity.FMeter");
@@ -75,9 +85,10 @@ public class FMeterController extends BaseController {
 
     @PostMapping("/export")
     public void testExprotExcel(HttpServletResponse response, HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
+        SUser user = rRoomService.getUserByToken(token);
         try {
             ExportExcel.writeOut(response,"仪表信息列表","com.estate.sdzy.tariff.entity.FMeter",
-                    fMeterService.listAll(super.getParameterMap(request),token),"导出人：mmq");
+                    fMeterService.listAll(super.getParameterMap(request),token),"导出人："+user.getUserName());
         }catch (Exception e){
             e.printStackTrace();
         }
