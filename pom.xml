@@ -11,6 +11,8 @@
     <modules>
         <module>estate-bill</module>
         <module>estate-order</module>
+        <module>estate-common</module>
+        <module>estate-autocode</module>
     </modules>
 
     <properties>
