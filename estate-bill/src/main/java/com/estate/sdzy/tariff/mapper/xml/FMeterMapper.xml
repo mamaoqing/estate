@@ -4,7 +4,7 @@
 
     <select id="getListMeter" resultType="com.estate.sdzy.tariff.entity.FMeter">
         SELECT m.propertyName,
-        m.id,m.property_type,m.compName,m.commName,m.type,m.no,m.name,
+        m.id,m.property_type,m.compName,m.commName,m.commAreaName,m.type,m.no,m.name,
         m.state,m.remark,m.created_at,m.created_name,m.modified_at,m.modified_name,m.new_num,
         m.meter_read_time,m.bill_num,m.bill_date
         FROM
@@ -19,6 +19,9 @@
         <if test="commId!=''and commId!=null">
             and m.comm_id = #{commId}
         </if>
+        <if test="commAreaId!=''and commAreaId!=null">
+            and m.comm_area_id = #{commAreaId}
+        </if>
         <if test="propertyType!=''and propertyType!=null">
             and m.property_type = #{propertyType}
         </if>
@@ -32,7 +35,7 @@
             and m.no like CONCAT('%',#{no},'%')
         </if>
         <if test="userId!=''and userId!=null">
-            and u.user_id=#{userId} and r.comm_id=u.comm_id
+            and u.user_id=#{userId} and m.comm_id=u.comm_id
         </if>
         <if test="pageNo!=null and size!=null">
             limit #{pageNo},#{size}
@@ -53,6 +56,9 @@
         <if test="commId!=''and commId!=null">
             and m.comm_id = #{commId}
         </if>
+        <if test="commAreaId!=''and commAreaId!=null">
+            and m.comm_area_id = #{commAreaId}
+        </if>
         <if test="propertyType!=''and propertyType!=null">
             and m.property_type = #{propertyType}
         </if>
@@ -66,7 +72,11 @@
             and m.no like CONCAT('%',#{no},'%')
         </if>
         <if test="userId!=''and userId!=null">
-            and u.user_id=#{userId} and r.comm_id=u.comm_id
+            and u.user_id=#{userId} and m.comm_id=u.comm_id
         </if>
     </select>
+
+    <update id="updateMeter">
+        update f_meter set state=#{state},remark=#{remark},modified_at=CURRENT_TIME,modified_by=#{userId},modified_name=#{userName} where id=#{id}
+    </update>
 </mapper>
