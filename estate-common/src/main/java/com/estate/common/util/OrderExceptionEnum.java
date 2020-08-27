@@ -1,4 +1,4 @@
-package com.estate.util;
+package com.estate.common.util;
 
 /**
  * @author mq

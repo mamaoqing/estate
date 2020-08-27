@@ -1,6 +1,6 @@
-package com.estate.exception;
+package com.estate.common.exception;
 
-import com.estate.util.OrderExceptionEnum;
+import com.estate.common.util.OrderExceptionEnum;
 
 /**
  * @author mq
@@ -22,6 +22,7 @@ public class OrderException extends RuntimeException{
         super(msg);
         this.code = code;
     }
+
 
     public Integer getCode(){
         return  code;

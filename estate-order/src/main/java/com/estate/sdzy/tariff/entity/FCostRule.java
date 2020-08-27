@@ -137,5 +137,7 @@ public class FCostRule implements Serializable {
 
     private String modifiedName;
 
+    private Integer payTime;
+
 
 }

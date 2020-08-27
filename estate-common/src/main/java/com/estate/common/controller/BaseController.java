@@ -1,6 +1,6 @@
-package com.estate.sdzy.common.controller;
+package com.estate.common.controller;
 
-import com.estate.sdzy.system.entity.SUser;
+import com.estate.common.entity.SUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -31,7 +31,7 @@ public class BaseController {
         // 参数Map
         Map<String, String[]> properties = request.getParameterMap();
         // 返回值Map
-        Map<String, String> returnMap = new HashMap<>();
+        Map<String, String> returnMap = new HashMap<String, String>(16);
         Iterator entries = properties.entrySet().iterator();
         Map.Entry<String, Object> entry;
         String name = "";

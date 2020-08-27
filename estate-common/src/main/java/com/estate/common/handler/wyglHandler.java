@@ -1,4 +1,4 @@
-package com.estate.handler;
+package com.estate.common.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;

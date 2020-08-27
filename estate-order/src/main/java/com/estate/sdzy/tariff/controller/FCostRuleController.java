@@ -1,17 +1,14 @@
 package com.estate.sdzy.tariff.controller;
 
 
-import com.estate.sdzy.common.controller.BaseController;
+import com.estate.common.controller.BaseController;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.tariff.entity.FCostRule;
 import com.estate.sdzy.tariff.service.FCostItemService;
 import com.estate.sdzy.tariff.service.FCostRuleService;
-import com.estate.sdzy.tariff.service.FCostTypeService;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -24,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  * @since 2020-08-04
  */
 @RestController
-@RequestMapping("/sdzy/fCostRule")
+@RequestMapping("/order/fCostRule")
 public class FCostRuleController extends BaseController {
 
     @Autowired
@@ -33,7 +30,7 @@ public class FCostRuleController extends BaseController {
     private FCostItemService costItemService;
 
     @GetMapping("/listCostRule")
-    public Result listCostRule(HttpServletRequest request,@RequestHeader("Authentication-Token") String token){
+    public Result listCostRule(HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(costRuleService.listCostRule(super.getParameterMap(request),token));
     }
 

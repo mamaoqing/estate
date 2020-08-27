@@ -1,7 +1,7 @@
 package com.estate.sdzy.tariff.mapper;
 
-import com.estate.sdzy.tariff.entity.FCostType;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.estate.sdzy.tariff.entity.FBillPeriod;
 
 /**
  * <p>
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author mq
- * @since 2020-08-04
+ * @since 2020-08-27
  */
-public interface FCostTypeMapper extends BaseMapper<FCostType> {
+public interface FBillPeriodMapper extends BaseMapper<FBillPeriod> {
 
 }

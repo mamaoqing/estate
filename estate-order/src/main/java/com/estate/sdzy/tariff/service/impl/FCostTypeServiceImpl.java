@@ -2,13 +2,13 @@ package com.estate.sdzy.tariff.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.estate.exception.OrderException;
+import com.estate.common.exception.OrderException;
+import com.estate.common.util.OrderExceptionEnum;
 import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.tariff.entity.FCostType;
 import com.estate.sdzy.tariff.mapper.FCostTypeMapper;
 import com.estate.sdzy.tariff.service.FCostTypeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.estate.util.OrderExceptionEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

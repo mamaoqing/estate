@@ -1,8 +1,8 @@
-package com.estate.handler;
+package com.estate.common.handler;
 
-import com.estate.exception.OrderException;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
+import com.estate.common.exception.OrderException;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

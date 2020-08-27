@@ -1,15 +1,13 @@
 package com.estate.sdzy.tariff.controller;
 
 
-import com.estate.sdzy.common.controller.BaseController;
+import com.estate.common.controller.BaseController;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.tariff.entity.FCostType;
 import com.estate.sdzy.tariff.service.FCostTypeService;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,7 +20,7 @@ import javax.servlet.http.HttpServletRequest;
  * @since 2020-08-04
  */
 @RestController
-@RequestMapping("/sdzy/fCostType")
+@RequestMapping("/order/fCostType")
 public class FCostTypeController extends BaseController {
 
 
