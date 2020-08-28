@@ -193,8 +193,10 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
         wrapper.eq("no",unit.getNo());
         wrapper.eq("is_delete",0);
         RUnit unit1 = mapper.selectOne(wrapper);
-        if (unit.getId()!=unit1.getId()){
-            return false;
+        if(unit1!=null){
+            if (unit.getId()!=unit1.getId()){
+                return false;
+            }
         }
         unit.setModifiedBy(user.getId());
         unit.setModifiedName(user.getUserName());
