@@ -47,6 +47,11 @@ public class RBuildingController extends BaseController {
         return ResultUtil.success(rBuildingService.checkBulidingNameNo(rBuilding));
     }
 
+    @PostMapping("/checkBulidingNameNoCopy")
+    public Result checkBulidingNameNoCopy(@RequestBody RBuilding rBuilding, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(rBuildingService.checkBulidingNameNoCopy(rBuilding));
+    }
+
     @PostMapping("/copyBuilding")
     public Result copyBuilding(@RequestBody RBuilding rBuilding, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(rBuildingService.copyBuildings(rBuilding,token));

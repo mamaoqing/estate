@@ -196,6 +196,16 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
         }
     }
 
+    public String checkBulidingNameNoCopy(RBuilding rBuilding){
+        //Integer checkName = rBuildingMapper.checkName(rBuilding.getName(),rBuilding.getCommAreaId());
+        Integer checkNo = rBuildingMapper.checkNo(rBuilding.getNo(),rBuilding.getCommAreaId());
+        if(checkNo>0){
+            return "建筑编号重复";
+        }else{
+            return "";
+        }
+    }
+
     @Override
     public boolean update(RBuilding rBuilding, String token) {
         SUser user = getUserByToken(token);

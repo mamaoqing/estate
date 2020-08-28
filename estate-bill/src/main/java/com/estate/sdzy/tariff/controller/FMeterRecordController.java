@@ -40,7 +40,7 @@ public class FMeterRecordController extends BaseController {
     @Autowired
     private RRoomService rRoomService;
 
-    @PostMapping("/insertMeter")
+    @PostMapping("/insertMeterRecord")
     public Result insertMeterRecord(@RequestBody FMeterRecord fMeterRecord, @RequestHeader("Authentication-Token") String token) {
         boolean save = fMeterRecordService.save(fMeterRecord, token);
         if (save) {
@@ -50,17 +50,17 @@ public class FMeterRecordController extends BaseController {
         return ResultUtil.error("添加仪表失败！", 1);
     }
 
-    @PutMapping("/updateMeter")
+    @PutMapping("/updateMeterRecord")
     public Result updateMeterRecord(@RequestBody FMeterRecord fMeterRecord, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterRecordService.update(fMeterRecord,token));
     }
 
-    @GetMapping("/listMeter")
+    @GetMapping("/listMeterRecord")
     public Result listMeterRecord(Integer pageNo, Integer size, HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterRecordService.list(super.getParameterMap(request),pageNo,size,token));
     }
 
-    @GetMapping("/listMeterNum")
+    @GetMapping("/listMeterRecordNum")
     public Result listMeterRecordNum(HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterRecordService.listNum(super.getParameterMap(request),token));
     }

@@ -5,7 +5,7 @@
         select id,name,'build' type,'r_comm_area'parenttable,comm_area_id parentid from r_building where comm_area_id = #{id} and is_delete=0
     </select>
     <select id="getListBuilding" resultType="com.estate.sdzy.asstes.entity.RBuilding">
-        select r.id,r.no,r.name,r.builded_date,r.deliver_date,r.state,r.floor_num,r.unit_num,r.remark,r.created_at,r.created_name,r.modified_at,
+        select r.id,r.no,r.comp_id,r.comm_id,r.comm_area_id,r.name,r.builded_date,r.deliver_date,r.state,r.floor_num,r.unit_num,r.remark,r.created_at,r.created_name,r.modified_at,
         r.type,r.modified_name,comp.name as compName,comm.name as commName,area.name as commAreaName
         from r_building r ,s_company comp,r_community comm,r_comm_area area
         <if test="userId!=''and userId!=null">
