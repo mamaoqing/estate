@@ -2,12 +2,12 @@ package com.estate.sdzy.tariff.controller;
 
 
 import com.estate.common.controller.BaseController;
+import com.estate.common.entity.SUser;
 import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.service.RRoomService;
 import com.estate.sdzy.common.excel.ExportExcel;
 import com.estate.sdzy.common.excel.ImportExcel;
-import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.tariff.entity.FMeterRecord;
 import com.estate.sdzy.tariff.service.FMeterRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +39,7 @@ public class FMeterRecordController extends BaseController {
     @Autowired
     private RRoomService rRoomService;
 
-    @PostMapping("/insertMeter")
+    @PostMapping("/insertMeterRecord")
     public Result insertMeterRecord(@RequestBody FMeterRecord fMeterRecord, @RequestHeader("Authentication-Token") String token) {
         boolean save = fMeterRecordService.save(fMeterRecord, token);
         if (save) {
@@ -49,17 +49,17 @@ public class FMeterRecordController extends BaseController {
         return ResultUtil.error("添加仪表失败！", 1);
     }
 
-    @PutMapping("/updateMeter")
+    @PutMapping("/updateMeterRecord")
     public Result updateMeterRecord(@RequestBody FMeterRecord fMeterRecord, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterRecordService.update(fMeterRecord,token));
     }
 
-    @GetMapping("/listMeter")
+    @GetMapping("/listMeterRecord")
     public Result listMeterRecord(Integer pageNo, Integer size, HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterRecordService.list(super.getParameterMap(request),pageNo,size,token));
     }
 
-    @GetMapping("/listMeterNum")
+    @GetMapping("/listMeterRecordNum")
     public Result listMeterRecordNum(HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterRecordService.listNum(super.getParameterMap(request),token));
     }
