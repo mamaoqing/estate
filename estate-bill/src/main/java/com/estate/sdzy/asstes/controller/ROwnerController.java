@@ -1,18 +1,16 @@
 package com.estate.sdzy.asstes.controller;
 
 
+import com.estate.common.entity.SUser;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.ROwner;
 import com.estate.sdzy.asstes.service.ROwnerService;
 import com.estate.sdzy.common.excel.ExportExcel;
-import com.estate.sdzy.system.entity.SUser;
 import com.estate.util.RedisUtil;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
