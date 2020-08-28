@@ -3,7 +3,7 @@
 <mapper namespace="com.estate.sdzy.system.mapper.SDictItemMapper">
 
     <select id="findDictItemList" resultType="com.estate.sdzy.system.entity.SDictItem" >
-        select item.id,item.name,dict.name as dictName,item.dict_id,com.name as compName,item.created_at,item.created_name,item.order_by,item.modified_at,item.modified_name from
+        select item.id,item.state,item.name,dict.name as dictName,item.dict_id,com.name as compName,item.created_at,item.created_name,item.order_by,item.modified_at,item.modified_name from
         s_dict_item item left join s_company com on item.comp_id=com.id  left join s_dict dict on item.dict_id=dict.id where item.is_delete = 0
           and dict.is_delete = 0
         <if test="compId!=''and compId!=null">
