@@ -79,6 +79,15 @@ public class RParkingSpaceController extends BaseController {
     public Result uploadFile(@RequestParam("file") MultipartFile file, String className,@RequestHeader("Authentication-Token") String token) throws IOException, ClassNotFoundException {
         return ResultUtil.success(parkingSpaceService.fileUpload(file, className,token));
     }
+    @GetMapping("/validaIsOwner")
+    public Result validaIsOwner(String ids){
+        return ResultUtil.success(parkingSpaceService.validaIsOwner(ids));
+    }
+
+    @GetMapping("/validaIsOwner/{id}")
+    public Result validaIsOwner(@PathVariable("id") Long id){
+        return ResultUtil.success(parkingSpaceService.validaIsOwner(id));
+    }
 
 }
 

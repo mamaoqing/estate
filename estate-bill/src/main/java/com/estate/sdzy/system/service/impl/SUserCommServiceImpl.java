@@ -1,10 +1,10 @@
 package com.estate.sdzy.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.asstes.entity.RCommunity;
-import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.system.entity.SUserComm;
 import com.estate.sdzy.system.mapper.SUserCommMapper;
 import com.estate.sdzy.system.service.SUserCommService;

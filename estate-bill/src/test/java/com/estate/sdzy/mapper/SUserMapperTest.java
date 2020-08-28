@@ -1,6 +1,6 @@
 package com.estate.sdzy.mapper;
 
-import com.estate.sdzy.system.entity.SUser;
+import com.estate.common.entity.SUser;
 import com.estate.sdzy.system.mapper.SUserMapper;
 import com.estate.util.PasswdEncryption;
 import junit.framework.TestCase;
@@ -27,31 +27,7 @@ public class SUserMapperTest extends TestCase {
     private SUserMapper userMapper;
 
     @Test
-    public void test1(){
-        SUser entity = new SUser();
-        entity.setUserName("admin");
-        String passwd = PasswdEncryption.encptyPasswd("123456");
-        entity.setPassword(passwd);
+    public void test() {
 
-
-        userMapper.insert(entity);
-
-    }
-
-    @Test
-    public void test2(){
-        List<SUser> sUsers = userMapper.selectList(null);
-        sUsers.forEach(System.out::println);
-
-    }
-    @Test
-    public void test3(){
-        SUser entity = new SUser();
-        entity.setUserName("admin");
-        String passwd = PasswdEncryption.encptyPasswd("123456");
-        entity.setPassword(passwd);
-
-
-        userMapper.insert(entity);
     }
 }

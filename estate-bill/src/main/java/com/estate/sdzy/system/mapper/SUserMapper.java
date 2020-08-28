@@ -2,8 +2,8 @@ package com.estate.sdzy.system.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.estate.sdzy.system.entity.SUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.estate.common.entity.SUser;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

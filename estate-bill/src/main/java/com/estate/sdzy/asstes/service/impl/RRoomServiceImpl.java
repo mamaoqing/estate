@@ -2,6 +2,7 @@ package com.estate.sdzy.asstes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
 import com.estate.common.util.Result;
@@ -11,7 +12,6 @@ import com.estate.sdzy.asstes.mapper.*;
 import com.estate.sdzy.asstes.service.RRoomService;
 import com.estate.sdzy.system.entity.SCompany;
 import com.estate.sdzy.system.entity.SDictItem;
-import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.system.mapper.SCompanyMapper;
 import com.estate.sdzy.system.mapper.SDictItemMapper;
 import lombok.extern.slf4j.Slf4j;

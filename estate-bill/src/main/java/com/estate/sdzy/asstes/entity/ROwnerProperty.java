@@ -3,12 +3,14 @@ package com.estate.sdzy.asstes.entity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -33,6 +35,8 @@ public class ROwnerProperty implements Serializable {
 
     private Long commId;
 
+    private Long commAreaId;
+
     /**
      * 物业类型：房产、停车位
      */
@@ -43,7 +47,7 @@ public class ROwnerProperty implements Serializable {
      */
     private Long propertyId;
 
-    private Long buildiingId;
+    private Long buildingId;
 
     private String type;
 
@@ -53,6 +57,7 @@ public class ROwnerProperty implements Serializable {
     private String remark;
 
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createdAt;
 
     private Long createdBy;
@@ -60,6 +65,7 @@ public class ROwnerProperty implements Serializable {
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date modifiedAt;
 
     private Long modifiedBy;
@@ -67,6 +73,12 @@ public class ROwnerProperty implements Serializable {
     private String modifiedName;
     @TableLogic
     private Integer isDelete;
-
-
+    @TableField(exist = false)
+    private String compName;
+    @TableField(exist = false)
+    private String commName;
+    @TableField(exist = false)
+    private String commAreaName;
+    @TableField(exist = false)
+    private String buildingName;
 }

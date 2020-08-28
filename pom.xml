@@ -13,6 +13,7 @@
         <module>estate-order</module>
         <module>estate-common</module>
         <module>estate-autocode</module>
+        <module>estate-timedtask</module>
     </modules>
 
     <properties>

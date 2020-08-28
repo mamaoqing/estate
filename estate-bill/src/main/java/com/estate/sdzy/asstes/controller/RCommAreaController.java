@@ -1,10 +1,10 @@
 package com.estate.sdzy.asstes.controller;
 
 
+import com.estate.common.entity.SUser;
 import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.RCommArea;
-import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.asstes.service.RCommAreaService;
 import com.estate.sdzy.system.service.SCompanyService;
 import com.estate.util.RedisUtil;

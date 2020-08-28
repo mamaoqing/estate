@@ -1,9 +1,9 @@
 package com.estate.sdzy.asstes.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.estate.common.entity.SUser;
 import com.estate.common.util.Result;
 import com.estate.sdzy.asstes.entity.RRoom;
-import com.estate.sdzy.system.entity.SUser;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;

@@ -1,13 +1,13 @@
 package com.estate.sdzy.asstes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.asstes.entity.ROwnerInvoiceInfo;
 import com.estate.sdzy.asstes.mapper.ROwnerInvoiceInfoMapper;
 import com.estate.sdzy.asstes.service.ROwnerInvoiceInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.estate.sdzy.system.entity.SUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -40,6 +40,7 @@ public class ROwnerInvoiceInfoServiceImpl extends ServiceImpl<ROwnerInvoiceInfoM
         }
         QueryWrapper<ROwnerInvoiceInfo> wrapper = new QueryWrapper<>();
         wrapper.eq("owner_id",ownerId);
+        wrapper.eq("is_delete",0);
         return mapper.selectList(wrapper);
     }
 
@@ -51,7 +52,6 @@ public class ROwnerInvoiceInfoServiceImpl extends ServiceImpl<ROwnerInvoiceInfoM
         }
         ownerInvoiceInfo.setCreatedBy(user.getId());
         ownerInvoiceInfo.setCreatedName(user.getUserName());
-
         int insert = mapper.insert(ownerInvoiceInfo);
         if (insert > 0) {
             log.info("开票信息添加成功，添加人={}", user.getUserName());
@@ -68,12 +68,12 @@ public class ROwnerInvoiceInfoServiceImpl extends ServiceImpl<ROwnerInvoiceInfoM
         }
         ownerInvoiceInfo.setModifiedBy(user.getId());
         ownerInvoiceInfo.setModifiedName(user.getUserName());
-
         int update = mapper.updateById(ownerInvoiceInfo);
         if (update > 0) {
-            log.info("开票信息修改成功，修改人={}", user.getUserName());
+            log.info("开票.信息修改成功，修改人={}", user.getUserName());
             return true;
         }
+
         throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
     }
 
@@ -101,6 +101,7 @@ public class ROwnerInvoiceInfoServiceImpl extends ServiceImpl<ROwnerInvoiceInfoM
         QueryWrapper<ROwnerInvoiceInfo> wrapper = new QueryWrapper<>();
         wrapper.eq("taxpayer_type",ownerInvoiceInfo.getTaxpayerType());
         wrapper.eq("identification_no",ownerInvoiceInfo.getIdentificationNo());
+        wrapper.eq("is_delete",0);
         wrapper.orderByDesc("created_at");
         List<ROwnerInvoiceInfo> rOwnerInvoiceInfos = mapper.selectList(wrapper);
         if(rOwnerInvoiceInfos.size()!=0){
