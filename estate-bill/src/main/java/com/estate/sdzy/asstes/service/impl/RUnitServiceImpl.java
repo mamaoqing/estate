@@ -52,16 +52,17 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
     private RRoomMapper roomMapper;
     @Autowired
     private RRoomService roomService;
+
     @Override
     public List<RUnit> getAllUnit(Map map) {
         return mapper.getAllUnit(map);
     }
 
     @Override
-    public List<RBuilding> getAllBuilding(Long areaId,String token) {
+    public List<RBuilding> getAllBuilding(Long areaId, String token) {
         getUserByToken(token);
         QueryWrapper<RBuilding> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("comm_area_id",areaId);
+        queryWrapper.eq("comm_area_id", areaId);
         return buildingMapper.selectList(queryWrapper);
     }
 
@@ -69,7 +70,7 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
     public List<SUnitModel> getAllModel(String token) {
         getUserByToken(token);
         QueryWrapper<SUnitModel> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("is_delete",0);
+        queryWrapper.eq("is_delete", 0);
         return modelMapper.selectList(queryWrapper);
     }
 
@@ -81,22 +82,23 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
         }
         return (SUser) o;
     }
+
     @Override
-    public boolean insert(RUnit unit,String token) {
+    public boolean insert(RUnit unit, String token) {
         getUserByToken(token);
         SUser user = getUserByToken(token);
         if (null == unit) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         QueryWrapper<RUnit> wrapper = new QueryWrapper<>();
-        wrapper.eq("comp_id",unit.getCompId());
-        wrapper.eq("comm_id",unit.getCommId());
-        wrapper.eq("comm_area_id",unit.getCommAreaId());
-        wrapper.eq("building_id",unit.getBuildingId());
-        wrapper.eq("no",unit.getNo());
-        wrapper.eq("is_delete",0);
+        wrapper.eq("comp_id", unit.getCompId());
+        wrapper.eq("comm_id", unit.getCommId());
+        wrapper.eq("comm_area_id", unit.getCommAreaId());
+        wrapper.eq("building_id", unit.getBuildingId());
+        wrapper.eq("no", unit.getNo());
+        wrapper.eq("is_delete", 0);
         List<RUnit> rUnits = mapper.selectList(wrapper);
-        if (rUnits.size()>0){
+        if (rUnits.size() > 0) {
             return false;
         }
         unit.setCreatedBy(user.getId());
@@ -110,21 +112,21 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
     }
 
     @Override
-    public boolean copyUnit(RUnit unit,Long oldId ,String token) {
+    public boolean copyUnit(RUnit unit, Long oldId, String token) {
         getUserByToken(token);
         SUser user = getUserByToken(token);
         if (null == unit) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         QueryWrapper<RUnit> wrapper = new QueryWrapper<>();
-        wrapper.eq("comp_id",unit.getCompId());
-        wrapper.eq("comm_id",unit.getCommId());
-        wrapper.eq("comm_area_id",unit.getCommAreaId());
-        wrapper.eq("building_id",unit.getBuildingId());
-        wrapper.eq("no",unit.getNo());
-        wrapper.eq("is_delete",0);
+        wrapper.eq("comp_id", unit.getCompId());
+        wrapper.eq("comm_id", unit.getCommId());
+        wrapper.eq("comm_area_id", unit.getCommAreaId());
+        wrapper.eq("building_id", unit.getBuildingId());
+        wrapper.eq("no", unit.getNo());
+        wrapper.eq("is_delete", 0);
         List<RUnit> rUnits = mapper.selectList(wrapper);
-        if (rUnits.size()>0){
+        if (rUnits.size() > 0) {
             return false;
         }
         unit.setCreatedBy(user.getId());
@@ -133,11 +135,14 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
         if (insert > 0) {
             log.info("单元信息添加成功，创建人={}", user.getUserName());
             QueryWrapper<RRoom> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("unit_id",oldId);
+            queryWrapper.eq("unit_id", oldId);
             List<RRoom> rooms = roomMapper.selectList(queryWrapper);
-            if (rooms.size()>0){
-                for (int i =0;i<rooms.size();i++){
+            if (rooms.size() > 0) {
+                for (int i = 0; i < rooms.size(); i++) {
                     rooms.get(i).setId(null);
+                    rooms.get(i).setCommId(unit.getCommId());
+                    rooms.get(i).setCommAreaId(unit.getCommAreaId());
+                    rooms.get(i).setBuildingId(unit.getBuildingId());
                     rooms.get(i).setUnitId(unit.getId());
 
                 }
@@ -155,22 +160,20 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
     }
 
     @Override
-    public boolean delete(Long id,String token) {
+    public boolean delete(Long id, String token) {
         getUserByToken(token);
         SUser user = getUserByToken(token);
         if (null == id) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
-        QueryWrapper<RUnit> unitW = new QueryWrapper<>();
-        unitW.eq("id",id);
-        RUnit unit = new RUnit();
-        unit.setIsDelete(1);
-        int delete = mapper.update(unit,unitW);
+
+        int delete = mapper.deleteById(id);
         QueryWrapper<RRoom> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("id");
+        queryWrapper.eq("unit_id", id);
         RRoom room = new RRoom();
         room.setIsDelete(1);
-        queryWrapper.eq("unit_id",id);
-        roomMapper.update(room,queryWrapper);
+        roomMapper.update(room, queryWrapper);
         if (delete > 0) {
             log.info("单元信息删除成功，删除人={}", user.getUserName());
             return true;
@@ -186,15 +189,15 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         QueryWrapper<RUnit> wrapper = new QueryWrapper<>();
-        wrapper.eq("comp_id",unit.getCompId());
-        wrapper.eq("comm_id",unit.getCommId());
-        wrapper.eq("comm_area_id",unit.getCommAreaId());
-        wrapper.eq("building_id",unit.getBuildingId());
-        wrapper.eq("no",unit.getNo());
-        wrapper.eq("is_delete",0);
+        wrapper.eq("comp_id", unit.getCompId());
+        wrapper.eq("comm_id", unit.getCommId());
+        wrapper.eq("comm_area_id", unit.getCommAreaId());
+        wrapper.eq("building_id", unit.getBuildingId());
+        wrapper.eq("no", unit.getNo());
+        wrapper.eq("is_delete", 0);
         RUnit unit1 = mapper.selectOne(wrapper);
-        if(unit1!=null){
-            if (unit.getId()!=unit1.getId()){
+        if (unit1 != null) {
+            if (unit.getId() != unit1.getId()) {
                 return false;
             }
         }
@@ -242,7 +245,12 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
         int start = Integer.parseInt(map.get("start").toString());
         int end = Integer.parseInt(map.get("end").toString());
         List<RRoom> rooms = new ArrayList<>();
-        for (int i=start;i<=end;i++){
+        StringBuffer suffixStr = new StringBuffer(map.get("suffix").toString());
+        int suffix = Integer.parseInt(suffixStr.toString());
+        if (suffix < 9) {
+            suffixStr.insert(0,"0");
+        }
+        for (int i = start; i <= end; i++) {
 
             RRoom room = new RRoom();
             room.setCreatedBy(user.getId());
@@ -265,24 +273,24 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
             StringBuffer roomNo = new StringBuffer();
 
             roomNo.append(i);
-            if(!StringUtils.isEmpty(map.get("separator"))){
+            if (!StringUtils.isEmpty(map.get("separator"))) {
                 roomNo.append(map.get("separator"));
             }
-            roomNo.append(map.get("suffix"));
+            roomNo.append(suffixStr.toString());
             room.setRoomNo(roomNo.toString());
             room.setName(roomNo.toString());
             QueryWrapper<RRoom> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("comp_id",room.getCompId());
-            queryWrapper.eq("comm_id",room.getCommId());
-            queryWrapper.eq("comm_area_id",room.getCommAreaId());
-            queryWrapper.eq("building_id",room.getBuildingId());
-            queryWrapper.eq("unit_id",room.getUnitId());
-            queryWrapper.eq("floor",i);
-            queryWrapper.eq("room_no",roomNo.toString());
-            queryWrapper.eq("is_delete",0);
+            queryWrapper.eq("comp_id", room.getCompId());
+            queryWrapper.eq("comm_id", room.getCommId());
+            queryWrapper.eq("comm_area_id", room.getCommAreaId());
+            queryWrapper.eq("building_id", room.getBuildingId());
+            queryWrapper.eq("unit_id", room.getUnitId());
+            queryWrapper.eq("floor", i);
+            queryWrapper.eq("room_no", roomNo.toString());
+            queryWrapper.eq("is_delete", 0);
             List<RRoom> rRooms = roomMapper.selectList(queryWrapper);
-            if (rRooms.size()>0){
-                return ResultUtil.error(i+"层"+roomNo.toString()+"已存在",1);
+            if (rRooms.size() > 0) {
+                return ResultUtil.error(i + "层" + roomNo.toString() + "已存在", 1);
             }
             rooms.add(room);
         }
