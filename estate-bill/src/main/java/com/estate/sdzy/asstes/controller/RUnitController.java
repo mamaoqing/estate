@@ -83,14 +83,24 @@ public class RUnitController {
 
     @PostMapping("/addUnit")
     public Result addUnit(@RequestBody RUnit unit, @RequestHeader("Authentication-Token") String token) {
-        return ResultUtil.success(unitService.insert(unit, token));
+        boolean insert = unitService.insert(unit, token);
+        if (insert){
+            return ResultUtil.success();
+        }else{
+            return ResultUtil.error("插入失败，单元编号重复",1);
+        }
     }
 
     @PostMapping("/copyUnit")
     public Result copyUnit(@RequestBody RUnit unit, @RequestHeader("Authentication-Token") String token) {
         Long oldId = unit.getId();
         unit.setId(null);
-        return ResultUtil.success(unitService.copyUnit(unit,oldId, token));
+        boolean b = unitService.copyUnit(unit, oldId, token);
+        if (b){
+            return ResultUtil.success();
+        }else{
+            return ResultUtil.error("复制失败单元编号重复",1);
+        }
     }
     @DeleteMapping("/delUnit/{id}")
     public Result delUnit(@PathVariable Long id, @RequestHeader("Authentication-Token") String token) {
@@ -99,7 +109,12 @@ public class RUnitController {
 
     @PostMapping("/updateUnit")
     public Result updateUnit(@RequestBody RUnit unit, @RequestHeader("Authentication-Token") String token) {
-        return ResultUtil.success(unitService.update(unit, token));
+        boolean insert = unitService.update(unit, token);
+        if (insert){
+            return ResultUtil.success();
+        }else{
+            return ResultUtil.error("修改失败，单元编号重复",1);
+        }
     }
 
     @PostMapping("/PlAddRoom")

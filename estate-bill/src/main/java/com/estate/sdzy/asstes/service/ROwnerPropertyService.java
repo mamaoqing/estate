@@ -22,5 +22,6 @@ public interface ROwnerPropertyService extends IService<ROwnerProperty> {
      * @return
      */
     List<ROwner> ownerProByParkId(Long id);
+    List<ROwnerProperty> getOwnerProperty(Long ownerId);
 
 }

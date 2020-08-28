@@ -78,6 +78,9 @@ public class FMeterServiceImpl extends ServiceImpl<FMeterMapper, FMeter> impleme
 
     @Override
     public String checkMeterNo(FMeter fMeter) {
+        if(!StringUtils.isEmpty(fMeter.getId())){
+            fMeter = fMeterMapper.selectById(fMeter.getId());
+        }
         QueryWrapper<FMeter> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("comm_id",fMeter.getCommId());//社区
         queryWrapper.eq("property_type",fMeter.getPropertyType());//物业类型
