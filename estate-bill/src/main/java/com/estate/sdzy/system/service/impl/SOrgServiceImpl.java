@@ -1,7 +1,8 @@
 package com.estate.sdzy.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.estate.exception.BillException;
+import com.estate.common.exception.BillException;
+import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.system.entity.SCompany;
 import com.estate.sdzy.system.entity.SOrg;
 import com.estate.sdzy.system.entity.SUser;
@@ -9,7 +10,6 @@ import com.estate.sdzy.system.mapper.SOrgMapper;
 import com.estate.sdzy.system.mapper.SUserMapper;
 import com.estate.sdzy.system.service.SOrgService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.estate.util.BillExceptionEnum;
 import com.estate.util.MenuUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,20 +1,18 @@
 package com.estate.sdzy.asstes.controller;
 
 
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.RCommArea;
 import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.asstes.service.RCommAreaService;
 import com.estate.sdzy.system.service.SCompanyService;
 import com.estate.util.RedisUtil;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,7 +35,7 @@ public class RCommAreaController {
     private SCompanyService companyService;
 
     @RequestMapping("/getAllAreaByUserId")
-    public Result getAllArea(@RequestParam("commId") Long commId,@RequestParam("pageNo") Long pageNo,@RequestParam("size") Long size, @RequestHeader("Authentication-Token") String token) {
+    public Result getAllArea(@RequestParam("commId") Long commId, @RequestParam("pageNo") Long pageNo, @RequestParam("size") Long size, @RequestHeader("Authentication-Token") String token) {
         SUser user = (SUser) redisUtil.get(token);
         Map<String,Object> map = new HashMap<>();
         Map<String,Object> dataMap = new HashMap<>();

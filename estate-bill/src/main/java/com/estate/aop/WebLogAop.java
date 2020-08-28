@@ -1,10 +1,10 @@
 package com.estate.aop;
 
-import com.estate.exception.BillException;
+import com.estate.common.exception.BillException;
+import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.asstes.service.RCommRoleAgreementService;
 import com.estate.sdzy.system.service.SUserRoleService;
-import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;

@@ -1,10 +1,10 @@
 package com.estate.sdzy.system.controller;
 
 
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.system.entity.SOrg;
 import com.estate.sdzy.system.service.SOrgService;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

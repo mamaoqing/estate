@@ -1,18 +1,16 @@
 package com.estate.sdzy.asstes.controller;
 
 
+import com.estate.common.controller.BaseController;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.RParkingSpace;
 import com.estate.sdzy.asstes.service.RParkingSpaceService;
-import com.estate.sdzy.common.controller.BaseController;
-import com.estate.sdzy.common.excel.ImportExcel;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import com.estate.util.qrcode.QRCodeUtil;
 import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p>

@@ -2,13 +2,13 @@ package com.estate.sdzy.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.estate.exception.BillException;
+import com.estate.common.exception.BillException;
+import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.system.entity.SCompLink;
 import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.system.mapper.SCompLinkMapper;
 import com.estate.sdzy.system.service.SCompLinkService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

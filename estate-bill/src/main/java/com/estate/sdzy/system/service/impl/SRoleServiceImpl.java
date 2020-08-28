@@ -3,14 +3,14 @@ package com.estate.sdzy.system.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.estate.exception.BillException;
+import com.estate.common.exception.BillException;
+import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.asstes.service.RCommRoleAgreementService;
 import com.estate.sdzy.system.entity.*;
 import com.estate.sdzy.system.mapper.*;
 import com.estate.sdzy.system.service.SMenuService;
 import com.estate.sdzy.system.service.SRoleService;
 import com.estate.sdzy.system.service.SUserCommService;
-import com.estate.util.BillExceptionEnum;
 import com.estate.util.MenuUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +64,7 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
     private SUserCommService sUserCommServic;
 
     @Override
-    public boolean saveOrUpdate(SRole role, String token) throws BillException{
+    public boolean saveOrUpdate(SRole role, String token) throws BillException {
         SUser user = getUserByToken(token);
         if(null == role){
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);

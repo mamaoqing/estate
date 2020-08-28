@@ -1,6 +1,5 @@
 package com.estate.interceptor;
 
-import com.estate.exception.BillException;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 

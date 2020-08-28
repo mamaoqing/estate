@@ -1,13 +1,13 @@
 package com.estate.sdzy.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.estate.exception.BillException;
+import com.estate.common.exception.BillException;
+import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.system.entity.SUserRole;
 import com.estate.sdzy.system.mapper.SUserRoleMapper;
 import com.estate.sdzy.system.service.SUserRoleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.estate.util.BillExceptionEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

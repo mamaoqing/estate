@@ -2,7 +2,7 @@ package com.estate.sdzy.system.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.estate.exception.BillException;
+import com.estate.common.exception.BillException;
 import com.estate.sdzy.system.entity.SMenu;
 import com.estate.sdzy.system.entity.SRole;
 

@@ -1,6 +1,6 @@
 package com.estate.sdzy.common.service;
 
-import com.estate.util.Result;
+import com.estate.common.util.Result;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -2,12 +2,12 @@ package com.estate.sdzy.asstes.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.common.controller.BaseController;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.RCommunity;
 import com.estate.sdzy.asstes.service.RCommunityService;
-import com.estate.sdzy.common.controller.BaseController;
 import com.estate.sdzy.system.service.SUserCommService;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
