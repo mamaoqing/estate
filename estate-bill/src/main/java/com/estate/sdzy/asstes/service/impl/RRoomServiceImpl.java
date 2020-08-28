@@ -233,7 +233,7 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
     private List<ROwnerProperty> getROwnerProperty(Long[] roomId){
         QueryWrapper<ROwnerProperty> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("is_delete",0);
-        queryWrapper.eq("property_type",113);//字典项房产id
+        queryWrapper.eq("property_type","房产");//字典项房产id
         queryWrapper.in("property_id",roomId);
         return rOwnerPropertyMapper.selectList(queryWrapper);
     }
