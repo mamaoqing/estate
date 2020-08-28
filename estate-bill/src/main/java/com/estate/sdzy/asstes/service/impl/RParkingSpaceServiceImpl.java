@@ -77,7 +77,8 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
         queryWrapper.eq(!StringUtils.isEmpty(map.get("occupyProp")),"occupy_state",map.get("occupyProp"));
         //updateByMzc 2020-08-26 增加编号的查询条件
         queryWrapper.like(!StringUtils.isEmpty(map.get("no")),"no",map.get("no"));
-        //updateByMzc 2020-08-26
+        //updateByMzc 2020-08-27 增加社区分区的查询条件
+        queryWrapper.like(!StringUtils.isEmpty(map.get("commAreaId")),"comm_area_id",map.get("commAreaId"));
         return parkingSpaceMapper.listPark(page,queryWrapper);
     }
 

@@ -187,15 +187,9 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
     }
 
     public String checkBulidingNameNo(RBuilding rBuilding){
-        rBuilding.getName();
-        rBuilding.getNo();
-        Integer checkName = rBuildingMapper.checkName(rBuilding.getName(),rBuilding.getCommAreaId());
-        Integer checkNo = rBuildingMapper.checkNo(rBuilding.getNo(),rBuilding.getCommAreaId());
-        if(checkName>0&&checkNo>0){
-            return "建筑名称和编号重复";
-        }else if(checkName>0){
-            return "建筑名称重复";
-        }else if(checkNo>0){
+        //Integer checkName = rBuildingMapper.checkName(rBuilding.getName(),rBuilding.getCommAreaId());
+        Integer checkNo = rBuildingMapper.checkNo(rBuilding.getNo(),rBuildingMapper.selectById(rBuilding.getId()).getCommAreaId());
+        if(checkNo>0){
             return "建筑编号重复";
         }else{
             return "";

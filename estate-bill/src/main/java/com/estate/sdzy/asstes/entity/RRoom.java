@@ -172,7 +172,11 @@ public class RRoom implements Serializable {
      */
     @ExcelAnnotation(value = "使用面积",master = true)
     private BigDecimal usableArea;
-
+    /**
+     * 暖气计费面积
+     */
+    @ExcelAnnotation(value = "暖气计费面积",master = true)
+    private BigDecimal heatingArea;
     /**
      * 花园面积
      */

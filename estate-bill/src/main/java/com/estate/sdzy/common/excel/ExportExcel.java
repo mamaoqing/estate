@@ -1,7 +1,6 @@
 package com.estate.sdzy.common.excel;
 
 import com.alibaba.druid.util.StringUtils;
-import com.estate.exception.BillException;
 import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
 import com.estate.sdzy.common.annotation.ExcelAnnotation;
 import com.estate.sdzy.system.mapper.SDictMapper;
@@ -197,7 +196,7 @@ public class ExportExcel extends ExcelUtil {
                         if(aname.equals(list.get(j))){
                             HSSFCell cell = rowm.createCell(j);
                             cell.setCellStyle(style);
-                            setCellValue(cell,value,type,null);
+                            setCellValue(cell,value,type,null,aname);
                             break;
                         }
                     }

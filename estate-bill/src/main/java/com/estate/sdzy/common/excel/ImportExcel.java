@@ -202,8 +202,52 @@ public class ImportExcel extends ExcelUtil {
             Long commIdByName = parkingSpaceMapper.getAreaIdByName(getCellValue(cell));
             resultMap.put("commAreaId",commIdByName);
         }
-
+        if(map.get("propertyName") == value){//仪表中物业编号：房间（建筑编号-单元编号-房间编号）、停车位（停车位编号）
+            log.info("物业编号是:{}",getCellValue(cell));
+            //根据分区id和物业类型查询编号是否重复
+            setMeterPropertyId(resultMap,cell,rowNum);
+        }
     }
+
+    public static void setMeterPropertyId(Map<String, Object> resultMap,Cell cell,int rowNum){
+        if("房产".equals(resultMap.get("propertyType"))){
+            String[] split = getCellValue(cell).split("-");
+            if(split.length==3){//判断格式是否正确（建筑编号-单元编号-房间编号）
+                //截取后根据分区编号、建筑编号、单元编号验证物业编号的合理性，查看是否有该建筑和单元
+                List<Long> buildings= parkingSpaceMapper.getBuildingByBuildingNo(split[0],(Long) resultMap.get("commAreaId"));
+                if(buildings.size()==1){//判断建筑编号是否存在，根据分区id和建筑编号进行判断
+                    List<Long> units= parkingSpaceMapper.getUnitByUnitNo(split[1],buildings.get(0));
+                    if(units.size()==1){//判断单元编号是否存在，根据建筑id和单元编号进行判断
+                        //将物业编号转为物业id，即房产id
+                        //根据单元id和房间编号查询是否存在房间，若存在则转为房间id，不存在则抛出异常
+                        List<Long> rooms= parkingSpaceMapper.getRoomByRoomNo(split[2],units.get(0));
+                        if(rooms.size()==1){
+                            resultMap.put("propertyId",rooms.get(0));
+                        }else{
+                            throw new BillException(415,"第"+(rowNum+1)+"行物业编号错误，导入失败，物业编号中房间编号有误");
+                        }
+                    }else{
+                        throw new BillException(415,"第"+(rowNum+1)+"行物业编号错误，导入失败，物业编号中单元编号有误");
+                    }
+                }else{
+                    throw new BillException(415,"第"+(rowNum+1)+"行物业编号错误，导入失败，物业编号中建筑编号有误");
+                }
+            }else{
+                throw new BillException(415,"第"+(rowNum+1)+"行物业编号错误，导入失败，物业编号为‘建筑编号-单元编号-房间编号’");
+            }
+        }else{
+            //将物业编号转为物业id，即停车位id
+            //根据分区id和停车位编号查询是否存在停车位，若存在则转为停车位id，不存在则抛出异常
+            List<Long> parkings = parkingSpaceMapper.getParkingByParkingNo(getCellValue(cell),(Long) resultMap.get("commAreaId"));
+            if(parkings.size()==1){
+                resultMap.put("propertyId",parkings.get(0));
+            }else{
+                throw new BillException(415,"第"+(rowNum+1)+"行物业编号错误，导入失败，物业编号有误");
+            }
+        }
+    }
+
+
     /**
      * 将文字转编码。比如公司名称-->公司id，如果以后还有需要转编码的，需要在这里面进行配置。
      * 返回一个map集合。
@@ -236,6 +280,10 @@ public class ImportExcel extends ExcelUtil {
         if (fields.contains("unitName")) {
             index = fields.indexOf("unitName");
             map.put("unitName",index);
+        }
+        if (fields.contains("propertyName")) {
+            index = fields.indexOf("propertyName");
+            map.put("propertyName",index);
         }
         return map;
     }

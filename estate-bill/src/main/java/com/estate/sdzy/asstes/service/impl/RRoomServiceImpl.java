@@ -259,11 +259,13 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
         queryWrapper.eq("room_no",room.getRoomNo());
         queryWrapper.eq("is_delete",0);
         List<RRoom> rRooms = rRoomMapper.selectList(queryWrapper);
-        if(rRooms.size()>0){//执行update
+        if(rRooms.size()==1){//执行update
             room.setId(rRooms.get(0).getId());
             update(room,token);
-        }else{//执行新增
+        }else if(rRooms.size()==0){//执行新增
             save(room,token);
+        }else{
+            throw new BillException(415,"导入失败，房间编号"+room.getRoomNo()+"错误");
         }
     }
 
