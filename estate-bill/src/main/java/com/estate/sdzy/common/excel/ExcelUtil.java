@@ -8,8 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -119,10 +120,10 @@ public abstract class ExcelUtil {
                     String date = new SimpleDateFormat(fmt != null ? fmt:"yyyy-MM-dd").format((Date)value);
                     cell.setCellValue(date.toString());
                 }
-
             }
             if(BIGDECIMAL.equals(type)){
-                cell.setCellValue((Double)value);
+                BigDecimal account=(BigDecimal) value;
+                cell.setCellValue(account.doubleValue());
             }
         }
     }

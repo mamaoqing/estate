@@ -199,6 +199,8 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
             if (rParkingSpace == null) {
                 s.setCreatedBy(user.getId());
                 s.setCreatedName(user.getUserName());
+                s.setModifiedBy(user.getId());
+                s.setModifiedName(user.getUserName());
                 int insert = parkingSpaceMapper.insert(s);
                 if (!(insert > 0)) {
                     throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
