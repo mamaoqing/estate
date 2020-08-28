@@ -2,9 +2,9 @@ package com.estate.sdzy.tariff.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.common.entity.SUser;
 import com.estate.common.exception.OrderException;
 import com.estate.common.util.OrderExceptionEnum;
-import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.tariff.entity.FCostRuleRoom;
 import com.estate.sdzy.tariff.mapper.FCostRuleRoomMapper;
 import com.estate.sdzy.tariff.service.FCostRuleRoomService;
@@ -81,7 +81,7 @@ public class FCostRuleRoomServiceImpl extends ServiceImpl<FCostRuleRoomMapper, F
         return Arrays.asList(split);
     }
 
-    private com.estate.sdzy.system.entity.SUser getUserByToken(String token) {
+    private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {
             log.error("登录失效，请重新登录。");

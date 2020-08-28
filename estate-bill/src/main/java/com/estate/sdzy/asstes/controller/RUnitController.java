@@ -1,11 +1,11 @@
 package com.estate.sdzy.asstes.controller;
 
 
+import com.estate.common.entity.SUser;
 import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.RUnit;
 import com.estate.sdzy.asstes.service.RUnitService;
-import com.estate.sdzy.system.entity.SUser;
 import com.estate.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;

@@ -1,8 +1,8 @@
 package com.estate.aop;
 
+import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
-import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.asstes.service.RCommRoleAgreementService;
 import com.estate.sdzy.system.service.SUserRoleService;
 import lombok.extern.slf4j.Slf4j;

@@ -2,9 +2,9 @@ package com.estate.sdzy.tariff.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
-import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.tariff.entity.FMeter;
 import com.estate.sdzy.tariff.mapper.FMeterMapper;
 import com.estate.sdzy.tariff.service.FMeterService;

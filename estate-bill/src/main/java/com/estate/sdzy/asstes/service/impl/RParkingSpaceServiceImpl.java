@@ -2,6 +2,7 @@ package com.estate.sdzy.asstes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.asstes.entity.ROwnerProperty;
@@ -12,7 +13,6 @@ import com.estate.sdzy.asstes.service.RParkingSpaceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.sdzy.common.excel.ExportExcel;
 import com.estate.sdzy.common.excel.ImportExcel;
-import com.estate.sdzy.system.entity.SUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
