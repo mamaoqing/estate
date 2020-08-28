@@ -26,4 +26,8 @@ public class SUserMapperTest extends TestCase {
     @Autowired
     private SUserMapper userMapper;
 
+    @Test
+    public void test() {
+
+    }
 }
