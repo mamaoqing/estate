@@ -154,11 +154,7 @@
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
         </dependency>
-        <!-- 拼音jar -->
-        <dependency>
-            <groupId>com.github.open-android</groupId>
-            <artifactId>pinyin4j</artifactId>
-        </dependency>
+
         <!--二维码需要的jar-->
         <dependency>
             <groupId>com.google.zxing</groupId>

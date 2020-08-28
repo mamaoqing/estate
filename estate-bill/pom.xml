@@ -154,7 +154,7 @@
         </dependency>
         <!-- 拼音jar -->
         <dependency>
-            <groupId>com.github.open-android</groupId>
+            <groupId>com.belerweb</groupId>
             <artifactId>pinyin4j</artifactId>
         </dependency>
         <!--二维码需要的jar-->
