@@ -248,6 +248,8 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
         StringBuffer suffixStr = new StringBuffer(map.get("suffix").toString());
         int suffix = Integer.parseInt(suffixStr.toString());
         if (suffix < 9) {
+            suffixStr.setLength(0);
+            suffixStr.append(suffix);
             suffixStr.insert(0,"0");
         }
         for (int i = start; i <= end; i++) {
