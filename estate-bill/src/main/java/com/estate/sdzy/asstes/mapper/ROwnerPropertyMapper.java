@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -19,5 +20,7 @@ import java.util.List;
 public interface ROwnerPropertyMapper extends BaseMapper<ROwnerProperty> {
 
     List<ROwner> ownerProByParkId(@Param("id") Long id,@Param("type")String type,@Param("del")Integer del);
+    List<ROwnerProperty> getOwnerProperty(@Param("ownerId") Long ownerId);
+
 
 }

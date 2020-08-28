@@ -41,4 +41,13 @@ public class ROwnerPropertyServiceImpl extends ServiceImpl<ROwnerPropertyMapper,
 
         return ownerPropertyMapper.ownerProByParkId(id,"停车位",0);
     }
+
+    @Override
+    public List<ROwnerProperty> getOwnerProperty(Long ownerId) {
+        if(StringUtils.isEmpty(ownerId)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        return ownerPropertyMapper.getOwnerProperty(ownerId);
+    }
+
 }

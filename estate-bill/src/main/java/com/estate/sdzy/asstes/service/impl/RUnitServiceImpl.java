@@ -88,6 +88,17 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
         if (null == unit) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
+        QueryWrapper<RUnit> wrapper = new QueryWrapper<>();
+        wrapper.eq("comp_id",unit.getCompId());
+        wrapper.eq("comm_id",unit.getCommId());
+        wrapper.eq("comm_area_id",unit.getCommAreaId());
+        wrapper.eq("building_id",unit.getBuildingId());
+        wrapper.eq("no",unit.getNo());
+        wrapper.eq("is_delete",0);
+        List<RUnit> rUnits = mapper.selectList(wrapper);
+        if (rUnits.size()>0){
+            return false;
+        }
         unit.setCreatedBy(user.getId());
         unit.setCreatedName(user.getUserName());
         int insert = mapper.insert(unit);
@@ -104,6 +115,17 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
         SUser user = getUserByToken(token);
         if (null == unit) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        QueryWrapper<RUnit> wrapper = new QueryWrapper<>();
+        wrapper.eq("comp_id",unit.getCompId());
+        wrapper.eq("comm_id",unit.getCommId());
+        wrapper.eq("comm_area_id",unit.getCommAreaId());
+        wrapper.eq("building_id",unit.getBuildingId());
+        wrapper.eq("no",unit.getNo());
+        wrapper.eq("is_delete",0);
+        List<RUnit> rUnits = mapper.selectList(wrapper);
+        if (rUnits.size()>0){
+            return false;
         }
         unit.setCreatedBy(user.getId());
         unit.setCreatedName(user.getUserName());
@@ -163,7 +185,17 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
         if (null == unit) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
-
+        QueryWrapper<RUnit> wrapper = new QueryWrapper<>();
+        wrapper.eq("comp_id",unit.getCompId());
+        wrapper.eq("comm_id",unit.getCommId());
+        wrapper.eq("comm_area_id",unit.getCommAreaId());
+        wrapper.eq("building_id",unit.getBuildingId());
+        wrapper.eq("no",unit.getNo());
+        wrapper.eq("is_delete",0);
+        RUnit unit1 = mapper.selectOne(wrapper);
+        if (unit.getId()!=unit1.getId()){
+            return false;
+        }
         unit.setModifiedBy(user.getId());
         unit.setModifiedName(user.getUserName());
         int update = mapper.updateById(unit);
@@ -229,13 +261,11 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
             room.setState(map.get("state").toString());
 
             StringBuffer roomNo = new StringBuffer();
-            if(!StringUtils.isEmpty(map.get("prefix"))){
-                roomNo.append(map.get("prefix"));
-            }
+
+            roomNo.append(i);
             if(!StringUtils.isEmpty(map.get("separator"))){
                 roomNo.append(map.get("separator"));
             }
-            roomNo.append(i);
             roomNo.append(map.get("suffix"));
             room.setRoomNo(roomNo.toString());
             room.setName(roomNo.toString());

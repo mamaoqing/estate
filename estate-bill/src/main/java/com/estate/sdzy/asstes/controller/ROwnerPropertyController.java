@@ -30,5 +30,10 @@ public class ROwnerPropertyController {
     public Result ownerPro(@PathVariable("id")Long id){
         return ResultUtil.success(ownerPropertyService.ownerProByParkId(id));
     }
+
+    @GetMapping("/getOwnerProp/{ownerId}")
+    public Result getOwnerProperty(@PathVariable("ownerId")Long ownerId){
+        return ResultUtil.success(ownerPropertyService.getOwnerProperty(ownerId));
+    }
 }
 
