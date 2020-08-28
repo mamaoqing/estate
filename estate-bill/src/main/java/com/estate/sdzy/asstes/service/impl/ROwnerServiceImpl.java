@@ -8,7 +8,6 @@ import com.estate.sdzy.asstes.service.ROwnerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.sdzy.system.entity.SUser;
 import com.estate.util.BillExceptionEnum;
-import com.estate.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

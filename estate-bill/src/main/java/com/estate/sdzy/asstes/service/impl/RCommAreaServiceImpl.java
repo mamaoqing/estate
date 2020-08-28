@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.exception.BillException;
 import com.estate.sdzy.asstes.entity.RCommArea;
-import com.estate.sdzy.asstes.entity.RCommunity;
 import com.estate.sdzy.asstes.mapper.RBuildingMapper;
 import com.estate.sdzy.asstes.mapper.RCommAreaMapper;
 import com.estate.sdzy.asstes.mapper.RRoomMapper;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 

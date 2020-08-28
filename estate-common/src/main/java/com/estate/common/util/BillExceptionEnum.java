@@ -1,4 +1,4 @@
-package com.estate.util;
+package com.estate.common.util;
 
 
 /**
@@ -29,7 +29,7 @@ public enum BillExceptionEnum {
     private Integer code;
 
     private String msg;
-    BillExceptionEnum(String msg, Integer code){
+    BillExceptionEnum(String msg,Integer code){
         this.code = code;
         this.msg = msg;
     }

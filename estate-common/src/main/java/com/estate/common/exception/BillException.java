@@ -1,7 +1,7 @@
-package com.estate.exception;
+package com.estate.common.exception;
 
-
-import com.estate.util.BillExceptionEnum;
+import com.estate.common.util.BillExceptionEnum;
+import lombok.Data;
 
 /**
  * @author mq
@@ -18,7 +18,7 @@ public class BillException extends RuntimeException{
         this.code = exceptionEnum.getCode();
     }
 
-    public BillException(Integer code, String msg){
+    public BillException(Integer code,String msg){
 
         super(msg);
         this.code = code;

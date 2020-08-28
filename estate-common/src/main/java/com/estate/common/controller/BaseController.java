@@ -1,6 +1,5 @@
 package com.estate.common.controller;
 
-import com.estate.common.entity.SUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -15,7 +14,7 @@ import java.util.Map;
  * @date 2020/7/28 13:51
  * @description controller的父类
  */
-@Controller
+@Controller("testBaseController")
 public class BaseController {
 
     @Autowired

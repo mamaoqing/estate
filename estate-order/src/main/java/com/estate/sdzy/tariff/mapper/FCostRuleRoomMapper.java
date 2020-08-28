@@ -2,6 +2,9 @@ package com.estate.sdzy.tariff.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.estate.sdzy.tariff.entity.FCostRuleRoom;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.estate.sdzy.tariff.entity.FCostRuleRoom;
  */
 public interface FCostRuleRoomMapper extends BaseMapper<FCostRuleRoom> {
 
+    String getRoomIds(@Param("ruleId") Long ruleId);
 }
