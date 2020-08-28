@@ -1,5 +1,6 @@
 package com.estate.common.controller;
 
+import com.estate.common.entity.SUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
