@@ -193,8 +193,10 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
         wrapper.eq("no",unit.getNo());
         wrapper.eq("is_delete",0);
         RUnit unit1 = mapper.selectOne(wrapper);
-        if (unit.getId()!=unit1.getId()){
-            return false;
+        if(unit1!=null){
+            if (unit.getId()!=unit1.getId()){
+                return false;
+            }
         }
         unit.setModifiedBy(user.getId());
         unit.setModifiedName(user.getUserName());
@@ -270,9 +272,14 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
             room.setRoomNo(roomNo.toString());
             room.setName(roomNo.toString());
             QueryWrapper<RRoom> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("comp_id",room.getCompId());
+            queryWrapper.eq("comm_id",room.getCommId());
+            queryWrapper.eq("comm_area_id",room.getCommAreaId());
+            queryWrapper.eq("building_id",room.getBuildingId());
             queryWrapper.eq("unit_id",room.getUnitId());
             queryWrapper.eq("floor",i);
             queryWrapper.eq("room_no",roomNo.toString());
+            queryWrapper.eq("is_delete",0);
             List<RRoom> rRooms = roomMapper.selectList(queryWrapper);
             if (rRooms.size()>0){
                 return ResultUtil.error(i+"层"+roomNo.toString()+"已存在",1);
