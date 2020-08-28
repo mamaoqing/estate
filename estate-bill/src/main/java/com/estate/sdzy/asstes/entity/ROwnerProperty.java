@@ -43,7 +43,7 @@ public class ROwnerProperty implements Serializable {
      */
     private Long propertyId;
 
-    private Long buildiingId;
+    private Long buildingId;
 
     private String type;
 
