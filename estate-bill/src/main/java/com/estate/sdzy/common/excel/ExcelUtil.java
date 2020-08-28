@@ -1,26 +1,15 @@
 package com.estate.sdzy.common.excel;
 
 
-import com.estate.exception.BillException;
-import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
+import com.estate.common.exception.BillException;
+import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.common.annotation.ExcelAnnotation;
-import com.estate.sdzy.system.mapper.SDictMapper;
-import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -32,6 +21,7 @@ public abstract class ExcelUtil {
     static final String INTEGER = "class java.lang.Integer";
     static final String BOOLEAN = "class java.lang.Boolean";
     static final String DATE = "class java.util.Date";
+    static final String BIGDECIMAL = "class java.math.BigDecimal";
 
     /**
      * 检查文件
@@ -105,7 +95,7 @@ public abstract class ExcelUtil {
      * @param type 实体中的属性类型.
      * @param fmt 如果存在时间格式，就按照时间格式转，否则就是 yyyy-MM-dd的格式
      */
-    public static void setCellValue(HSSFCell cell, Object value, String type, String fmt){
+    public static void setCellValue(HSSFCell cell, Object value, String type, String fmt,String aname){
         if(null == value){
             cell.setCellValue("");
         }else{
@@ -122,8 +112,17 @@ public abstract class ExcelUtil {
                 cell.setCellValue(String.valueOf(value));
             }
             if(DATE.equals(type)){
-                String date = new SimpleDateFormat(fmt != null ? fmt:"yyyy-MM-dd").format((Date)value);
-                cell.setCellValue(date.toString());
+                if("录入时间".equals(aname)||"修改时间".equals(aname)){
+                    String date = new SimpleDateFormat(fmt != null ? fmt:"yyyy-MM-dd HH:mm:ss").format((Date)value);
+                    cell.setCellValue(date.toString());
+                }else{
+                    String date = new SimpleDateFormat(fmt != null ? fmt:"yyyy-MM-dd").format((Date)value);
+                    cell.setCellValue(date.toString());
+                }
+
+            }
+            if(BIGDECIMAL.equals(type)){
+                cell.setCellValue((Double)value);
             }
         }
     }

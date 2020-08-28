@@ -23,4 +23,17 @@
     <select id="getUnitByName"  resultType="com.estate.sdzy.asstes.entity.RUnit">
         select id,name from r_unit where name=#{name} and is_delete = 0 and building_id=#{buildingId}
     </select>
+
+    <select id="getBuildingByBuildingNo"  resultType="java.lang.Long">
+        select id from r_building where no=#{buildingNo} and is_delete = 0 and comm_area_id=#{commAreaId}
+    </select>
+    <select id="getUnitByUnitNo"  resultType="java.lang.Long">
+        select id from r_unit where no=#{unitNo} and is_delete = 0 and building_id=#{buildingId}
+    </select>
+    <select id="getRoomByRoomNo"  resultType="java.lang.Long">
+        select id from r_room where room_no=#{roomNo} and is_delete = 0 and unit_id=#{unitId}
+    </select>
+    <select id="getParkingByParkingNo"  resultType="java.lang.Long">
+        select id from r_parking_space where no=#{parkingNo} and is_delete = 0 and comm_area_id=#{commAreaId}
+    </select>
 </mapper>

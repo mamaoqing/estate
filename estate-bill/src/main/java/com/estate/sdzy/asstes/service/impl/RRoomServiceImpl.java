@@ -2,18 +2,18 @@ package com.estate.sdzy.asstes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.estate.exception.BillException;
+import com.estate.common.entity.SUser;
+import com.estate.common.exception.BillException;
+import com.estate.common.util.BillExceptionEnum;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.*;
 import com.estate.sdzy.asstes.mapper.*;
 import com.estate.sdzy.asstes.service.RRoomService;
 import com.estate.sdzy.system.entity.SCompany;
 import com.estate.sdzy.system.entity.SDictItem;
-import com.estate.sdzy.system.entity.SUser;
 import com.estate.sdzy.system.mapper.SCompanyMapper;
 import com.estate.sdzy.system.mapper.SDictItemMapper;
-import com.estate.util.BillExceptionEnum;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -259,16 +259,18 @@ public class RRoomServiceImpl extends ServiceImpl<RRoomMapper, RRoom> implements
         queryWrapper.eq("room_no",room.getRoomNo());
         queryWrapper.eq("is_delete",0);
         List<RRoom> rRooms = rRoomMapper.selectList(queryWrapper);
-        if(rRooms.size()>0){//执行update
+        if(rRooms.size()==1){//执行update
             room.setId(rRooms.get(0).getId());
             update(room,token);
-        }else{//执行新增
+        }else if(rRooms.size()==0){//执行新增
             save(room,token);
+        }else{
+            throw new BillException(415,"导入失败，房间编号"+room.getRoomNo()+"错误");
         }
     }
 
     @Override
-    public Result importExcel(HttpServletRequest request,String token){
+    public Result importExcel(HttpServletRequest request, String token){
         SUser user = getUserByToken(token);
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();

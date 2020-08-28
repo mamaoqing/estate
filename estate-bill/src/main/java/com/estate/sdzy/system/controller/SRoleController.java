@@ -1,11 +1,11 @@
 package com.estate.sdzy.system.controller;
 
 
-import com.estate.sdzy.common.controller.BaseController;
+import com.estate.common.controller.BaseController;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.system.entity.SRole;
 import com.estate.sdzy.system.service.SRoleService;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +30,7 @@ public class SRoleController extends BaseController {
     private SRoleService roleService;
 
     @GetMapping("/listRole")
-    public Result listRole(Integer pageNo, Integer size, HttpServletRequest request,@RequestHeader("Authentication-Token") String token) {
+    public Result listRole(Integer pageNo, Integer size, HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(roleService.listRole(super.getParameterMap(request),pageNo,size,token));
     }
 

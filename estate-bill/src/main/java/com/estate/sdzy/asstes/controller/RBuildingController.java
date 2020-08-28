@@ -1,12 +1,12 @@
 package com.estate.sdzy.asstes.controller;
 
 
+import com.estate.common.controller.BaseController;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.RBuilding;
 import com.estate.sdzy.asstes.service.RBuildingService;
 import com.estate.sdzy.asstes.service.RCommAreaService;
-import com.estate.sdzy.common.controller.BaseController;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

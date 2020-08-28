@@ -1,10 +1,10 @@
 package com.estate.sdzy.asstes.service;
 
+import com.estate.common.util.Result;
 import com.estate.sdzy.asstes.entity.RBuilding;
 import com.estate.sdzy.asstes.entity.RUnit;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.estate.sdzy.system.entity.SUnitModel;
-import com.estate.util.Result;
 
 import java.util.List;
 import java.util.Map;

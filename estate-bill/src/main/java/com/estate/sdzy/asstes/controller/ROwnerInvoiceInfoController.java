@@ -1,16 +1,12 @@
 package com.estate.sdzy.asstes.controller;
 
 
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.ROwnerInvoiceInfo;
 import com.estate.sdzy.asstes.service.ROwnerInvoiceInfoService;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.stereotype.Controller;
-
-import java.util.List;
 
 /**
  * <p>

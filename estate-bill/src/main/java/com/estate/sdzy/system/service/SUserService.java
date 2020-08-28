@@ -1,8 +1,8 @@
 package com.estate.sdzy.system.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.common.entity.SUser;
 import com.estate.sdzy.system.entity.SCompany;
-import com.estate.sdzy.system.entity.SUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

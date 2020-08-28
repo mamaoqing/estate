@@ -23,4 +23,5 @@ public interface FMeterService extends IService<FMeter> {
     List<FMeter> list(Map<String,String> map, Integer pageNo, Integer size, String token);
     Integer listNum(Map<String,String> map,String token);
     List<FMeter> listAll(Map<String, String> parameterMap, String token);
+    String checkMeterNo(FMeter fMeter);
 }

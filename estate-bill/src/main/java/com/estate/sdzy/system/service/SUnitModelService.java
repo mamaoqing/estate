@@ -1,7 +1,7 @@
 package com.estate.sdzy.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.estate.exception.BillException;
+import com.estate.common.exception.BillException;
 import com.estate.sdzy.system.entity.SUnitModel;
 
 import java.util.List;

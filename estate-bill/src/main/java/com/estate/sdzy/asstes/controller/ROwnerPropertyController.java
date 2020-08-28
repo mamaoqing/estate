@@ -1,9 +1,9 @@
 package com.estate.sdzy.asstes.controller;
 
 
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.service.ROwnerPropertyService;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

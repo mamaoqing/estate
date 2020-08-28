@@ -1,18 +1,15 @@
 package com.estate.sdzy.asstes.controller;
 
 
+import com.estate.common.entity.SUser;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.RUnit;
 import com.estate.sdzy.asstes.service.RUnitService;
-import com.estate.sdzy.asstes.service.impl.RUnitServiceImpl;
-import com.estate.sdzy.system.entity.SUser;
 import com.estate.util.RedisUtil;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -36,7 +33,7 @@ public class RUnitController {
     private RedisUtil redisUtil;
 
     @RequestMapping("/getAllUnit")
-    public Result getAll(@RequestParam("commId") Long commId,@RequestParam("pageNo") Long pageNo,HttpServletRequest request, @RequestParam("size") Long size, @RequestHeader("Authentication-Token") String token) {
+    public Result getAll(@RequestParam("commId") Long commId, @RequestParam("pageNo") Long pageNo, HttpServletRequest request, @RequestParam("size") Long size, @RequestHeader("Authentication-Token") String token) {
         SUser user = (SUser) redisUtil.get(token);
         Map<String,Object> map = new HashMap<>();
         Map<String,Object> dataMap = new HashMap<>();

@@ -1,7 +1,9 @@
 package com.estate.sdzy.asstes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.estate.exception.BillException;
+import com.estate.common.entity.SUser;
+import com.estate.common.exception.BillException;
+import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.asstes.entity.ROwner;
 import com.estate.sdzy.asstes.entity.ROwnerProperty;
 import com.estate.sdzy.asstes.mapper.ROwnerInvoiceInfoMapper;
@@ -9,9 +11,6 @@ import com.estate.sdzy.asstes.mapper.ROwnerMapper;
 import com.estate.sdzy.asstes.mapper.ROwnerPropertyMapper;
 import com.estate.sdzy.asstes.service.ROwnerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.estate.sdzy.system.entity.SUser;
-import com.estate.util.BillExceptionEnum;
-import com.estate.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

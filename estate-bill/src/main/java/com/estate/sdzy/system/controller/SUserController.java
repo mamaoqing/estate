@@ -1,11 +1,11 @@
 package com.estate.sdzy.system.controller;
 
 
-import com.estate.sdzy.common.controller.BaseController;
-import com.estate.sdzy.system.entity.SUser;
+import com.estate.common.controller.BaseController;
+import com.estate.common.entity.SUser;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.system.service.SUserService;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +45,7 @@ public class SUserController extends BaseController {
 
     @PostMapping("/insertUser")
     @ResponseBody
-    public Result insertUser(SUser user,@RequestHeader("Authentication-Token") String token) {
+    public Result insertUser(SUser user, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(userService.save(user, token));
     }
 

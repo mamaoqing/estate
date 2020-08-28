@@ -1,8 +1,8 @@
 package com.estate.sdzy.common.controller;
 
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.common.service.LoginService;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;

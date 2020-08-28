@@ -1,7 +1,10 @@
 package com.estate.sdzy.common.service.impl;
 
-import com.estate.exception.BillException;
-import com.estate.sdzy.system.entity.SUser;
+import com.estate.common.entity.SUser;
+import com.estate.common.exception.BillException;
+import com.estate.common.util.BillExceptionEnum;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.common.service.LoginService;
 import com.estate.sdzy.system.service.impl.SUserServiceImpl;
 import com.estate.util.*;

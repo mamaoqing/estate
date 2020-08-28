@@ -1,36 +1,26 @@
 package com.estate.sdzy.common.excel;
 
 import com.alibaba.druid.util.StringUtils;
-import com.estate.exception.BillException;
 import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
 import com.estate.sdzy.common.annotation.ExcelAnnotation;
 import com.estate.sdzy.system.mapper.SDictMapper;
-import com.estate.util.BillExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
-import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -206,7 +196,7 @@ public class ExportExcel extends ExcelUtil {
                         if(aname.equals(list.get(j))){
                             HSSFCell cell = rowm.createCell(j);
                             cell.setCellStyle(style);
-                            setCellValue(cell,value,type,null);
+                            setCellValue(cell,value,type,null,aname);
                             break;
                         }
                     }

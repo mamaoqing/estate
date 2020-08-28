@@ -1,19 +1,17 @@
 package com.estate.sdzy.common.controller;
 
+import com.estate.common.controller.BaseController;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.common.service.ExcelService;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import com.estate.sdzy.common.excel.ExcelUtil;
-import com.estate.util.qrcode.QRCodeUtil;
 import com.google.zxing.WriterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +23,7 @@ public class FileUploadController extends BaseController {
     private ExcelService excelService;
 
     @PostMapping("fileUpload")
-    public Result fileUpload(@RequestParam("file") MultipartFile file,String className) {
+    public Result fileUpload(@RequestParam("file") MultipartFile file, String className) {
         List<Map<String, Object>> fileData = null;
         try {
 //            fileData = ExcelUtil.getFileData(file,className);

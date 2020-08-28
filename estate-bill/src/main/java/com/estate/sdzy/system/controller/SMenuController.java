@@ -1,14 +1,14 @@
 package com.estate.sdzy.system.controller;
 
 
-import com.estate.exception.BillException;
-import com.estate.sdzy.common.controller.BaseController;
+import com.estate.common.controller.BaseController;
+import com.estate.common.exception.BillException;
+import com.estate.common.util.Result;
+import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.system.entity.SMenu;
 import com.estate.sdzy.system.service.SMenuService;
 import com.estate.sdzy.system.service.SUserRoleService;
 import com.estate.util.MenuUtil;
-import com.estate.util.Result;
-import com.estate.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;

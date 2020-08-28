@@ -1,7 +1,8 @@
 package com.estate.sdzy.asstes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.estate.exception.BillException;
+import com.estate.common.exception.BillException;
+import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.asstes.entity.RCity;
 import com.estate.sdzy.asstes.entity.RDistrict;
 import com.estate.sdzy.asstes.entity.RProvince;
@@ -10,7 +11,6 @@ import com.estate.sdzy.asstes.mapper.RDistrictMapper;
 import com.estate.sdzy.asstes.mapper.RProvinceMapper;
 import com.estate.sdzy.asstes.service.RProvinceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.estate.util.BillExceptionEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
