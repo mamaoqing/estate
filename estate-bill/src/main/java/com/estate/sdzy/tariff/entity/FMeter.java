@@ -89,7 +89,7 @@ public class FMeter implements Serializable {
      * 抄表时间
      */
     @ExcelAnnotation(value = "抄表时间",master = true)
-    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date meterReadTime;
 
     /**
@@ -101,7 +101,7 @@ public class FMeter implements Serializable {
      * 账单日期
      */
     @ExcelAnnotation(value = "账单日期",master = true)
-    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date billDate;
 
     /**
