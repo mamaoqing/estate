@@ -14,4 +14,8 @@
         AND r.role_id = m.role_id
         AND m.menu_id = e.id  and u.id =#{id} and u.is_delete=0 and e.is_delete=0
     </select>
+
+    <select id="listMenuAll" resultType="com.estate.sdzy.system.entity.SMenu">
+        select * from s_menu where is_delete=0
+    </select>
 </mapper>
