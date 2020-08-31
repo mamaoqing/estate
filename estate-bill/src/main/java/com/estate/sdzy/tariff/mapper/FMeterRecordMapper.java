@@ -17,11 +17,11 @@ import java.util.List;
 public interface FMeterRecordMapper extends BaseMapper<FMeterRecord> {
 
     //compId commId propertyType propertyName type no  modifiedAtBegin modifiedAtEnd pageNo size
-    List<FMeterRecord> getListMeterRecord(@Param("compId") Long compId, @Param("commId") Long commId, @Param("propertyType") String propertyType,
+    List<FMeterRecord> getListMeterRecord(@Param("compId") String compId, @Param("commId") String commId, @Param("propertyType") String propertyType,
                                           @Param("propertyName") String propertyName, @Param("type") String  type, @Param("no") String no,
                                           @Param("modifiedAtBegin") String modifiedAtBegin,@Param("modifiedAtEnd") String modifiedAtEnd,
                                           @Param("pageNo") Integer pageNo,@Param("size") Integer size,@Param("userId") Long userId);
-    Integer getListMeterRecordNum(@Param("compId") Long compId, @Param("commId") Long commId, @Param("propertyType") String propertyType,
+    Integer getListMeterRecordNum(@Param("compId") String compId, @Param("commId") String commId, @Param("propertyType") String propertyType,
                                   @Param("propertyName") String propertyName, @Param("type") String  type, @Param("no") String no,
                                   @Param("modifiedAtBegin") String modifiedAtBegin,@Param("modifiedAtEnd") String modifiedAtEnd,
                                   @Param("pageNo") Integer pageNo,@Param("size") Integer size,@Param("userId") Long userId);
