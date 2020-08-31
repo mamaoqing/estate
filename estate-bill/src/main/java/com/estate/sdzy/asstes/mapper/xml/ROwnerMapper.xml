@@ -11,8 +11,10 @@
         <if test="commId != null and commId !=''">
             LEFT JOIN r_owner_property on r_owner_property.owner_id= r_owner.id
         </if>
+        where
+        r_owner.is_delete=0
         <if test="compId != null and compId !=''">
-            where r_owner.comp_id = #{compId}
+           and  r_owner.comp_id = #{compId}
         </if>
         <if test="commId != null and commId !=''">
             and r_owner_property.comm_id = #{commId}

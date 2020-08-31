@@ -14,6 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,12 @@ public class FMeterServiceImpl extends ServiceImpl<FMeterMapper, FMeter> impleme
         SUser user = getUserByToken(token);
         if (null == fMeter) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        if(StringUtils.isEmpty(fMeter.getNewNum())){
+            fMeter.setNewNum(new BigDecimal("0"));
+        }
+        if(StringUtils.isEmpty(fMeter.getBillNum())){
+            fMeter.setBillNum(new BigDecimal("0"));
         }
         fMeter.setCreatedBy(user.getId());
         fMeter.setCreatedName(user.getUserName());

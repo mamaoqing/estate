@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
+import com.estate.sdzy.asstes.entity.RCommArea;
 import com.estate.sdzy.asstes.mapper.*;
 import com.estate.sdzy.asstes.service.RCommunityService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -252,7 +253,9 @@ public class RCommunityServiceImpl extends ServiceImpl<RCommunityMapper, RCommun
         if (!"超级管理员".equals(user.getType())) {
             return communityMapper.getUsersComm(getUserByToken(token).getId());
         }
-        return communityMapper.selectList(null);
+        QueryWrapper<RCommunity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("is_delete", 0);
+        return communityMapper.selectList(queryWrapper);
     }
     @Override
     public List<RCommunity> listComm(Long id,String token) {

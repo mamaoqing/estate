@@ -184,7 +184,7 @@ public class ImportExcel extends ExcelUtil {
             if(buildings.size()==1){
                 resultMap.put("buildingId",buildings.get(0).getId());
             }else{
-                throw new BillException(415,"第"+(rowNum+1)+"行建筑名称错误，导入失败");
+                throw new BillException(415,"第"+(rowNum+1)+"行建筑名称错误,找不到该建筑，导入失败");
             }
 
         }
@@ -194,7 +194,7 @@ public class ImportExcel extends ExcelUtil {
             if(units.size()==1){
                 resultMap.put("unitId",units.get(0).getId());
             }else{
-                throw new BillException(415,"第"+(rowNum+1)+"行单元名称错误，导入失败");
+                throw new BillException(415,"第"+(rowNum+1)+"行单元名称错误，找不到该单元，导入失败");
             }
         }
         if(map.get("commAreaName") == value){
@@ -224,13 +224,13 @@ public class ImportExcel extends ExcelUtil {
                         if(rooms.size()==1){
                             resultMap.put("propertyId",rooms.get(0));
                         }else{
-                            throw new BillException(415,"第"+(rowNum+1)+"行物业编号错误，导入失败，物业编号中房间编号有误");
+                            throw new BillException(415,"第"+(rowNum+1)+"行物业编号错误，导入失败，物业编号中房间编号有误，找不到该房间");
                         }
                     }else{
-                        throw new BillException(415,"第"+(rowNum+1)+"行物业编号错误，导入失败，物业编号中单元编号有误");
+                        throw new BillException(415,"第"+(rowNum+1)+"行物业编号错误，导入失败，物业编号中单元编号有误，找不到该单元");
                     }
                 }else{
-                    throw new BillException(415,"第"+(rowNum+1)+"行物业编号错误，导入失败，物业编号中建筑编号有误");
+                    throw new BillException(415,"第"+(rowNum+1)+"行物业编号错误，导入失败，物业编号中建筑编号有误，找不到该建筑");
                 }
             }else{
                 throw new BillException(415,"第"+(rowNum+1)+"行物业编号错误，导入失败，物业编号为‘建筑编号-单元编号-房间编号’");

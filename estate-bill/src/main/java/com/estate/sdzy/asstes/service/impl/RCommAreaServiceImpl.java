@@ -47,6 +47,7 @@ public class RCommAreaServiceImpl extends ServiceImpl<RCommAreaMapper, RCommArea
     public List<RCommArea> getCommArea(Long commId) {
         QueryWrapper<RCommArea> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("comm_id",commId);
+        queryWrapper.eq("is_delete", 0);
         List<RCommArea> rCommAreas = commAreaMapper.selectList(queryWrapper);
         return rCommAreas;
     }
