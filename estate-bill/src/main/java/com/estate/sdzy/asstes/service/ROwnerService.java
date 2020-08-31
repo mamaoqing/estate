@@ -23,4 +23,5 @@ public interface ROwnerService extends IService<ROwner> {
     ROwner getCount(ROwner owner, String token);
     List<ROwner> getOwenerByRoom(Map map, String token);
     List<ROwner> getExcel(Map map, String token);
+    void saveOrUpdateOwner(ROwner owner, String token);
 }

@@ -6,6 +6,7 @@ import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.asstes.entity.ROwner;
 import com.estate.sdzy.asstes.entity.ROwnerProperty;
+import com.estate.sdzy.asstes.entity.RRoom;
 import com.estate.sdzy.asstes.mapper.ROwnerInvoiceInfoMapper;
 import com.estate.sdzy.asstes.mapper.ROwnerMapper;
 import com.estate.sdzy.asstes.mapper.ROwnerPropertyMapper;
@@ -190,6 +191,23 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
         return mapper.getExcel(map);
     }
 
+    public void saveOrUpdateOwner(ROwner owner, String token){
+        //保存前进行判断是否已经存在数据
+        QueryWrapper<ROwner> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comp_id",owner.getCompId());
+        queryWrapper.eq("cert_type",owner.getCertType());
+        queryWrapper.eq("cert_number",owner.getCertNumber());
+        queryWrapper.eq("is_delete",0);
+        List<ROwner> owners = mapper.selectList(queryWrapper);
+        if(owners.size()==1){//执行update
+            owner.setId(owners.get(0).getId());
+            update(owner,token);
+        }else if(owners.size()==0){//执行新增
+            insert(owner,token);
+        }else{
+            throw new BillException(415,"导入失败，业主"+owner.getName()+"错误");
+        }
+    }
 
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);

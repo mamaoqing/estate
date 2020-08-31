@@ -19,12 +19,26 @@ public class ConnectUtil {
         return connection;
     }
 
-    public static Integer executeUpdate(String sql, String[] objects) throws SQLException, ClassNotFoundException {
+    /**
+     * 返回操作的id
+     * @param sql 执行的sql
+     * @param objects 参数
+     * @return 返回一个id
+     * @throws SQLException  yc
+     * @throws ClassNotFoundException yc
+     */
+    public static Integer executeUpdate(String sql, Object[] objects) throws SQLException, ClassNotFoundException {
         preparedStatement = getConnection().prepareStatement(sql);
         for (int i = 0; i < objects.length; i++) {
-            preparedStatement.setString(i + 1, objects[i]);
+            preparedStatement.setObject(i + 1, objects[i]);
         }
-        return preparedStatement.executeUpdate();
+        ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+        int num = -1;
+        if(generatedKeys.next())
+        {
+            num = generatedKeys.getInt(1);
+        }
+        return num;
     }
 
     public static ResultSet executeQuery(String sql, String[] objects) throws SQLException, ClassNotFoundException {
@@ -34,6 +48,9 @@ public class ConnectUtil {
         }
         resultSet = preparedStatement.executeQuery();
         return resultSet;
+    }
+    public static ResultSet executeQuery(String sql) throws SQLException, ClassNotFoundException {
+        return executeQuery(sql,new String[0]);
     }
 
     public static void close() {
