@@ -120,7 +120,7 @@ public class RRoom implements Serializable {
      */
     @ExcelAnnotation(value = "房屋类型",dist = "1")
     private String roomType;
-    @TableField(exist = false)
+
     /**
      * 产权性质
      */

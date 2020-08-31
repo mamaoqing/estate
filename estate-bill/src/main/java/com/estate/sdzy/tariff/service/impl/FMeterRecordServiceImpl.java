@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
-
 import com.estate.sdzy.tariff.entity.FMeterRecord;
 import com.estate.sdzy.tariff.mapper.FMeterRecordMapper;
 import com.estate.sdzy.tariff.service.FMeterRecordService;
@@ -108,12 +107,12 @@ public class FMeterRecordServiceImpl extends ServiceImpl<FMeterRecordMapper, FMe
         }
         SUser user = getUserByToken(token);
         if(user.getCompId()==0){
-            List<FMeterRecord> listMeterRecord = fMeterRecordMapper.getListMeterRecord(Long.valueOf(map.get("compName")),Long.valueOf(map.get("commName")),
+            List<FMeterRecord> listMeterRecord = fMeterRecordMapper.getListMeterRecord(map.get("compName"), map.get("commName"),
                     map.get("propertyType"),map.get("propertyName"),map.get("type"),map.get("no"),
                     map.get("modifiedAtBegin"),map.get("modifiedAtEnd"),(pageNo-1)*size,size,null);
             return listMeterRecord;
         }else{
-            List<FMeterRecord> listMeterRecord = fMeterRecordMapper.getListMeterRecord(Long.valueOf(map.get("compName")),Long.valueOf(map.get("commName")),
+            List<FMeterRecord> listMeterRecord = fMeterRecordMapper.getListMeterRecord(map.get("compName"), map.get("commName"),
                     map.get("propertyType"),map.get("propertyName"),map.get("type"),map.get("no"),
                     map.get("modifiedAtBegin"),map.get("modifiedAtEnd"),(pageNo-1)*size,size,user.getId());
             return listMeterRecord;
@@ -124,12 +123,12 @@ public class FMeterRecordServiceImpl extends ServiceImpl<FMeterRecordMapper, FMe
     public Integer listNum(Map<String, String> map, String token) {
         SUser user = getUserByToken(token);
         if(user.getCompId()==0){
-            Integer listMeterRecordNum = fMeterRecordMapper.getListMeterRecordNum(Long.valueOf(map.get("compName")),Long.valueOf(map.get("commName")),
+            Integer listMeterRecordNum = fMeterRecordMapper.getListMeterRecordNum(map.get("compName"), map.get("commName"),
                     map.get("propertyType"),map.get("propertyName"),map.get("type"),map.get("no"),
                     map.get("modifiedAtBegin"),map.get("modifiedAtEnd"),null,null,null);
             return listMeterRecordNum;
         }else{
-            Integer listMeterRecordNum = fMeterRecordMapper.getListMeterRecordNum(Long.valueOf(map.get("compName")),Long.valueOf(map.get("commName")),
+            Integer listMeterRecordNum = fMeterRecordMapper.getListMeterRecordNum(map.get("compName"), map.get("commName"),
                     map.get("propertyType"),map.get("propertyName"),map.get("type"),map.get("no"),
                     map.get("modifiedAtBegin"),map.get("modifiedAtEnd"),null,null,user.getId());
             return listMeterRecordNum;
@@ -140,12 +139,12 @@ public class FMeterRecordServiceImpl extends ServiceImpl<FMeterRecordMapper, FMe
     public List<FMeterRecord> listAll(Map<String, String> map, String token) {
         SUser user = getUserByToken(token);
         if(user.getCompId()==0){
-            List<FMeterRecord> listMeterRecord = fMeterRecordMapper.getListMeterRecord(Long.valueOf(map.get("compName")),Long.valueOf(map.get("commName")),
+            List<FMeterRecord> listMeterRecord = fMeterRecordMapper.getListMeterRecord(map.get("compName"), map.get("commName"),
                     map.get("propertyType"),map.get("propertyName"),map.get("type"),map.get("no"),
                     map.get("modifiedAtBegin"),map.get("modifiedAtEnd"),null,null,null);
             return listMeterRecord;
         }else{
-            List<FMeterRecord> listMeterRecord = fMeterRecordMapper.getListMeterRecord(Long.valueOf(map.get("compName")),Long.valueOf(map.get("commName")),
+            List<FMeterRecord> listMeterRecord = fMeterRecordMapper.getListMeterRecord(map.get("compName"), map.get("commName"),
                     map.get("propertyType"),map.get("propertyName"),map.get("type"),map.get("no"),
                     map.get("modifiedAtBegin"),map.get("modifiedAtEnd"),null,null,user.getId());
             return listMeterRecord;

@@ -83,7 +83,7 @@ public class RRoomController extends BaseController {
     public void testExprotExcel(HttpServletResponse response,HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
         SUser user = rRoomService.getUserByToken(token);
         try {
-            ExportExcel.writeOut(response,"停车位信息列表","com.estate.sdzy.asstes.entity.RRoom",
+            ExportExcel.writeOut(response,"房间信息列表","com.estate.sdzy.asstes.entity.RRoom",
                     rRoomService.list(super.getParameterMap(request),token),"导出人："+user.getUserName());
         }catch (Exception e){
             e.printStackTrace();
