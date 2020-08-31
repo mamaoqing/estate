@@ -14,6 +14,7 @@ import com.estate.util.RedisUtil;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,8 +44,15 @@ public class ROwnerController {
     private RedisUtil redisUtil;
 
     @PostMapping("/getOwenerList")
-    public List<ROwner> getOwenerList(@RequestBody Map<String, String> map, @RequestHeader("Authentication-Token") String token) {
-        return ownerService.getOwenerList(map, token);
+    public Result getOwenerList(@RequestBody Map<String, Long> map, @RequestHeader("Authentication-Token") String token) {
+        Map data = new HashMap();
+        if(!StringUtils.isEmpty(map.get("pageNo"))&&!StringUtils.isEmpty(map.get("size"))){
+            Long pageNum = (map.get("pageNo")-1)*map.get("size");
+            map.put("pageNo",pageNum);
+        }
+        data.put("data",ownerService.getOwenerList(map, token));
+        data.put("pageTotal",ownerService.selectPageTotal(map,token));
+        return ResultUtil.success(data);
     }
 
     @PostMapping("/getOwenerByRoom")

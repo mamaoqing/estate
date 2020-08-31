@@ -19,6 +19,9 @@
         <if test="commId != null and commId !=''">
             and r_owner_property.comm_id = #{commId}
         </if>
+        <if test="pageNo!=null and size!=null">
+            LIMIT #{pageNo},#{size}
+        </if>
     </select>
 
     <select id="getOwenerByRoom" parameterType="java.util.Map" resultType="com.estate.sdzy.asstes.entity.ROwner">
@@ -69,6 +72,23 @@
             <if test="commId!=null and commId!=''">
                 AND r_owner_property.comm_id = #{commId}
             </if>
+    </select>
 
+    <select id="selectPageTotal" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count (r_owner.id)
+        FROM
+        r_owner
+        <if test="commId!=null and commId!=''">
+            LEFT JOIN r_owner_property ON r_owner_property.owner_id = r_owner.id
+        </if>
+        WHERE
+        r_owner.is_delete = 0
+        <if test="compId!=null and compId!=''">
+            AND r_owner.comp_id = #{compId}
+        </if>
+        <if test="commId!=null and commId!=''">
+            AND r_owner_property.comm_id = #{commId}
+        </if>
     </select>
 </mapper>

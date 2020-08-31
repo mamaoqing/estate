@@ -272,6 +272,10 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
             room.setRoomModel(map.get("roomModelName").toString());
             room.setUsable(map.get("usableName").toString());
             room.setState(map.get("state").toString());
+            room.setDirection(map.get("direction").toString());
+            room.setPropertyRightNature(map.get("propertyRightNature").toString());
+            room.setHeatingArea(BigDecimal.valueOf(Long.parseLong(map.get("heatingArea").toString())));
+            room.setState(map.get("state").toString());
 
             StringBuffer roomNo = new StringBuffer();
 

@@ -1,5 +1,8 @@
 package com.estate.sdzy.asstes.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.sdzy.asstes.entity.RCommunity;
 import com.estate.sdzy.asstes.entity.ROwner;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.estate.sdzy.asstes.entity.ROwnerProperty;
@@ -21,4 +24,5 @@ public interface ROwnerMapper extends BaseMapper<ROwner> {
     List<ROwner> getOwenerList(Map map);
     List<ROwner> getOwenerByRoom(Map map);
     List<ROwner> getExcel(Map map);
+    Integer selectPageTotal(Map map);
 }

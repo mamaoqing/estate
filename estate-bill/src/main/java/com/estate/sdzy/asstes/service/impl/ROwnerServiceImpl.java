@@ -1,9 +1,11 @@
 package com.estate.sdzy.asstes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
+import com.estate.sdzy.asstes.entity.RCommunity;
 import com.estate.sdzy.asstes.entity.ROwner;
 import com.estate.sdzy.asstes.entity.ROwnerProperty;
 import com.estate.sdzy.asstes.entity.RRoom;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -207,6 +210,15 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
         }else{
             throw new BillException(415,"导入失败，业主"+owner.getName()+"错误");
         }
+    }
+
+    @Override
+    public Integer selectPageTotal(Map map, String token) {
+        getUserByToken(token);
+        if (null == map) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        return mapper.selectPageTotal(map);
     }
 
     private SUser getUserByToken(String token) {
