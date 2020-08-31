@@ -63,6 +63,7 @@ public class RUnitServiceImpl extends ServiceImpl<RUnitMapper, RUnit> implements
         getUserByToken(token);
         QueryWrapper<RBuilding> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("comm_area_id", areaId);
+        queryWrapper.eq("is_delete", 0);
         return buildingMapper.selectList(queryWrapper);
     }
 
