@@ -50,11 +50,11 @@ public class FCostItemServiceImpl extends ServiceImpl<FCostItemMapper, FCostItem
         Page<FCostItem> page = new Page<>(pageNo,size);
 
         if (!"超级管理员".equals(user.getType())) {
-            queryWrapper.eq("comp_id", user.getCompId())
+            queryWrapper.eq("aa.comp_id", user.getCompId())
             // 添加只能查看存在权限的社区条件
-            .eq("is_delete", 0)
+            .eq("aa.is_delete", 0);
 //            queryWrapper.in("id",userCommMapper.commIds(user.getId()));
-            .inSql("id","select  c.comm_id from s_user_comm c where c.user_id= "+user.getId());
+//            .inSql("id","select  c.comm_id from s_user_comm c where c.user_id= "+user.getId());
         } else {
             // 物业公司
 //            queryWrapper.in("comp_id", new ArrayList<>());
