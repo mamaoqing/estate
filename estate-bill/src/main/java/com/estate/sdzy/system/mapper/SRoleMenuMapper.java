@@ -20,4 +20,5 @@ import java.util.List;
 public interface SRoleMenuMapper extends BaseMapper<SRoleMenu> {
 
     List<SMenu> listMenu(@Param("id")Long userId);
+    List<SMenu> listMenuAll();
 }

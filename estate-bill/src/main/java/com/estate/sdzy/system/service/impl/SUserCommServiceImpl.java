@@ -5,10 +5,12 @@ import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.asstes.entity.RCommunity;
+import com.estate.sdzy.asstes.mapper.RCommunityMapper;
 import com.estate.sdzy.system.entity.SUserComm;
 import com.estate.sdzy.system.mapper.SUserCommMapper;
 import com.estate.sdzy.system.service.SUserCommService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -30,24 +32,31 @@ import java.util.Map;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor(onConstructor = @_(@Autowired))
 public class SUserCommServiceImpl extends ServiceImpl<SUserCommMapper, SUserComm> implements SUserCommService {
 
-    @Autowired
-    private SUserCommMapper userCommMapper;
+    private final SUserCommMapper userCommMapper;
 
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RCommunityMapper communityMapper;
+
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public List<Long> getUserCommIdList(String token) {
         List<Long> list = new ArrayList<>();
         SUser user = getUserByToken(token);
-
         QueryWrapper<SUserComm> query = new QueryWrapper<>();
+        List<SUserComm> sUserComms = new ArrayList<>();
+        List<RCommunity> rCommunities = new ArrayList<>();
+        if ("超级管理员".equals(user.getType())) {
+            rCommunities = communityMapper.selectList(null);
+        } else {
+            sUserComms = userCommMapper.listCommUser(user.getId());
+        }
 //        query.eq("user_id",9);
-        query.eq("user_id", user.getId());
-        List<SUserComm> sUserComms = userCommMapper.listCommUser(user.getId());
-
+        rCommunities.forEach(res->{
+            list.add(res.getId());
+        });
         for (SUserComm x : sUserComms) {
             list.add(x.getCommId());
         }
@@ -89,16 +98,16 @@ public class SUserCommServiceImpl extends ServiceImpl<SUserCommMapper, SUserComm
     }
 
     @Override
-    public List<Map<String, String>> listUserComm(Long compId,Long id) {
+    public List<Map<String, String>> listUserComm(Long compId, Long id) {
         if (StringUtils.isEmpty(id)) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
-        return userCommMapper.listUserComm(id,compId);
+        return userCommMapper.listUserComm(id, compId);
     }
 
     @Override
     public List<RCommunity> getUserComm(Long userId, Long compId) {
-        return userCommMapper.getUserComm(userId,compId);
+        return userCommMapper.getUserComm(userId, compId);
     }
 
 

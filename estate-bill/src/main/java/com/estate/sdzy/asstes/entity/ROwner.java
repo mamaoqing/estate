@@ -31,7 +31,7 @@ public class ROwner implements Serializable {
     /**
      * 业主类型
      */
-    @ExcelAnnotation(value = "业主类型",master = true)
+    @ExcelAnnotation(value = "业主类型",master = true,dist = "12")
     private String ownerType;
 
     /**
@@ -66,7 +66,7 @@ public class ROwner implements Serializable {
     /**
      * 证件类型
      */
-    @ExcelAnnotation(value = "证件类型")
+    @ExcelAnnotation(value = "证件类型",dist = "47")
     private String certType;
 
     private String wxOpenid;
@@ -98,13 +98,13 @@ public class ROwner implements Serializable {
     /**
      * 行业
      */
-    @ExcelAnnotation(value = "行业",master = true)
+    @ExcelAnnotation(value = "行业",master = true,dist = "49")
     private String industry;
 
     /**
      * 性别
      */
-    @ExcelAnnotation(value = "性别",master = true)
+    @ExcelAnnotation(value = "性别",master = true,dist = "14")
     private String sex;
 
 

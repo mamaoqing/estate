@@ -8,7 +8,6 @@ import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.service.RRoomService;
 import com.estate.sdzy.common.excel.ExportExcel;
 import com.estate.sdzy.common.excel.ImportExcel;
-
 import com.estate.sdzy.tariff.entity.FMeterRecord;
 import com.estate.sdzy.tariff.service.FMeterRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +39,7 @@ public class FMeterRecordController extends BaseController {
     @Autowired
     private RRoomService rRoomService;
 
-    @PostMapping("/insertMeterRecord")
+    @PostMapping("/insertMeter")
     public Result insertMeterRecord(@RequestBody FMeterRecord fMeterRecord, @RequestHeader("Authentication-Token") String token) {
         boolean save = fMeterRecordService.save(fMeterRecord, token);
         if (save) {
@@ -50,17 +49,17 @@ public class FMeterRecordController extends BaseController {
         return ResultUtil.error("添加仪表失败！", 1);
     }
 
-    @PutMapping("/updateMeterRecord")
+    @PutMapping("/updateMeter")
     public Result updateMeterRecord(@RequestBody FMeterRecord fMeterRecord, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterRecordService.update(fMeterRecord,token));
     }
 
-    @GetMapping("/listMeterRecord")
+    @GetMapping("/listMeter")
     public Result listMeterRecord(Integer pageNo, Integer size, HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterRecordService.list(super.getParameterMap(request),pageNo,size,token));
     }
 
-    @GetMapping("/listMeterRecordNum")
+    @GetMapping("/listMeterNum")
     public Result listMeterRecordNum(HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterRecordService.listNum(super.getParameterMap(request),token));
     }

@@ -13,7 +13,10 @@
         select id,name from r_community where comp_id = #{compId}
     </select>
     <select id="listCommUser" parameterType="java.lang.Long" resultType="com.estate.sdzy.system.entity.SUserComm">
-        select * from s_user_comm where user_id=#{userId}
+        select * from s_user_comm where 1=1
+        <if test="userId != null and userId != ''">
+            and user_id = #{userId}
+        </if>
     </select>
     <select id="commIds" resultType="java.lang.String" parameterType="java.lang.Long">
         select GROUP_CONCAT(comm_id) as ids from s_user_comm where user_id=#{id}

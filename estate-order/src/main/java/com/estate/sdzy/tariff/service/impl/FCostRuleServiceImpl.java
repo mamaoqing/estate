@@ -49,18 +49,18 @@ public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule
         Page<FCostRule> page = new Page<>(pageNo,size);
         SUser user = getUserByToken(token);
         if (!"超级管理员".equals(user.getType())) {
-            queryWrapper.eq("comp_id", user.getCompId())
+            queryWrapper.eq("aa.comp_id", user.getCompId())
                     // 添加只能查看存在权限的社区条件
-                    .eq("is_delete", 0)
+                    .eq("aa.is_delete", 0);
 //            queryWrapper.in("id",userCommMapper.commIds(user.getId()));
-                    .inSql("id","select  c.comm_id from s_user_comm c where c.user_id= "+user.getId());
+//                    .inSql("aa.id","select  c.comm_id from s_user_comm c where c.user_id= "+user.getId());
         } else {
             // 物业公司
 //            queryWrapper.in("comp_id", new ArrayList<>());
             // 删除状态
             queryWrapper.eq(StringUtils.isEmpty(map.get("isDelete")), "aa.is_delete", 0)
                     .eq(!StringUtils.isEmpty(map.get("isDelete")), "aa.is_delete", map.get("isDelete"))
-                    .eq(!StringUtils.isEmpty(map.get("compId")),"comp_id", map.get("compId"));
+                    .eq(!StringUtils.isEmpty(map.get("compId")),"aa.comp_id", map.get("compId"));
         }
         queryWrapper.eq(!StringUtils.isEmpty(map.get("costTypeId")),"cost_item_id", map.get("costTypeId"));
         Page<FCostRule> fCostRulePage = costRuleMapper.listCostRule(page, queryWrapper);

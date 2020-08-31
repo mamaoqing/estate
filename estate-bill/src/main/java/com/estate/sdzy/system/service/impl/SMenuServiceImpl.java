@@ -44,6 +44,9 @@ public class SMenuServiceImpl extends ServiceImpl<SMenuMapper, SMenu> implements
     @Override
     public List<SMenu> listMenu(String token) {
         SUser user = getUserByToken(token);
+        if ("超级管理员".equals(user.getType())) {
+            return roleMenuMapper.listMenuAll();
+        }
         return roleMenuMapper.listMenu(user.getId());
     }
 
