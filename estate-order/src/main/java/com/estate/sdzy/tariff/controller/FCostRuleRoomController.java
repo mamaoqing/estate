@@ -1,6 +1,7 @@
 package com.estate.sdzy.tariff.controller;
 
 
+import com.estate.common.controller.BaseController;
 import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.tariff.entity.FCostRuleRoom;
@@ -22,7 +23,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/order/fCostRuleRoom")
-public class FCostRuleRoomController {
+public class FCostRuleRoomController extends BaseController {
 
     @Autowired
     private FCostRuleRoomService costRuleRoomService;
@@ -58,5 +59,19 @@ public class FCostRuleRoomController {
         return ResultUtil.success(costRuleRoomService.getParkIds(ruleId));
     }
 
+    @GetMapping("/costPark/{ruleId}")
+    public Result costPark(@PathVariable("ruleId") Long ruleId){
+        return ResultUtil.success(costRuleRoomService.costPark(ruleId));
+    }
+
+    @DeleteMapping("{id}")
+    public Result deleteCostRuleRoom(@PathVariable("id") Long id){
+        return ResultUtil.success(costRuleRoomService.removeById(id));
+    }
+
+    @DeleteMapping("/deleteAllParks")
+    public Result deleteAll(@RequestHeader("Authentication-Token") String token,HttpServletRequest request){
+        return ResultUtil.success(costRuleRoomService.removeByIds(super.getParameterMap(request),token));
+    }
 }
 

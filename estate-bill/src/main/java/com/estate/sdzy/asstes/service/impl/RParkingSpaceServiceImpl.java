@@ -61,7 +61,7 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
         SUser user = getUserByToken(token);
         log.info("当前角色为->{}", user.getType());
         if (!"超级管理员".equals(user.getType())) {
-            queryWrapper.eq("aa.comp_id", user.getCompId());
+            queryWrapper.eq("aa.comp_id", user.getCompId()).eq("aa.is_delete",0);
             // 添加只能查看存在权限的社区条件
             queryWrapper.inSql("aa.comm_id", "select  c.comm_id from s_user_comm c where c.user_id= " + user.getId());
         } else {
@@ -164,7 +164,6 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
     @Override
     @Transactional
     public boolean removeByIds(String ids, String token) {
-        System.out.println(ids);
         if (StringUtils.isEmpty(ids)) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }

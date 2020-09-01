@@ -44,7 +44,6 @@ public class FCostRuleRoom implements Serializable {
      */
     private Long propertyId;
 
-//    @TableLogic
     private Integer isDelete;
 
 

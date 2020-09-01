@@ -5,6 +5,7 @@ import com.estate.sdzy.tariff.entity.FCostRuleRoom;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -18,4 +19,6 @@ public interface FCostRuleRoomMapper extends BaseMapper<FCostRuleRoom> {
 
     String getRoomIds(@Param("ruleId") Long ruleId);
     String getParkIds(@Param("ruleId") Long ruleId);
+
+    List<Map<String,String>> costPark(@Param("ruleId") Long ruleId);
 }
