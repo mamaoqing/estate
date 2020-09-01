@@ -27,7 +27,7 @@ public class FileUploadController extends BaseController {
         List<Map<String, Object>> fileData = null;
         try {
 //            fileData = ExcelUtil.getFileData(file,className);
-            List<String> classFirld = ExcelUtil.getClassFirld(className);
+            List<String> classFirld = ExcelUtil.getClassFirld(className,false);
             classFirld.forEach(re->{
                 System.out.println(re);
             });
