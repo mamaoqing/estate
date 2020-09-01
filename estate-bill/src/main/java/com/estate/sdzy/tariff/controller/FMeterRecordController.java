@@ -39,7 +39,7 @@ public class FMeterRecordController extends BaseController {
     @Autowired
     private RRoomService rRoomService;
 
-    @PostMapping("/insertMeter")
+    @PostMapping("/insertMeterRecord")
     public Result insertMeterRecord(@RequestBody FMeterRecord fMeterRecord, @RequestHeader("Authentication-Token") String token) {
         boolean save = fMeterRecordService.save(fMeterRecord, token);
         if (save) {
@@ -49,17 +49,17 @@ public class FMeterRecordController extends BaseController {
         return ResultUtil.error("添加仪表失败！", 1);
     }
 
-    @PutMapping("/updateMeter")
+    @PutMapping("/updateMeterRecord")
     public Result updateMeterRecord(@RequestBody FMeterRecord fMeterRecord, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterRecordService.update(fMeterRecord,token));
     }
 
-    @GetMapping("/listMeter")
+    @GetMapping("/listMeterRecord")
     public Result listMeterRecord(Integer pageNo, Integer size, HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterRecordService.list(super.getParameterMap(request),pageNo,size,token));
     }
 
-    @GetMapping("/listMeterNum")
+    @GetMapping("/listMeterRecordNum")
     public Result listMeterRecordNum(HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterRecordService.listNum(super.getParameterMap(request),token));
     }
@@ -73,7 +73,7 @@ public class FMeterRecordController extends BaseController {
     public Result upload(@RequestParam("file") MultipartFile file, @RequestHeader("Authentication-Token") String token) throws IOException, ClassNotFoundException{
         List<Object> fileData = ImportExcel.getFileData(file, "com.estate.sdzy.tariff.entity.FMeterRecord");
         fileData.forEach(x->{
-            fMeterRecordService.saveOrUpdateMeter((FMeterRecord)x,token);
+            fMeterRecordService.saveOrIgnoreMeter((FMeterRecord)x,token);
         });
         return ResultUtil.success();
     }
@@ -82,7 +82,7 @@ public class FMeterRecordController extends BaseController {
     public void exprotExcel(HttpServletResponse response, HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
         SUser user = rRoomService.getUserByToken(token);
         try {
-            ExportExcel.writeOut(response,"仪表信息列表","com.estate.sdzy.tariff.entity.FMeterRecord",
+            ExportExcel.writeOut(response,"仪表抄表信息列表","com.estate.sdzy.tariff.entity.FMeterRecord",
                     fMeterRecordService.listAll(super.getParameterMap(request),token),"导出人："+user.getUserName());
         }catch (Exception e){
             e.printStackTrace();
