@@ -113,13 +113,8 @@ public abstract class ExcelUtil {
                 cell.setCellValue(String.valueOf(value));
             }
             if(DATE.equals(type)){
-                if("录入时间".equals(aname)||"修改时间".equals(aname)){
-                    String date = new SimpleDateFormat(fmt != null ? fmt:"yyyy-MM-dd HH:mm:ss").format((Date)value);
-                    cell.setCellValue(date.toString());
-                }else{
-                    String date = new SimpleDateFormat(fmt != null ? fmt:"yyyy-MM-dd").format((Date)value);
-                    cell.setCellValue(date.toString());
-                }
+                String date = new SimpleDateFormat(fmt != null ? fmt:"yyyy-MM-dd").format((Date)value);
+                cell.setCellValue(date.toString());
             }
             if(BIGDECIMAL.equals(type)){
                 BigDecimal account=(BigDecimal) value;
