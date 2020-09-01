@@ -32,7 +32,7 @@ public interface RBuildingMapper extends BaseMapper<RBuilding> {
                        @Param("pageNo") Integer pageNo,@Param("size") Integer size,@Param("userId") Long userId);
     void insertUnitCopy(@Param("userId")Long userId, @Param("userName")String userName, @Param("rUnits")List<RUnit> rUnits, @Param("buildingId")Long buildingId);
     void insertUnitCopy1(List<RUnit> rUnits);
-    Integer insertRoomCopy(@Param("userId")Long userId,@Param("userName")String userName,@Param("rUnits")List<RUnit> rUnits,@Param("buildingId")Long buildingId);
+    Integer insertRoomCopy(@Param("userId")Long userId,@Param("userName")String userName,@Param("rUnits")List<RUnit> rUnits,@Param("buildingId")Long buildingId,@Param("commAreaId") Long commAreaId);
     Integer checkName(@Param("name")String name,@Param("commAreaId")Long commAreaId);
     Integer checkNo(@Param("no")String no,@Param("commAreaId")Long commAreaId);
 }
