@@ -90,9 +90,9 @@ public class FMeterServiceImpl extends ServiceImpl<FMeterMapper, FMeter> impleme
         }
         QueryWrapper<FMeter> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("comm_id",fMeter.getCommId());//社区
-        queryWrapper.eq("property_type",fMeter.getPropertyType());//物业类型
+        /*queryWrapper.eq("property_type",fMeter.getPropertyType());//物业类型
         queryWrapper.eq("property_id",fMeter.getPropertyId());//物业id
-        queryWrapper.eq("type",fMeter.getType());//仪表类型
+        queryWrapper.eq("type",fMeter.getType());//仪表类型*/
         queryWrapper.eq("no",fMeter.getNo());//仪表编号
         queryWrapper.eq("is_delete",0);
         List<FMeter> meters = fMeterMapper.selectList(queryWrapper);

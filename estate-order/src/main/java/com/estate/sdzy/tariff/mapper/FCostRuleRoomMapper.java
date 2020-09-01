@@ -17,4 +17,5 @@ import java.util.List;
 public interface FCostRuleRoomMapper extends BaseMapper<FCostRuleRoom> {
 
     String getRoomIds(@Param("ruleId") Long ruleId);
+    String getParkIds(@Param("ruleId") Long ruleId);
 }

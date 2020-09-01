@@ -31,7 +31,7 @@ public class CalendarUtil {
 
 
     /**
-     * 功能描述：返回日期
+     * 功能描述：返回日
      *
      * @param date
      *            Date 日期

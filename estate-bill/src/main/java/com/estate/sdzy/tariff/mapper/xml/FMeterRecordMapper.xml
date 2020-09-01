@@ -5,14 +5,14 @@
     <select id="getListMeterRecord" resultType="com.estate.sdzy.tariff.entity.FMeterRecord">
         select
         r.id,r.comp_id,r.comm_id,r.meter_id,r.property_type,r.property_id,r.type,r.oper_type,r.new_num,
-        r.remark,r.created_at,r.created_name,r.modified_at,
+        r.remark,r.created_at,r.created_name,r.modified_at,r.modified_at as meterAt,
         r.modified_name,comp.name as compName,comm.name as commName,m.propertyName ,m.no,m.name
         from
         f_meter_record r,s_company comp,r_community comm,v_f_meter m
         <if test="userId!=''and userId!=null">
             ,s_user_comm u
         </if>
-        where r.comp_id=comp.id and r.comm_id=comm.id and r.meter_id=m.id
+        where r.comp_id=comp.id and r.comm_id=comm.id and r.meter_id=m.id and r.is_delete='0'
         <if test="compId!=''and compId!=null">
             and r.comp_id = #{compId}
         </if>
@@ -29,7 +29,7 @@
             and r.type = #{type}
         </if>
         <if test="no!=''and no!=null">
-            and r.no like CONCAT('%',#{no},'%')
+            and m.no like CONCAT('%',#{no},'%')
         </if>
         <if test="modifiedAtBegin!=''and modifiedAtBegin!=null and modifiedAtEnd!=''and modifiedAtEnd!=null">
             and r.modified_at between #{modifiedAtBegin} and #{modifiedAtEnd}
@@ -50,7 +50,7 @@
         <if test="userId!=''and userId!=null">
             ,s_user_comm u
         </if>
-        where r.comp_id=comp.id and r.comm_id=comm.id and r.meter_id=m.id
+        where r.comp_id=comp.id and r.comm_id=comm.id and r.meter_id=m.id and r.is_delete='0'
         <if test="compId!=''and compId!=null">
             and r.comp_id = #{compId}
         </if>
@@ -67,7 +67,7 @@
             and r.type = #{type}
         </if>
         <if test="no!=''and no!=null">
-            and r.no like CONCAT('%',#{no},'%')
+            and m.no like CONCAT('%',#{no},'%')
         </if>
         <if test="modifiedAtBegin!=''and modifiedAtBegin!=null and modifiedAtEnd!=''and modifiedAtEnd!=null">
             and r.modified_at between #{modifiedAtBegin} and #{modifiedAtEnd}

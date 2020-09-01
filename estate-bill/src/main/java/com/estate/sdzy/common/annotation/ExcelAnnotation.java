@@ -8,6 +8,7 @@ import java.lang.annotation.*;
 public @interface ExcelAnnotation {
 
     String value() default "";
+    String fmt() default "";
     boolean export () default true;
     boolean master() default false;
     String dist() default  "";

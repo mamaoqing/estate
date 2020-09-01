@@ -196,7 +196,11 @@ public class ExportExcel extends ExcelUtil {
                         if(aname.equals(list.get(j))){
                             HSSFCell cell = rowm.createCell(j);
                             cell.setCellStyle(style);
-                            setCellValue(cell,value,type,null,aname);
+                            if(!StringUtils.isEmpty(field.getAnnotation(ExcelAnnotation.class).fmt())){
+                                setCellValue(cell,value,type,field.getAnnotation(ExcelAnnotation.class).fmt(),aname);
+                            }else{
+                                setCellValue(cell,value,type,null,aname);
+                            }
                             break;
                         }
                     }

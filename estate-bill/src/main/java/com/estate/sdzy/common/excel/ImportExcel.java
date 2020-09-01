@@ -8,6 +8,7 @@ import com.estate.sdzy.asstes.entity.RUnit;
 import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
 import com.estate.sdzy.common.annotation.ExcelAnnotation;
 import com.estate.sdzy.system.mapper.SDictMapper;
+import com.estate.sdzy.tariff.mapper.FMeterMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -35,6 +36,7 @@ public class ImportExcel extends ExcelUtil {
     private static SDictMapper dictMapper;
 
     private static RParkingSpaceMapper parkingSpaceMapper;
+    private static FMeterMapper fMeterMapper;
 
     /**
      * 解析表格中的数据
@@ -98,7 +100,9 @@ public class ImportExcel extends ExcelUtil {
                             }
                             // 将结果放入map中
                             map.put(s, getCellValue(cell));
-                            ImportExcel.setMapValue(index,cellNum,map,cell,rowNum);
+                            if(masterField.contains(s)){
+                                ImportExcel.setMapValue(index,cellNum,map,cell,rowNum);
+                            }
                         }
                         Object aClass = JSON.parseObject(JSON.toJSONString(map), c);
                         list.add(aClass);
@@ -176,6 +180,7 @@ public class ImportExcel extends ExcelUtil {
         if(map.get("areaName") == value){
             log.info("分区名称是:{}",getCellValue(cell));
             Long commIdByName = parkingSpaceMapper.getAreaIdByName(getCellValue(cell));
+
             resultMap.put("commAreaId",commIdByName);
         }
         if(map.get("buildingName") == value){
@@ -206,6 +211,16 @@ public class ImportExcel extends ExcelUtil {
             log.info("物业编号是:{}",getCellValue(cell));
             //根据分区id和物业类型查询编号是否重复
             setMeterPropertyId(resultMap,cell,rowNum);
+        }
+        //导入仪表抄表时增加判断仪表编号是否存在（社区+仪表编号）
+        if(map.get("no") == value){
+            log.info("仪表编号是:{}",getCellValue(cell));
+            List<Long> meterIds = fMeterMapper.getMeterByNo(getCellValue(cell), (Long) resultMap.get("commId"));
+            if(meterIds.size()==1){
+                resultMap.put("no",getCellValue(cell));
+            }else{
+                throw new BillException(415,"第"+(rowNum+1)+"行仪表编号错误，找不到该仪表，导入失败");
+            }
         }
     }
 
@@ -285,6 +300,11 @@ public class ImportExcel extends ExcelUtil {
             index = fields.indexOf("propertyName");
             map.put("propertyName",index);
         }
+        //导入仪表抄表时需要，仪表编号
+        if (fields.contains("no")) {
+            index = fields.indexOf("no");
+            map.put("no",index);
+        }
         return map;
     }
 
@@ -325,6 +345,11 @@ public class ImportExcel extends ExcelUtil {
     @Autowired
     public void setParkingSpaceMapper(RParkingSpaceMapper parkingSpaceMapper) {
         ImportExcel.parkingSpaceMapper = parkingSpaceMapper;
+    }
+
+    @Autowired
+    public void setMeterMapper(FMeterMapper fMeterMapper) {
+        ImportExcel.fMeterMapper = fMeterMapper;
     }
 
 }

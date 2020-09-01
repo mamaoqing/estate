@@ -13,13 +13,20 @@ import java.util.Map;
 
 public class CrontabCostRule {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        CrontabCostRule.test();
+        ConnectUtil.close();
+
+    }
+
+    public static void test() throws SQLException, ClassNotFoundException {
+        Date now = new Date();
         String sql = "select * from f_cost_rule where 1=1 and is_delete = 0";
         String[] arr = {};
         ResultSet resultSet = ConnectUtil.executeQuery(sql, arr);
 
         // 获取当前日
-        Date now = new Date();
         int day = CalendarUtil.getDay(now);
+        int thisMonth = CalendarUtil.getMonth(now);
         while(resultSet.next()){
             Date begin_date = resultSet.getDate("begin_date");
             Date end_date = resultSet.getDate("end_date");
@@ -42,48 +49,57 @@ public class CrontabCostRule {
             Date date = CalendarUtil.getDate(now, pay_time);
             // 公司id不足4位用0补齐
             DecimalFormat df=new DecimalFormat("0000");
-            String comp_id=df.format(resultSet.getInt("comp_id"));
             // 账单号
-
-
+            String comp_id=df.format(resultSet.getInt("comp_id"));
+            // 费用标准id
+            int id = resultSet.getInt("id");
 
             // 判断当前时间是否在开始结束时间之间,如果在时间段之内，就需要将该
             if(now.after(begin_date) && now.before(end_date)){
                 // 每天
-                if (BillCycle.DAY.equals(bill_cycle) && day == 28){
-                    int id = resultSet.getInt("id");
+                if (BillCycle.DAY.equals(bill_cycle) && day == bill_day){
                     System.out.println(id+"<====>"+BillCycle.DAY);
                 }
                 // 每周
-                if (BillCycle.WEEK.equals(bill_cycle) && day == 28){
-                    int id = resultSet.getInt("id");
+                if (BillCycle.WEEK.equals(bill_cycle) && day == bill_day){
                     System.out.println(id+"<====>"+BillCycle.WEEK);
                 }
                 // 每月
-                if (BillCycle.MONTH.equals(bill_cycle) && day == 28){
-                    int id = resultSet.getInt("id");
+                if (BillCycle.MONTH.equals(bill_cycle) && day == bill_day){
+
                     Map<String, List<Integer>> month = ExcuteRule.month(id);
                     List<Integer> room = month.get("room");
                     MonthUtil.monthBill(room,comp_id,liquidated_damages_method,date,price, billing_method);
 
                 }
                 // 每季度
-                if (BillCycle.QUARTER.equals(bill_cycle) && day == 28){
-                    int id = resultSet.getInt("id");
+                if (BillCycle.QUARTER.equals(bill_cycle) && day == bill_day && isMonth(thisMonth)){
                     System.out.println(id);
                 }
                 // 每半年
-                if (BillCycle.HALFAYEAR.equals(bill_cycle) && day == 28){
-                    int id = resultSet.getInt("id");
+                if (BillCycle.HALFAYEAR.equals(bill_cycle) && day == bill_day){
                     System.out.println(id);
                 }
                 // 每年
-                if (BillCycle.YEAR.equals(bill_cycle) && day == 28){
-                    int id = resultSet.getInt("id");
+                if (BillCycle.YEAR.equals(bill_cycle) && day == bill_day){
                     System.out.println(id);
                 }
             }
         }
-        ConnectUtil.close();
+    }
+
+    public static boolean isMonth(int month){
+        switch (month){
+            case 4:
+                return true;
+            case 8:
+                return true;
+            case 10:
+                return true;
+            case 1:
+                return true;
+            default:
+                return false;
+        }
     }
 }

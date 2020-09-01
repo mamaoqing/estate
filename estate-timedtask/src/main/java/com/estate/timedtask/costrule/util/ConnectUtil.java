@@ -32,13 +32,8 @@ public class ConnectUtil {
         for (int i = 0; i < objects.length; i++) {
             preparedStatement.setObject(i + 1, objects[i]);
         }
-        ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-        int num = -1;
-        if(generatedKeys.next())
-        {
-            num = generatedKeys.getInt(1);
-        }
-        return num;
+        int i = preparedStatement.executeUpdate();
+        return i;
     }
 
     public static ResultSet executeQuery(String sql, String[] objects) throws SQLException, ClassNotFoundException {
