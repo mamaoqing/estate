@@ -5,9 +5,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
+import com.estate.sdzy.tariff.entity.FMeter;
 import com.estate.sdzy.tariff.entity.FMeterRecord;
+import com.estate.sdzy.tariff.mapper.FMeterMapper;
 import com.estate.sdzy.tariff.mapper.FMeterRecordMapper;
 import com.estate.sdzy.tariff.service.FMeterRecordService;
+import com.estate.sdzy.tariff.service.FMeterService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -35,18 +38,30 @@ public class FMeterRecordServiceImpl extends ServiceImpl<FMeterRecordMapper, FMe
     @Autowired
     private FMeterRecordMapper fMeterRecordMapper;
 
+    @Autowired
+    private FMeterService fMeterService;
+
+    @Autowired
+    private FMeterMapper fMeterMapper;
+
     @Override
     public boolean save(FMeterRecord fMeterRecord, String token) {
         SUser user = getUserByToken(token);
         if (null == fMeterRecord) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
+        fMeterRecord.setOperType("抄表");
         fMeterRecord.setCreatedBy(user.getId());
         fMeterRecord.setCreatedName(user.getUserName());
         fMeterRecord.setModifiedBy(user.getId());
         fMeterRecord.setModifiedName(user.getUserName());
         int insert = fMeterRecordMapper.insert(fMeterRecord);
         if (insert > 0) {
+            //同时修改仪表表中抄表刻度和抄表时间（系统时间）
+            FMeter fMeter = fMeterService.getById(fMeterRecord.getMeterId());
+            fMeter.setNewNum(fMeterRecord.getNewNum());
+            fMeter.setMeterReadTime(fMeterRecord.getModifiedAt());
+            fMeterService.update(fMeter,token);
             log.info("仪表添加成功，添加人={}", user.getUserName());
         } else {
             throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
@@ -55,8 +70,19 @@ public class FMeterRecordServiceImpl extends ServiceImpl<FMeterRecordMapper, FMe
     }
 
     @Override
-    public void saveOrUpdateMeter(FMeterRecord fMeterRecord, String token) {
-
+    public void saveOrIgnoreMeter(FMeterRecord fMeterRecord, String token) {
+        List<Long> meterIds = fMeterMapper.getMeterByNo(fMeterRecord.getNo(), fMeterRecord.getCommId());
+        if(meterIds.size()==1){
+            FMeter fMeter = fMeterMapper.selectById(meterIds.get(0));
+            //判断抄表刻度表里的抄表刻度大于仪表表里的抄表刻度
+            if(fMeterRecord.getNewNum().compareTo(fMeter.getNewNum())==1){
+                fMeterRecord.setMeterId(meterIds.get(0));
+                fMeterRecord.setOperType("抄表");
+                fMeterRecord.setPropertyType(fMeter.getPropertyType());
+                fMeterRecord.setPropertyId(fMeter.getPropertyId());
+                save(fMeterRecord,token);
+            }
+        }
     }
 
     @Override
@@ -69,6 +95,11 @@ public class FMeterRecordServiceImpl extends ServiceImpl<FMeterRecordMapper, FMe
         fMeterRecord.setModifiedName(user.getUserName());
         int update = fMeterRecordMapper.updateById(fMeterRecord);
         if (update > 0) {
+            //同时修改仪表表中抄表刻度和抄表时间（系统时间）
+            FMeter fMeter = fMeterService.getById(fMeterRecord.getMeterId());
+            fMeter.setNewNum(fMeterRecord.getNewNum());
+            fMeter.setMeterReadTime(fMeterRecord.getModifiedAt());
+            fMeterService.update(fMeter,token);
             log.info("仪表修改成功，修改人={}", user.getUserName());
         } else {
             throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
