@@ -84,7 +84,7 @@ public class RRoomController extends BaseController {
         SUser user = rRoomService.getUserByToken(token);
         try {
             ExportExcel.writeOut(response,"房间信息列表","com.estate.sdzy.asstes.entity.RRoom",
-                    rRoomService.list(super.getParameterMap(request),token),"导出人："+user.getUserName());
+                    rRoomService.list(super.getParameterMap(request),token),"导出人："+user.getUserName(),false);
         }catch (Exception e){
             e.printStackTrace();
         }
