@@ -24,4 +24,5 @@ public interface FMeterMapper extends BaseMapper<FMeter> {
                               @Param("pageNo") Integer pageNo,@Param("size") Integer size,@Param("userId") Long userId);
     Integer updateMeter(@Param("state") String state,@Param("remark") String remark,@Param("userId") Long userId,
                         @Param("userName") String userName,@Param("id") Long id);
+    List<Long>  getMeterByNo(@Param("no") String no,@Param("commId") Long commId);
 }
