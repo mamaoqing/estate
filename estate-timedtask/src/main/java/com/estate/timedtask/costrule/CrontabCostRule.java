@@ -26,6 +26,7 @@ public class CrontabCostRule {
 
         // 获取当前日
         int day = CalendarUtil.getDay(now);
+        int thisMonth = CalendarUtil.getMonth(now);
         while(resultSet.next()){
             Date begin_date = resultSet.getDate("begin_date");
             Date end_date = resultSet.getDate("end_date");
@@ -72,7 +73,7 @@ public class CrontabCostRule {
 
                 }
                 // 每季度
-                if (BillCycle.QUARTER.equals(bill_cycle) && day == bill_day){
+                if (BillCycle.QUARTER.equals(bill_cycle) && day == bill_day && isMonth(thisMonth)){
                     System.out.println(id);
                 }
                 // 每半年
@@ -84,6 +85,21 @@ public class CrontabCostRule {
                     System.out.println(id);
                 }
             }
+        }
+    }
+
+    public static boolean isMonth(int month){
+        switch (month){
+            case 4:
+                return true;
+            case 8:
+                return true;
+            case 10:
+                return true;
+            case 1:
+                return true;
+            default:
+                return false;
         }
     }
 }

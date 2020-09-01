@@ -162,11 +162,11 @@ public class MonthUtil {
      * @param eff 有效的使用或者固定数值
      * @return 返回一个BigDecimal
      */
-    private static BigDecimal totalPrice(BigDecimal price,BigDecimal eff){
+    public static BigDecimal totalPrice(BigDecimal price,BigDecimal eff){
         return price.multiply(eff);
     }
 
-    private static String dataToString(Date date,String fmt){
+    public static String dataToString(Date date,String fmt){
         SimpleDateFormat sdf = new SimpleDateFormat(fmt);
         String format = sdf.format(date);
 

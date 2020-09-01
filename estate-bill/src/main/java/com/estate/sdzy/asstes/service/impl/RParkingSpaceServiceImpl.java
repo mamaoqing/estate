@@ -70,6 +70,13 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
             queryWrapper.eq(!StringUtils.isEmpty(map.get("isDelete")), "aa.is_delete", map.get("isDelete"));
             queryWrapper.eq(!StringUtils.isEmpty(map.get("compId")), "aa.comp_id", map.get("compId"));
         }
+        // 费用标准停车位关系，如果存在关系就不显示该车位
+        String parkIds = map.get("parkIds");
+        if(!StringUtils.isEmpty(parkIds)){
+            String[] split = parkIds.split(",");
+            List<String> strings = Arrays.asList(split);
+            queryWrapper.notIn("aa.id",strings);
+        }
         queryWrapper.eq(!StringUtils.isEmpty(map.get("commId")), "aa.comm_id", map.get("commId"));
         queryWrapper.eq(!StringUtils.isEmpty(map.get("no")), "no", map.get("no"));
         queryWrapper.eq(!StringUtils.isEmpty(map.get("buildProp")), "building_property", map.get("buildProp"));

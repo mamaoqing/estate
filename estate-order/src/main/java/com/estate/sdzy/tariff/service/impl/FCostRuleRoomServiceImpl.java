@@ -46,7 +46,7 @@ public class FCostRuleRoomServiceImpl extends ServiceImpl<FCostRuleRoomMapper, F
         SUser user = getUserByToken(token);
         String[] rooms = String.valueOf(ruleRooms).split(",");
         QueryWrapper<FCostRuleRoom> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("cost_rule_id",ruleId);
+        queryWrapper.eq("cost_rule_id",ruleId).eq("property_type","room");
         List<FCostRuleRoom> fCostRuleRooms = costRuleRoomMapper.selectList(queryWrapper);
         // 添加费用标准与物业的关系 ，添加之前需要先将之前存在的该标准的房间删除，然后从新添加
         if (fCostRuleRooms != null && !fCostRuleRooms.isEmpty()) {
@@ -72,6 +72,34 @@ public class FCostRuleRoomServiceImpl extends ServiceImpl<FCostRuleRoomMapper, F
     }
 
     @Override
+    @Transactional
+    public boolean insertParkRule(String token, Map<String, String> map) {
+        String ruleParks = map.get("parks");
+        String ruleId = map.get("ruleId");
+        if (StringUtils.isEmpty(ruleParks) && StringUtils.isEmpty(ruleId)) {
+            throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        String[] split = ruleParks.split(",");
+        QueryWrapper<FCostRuleRoom> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("cost_rule_id",ruleId).eq("property_type","park");
+
+        for (String room : split) {
+            if(StringUtils.isEmpty(room)){
+                return true;
+            }
+            FCostRuleRoom f = new FCostRuleRoom();
+            f.setCostRuleId(Long.valueOf(ruleId));
+            f.setPropertyId(Long.valueOf(room));
+            f.setPropertyType("park");
+            int insert = costRuleRoomMapper.insert(f);
+            if(!(insert > 0)){
+                throw new OrderException(OrderExceptionEnum.SYSTEM_INSERT_ERROR);
+            }
+        }
+        return true;
+    }
+
+    @Override
     public List<String> getRoomIds(Long ruleId) {
         String roomIds = costRuleRoomMapper.getRoomIds(ruleId);
         if(StringUtils.isEmpty(roomIds)){
@@ -79,6 +107,15 @@ public class FCostRuleRoomServiceImpl extends ServiceImpl<FCostRuleRoomMapper, F
         }
         String[] split = roomIds.split(",");
         return Arrays.asList(split);
+    }
+
+    @Override
+    public String getParkIds(Long ruleId) {
+        String parkIds = costRuleRoomMapper.getParkIds(ruleId);
+        if(StringUtils.isEmpty(parkIds)){
+            return  null;
+        }
+        return parkIds;
     }
 
     private SUser getUserByToken(String token) {

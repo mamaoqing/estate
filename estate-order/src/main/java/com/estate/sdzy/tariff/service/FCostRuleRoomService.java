@@ -23,6 +23,8 @@ public interface FCostRuleRoomService extends IService<FCostRuleRoom> {
      * @return
      */
     boolean insertRoomRule(String token, Map<String,Object> map);
+    boolean insertParkRule(String token, Map<String,String> map);
 
     List<String> getRoomIds(Long ruleId);
+    String getParkIds(Long ruleId);
 }

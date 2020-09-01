@@ -32,6 +32,11 @@ public class FCostRuleRoomController {
 
         return ResultUtil.success(costRuleRoomService.insertRoomRule(token, map));
     }
+    @PostMapping("/insertRoomPark")
+    public Result insertRoomPark(@RequestBody Map<String,String> map, @RequestHeader("Authentication-Token") String token){
+
+        return ResultUtil.success(costRuleRoomService.insertParkRule(token, map));
+    }
 
     @GetMapping("/{ruleId}")
     public Result getRoomIds(@PathVariable("ruleId") Long ruleId){
@@ -47,5 +52,11 @@ public class FCostRuleRoomController {
     public Result insertRoomRule(@PathVariable("id") Long id,@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success();
     }
+
+    @GetMapping("/getParkIds/{ruleId}")
+    public Result getParkIds(@PathVariable("ruleId") Long ruleId){
+        return ResultUtil.success(costRuleRoomService.getParkIds(ruleId));
+    }
+
 }
 
