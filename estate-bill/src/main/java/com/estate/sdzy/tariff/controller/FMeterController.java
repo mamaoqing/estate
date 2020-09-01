@@ -88,7 +88,7 @@ public class FMeterController extends BaseController {
         SUser user = rRoomService.getUserByToken(token);
         try {
             ExportExcel.writeOut(response,"仪表信息列表","com.estate.sdzy.tariff.entity.FMeter",
-                    fMeterService.listAll(super.getParameterMap(request),token),"导出人："+user.getUserName());
+                    fMeterService.listAll(super.getParameterMap(request),token),"导出人："+user.getUserName(),false);
         }catch (Exception e){
             e.printStackTrace();
         }
