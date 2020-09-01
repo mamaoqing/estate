@@ -5,11 +5,9 @@ import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.service.ROwnerPropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import java.util.Map;
 
 /**
  * <p>
@@ -34,6 +32,21 @@ public class ROwnerPropertyController {
     @GetMapping("/getOwnerProp/{ownerId}")
     public Result getOwnerProperty(@PathVariable("ownerId")Long ownerId){
         return ResultUtil.success(ownerPropertyService.getOwnerProperty(ownerId));
+    }
+
+    @GetMapping("/deleteOwnerProp/{id}")
+    public Result deleteOwnerProp(@PathVariable("id")Long id, @RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(ownerPropertyService.delete(id,token));
+    }
+
+    @PostMapping("/insertRoomOwner")
+    public Result getOwnerProperty(@RequestBody Map map, @RequestHeader("Authentication-Token") String token){
+        boolean b = ownerPropertyService.insertRoomOwner(map, token);
+        if (b){
+            return ResultUtil.success();
+        }else {
+            return ResultUtil.error("业主重复或者其他错误",1);
+        }
     }
 }
 

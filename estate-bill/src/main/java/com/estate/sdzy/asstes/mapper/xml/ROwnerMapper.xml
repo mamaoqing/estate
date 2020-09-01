@@ -26,10 +26,12 @@
 
     <select id="getOwenerByRoom" parameterType="java.util.Map" resultType="com.estate.sdzy.asstes.entity.ROwner">
         SELECT
+            r_owner_property.id as prop_id,
+            r_owner_property.type as prop_types,
             r_owner.*
         FROM
         r_owner
-        LEFT JOIN r_owner_property on r_owner_property.owner_id = r_owner.id
+        LEFT JOIN r_owner_property on r_owner_property.owner_id= r_owner.id
         where
         r_owner.is_delete=0
         and r_owner_property.property_type = '房产'

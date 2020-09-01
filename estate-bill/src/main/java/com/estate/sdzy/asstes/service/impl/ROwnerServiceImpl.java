@@ -66,22 +66,7 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
         owner.setModifiedBy(user.getId());
         owner.setModifiedName(user.getUserName());
 
-        if (owner.getCommId() != null && owner.getCommAreaId() != null && owner.getBuildingId() != null && owner.getRoomId() != null) {
-            ROwnerProperty property = new ROwnerProperty();
-            property.setCompId(owner.getCompId());
-            property.setCommId(owner.getCommId());
-            property.setCommAreaId(owner.getCommAreaId());
-            property.setBuildingId(owner.getBuildingId());
-            property.setPropertyType("房产");
-            property.setPropertyId(owner.getRoomId());
-            property.setOwnerId(owner.getId());
-            property.setCreatedBy(user.getId());
-            property.setCreatedName(user.getUserName());
-            property.setModifiedBy(user.getId());
-            property.setModifiedName(user.getUserName());
-            property.setType(owner.getPropTypes());
-            ownerPropertyMapper.insert(property);
-        }
+
         int insert = mapper.insert(owner);
         if (insert > 0) {
             log.info("业主信息添加成功，添加人={}", user.getUserName());
