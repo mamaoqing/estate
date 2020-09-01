@@ -93,6 +93,7 @@ public class FMeterRecord implements Serializable {
 
     @TableField(exist = false)
     @ExcelAnnotation(value = "抄表时间",fmt="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date meterAt;
     /**
@@ -103,6 +104,7 @@ public class FMeterRecord implements Serializable {
 
     @TableField(fill = FieldFill.INSERT)
     @ExcelAnnotation(value = "录入时间",fmt="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createdAt;
 
     private Long createdBy;
