@@ -24,8 +24,9 @@ public class CrontabCostRule {
         String[] arr = {};
         ResultSet resultSet = ConnectUtil.executeQuery(sql, arr);
 
-        // 获取当前日
+        // 获取当前日月
         int day = CalendarUtil.getDay(now);
+        int thisMonth = CalendarUtil.getMonth(now);
         while(resultSet.next()){
             Date begin_date = resultSet.getDate("begin_date");
             Date end_date = resultSet.getDate("end_date");
@@ -45,6 +46,7 @@ public class CrontabCostRule {
             Integer bill_day = resultSet.getInt("bill_day");
             // 最晚付款时间
             Integer pay_time = resultSet.getInt("pay_time");
+            long cost_rule_id = resultSet.getLong("id");
             Date date = CalendarUtil.getDate(now, pay_time);
             // 公司id不足4位用0补齐
             DecimalFormat df=new DecimalFormat("0000");
@@ -68,11 +70,14 @@ public class CrontabCostRule {
 
                     Map<String, List<Integer>> month = ExcuteRule.month(id);
                     List<Integer> room = month.get("room");
-                    MonthUtil.monthBill(room,comp_id,liquidated_damages_method,date,price, billing_method);
+                    MonthUtil.monthBill(room,comp_id,liquidated_damages_method,date,price, billing_method,"room",thisMonth,cost_rule_id);
+
+                    List<Integer> park = month.get("park");
+                    MonthUtil.monthBill(park,comp_id,liquidated_damages_method,date,price, billing_method,"park",thisMonth,cost_rule_id);
 
                 }
                 // 每季度
-                if (BillCycle.QUARTER.equals(bill_cycle) && day == bill_day){
+                if (BillCycle.QUARTER.equals(bill_cycle) && day == bill_day && isMonth(thisMonth)){
                     System.out.println(id);
                 }
                 // 每半年
@@ -84,6 +89,21 @@ public class CrontabCostRule {
                     System.out.println(id);
                 }
             }
+        }
+    }
+
+    public static boolean isMonth(int month){
+        switch (month){
+            case 4:
+                return true;
+            case 8:
+                return true;
+            case 10:
+                return true;
+            case 1:
+                return true;
+            default:
+                return false;
         }
     }
 }

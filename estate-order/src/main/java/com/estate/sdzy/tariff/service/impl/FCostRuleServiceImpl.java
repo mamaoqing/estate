@@ -7,8 +7,10 @@ import com.estate.common.exception.OrderException;
 import com.estate.common.util.OrderExceptionEnum;
 import com.estate.sdzy.tariff.entity.FCostItem;
 import com.estate.sdzy.tariff.entity.FCostRule;
+import com.estate.sdzy.tariff.entity.FCostRuleRoom;
 import com.estate.sdzy.tariff.mapper.FCostItemMapper;
 import com.estate.sdzy.tariff.mapper.FCostRuleMapper;
+import com.estate.sdzy.tariff.mapper.FCostRuleRoomMapper;
 import com.estate.sdzy.tariff.service.FCostRuleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -36,6 +39,7 @@ public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule
     private final FCostRuleMapper costRuleMapper;
     private final RedisTemplate redisTemplate;
     private final FCostItemMapper costItemMapper;
+    private final FCostRuleRoomMapper costRuleRoomMapper;
 
     @Override
     public Page<FCostRule> listCostRule(Map<String, String> map, String token) {
@@ -105,8 +109,18 @@ public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule
     }
 
     @Override
+    @Transactional
     public boolean removeById(Long id, String token) {
         SUser user = getUserByToken(token);
+        QueryWrapper<FCostRuleRoom> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("cost_rule_id",id);
+        List<FCostRuleRoom> fCostRuleRooms = costRuleRoomMapper.selectList(queryWrapper);
+        if(!fCostRuleRooms.isEmpty()){
+            int delete = costRuleRoomMapper.delete(queryWrapper);
+            if(!(delete > 0)){
+                throw new OrderException(OrderExceptionEnum.SYSTEM_DELETE_ERROR);
+            }
+        }
         int i = costRuleMapper.deleteById(id);
         if(i>0){
             log.info("费用项目删除成功，删除人:{}",user.getUserName());

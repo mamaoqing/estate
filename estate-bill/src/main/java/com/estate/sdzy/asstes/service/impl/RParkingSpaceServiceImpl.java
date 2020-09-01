@@ -61,7 +61,7 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
         SUser user = getUserByToken(token);
         log.info("当前角色为->{}", user.getType());
         if (!"超级管理员".equals(user.getType())) {
-            queryWrapper.eq("aa.comp_id", user.getCompId());
+            queryWrapper.eq("aa.comp_id", user.getCompId()).eq("aa.is_delete",0);
             // 添加只能查看存在权限的社区条件
             queryWrapper.inSql("aa.comm_id", "select  c.comm_id from s_user_comm c where c.user_id= " + user.getId());
         } else {
@@ -69,6 +69,13 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
             queryWrapper.eq(StringUtils.isEmpty(map.get("isDelete")), "aa.is_delete", 0);
             queryWrapper.eq(!StringUtils.isEmpty(map.get("isDelete")), "aa.is_delete", map.get("isDelete"));
             queryWrapper.eq(!StringUtils.isEmpty(map.get("compId")), "aa.comp_id", map.get("compId"));
+        }
+        // 费用标准停车位关系，如果存在关系就不显示该车位
+        String parkIds = map.get("parkIds");
+        if(!StringUtils.isEmpty(parkIds)){
+            String[] split = parkIds.split(",");
+            List<String> strings = Arrays.asList(split);
+            queryWrapper.notIn("aa.id",strings);
         }
         queryWrapper.eq(!StringUtils.isEmpty(map.get("commId")), "aa.comm_id", map.get("commId"));
         queryWrapper.eq(!StringUtils.isEmpty(map.get("no")), "no", map.get("no"));
@@ -157,7 +164,6 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
     @Override
     @Transactional
     public boolean removeByIds(String ids, String token) {
-        System.out.println(ids);
         if (StringUtils.isEmpty(ids)) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }

@@ -1,5 +1,6 @@
 package com.estate.sdzy.tariff.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.estate.sdzy.tariff.entity.FCostRuleRoom;
 
@@ -23,6 +24,13 @@ public interface FCostRuleRoomService extends IService<FCostRuleRoom> {
      * @return
      */
     boolean insertRoomRule(String token, Map<String,Object> map);
+    boolean insertParkRule(String token, Map<String,String> map);
 
     List<String> getRoomIds(Long ruleId);
+    String getParkIds(Long ruleId);
+
+    List<Map<String,String>> costPark(Long ruleId);
+
+    boolean removeById(Long id);
+    boolean removeByIds(Map<String,String> map,String token);
 }
