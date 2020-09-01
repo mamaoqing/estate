@@ -59,6 +59,18 @@ public class ROwnerPropertyServiceImpl extends ServiceImpl<ROwnerPropertyMapper,
     }
 
     @Override
+    public List<ROwnerProperty> getAllProperty(Map map, String token) {
+        SUser user = getUserByToken(token);
+        if(StringUtils.isEmpty(map)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        if (user.getCompId()!=0){
+            map.put("compId",user.getCompId());
+        }
+        return ownerPropertyMapper.getAllProperty(map);
+    }
+
+    @Override
     public boolean delete(Long id,String token) {
         SUser user = getUserByToken(token);
         if(StringUtils.isEmpty(id)){
@@ -73,23 +85,29 @@ public class ROwnerPropertyServiceImpl extends ServiceImpl<ROwnerPropertyMapper,
     }
 
     @Override
-    public boolean insertRoomOwner(Map map, String token) {
+    public boolean insertRoomOwnerOrPark(Map map, String token) {
         SUser user = getUserByToken(token);
 
         String compId = map.get("compId").toString();
         String commId = map.get("commId").toString();
         String commAreaId = map.get("commAreaId").toString();
-        String buildingId = map.get("buildingId").toString();
+        String buildingId = null;
+        String type = null;
+        if (!StringUtils.isEmpty(map.get("buildingId"))){
+            buildingId = map.get("buildingId").toString();
+            type = map.get("type").toString();
+        }
         String roomId = map.get("roomId").toString();
+        String propType = map.get("propType").toString();
         String remark = "";
         if (!StringUtils.isEmpty(map.get("remark"))){
             remark = map.get("remark").toString();
         }
-        if(StringUtils.isEmpty(map)||StringUtils.isEmpty(compId)||StringUtils.isEmpty(commId)||StringUtils.isEmpty(commAreaId)||StringUtils.isEmpty(buildingId)||StringUtils.isEmpty(roomId)){
+        if(StringUtils.isEmpty(map)||StringUtils.isEmpty(compId)||StringUtils.isEmpty(commId)||StringUtils.isEmpty(commAreaId)||StringUtils.isEmpty(roomId)){
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         String[] ownerIds = map.get("ownerId").toString().split(",");
-        String type = map.get("type").toString();
+
 
         List<ROwnerProperty> ls = new ArrayList<>();
         for (String ownerId : ownerIds){
@@ -99,16 +117,20 @@ public class ROwnerPropertyServiceImpl extends ServiceImpl<ROwnerPropertyMapper,
             property.setCompId(Long.parseLong(compId));
             property.setCommId(Long.parseLong(commId));
             property.setCommAreaId(Long.parseLong(commAreaId));
-            property.setBuildingId(Long.parseLong(buildingId));
-            property.setPropertyType("房产");
+
+            property.setPropertyType(propType);
             property.setPropertyId(Long.parseLong(roomId));
             QueryWrapper<ROwnerProperty> wrapper = new QueryWrapper<>();
+            if (!StringUtils.isEmpty(map.get("buildingId"))){
+                property.setBuildingId(Long.parseLong(buildingId));
+                wrapper.eq("building_id",buildingId);
+            }
             wrapper.eq("is_delete",0);
             wrapper.eq("comp_id",compId);
             wrapper.eq("comm_id",commId);
             wrapper.eq("comm_area_id",commAreaId);
-            wrapper.eq("building_id",buildingId);
-            wrapper.eq("property_type","房产");
+
+            wrapper.eq("property_type",propType);
             wrapper.eq("property_id",roomId);
             wrapper.eq("owner_id",ownerId);
             List<ROwnerProperty> rOwnerProperties = ownerPropertyMapper.selectList(wrapper);

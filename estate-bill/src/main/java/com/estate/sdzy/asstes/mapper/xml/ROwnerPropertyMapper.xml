@@ -26,4 +26,43 @@
             r_owner_property.is_delete = 0
             and r_owner_property.owner_id = #{ownerId}
     </select>
+
+    <select id="getAllProperty" parameterType="java.util.Map" resultType="com.estate.sdzy.asstes.entity.ROwnerProperty">
+        SELECT
+            s_company.NAME AS comp_name,
+            r_community.NAME AS comm_name,
+            r_comm_area.NAME AS comm_area_name,
+            r_building.NAME AS buildiing_name,
+            r_owner_property.*
+        FROM
+            r_owner_property
+            LEFT JOIN r_owner on r_owner_property.owner_id = r_owner.id
+            LEFT JOIN s_company ON r_owner_property.comp_id = s_company.id
+            LEFT JOIN r_community ON r_owner_property.comm_id = r_community.id
+            LEFT JOIN r_comm_area ON r_owner_property.comm_area_id = r_comm_area.id
+            LEFT JOIN r_building ON r_owner_property.building_id = r_building.id
+        WHERE
+            r_owner_property.is_delete = 0
+            <if test="compId!=null and compId !=''">
+                and r_owner_property.comp_id = #{compId}
+            </if>
+            <if test="commId!=null and commId !=''">
+                and  r_owner_property.comm_id = #{commId}
+            </if>
+            <if test="ownerType!=null and ownerType !=''">
+                and r_owner.owner_type = #{ownerType}
+            </if>
+            <if test="name!=null and name !=''">
+                and  r_owner.name = #{name}
+            </if>
+            <if test="certNumber!=null and certNumber !=''">
+                and  r_owner.cert_number = #{certNumber}
+            </if>
+            <if test="propertyType!=null and propertyType !=''">
+                and  r_owner_property.property_type = #{propertyType}
+            </if>
+            <if test="propertyId!=null and propertyId !=''">
+                and  r_owner_property.property_id = #{propertyId}
+            </if>
+    </select>
 </mapper>

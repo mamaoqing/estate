@@ -52,6 +52,9 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
         if (null == user.getCompId()) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
+        if (user.getCompId()!=0){
+            map.put("compId",user.getCompId());
+        }
         return mapper.getOwenerList(map);
     }
 
