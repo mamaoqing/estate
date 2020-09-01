@@ -197,7 +197,7 @@ public class RRoom implements Serializable {
 
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    @ExcelAnnotation(value = "录入时间")
+    @ExcelAnnotation(value = "录入时间",fmt="yyyy-MM-dd HH:mm:ss")
     private Date createdAt;
 
     private Long createdBy;
@@ -206,7 +206,7 @@ public class RRoom implements Serializable {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    @ExcelAnnotation(value = "修改时间")
+    @ExcelAnnotation(value = "修改时间",fmt="yyyy-MM-dd HH:mm:ss")
     private Date modifiedAt;
 
     private Long modifiedBy;
