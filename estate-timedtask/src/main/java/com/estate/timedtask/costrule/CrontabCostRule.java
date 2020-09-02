@@ -1,6 +1,7 @@
 package com.estate.timedtask.costrule;
 
-import com.estate.timedtask.costrule.constant.BillCycle;
+import com.estate.common.util.ConnectUtil;
+import com.estate.common.constant.BillCycle;
 import com.estate.timedtask.costrule.excute.ExcuteRule;
 import com.estate.timedtask.costrule.util.*;
 

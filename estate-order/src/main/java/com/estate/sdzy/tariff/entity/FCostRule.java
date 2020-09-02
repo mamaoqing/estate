@@ -117,7 +117,7 @@ public class FCostRule implements Serializable {
     /**
      * 出账天
      */
-    private String billDay;
+    private Integer billDay;
 
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")

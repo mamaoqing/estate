@@ -1,4 +1,4 @@
-package com.estate.timedtask.costrule.util;
+package com.estate.common.util;
 
 import java.sql.*;
 import java.util.Map;

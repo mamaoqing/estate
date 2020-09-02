@@ -1,6 +1,7 @@
 package com.estate.timedtask.costrule.util;
 
-import com.estate.timedtask.costrule.constant.BillintMethod;
+import com.estate.common.util.ConnectUtil;
+import com.estate.common.constant.BillintMethod;
 import com.estate.timedtask.costrule.excute.ExcuteSql;
 
 import java.math.BigDecimal;

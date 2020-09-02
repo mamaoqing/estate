@@ -1,9 +1,10 @@
 package com.estate.timedtask.costrule.util;
 
+import com.estate.common.util.ConnectUtil;
+
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 
 public class BaseUtil {
 

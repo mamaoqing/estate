@@ -1,6 +1,6 @@
 package com.estate.timedtask.costrule.excute;
 
-import com.estate.timedtask.costrule.util.ConnectUtil;
+import com.estate.common.util.ConnectUtil;
 import org.springframework.util.StringUtils;
 
 import java.sql.SQLException;

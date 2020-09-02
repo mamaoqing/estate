@@ -1,4 +1,4 @@
-package com.estate.timedtask.costrule.constant;
+package com.estate.common.constant;
 
 public class BillCycle {
     public final static String DAY = "每天";
