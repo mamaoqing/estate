@@ -98,7 +98,7 @@ public class FMeterRecordController extends BaseController {
     public void exportTemplate(HttpServletResponse response, HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
         SUser user = rRoomService.getUserByToken(token);
         try {
-            ExportExcel.writeOut(response,"仪表抄表信息列表模板","com.estate.sdzy.tariff.entity.FMeterRecord",
+            ExportExcel.writeOut(response,"仪表抄表信息列表导入模板","com.estate.sdzy.tariff.entity.FMeterRecord",
                     null,"导出人："+user.getUserName(),true);
         }catch (Exception e){
             e.printStackTrace();
