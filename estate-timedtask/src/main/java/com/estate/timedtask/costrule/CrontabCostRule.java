@@ -79,8 +79,9 @@ public class CrontabCostRule {
             Date date = CalendarUtil.getDate(now, pay_time);
             // 公司id不足4位用0补齐
             DecimalFormat df = new DecimalFormat("0000");
+            int comp_id1 = resultSet.getInt("comp_id");
             // 账单号
-            String comp_id = df.format(resultSet.getInt("comp_id"));
+            String comp_id = df.format(comp_id1);
             // 费用标准id
             int id = resultSet.getInt("id");
 
@@ -99,10 +100,10 @@ public class CrontabCostRule {
 
                     Map<String, List<Integer>> month = ExcuteRule.month(id);
                     List<Integer> room = month.get("room");
-                    MonthUtil.monthBill(room, comp_id, liquidated_damages_method, date, price, billing_method, "room", thisMonth, cost_rule_id);
+                    MonthUtil.monthBill(room, comp_id, liquidated_damages_method, date, price, billing_method, "room", thisMonth, cost_rule_id,comp_id1);
 
                     List<Integer> park = month.get("park");
-                    MonthUtil.monthBill(park, comp_id, liquidated_damages_method, date, price, billing_method, "park", thisMonth, cost_rule_id);
+                    MonthUtil.monthBill(park, comp_id, liquidated_damages_method, date, price, billing_method, "park", thisMonth, cost_rule_id,comp_id1);
 
                 }
                 // 每季度
