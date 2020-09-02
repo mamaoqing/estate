@@ -15,6 +15,12 @@ public class BaseUtil {
         }
     }
 
+    /**
+     *
+     * @param res
+     * @param sb
+     * @param thisMonth
+     */
     public static void room(Integer res, StringBuilder sb,int thisMonth) {
         String roomDetail = "select aa.room_no,aa.building_area,bb.name,cc.name,dd.name,ee.name from r_room aa,r_comm_area bb," +
                 "r_community cc,r_building dd,r_unit ee where aa.comm_area_id = bb.id and aa.comm_id = cc.id and aa.building_id = dd.id and aa.unit_id = ee.id and  aa.id = " + res;

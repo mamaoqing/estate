@@ -1,5 +1,6 @@
 package com.estate.timedtask.costrule.util;
 
+import com.estate.timedtask.costrule.constant.BillintMethod;
 import com.estate.timedtask.costrule.excute.ExcuteSql;
 
 import java.math.BigDecimal;
@@ -9,6 +10,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+ /**
+ 　　* @description: 账单周期是月的
+    * @author mmq
+ 　　* @date 2020/9/2 9:10
+ 　　*/
 public class MonthUtil {
 
 
