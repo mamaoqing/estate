@@ -54,10 +54,10 @@ public class ConnectUtil {
      * @throws SQLException
      * @throws ClassNotFoundException
      */
-    public static ResultSet executeQuery(String sql, String[] objects) throws SQLException, ClassNotFoundException {
+    public static ResultSet executeQuery(String sql, Object[] objects) throws SQLException, ClassNotFoundException {
         preparedStatement = getConnection().prepareStatement(sql);
         for (int i = 0; i < objects.length; i++) {
-            preparedStatement.setString(i + 1, objects[i]);
+            preparedStatement.setObject(i + 1, objects[i]);
         }
         resultSet = preparedStatement.executeQuery();
         return resultSet;
