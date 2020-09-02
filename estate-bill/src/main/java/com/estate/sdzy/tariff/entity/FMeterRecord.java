@@ -66,7 +66,7 @@ public class FMeterRecord implements Serializable {
     /**
      * 仪表类型（水表、电表、煤气表）
      */
-    @ExcelAnnotation(value = "仪表类型",master = true)
+    @ExcelAnnotation(value = "仪表类型",master = true,dist = "48")
     private String type;
     /**
      * 仪表编号
