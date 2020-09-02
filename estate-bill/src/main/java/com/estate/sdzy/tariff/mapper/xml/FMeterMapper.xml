@@ -3,7 +3,7 @@
 <mapper namespace="com.estate.sdzy.tariff.mapper.FMeterMapper">
 
     <select id="getListMeter" resultType="com.estate.sdzy.tariff.entity.FMeter">
-        SELECT m.propertyName,
+        SELECT m.propertyName,m.comp_id,m.comm_id,m.comm_area_id,
         m.id,m.property_type,m.property_id,m.compName,m.commName,m.commAreaName,m.type,m.no,m.name,
         m.state,m.remark,m.created_at,m.created_name,m.modified_at,m.modified_name,m.new_num,
         m.meter_read_time,m.bill_num,m.bill_date

@@ -321,7 +321,9 @@ public class ImportExcel extends ExcelUtil {
         Map<String,String> distMap = new HashMap<>();
         for (Field field : fields1) {
             if (field.isAnnotationPresent(ExcelAnnotation.class)){
-                fields.add(field.getName());
+                if(field.getAnnotation(ExcelAnnotation.class).export()){//导入模板和导入时列要对应
+                    fields.add(field.getName());
+                }
                 if(field.getAnnotation(ExcelAnnotation.class).master()){
                     masterField.add(field.getName());
                 }
