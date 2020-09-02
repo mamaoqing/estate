@@ -158,7 +158,7 @@ public class RParkingSpaceServiceImpl extends ServiceImpl<RParkingSpaceMapper, R
         Page<RParkingSpace> page = new Page<>(1, size);
         Page<RParkingSpace> rParkingSpacePage = parkingSpaceMapper.listPark(page, queryWrapper);
         List<RParkingSpace> records = rParkingSpacePage.getRecords();
-        ExportExcel.writeOut(response, "停车位信息列表", map.get("className"), records, "导出人： " + user.getName());
+        ExportExcel.writeOut(response, "停车位信息列表", map.get("className"), records, "导出人： " + user.getName(),false);
     }
 
     @Override

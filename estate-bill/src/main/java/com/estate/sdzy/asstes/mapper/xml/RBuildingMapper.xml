@@ -93,7 +93,7 @@
         created_by,created_name,modified_at,modified_by,modified_name,is_delete,building_id)
 
         <foreach collection="rUnits" item="item" index="i" separator="union all">
-            (select name,room_no,comp_id,comm_id,comm_area_id,#{item.id} as unit_id,state,floor,room_model,room_type,property_right_nature,
+            (select name,room_no,comp_id,comm_id,#{commAreaId},#{item.id} as unit_id,state,floor,room_model,room_type,property_right_nature,
             direction,renovation_level,title_deed_no,land_deed_no,contract_no,building_area,usable_area,garden_area,usable,remark,
             CURRENT_TIME as created_at,#{userId} as created_by,#{userName} as created_name,CURRENT_TIME as modified_at,
              #{userId} as modified_by,#{userName} as modified_name,is_delete,#{item.buildingId} as building_id

@@ -52,7 +52,7 @@ public abstract class ExcelUtil {
      * @return
      * @throws ClassNotFoundException
      */
-    public static List<String> getClassFirld(String className) throws ClassNotFoundException {
+    public static List<String> getClassFirld(String className,boolean isExportTemplate) throws ClassNotFoundException {
         Field[] fields = ExcelUtil.getClassObject(className);
         List<String> list = new ArrayList<>();
         for (Field field : fields) {
@@ -62,8 +62,14 @@ public abstract class ExcelUtil {
 //                boolean export = annotation.export();
 //                boolean master = annotation.master();
 //                String dist = annotation.dist();
+                if(isExportTemplate){//是否为导出模板，true为导出模板
+                    if(annotation.export()){
+                        list.add(value);
+                    }
+                }else{
+                    list.add(value);
+                }
 
-                list.add(value);
             }
         }
         return list;

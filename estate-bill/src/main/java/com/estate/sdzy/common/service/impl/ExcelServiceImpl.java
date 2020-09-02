@@ -22,7 +22,7 @@ public class ExcelServiceImpl implements ExcelService {
     @Override
     public void writeOut(HttpServletResponse response, String token, String className) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 //        SUser user = getUserByToken(token);
-        ExportExcel.writeOut(response,"停车位信息列表",className,null,"导出人：");
+        ExportExcel.writeOut(response,"停车位信息列表",className,null,"导出人：",false);
     }
 
     private SUser getUserByToken(String token) {

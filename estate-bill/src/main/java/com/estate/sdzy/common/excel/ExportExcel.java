@@ -46,8 +46,8 @@ public class ExportExcel extends ExcelUtil {
      * @throws IllegalAccessException 1
      * @throws InvocationTargetException 1
      */
-    public static void writeOut(HttpServletResponse response, String fileName, String className,List<?> dataList,String auth) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        List<String> list = ExcelUtil.getClassFirld(className);
+    public static void writeOut(HttpServletResponse response, String fileName, String className,List<?> dataList,String auth,boolean isExportTemplate) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        List<String> list = ExcelUtil.getClassFirld(className,isExportTemplate);
         Class<?> c = Class.forName(className);
         Map<String, String> map = getDistfield(className);
         HSSFWorkbook workbook = createHSSFWorkbook(fileName,list,auth,dataList,c,map);

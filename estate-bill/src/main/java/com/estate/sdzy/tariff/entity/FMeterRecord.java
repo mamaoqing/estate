@@ -48,13 +48,14 @@ public class FMeterRecord implements Serializable {
     /**
      * 物业类型：房产、停车位
      */
-    @ExcelAnnotation(value = "物业类型")
+    //export = false表示不在导出模板中
+    @ExcelAnnotation(value = "物业类型",export = false)
     private String propertyType;
     /**
      * 物业编号
      */
     @TableField(exist = false)
-    @ExcelAnnotation(value = "物业编号")
+    @ExcelAnnotation(value = "物业编号",export = false)
     private String propertyName;
 
     /**
@@ -77,7 +78,7 @@ public class FMeterRecord implements Serializable {
      * 仪表名称
      */
     @TableField(exist = false)
-    @ExcelAnnotation(value = "仪表名称")
+    @ExcelAnnotation(value = "仪表名称",export = false)
     private String name;
 
     /**
@@ -92,7 +93,7 @@ public class FMeterRecord implements Serializable {
     private BigDecimal newNum;
 
     @TableField(exist = false)
-    @ExcelAnnotation(value = "抄表时间",fmt="yyyy-MM-dd HH:mm:ss")
+    @ExcelAnnotation(value = "抄表时间",fmt="yyyy-MM-dd HH:mm:ss",export = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date meterAt;
@@ -103,22 +104,22 @@ public class FMeterRecord implements Serializable {
     private String remark;
 
     @TableField(fill = FieldFill.INSERT)
-    @ExcelAnnotation(value = "录入时间",fmt="yyyy-MM-dd HH:mm:ss")
+    @ExcelAnnotation(value = "录入时间",fmt="yyyy-MM-dd HH:mm:ss",export = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createdAt;
 
     private Long createdBy;
-    @ExcelAnnotation(value = "录入人")
+    @ExcelAnnotation(value = "录入人",export = false)
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    @ExcelAnnotation(value = "修改时间",fmt="yyyy-MM-dd HH:mm:ss")
+    @ExcelAnnotation(value = "修改时间",fmt="yyyy-MM-dd HH:mm:ss",export = false)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date modifiedAt;
 
     private Long modifiedBy;
-    @ExcelAnnotation(value = "修改人")
+    @ExcelAnnotation(value = "修改人",export = false)
     private String modifiedName;
 
     private Integer isDelete;

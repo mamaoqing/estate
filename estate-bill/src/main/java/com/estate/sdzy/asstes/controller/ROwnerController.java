@@ -5,17 +5,13 @@ import com.estate.common.entity.SUser;
 import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.ROwner;
-import com.estate.sdzy.asstes.entity.RRoom;
 import com.estate.sdzy.asstes.service.ROwnerService;
 import com.estate.sdzy.common.excel.ExportExcel;
-
 import com.estate.sdzy.common.excel.ImportExcel;
 import com.estate.util.RedisUtil;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -65,7 +61,7 @@ public class ROwnerController {
         SUser user = (SUser) redisUtil.get(token);
         try {
             ExportExcel.writeOut(response, "业主信息列表", "com.estate.sdzy.asstes.entity.ROwner",
-                    ownerService.getExcel(map, token), "导出人：" + user.getUserName());
+                    ownerService.getExcel(map, token), "导出人：" + user.getUserName(),false);
         } catch (Exception e) {
             e.printStackTrace();
         }

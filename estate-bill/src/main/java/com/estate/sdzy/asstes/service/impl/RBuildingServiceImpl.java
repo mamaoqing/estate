@@ -125,7 +125,7 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
             }
             //#{item.id}
             //rBuildingMapper.insertUnitCopy(user.getId(), user.getUserName(), rUnits1,rBuildingCopy.getId());
-            if(rUnits.size()>0)rBuildingMapper.insertRoomCopy(user.getId(), user.getUserName(), rUnits,rBuildingCopy.getId());
+            if(rUnits.size()>0)rBuildingMapper.insertRoomCopy(user.getId(), user.getUserName(), rUnits,rBuildingCopy.getId(),rBuildingCopy.getCommAreaId());
         }else{
             return "建筑复制失败";
         }
@@ -192,7 +192,12 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
         if(checkNo>0){
             return "建筑编号重复";
         }else{
-            return "";
+            Integer checkName = rBuildingMapper.checkName(rBuilding.getName(),rBuildingMapper.selectById(rBuilding.getId()).getCommAreaId());
+            if(checkName>0){
+                return "建筑名称重复";
+            }else{
+                return "";
+            }
         }
     }
 
@@ -202,7 +207,12 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
         if(checkNo>0){
             return "建筑编号重复";
         }else{
-            return "";
+            Integer checkName = rBuildingMapper.checkName(rBuilding.getName(),rBuilding.getCommAreaId());
+            if(checkName>0){
+                return "建筑名称重复";
+            }else{
+                return "";
+            }
         }
     }
 
@@ -258,12 +268,13 @@ public class RBuildingServiceImpl extends ServiceImpl<RBuildingMapper, RBuilding
         }
         List<RUnit> rUnits = getUnits(id);
         for(RUnit unit:rUnits){
-            QueryWrapper<RUnit> queryUnit = new QueryWrapper<>();
+            /*QueryWrapper<RUnit> queryUnit = new QueryWrapper<>();
             queryUnit.eq("id",unit.getId());
             unit.setModifiedBy(user.getId());
             unit.setModifiedName(user.getUserName());
             unit.setIsDelete(1);
-            rUnitMapper.update(unit,queryUnit);
+            rUnitMapper.update(unit,queryUnit);*/
+            rUnitMapper.deleteById(unit.getId());
         }
         //int delete = sDictMapper.deleteById(id);
         if(delete>0){
