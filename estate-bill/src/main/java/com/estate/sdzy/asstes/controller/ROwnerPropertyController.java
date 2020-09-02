@@ -3,10 +3,13 @@ package com.estate.sdzy.asstes.controller;
 
 import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
+import com.estate.sdzy.asstes.entity.ROwnerProperty;
 import com.estate.sdzy.asstes.service.ROwnerPropertyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -36,12 +39,24 @@ public class ROwnerPropertyController {
 
     @PostMapping("/getAllProp")
     public Result getAllProp(@RequestBody Map map, @RequestHeader("Authentication-Token") String token) {
-        return ResultUtil.success(ownerPropertyService.getAllProperty(map, token));
+        Map data = new HashMap();
+        if (!StringUtils.isEmpty(map.get("pageNo")) && !StringUtils.isEmpty(map.get("size"))) {
+            Long pageNum = (Long.parseLong(map.get("pageNo").toString()) - 1) * Long.parseLong(map.get("size").toString());
+            map.put("pageNo", pageNum);
+        }
+        data.put("data", ownerPropertyService.getAllProperty(map, token));
+        data.put("pageTotal", ownerPropertyService.getPageTotal(map, token));
+        return ResultUtil.success(data);
     }
 
-    @GetMapping("/deleteOwnerProp/{id}")
+    @DeleteMapping("/deleteOwnerProp/{id}")
     public Result deleteOwnerProp(@PathVariable("id") Long id, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(ownerPropertyService.delete(id, token));
+    }
+
+    @PostMapping("/update")
+    public Result update(@RequestBody ROwnerProperty ownerProperty, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(ownerPropertyService.update(ownerProperty, token));
     }
 
     @PostMapping("/insertRoomOwnerOrPark")
@@ -50,7 +65,7 @@ public class ROwnerPropertyController {
         if (b) {
             return ResultUtil.success();
         } else {
-            return ResultUtil.error("业主重复或者其他错误", 1);
+            return ResultUtil.error("业主重复", 1);
         }
     }
 }

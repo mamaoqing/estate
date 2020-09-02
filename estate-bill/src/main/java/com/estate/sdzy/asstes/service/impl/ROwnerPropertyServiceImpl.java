@@ -69,16 +69,49 @@ public class ROwnerPropertyServiceImpl extends ServiceImpl<ROwnerPropertyMapper,
         }
         return ownerPropertyMapper.getAllProperty(map);
     }
+    @Override
+    public boolean update(ROwnerProperty ownerProperty, String token) {
+        SUser user = getUserByToken(token);
+        if(StringUtils.isEmpty(ownerProperty)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        int i = ownerPropertyMapper.updateById(ownerProperty);
+        if (i > 0) {
+            log.info("业主信息修改成功，修改人={}", user.getUserName());
+            return true;
+        }
+        throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+    }
+
 
     @Override
-    public boolean delete(Long id,String token) {
+    public Integer getPageTotal(Map map, String token) {
+        SUser user = getUserByToken(token);
+        if(StringUtils.isEmpty(map)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        if (user.getCompId()!=0){
+            map.put("compId",user.getCompId());
+        }
+        return ownerPropertyMapper.getPageTotal(map);
+    }
+
+    @Override
+    public boolean delete(Long id, String token) {
         SUser user = getUserByToken(token);
         if(StringUtils.isEmpty(id)){
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
-        int i = ownerPropertyMapper.deleteById(id);
-        if (i>0){
-            log.info("业主关系信息删除成功，添加人={}", user.getUserName());
+        ROwnerProperty ownerProperty = new ROwnerProperty();
+        ownerProperty.setId(id);
+        ownerProperty.setIsDelete(1);
+        ownerProperty.setCreatedBy(user.getId());
+        ownerProperty.setCreatedName(user.getUserName());
+        ownerProperty.setModifiedBy(user.getId());
+        ownerProperty.setModifiedName(user.getUserName());
+        int update = ownerPropertyMapper.updateById(ownerProperty);
+        if (update > 0) {
+            log.info("业主信息删除成功，删除人={}", user.getUserName());
             return true;
         }
         throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
@@ -97,13 +130,13 @@ public class ROwnerPropertyServiceImpl extends ServiceImpl<ROwnerPropertyMapper,
             buildingId = map.get("buildingId").toString();
             type = map.get("type").toString();
         }
-        String roomId = map.get("roomId").toString();
-        String propType = map.get("propType").toString();
+        String propertyId = map.get("propertyId").toString();
+        String propertyType = map.get("propertyType").toString();
         String remark = "";
         if (!StringUtils.isEmpty(map.get("remark"))){
             remark = map.get("remark").toString();
         }
-        if(StringUtils.isEmpty(map)||StringUtils.isEmpty(compId)||StringUtils.isEmpty(commId)||StringUtils.isEmpty(commAreaId)||StringUtils.isEmpty(roomId)){
+        if(StringUtils.isEmpty(map)||StringUtils.isEmpty(compId)||StringUtils.isEmpty(commId)||StringUtils.isEmpty(commAreaId)||StringUtils.isEmpty(propertyId)){
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         String[] ownerIds = map.get("ownerId").toString().split(",");
@@ -118,8 +151,8 @@ public class ROwnerPropertyServiceImpl extends ServiceImpl<ROwnerPropertyMapper,
             property.setCommId(Long.parseLong(commId));
             property.setCommAreaId(Long.parseLong(commAreaId));
 
-            property.setPropertyType(propType);
-            property.setPropertyId(Long.parseLong(roomId));
+            property.setPropertyType(propertyType);
+            property.setPropertyId(Long.parseLong(propertyId));
             QueryWrapper<ROwnerProperty> wrapper = new QueryWrapper<>();
             if (!StringUtils.isEmpty(map.get("buildingId"))){
                 property.setBuildingId(Long.parseLong(buildingId));
@@ -130,8 +163,8 @@ public class ROwnerPropertyServiceImpl extends ServiceImpl<ROwnerPropertyMapper,
             wrapper.eq("comm_id",commId);
             wrapper.eq("comm_area_id",commAreaId);
 
-            wrapper.eq("property_type",propType);
-            wrapper.eq("property_id",roomId);
+            wrapper.eq("property_type",propertyType);
+            wrapper.eq("property_id",propertyId);
             wrapper.eq("owner_id",ownerId);
             List<ROwnerProperty> rOwnerProperties = ownerPropertyMapper.selectList(wrapper);
             if (rOwnerProperties.size()>0){

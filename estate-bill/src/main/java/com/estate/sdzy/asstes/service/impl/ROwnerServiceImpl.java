@@ -202,9 +202,12 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
 
     @Override
     public Integer selectPageTotal(Map map, String token) {
-        getUserByToken(token);
+        SUser user = getUserByToken(token);
         if (null == map) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        if (user.getCompId()!=0){
+            map.put("compId",user.getCompId());
         }
         return mapper.selectPageTotal(map);
     }

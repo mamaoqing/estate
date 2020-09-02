@@ -27,5 +27,7 @@ public interface ROwnerPropertyService extends IService<ROwnerProperty> {
     List<ROwnerProperty> getAllProperty(Map map,String token);
     boolean insertRoomOwnerOrPark(Map map, String token);
     boolean delete(Long id, String token);
+    boolean update(ROwnerProperty ownerProperty, String token);
+    Integer getPageTotal(Map map, String token);
 
 }

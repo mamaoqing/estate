@@ -86,4 +86,34 @@ public class ROwnerProperty implements Serializable {
     private String commAreaName;
     @TableField(exist = false)
     private String buildingName;
+
+    @TableField(exist = false)
+    private String ownerName;
+    @TableField(exist = false)
+    private String ownerType;
+    @TableField(exist = false)
+    private String ownerAddr;
+    @TableField(exist = false)
+    private String tel;
+    @TableField(exist = false)
+    private String eMail;
+    @TableField(exist = false)
+    private String certType;
+    @TableField(exist = false)
+    private String certNumber;
+    @TableField(exist = false)
+    private String industry;
+    @TableField(exist = false)
+    private String sex;
+    @TableField(exist = false)
+    private String nativePlace;
+    @TableField(exist = false)
+    private String education;
+    @TableField(exist = false)
+    private String linkName;
+    @TableField(exist = false)
+    private String linkTel;
+    @TableField(exist = false)
+    private String linkAddr;
+
 }
