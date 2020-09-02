@@ -6,6 +6,9 @@ package com.estate.common.util;
  * @description 异常类的枚举
  */
 public enum OrderExceptionEnum {
+    /**
+     *
+     */
     SYSTEM_INSERT_ERROR ("添加数据系统异常",501),
     SYSTEM_UPDATE_ERROR ("修改数据系统异常",502),
     SYSTEM_DELETE_ERROR ("删除数据系统异常",503),
@@ -24,6 +27,7 @@ public enum OrderExceptionEnum {
     RESET_PASSWORD_ERROR_SYSTEM ("重设密码失败",900),
     TREE_MENU_ERROR_SYSTEM ("社区树获取信息异常，请检查数据是否正确！",601),
     USER_ROLE_OUT_TIME ("用户角色权限已经过期！",1001),
+    INSERT_BILL_CREATE_DATE_ERROR ("自动生成账单日期错误",700),
     ;
     private Integer code;
 

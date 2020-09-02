@@ -1,8 +1,8 @@
 package com.estate.sdzy.tariff.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,37 +14,32 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author mq
- * @since 2020-08-27
+ * @since 2020-09-02
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class FCostRuleRoom implements Serializable {
+public class FBillDate implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 主键id
-     */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
-     *  费用标准id
+     * 费用标准id
      */
     private Long costRuleId;
 
     /**
-     * 物业类型：停车位、厂房、住宅
+     * 创建账单时间
      */
-    private String propertyType;
+    private Date createBillDate;
 
     /**
-     * 物业id
+     * 修改人
      */
-    private Long propertyId;
-
-    private Integer isDelete;
+    private String updateUser;
 
 
 }

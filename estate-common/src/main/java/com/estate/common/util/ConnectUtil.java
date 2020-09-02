@@ -1,16 +1,26 @@
-package com.estate.timedtask.costrule.util;
+package com.estate.common.util;
 
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+/**
+* @description: 数据库连接工具类
+* @author mq
+*/
 public class ConnectUtil {
 
     private static Connection connection = null;
     private static PreparedStatement preparedStatement = null;
     private static ResultSet resultSet = null;
 
+    /**
+     *
+     * @return
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public static Connection getConnection() throws ClassNotFoundException, SQLException {
         if (connection == null) {
             Class.forName("org.mariadb.jdbc.Driver");
@@ -20,12 +30,12 @@ public class ConnectUtil {
     }
 
     /**
-     * 返回操作的id
-     * @param sql 执行的sql
-     * @param objects 参数
-     * @return 返回一个id
-     * @throws SQLException  yc
-     * @throws ClassNotFoundException yc
+     *
+     * @param sql
+     * @param objects
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
      */
     public static Integer executeUpdate(String sql, Object[] objects) throws SQLException, ClassNotFoundException {
         preparedStatement = getConnection().prepareStatement(sql);
@@ -36,10 +46,18 @@ public class ConnectUtil {
         return i;
     }
 
-    public static ResultSet executeQuery(String sql, String[] objects) throws SQLException, ClassNotFoundException {
+    /**
+     *
+     * @param sql
+     * @param objects
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
+    public static ResultSet executeQuery(String sql, Object[] objects) throws SQLException, ClassNotFoundException {
         preparedStatement = getConnection().prepareStatement(sql);
         for (int i = 0; i < objects.length; i++) {
-            preparedStatement.setString(i + 1, objects[i]);
+            preparedStatement.setObject(i + 1, objects[i]);
         }
         resultSet = preparedStatement.executeQuery();
         return resultSet;
@@ -48,6 +66,9 @@ public class ConnectUtil {
         return executeQuery(sql,new String[0]);
     }
 
+    /**
+     *
+     */
     public static void close() {
         try {
             if (resultSet != null) {

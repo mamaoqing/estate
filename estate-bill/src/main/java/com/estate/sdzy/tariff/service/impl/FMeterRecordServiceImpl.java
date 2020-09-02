@@ -74,12 +74,13 @@ public class FMeterRecordServiceImpl extends ServiceImpl<FMeterRecordMapper, FMe
         List<Long> meterIds = fMeterMapper.getMeterByNo(fMeterRecord.getNo(), fMeterRecord.getCommId());
         if(meterIds.size()==1){
             FMeter fMeter = fMeterMapper.selectById(meterIds.get(0));
-            //判断抄表刻度表里的抄表刻度大于仪表表里的抄表刻度
-            if(fMeterRecord.getNewNum().compareTo(fMeter.getNewNum())==1){
+            //判断抄表刻度表里的抄表刻度大于等于仪表表里的账单刻度
+            if(fMeterRecord.getNewNum().compareTo(fMeter.getBillNum())==1||fMeterRecord.getNewNum().compareTo(fMeter.getBillNum())==0){
                 fMeterRecord.setMeterId(meterIds.get(0));
                 fMeterRecord.setOperType("抄表");
                 fMeterRecord.setPropertyType(fMeter.getPropertyType());
                 fMeterRecord.setPropertyId(fMeter.getPropertyId());
+                fMeterRecord.setName(fMeter.getName());
                 save(fMeterRecord,token);
             }
         }
@@ -154,6 +155,7 @@ public class FMeterRecordServiceImpl extends ServiceImpl<FMeterRecordMapper, FMe
     public Integer listNum(Map<String, String> map, String token) {
         SUser user = getUserByToken(token);
         if(user.getCompId()==0){
+            System.out.println(map.get("modifiedAtBegin")+"-----------------------------------"+map.get("modifiedAtEnd"));
             Integer listMeterRecordNum = fMeterRecordMapper.getListMeterRecordNum(map.get("compName"), map.get("commName"),
                     map.get("propertyType"),map.get("propertyName"),map.get("type"),map.get("no"),
                     map.get("modifiedAtBegin"),map.get("modifiedAtEnd"),null,null,null);
@@ -179,6 +181,17 @@ public class FMeterRecordServiceImpl extends ServiceImpl<FMeterRecordMapper, FMe
                     map.get("propertyType"),map.get("propertyName"),map.get("type"),map.get("no"),
                     map.get("modifiedAtBegin"),map.get("modifiedAtEnd"),null,null,user.getId());
             return listMeterRecord;
+        }
+    }
+
+    @Override
+    public String checkMeterRecord(FMeterRecord fMeterRecord, String token) {
+        FMeter fMeter = fMeterMapper.selectById(fMeterRecord.getMeterId());
+        //判断抄表刻度表里的抄表刻度大于等于仪表表里的账单刻度
+        if(fMeterRecord.getNewNum().compareTo(fMeter.getBillNum())==1||fMeterRecord.getNewNum().compareTo(fMeter.getBillNum())==0){
+            return null;
+        }else{
+            return "抄表刻度小于仪表的账单刻度";
         }
     }
 

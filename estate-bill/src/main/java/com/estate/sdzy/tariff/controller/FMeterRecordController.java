@@ -54,6 +54,11 @@ public class FMeterRecordController extends BaseController {
         return ResultUtil.success(fMeterRecordService.update(fMeterRecord,token));
     }
 
+    @PutMapping("/checkMeterRecord")
+    public Result checkMeterRecord(@RequestBody FMeterRecord fMeterRecord, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(fMeterRecordService.checkMeterRecord(fMeterRecord,token));
+    }
+
     @GetMapping("/listMeterRecord")
     public Result listMeterRecord(Integer pageNo, Integer size, HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterRecordService.list(super.getParameterMap(request),pageNo,size,token));
@@ -83,7 +88,18 @@ public class FMeterRecordController extends BaseController {
         SUser user = rRoomService.getUserByToken(token);
         try {
             ExportExcel.writeOut(response,"仪表抄表信息列表","com.estate.sdzy.tariff.entity.FMeterRecord",
-                    fMeterRecordService.listAll(super.getParameterMap(request),token),"导出人："+user.getUserName());
+                    fMeterRecordService.listAll(super.getParameterMap(request),token),"导出人："+user.getUserName(),false);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @PostMapping("/exportTemplate")
+    public void exportTemplate(HttpServletResponse response, HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
+        SUser user = rRoomService.getUserByToken(token);
+        try {
+            ExportExcel.writeOut(response,"仪表抄表信息列表导入模板","com.estate.sdzy.tariff.entity.FMeterRecord",
+                    null,"导出人："+user.getUserName(),true);
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -50,7 +50,7 @@ public class AutoCode {
 
         // 包配置
         PackageConfig pc = new PackageConfig();
-        pc.setModuleName("asstes");
+        pc.setModuleName("tariff");
         pc.setParent("com.estate.sdzy");
         pc.setController("controller");
         pc.setService("service");
@@ -63,7 +63,7 @@ public class AutoCode {
         // 要映射的表
 //        strategy.setInclude("f_bill","f_bill_period","f_chargeoff_period","sale_info","pay_info");
 //        strategy.setInclude("f_cost_item","f_cost_rule","f_cost_type","f_meter","f_meter_record");
-        strategy.setInclude("f_cost_rule_room");
+        strategy.setInclude("f_bill_alter","f_bill_date");
 //        strategy.setInclude("r_unit","r_room","r_province","r_owner_property","r_owner_invoice_info","r_owner","r_district","r_community","r_comm_role_agreement","r_comm_area","r_city","r_building");
 //        strategy.setInclude("s_user","s_role_menu","s_role","s_org","s_menu","s_dict_item","s_dict","s_company","s_comp_link","s_user_role","s_user_comm","s_bank");
         strategy.setNaming(NamingStrategy.underline_to_camel);

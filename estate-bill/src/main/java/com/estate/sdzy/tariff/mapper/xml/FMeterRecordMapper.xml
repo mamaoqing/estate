@@ -31,9 +31,20 @@
         <if test="no!=''and no!=null">
             and m.no like CONCAT('%',#{no},'%')
         </if>
-        <if test="modifiedAtBegin!=''and modifiedAtBegin!=null and modifiedAtEnd!=''and modifiedAtEnd!=null">
-            and r.modified_at between #{modifiedAtBegin} and #{modifiedAtEnd}
-        </if>
+        <choose>
+            <when test="modifiedAtBegin!='' and modifiedAtBegin!=null and modifiedAtEnd!='' and modifiedAtEnd!=null">
+                and r.modified_at between #{modifiedAtBegin} and #{modifiedAtEnd}
+            </when>
+            <when test="modifiedAtBegin!='' and modifiedAtBegin!=null and (modifiedAtEnd=='' or modifiedAtEnd==null)">
+                and r.modified_at &gt;= #{modifiedAtBegin}
+            </when>
+            <when test="(modifiedAtBegin=='' or modifiedAtBegin==null) and modifiedAtEnd!='' and modifiedAtEnd!=null">
+                and r.modified_at &lt;= #{modifiedAtEnd}
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
         <if test="userId!=''and userId!=null">
             and u.user_id=#{userId} and r.comm_id=u.comm_id
         </if>
@@ -69,9 +80,20 @@
         <if test="no!=''and no!=null">
             and m.no like CONCAT('%',#{no},'%')
         </if>
-        <if test="modifiedAtBegin!=''and modifiedAtBegin!=null and modifiedAtEnd!=''and modifiedAtEnd!=null">
-            and r.modified_at between #{modifiedAtBegin} and #{modifiedAtEnd}
-        </if>
+        <choose>
+            <when test="modifiedAtBegin!=''and modifiedAtBegin!=null and modifiedAtEnd!='' and modifiedAtEnd!=null">
+                and r.modified_at between #{modifiedAtBegin} and #{modifiedAtEnd}
+            </when>
+            <when test="modifiedAtBegin!='' and modifiedAtBegin!=null and (modifiedAtEnd=='' or modifiedAtEnd==null)">
+                and r.modified_at &gt;= #{modifiedAtBegin}
+            </when>
+            <when test="(modifiedAtBegin=='' or modifiedAtBegin==null) and modifiedAtEnd!='' and modifiedAtEnd!=null">
+                and r.modified_at &lt;= #{modifiedAtEnd}
+            </when>
+            <otherwise>
+
+            </otherwise>
+        </choose>
         <if test="userId!=''and userId!=null">
             and u.user_id=#{userId} and r.comm_id=u.comm_id
         </if>
