@@ -1,7 +1,6 @@
 package com.estate.common.util;
 
 import com.estate.common.constant.BillCycle;
-import com.estate.common.exception.OrderException;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -11,7 +10,7 @@ import java.util.Date;
 
 /**
  * @author mq
- * @description: TODO
+ * @description:
  * @title: CreateBillDateUtil
  * @projectName estate-parent
  * @date 2020/9/210:52
@@ -41,6 +40,10 @@ public class CreateBillDateUtil {
         if (BillCycle.YEAR.equals(billCycle)) {
             CreateBillDateUtil.createYearBillDate(begin, end, day, costRuleId);
         }
+        // 每周
+        if (BillCycle.WEEK.equals(billCycle)) {
+            CreateBillDateUtil.createWeekBillDate(begin, end, day, costRuleId);
+        }
 
     }
 
@@ -51,7 +54,6 @@ public class CreateBillDateUtil {
      * @param end        结束时间
      * @param day        账单日
      * @param costRuleId 费用标准的id
-     * @throws ClassNotFoundException yichang
      */
     public static void createMonthBillDate(Date begin, Date end, Integer day, Long costRuleId) {
         Calendar calendar = Calendar.getInstance();
@@ -59,18 +61,10 @@ public class CreateBillDateUtil {
         if (begin.before(end)) {
             calendar.setTime(begin);
             calendar.set(Calendar.DAY_OF_MONTH, day);
-            String sql = "insert into f_bill_date(cost_rule_id,create_bill_date) values(?,?)";
             Object[] obj = {costRuleId, calendar.getTime()};
-            try {
-                ConnectUtil.executeUpdate(sql, obj);
-            } catch (SQLException sqlException) {
-                sqlException.printStackTrace();
-                throw new OrderException(OrderExceptionEnum.INSERT_BILL_CREATE_DATE_ERROR);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            CreateBillDateUtil.executeSql(obj);
             // 下一个月
-            Integer next = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+            int next = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
             calendar.add(Calendar.DAY_OF_MONTH, next);
             calendar.set(Calendar.DAY_OF_MONTH, day);
             Date time = calendar.getTime();
@@ -89,16 +83,8 @@ public class CreateBillDateUtil {
         Calendar calendar = Calendar.getInstance();
         if (begin.before(end)) {
             calendar.setTime(begin);
-            String sql = "insert into f_bill_date(cost_rule_id,create_bill_date) values(?,?)";
             Object[] obj = {costRuleId, calendar.getTime()};
-            try {
-                ConnectUtil.executeUpdate(sql, obj);
-            } catch (SQLException sqlException) {
-                sqlException.printStackTrace();
-                throw new OrderException(OrderExceptionEnum.INSERT_BILL_CREATE_DATE_ERROR);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            CreateBillDateUtil.executeSql(obj);
             calendar.add(Calendar.DATE, 1);
             Date time = calendar.getTime();
             CreateBillDateUtil.createDayBillDate(time, end, costRuleId);
@@ -116,7 +102,6 @@ public class CreateBillDateUtil {
      */
     public static void createQuarterBillDate(Date begin, Date end, Integer day, Long costRuleId) {
         String sql = "insert into f_bill_date(cost_rule_id,create_bill_date) values(?,?)";
-        Object[] obj = {};
         Calendar calendar = Calendar.getInstance();
         if (begin.before(end)) {
             calendar.setTime(begin);
@@ -128,12 +113,12 @@ public class CreateBillDateUtil {
                 case 7:
                 case 10:
                     calendar.set(Calendar.DAY_OF_MONTH, day);
-                    CreateBillDateUtil.doSwitch(obj, sql, costRuleId, calendar);
+                    CreateBillDateUtil.doSwitch(sql, costRuleId, calendar);
                     break;
                 default:
                     break;
             }
-            Integer next = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+            int next = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
             calendar.add(Calendar.DAY_OF_MONTH, next);
             calendar.set(Calendar.DAY_OF_MONTH, 1);
             CreateBillDateUtil.createQuarterBillDate(calendar.getTime(), end, day, costRuleId);
@@ -141,8 +126,14 @@ public class CreateBillDateUtil {
         }
     }
 
+    /**
+     * 每年生成一次
+     * @param begin 开始时间
+     * @param end 结束时间
+     * @param day 天数
+     * @param costRuleId 费用标准id
+     */
     public static void createYearBillDate(Date begin, Date end, Integer day, Long costRuleId) {
-        String sql = "insert into f_bill_date(cost_rule_id,create_bill_date) values(?,?)";
         Calendar calendar = Calendar.getInstance();
         if (begin.before(end)) {
             try {
@@ -151,11 +142,7 @@ public class CreateBillDateUtil {
                 calendar.setTime(CreateBillDateUtil.getYear(calendar));
                 calendar.add(Calendar.DATE, day);
                 Object[] obj = {costRuleId, calendar.getTime()};
-                ConnectUtil.executeUpdate(sql, obj);
-            } catch (SQLException sqlException) {
-                sqlException.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+                CreateBillDateUtil.executeSql(obj);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -164,8 +151,61 @@ public class CreateBillDateUtil {
         }
     }
 
-    public static void doSwitch(Object[] obj, String sql, Long costRuleId, Calendar calendar) {
-        obj = new Object[]{costRuleId, calendar.getTime()};
+    /**
+     * 每周执行一次
+     * @param begin 开始时间
+     * @param end 结束时间
+     * @param day 天数
+     * @param costRuleId 费用标准id
+     */
+    public static void createWeekBillDate(Date begin, Date end, Integer day, Long costRuleId){
+        Calendar calendar = Calendar.getInstance();
+        if (begin.before(end)) {
+            calendar.setTime(begin);
+            Date nextWeekMonday = getNextWeekMonday(calendar.getTime());
+            calendar.setTime(nextWeekMonday);
+            calendar.add(Calendar.DATE, day);
+            Object[] obj = {costRuleId, calendar.getTime()};
+            CreateBillDateUtil.executeSql(obj);
+            CreateBillDateUtil.createWeekBillDate(calendar.getTime(),end,day,costRuleId);
+        }
+    }
+
+    /**
+     * 获取当前周的周一的日期
+     * @param date 传入当前日期
+     * @return 返回当前周一日期
+     */
+    public static Date getThisWeekMonday(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        // 获得当前日期是一个星期的第几天
+        int dayWeek = cal.get(Calendar.DAY_OF_WEEK);
+        if (1 == dayWeek) {
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+        }
+        // 设置一个星期的第一天，按中国的习惯一个星期的第一天是星期一
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
+        // 获得当前日期是一个星期的第几天
+        int day = cal.get(Calendar.DAY_OF_WEEK);
+        cal.add(Calendar.DATE, cal.getFirstDayOfWeek() - day);
+        return cal.getTime();
+    }
+
+    /**
+     * 获取下周一的日期
+     * @param date 时间
+     * @return 返回日期下周一
+     */
+    public static Date getNextWeekMonday(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(getThisWeekMonday(date));
+        cal.add(Calendar.DATE, 7);
+        return cal.getTime();
+    }
+
+    public static void doSwitch(String sql, Long costRuleId, Calendar calendar) {
+        Object[] obj = new Object[]{costRuleId, calendar.getTime()};
         try {
             ConnectUtil.executeUpdate(sql, obj);
         } catch (SQLException sqlException) {
@@ -175,11 +215,25 @@ public class CreateBillDateUtil {
         }
     }
 
+    /**
+     * 获取时间年的一月一号
+     * @param calendar 时间
+     * @return 返回一月一号
+     * @throws ParseException 异常
+     */
     public static Date getYear(Calendar calendar) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        StringBuilder sb = new StringBuilder();
-        sb.append(new SimpleDateFormat("yyyy").format(calendar.getTime())).append("-01-01");
-        Date parse = sdf.parse(sb.toString());
-        return parse;
+        return sdf.parse(new SimpleDateFormat("yyyy").format(calendar.getTime()) + "-01-01");
+    }
+
+    private static void executeSql(Object[] obj){
+        String sql = "insert into f_bill_date(cost_rule_id,create_bill_date) values(?,?)";
+        try {
+            ConnectUtil.executeUpdate(sql, obj);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
