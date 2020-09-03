@@ -18,5 +18,8 @@ import java.util.List;
 @Repository
 public interface SRoleMapper extends BaseMapper<SRole> {
 
-    List<SRole> findRoleList(@Param("name")String name, @Param("type")String type, @Param("compId")List compId ,@Param("compid")String compid , @Param("pageNo")Integer pageNo, @Param("size")Integer size);
+    List<SRole> findRoleList(@Param("name")String name, @Param("type")String type, @Param("compId")List compId ,@Param("compid")String compid ,
+                             @Param("pageNo")Integer pageNo, @Param("size")Integer size);
+    Integer findRoleListNum(@Param("name")String name, @Param("type")String type, @Param("compId")List compId ,@Param("compid")String compid ,
+                             @Param("pageNo")Integer pageNo, @Param("size")Integer size);
 }

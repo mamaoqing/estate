@@ -1,13 +1,15 @@
 package com.estate.sdzy.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
 import com.estate.sdzy.asstes.service.RCommRoleAgreementService;
-import com.estate.sdzy.system.entity.*;
+import com.estate.sdzy.system.entity.SMenu;
+import com.estate.sdzy.system.entity.SRole;
+import com.estate.sdzy.system.entity.SRoleMenu;
+import com.estate.sdzy.system.entity.SUserRole;
 import com.estate.sdzy.system.mapper.*;
 import com.estate.sdzy.system.service.SMenuService;
 import com.estate.sdzy.system.service.SRoleService;
@@ -119,16 +121,22 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
         //同时物理删除用户角色表
         QueryWrapper<SUserRole> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("role_id",id);//根据角色id查询用户角色中间表
-        int userRole = userRoleMapper.delete(queryWrapper);
-        if(userRole<=0){
-            throw new BillException(BillExceptionEnum.SET_USER_ROLE_ERROR);
+        List<SUserRole> sUserRoles = userRoleMapper.selectList(queryWrapper);
+        if(sUserRoles.size()>0){
+            int userRole = userRoleMapper.delete(queryWrapper);
+            if(userRole<=0){
+                throw new BillException(BillExceptionEnum.SET_USER_ROLE_ERROR);
+            }
         }
         //同时物理删除用户菜单表
         QueryWrapper<SRoleMenu> queryRoleMenu = new QueryWrapper<>();
         queryRoleMenu.eq("role_id",id);//根据角色id查询角色菜单中间表
-        int roleMenu = roleMenuMapper.delete(queryRoleMenu);
-        if(roleMenu<=0){
-            throw new BillException(BillExceptionEnum.SET_ROLE_MENU_ERROR);
+        List<SRoleMenu> sRoleMenus = roleMenuMapper.selectList(queryRoleMenu);
+        if(sRoleMenus.size()>0){
+            int roleMenu = roleMenuMapper.delete(queryRoleMenu);
+            if(roleMenu<=0){
+                throw new BillException(BillExceptionEnum.SET_ROLE_MENU_ERROR);
+            }
         }
         if(delete > 0){
             log.info("角色删除成功，删除人={}",user.getUserName());
@@ -146,10 +154,6 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
         if(StringUtils.isEmpty(size)){
             size = 10;
         }
-        Page<SRole> page = new Page<>(pageNo,size);
-        //QueryWrapper<SRole> queryWrapper = new QueryWrapper<>();
-        // 下面放查询条件
-        // 名称查询
         List<String> compId = new ArrayList<>();
         if(!StringUtils.isEmpty(map.get("compId"))){//如果有公司的查询条件则只看查询的公司角色信息
             compId.add(map.get("compId"));
@@ -161,42 +165,25 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
                 compId.add("0");
             }
         }
-        //System.out.println(map.get("name"));
         List<SRole> sSRolePage = roleMapper.findRoleList(map.get("name"),map.get("type"),compId,map.get("compId"),(pageNo-1)*size, size);
-        //Page<SRole> sSRolePage = roleMapper.selectPage(page, queryWrapper);
         return sSRolePage;
     }
 
     @Override
-    public Page<SRole> listRoleNum(Map<String, String> map, Integer pageNo, Integer size,String token) {
-        if(StringUtils.isEmpty(pageNo)){
-            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
-        }
-        if(StringUtils.isEmpty(size)){
-            size = 10;
-        }
-        Page<SRole> page = new Page<>();
-        QueryWrapper<SRole> queryWrapper = new QueryWrapper<>();
-        // 下面放查询条件
-        // 名称查询
-        if(!StringUtils.isEmpty(map.get("name"))){
-            queryWrapper.like("name",map.get("name"));
-        }
-        if(!StringUtils.isEmpty(map.get("type"))){
-            queryWrapper.like("type",map.get("type"));
-        }
+    public Integer listRoleNum(Map<String, String> map, Integer pageNo, Integer size,String token) {
+        List<String> compId = new ArrayList<>();
         if(!StringUtils.isEmpty(map.get("compId"))){//如果有公司的查询条件则只看查询的公司角色信息
-            queryWrapper.eq("comp_id", map.get("compId"));
+            compId.add(map.get("compId"));
         }else{
             if(getUserByToken(token).getCompId()==0){//没有公司的查询条件，开发公司看全部
 
-            }else{//没有公司的查询条件，物业公司只看自己的所在公司和公共的角色
-                queryWrapper.in("comp_id", Arrays.asList(getUserByToken(token).getCompId(),"0"));
+            }else{//没有公司的查询条件，物业公司看自己和公共的角色
+                compId.add(String.valueOf(getUserByToken(token).getCompId()));
+                compId.add("0");
             }
         }
-        queryWrapper.orderByDesc("id");
-        Page<SRole> sSRolePage = roleMapper.selectPage(page, queryWrapper);
-        return sSRolePage;
+        Integer roles = roleMapper.findRoleListNum(map.get("name"),map.get("type"),compId,map.get("compId"),null, null);
+        return roles;
     }
 
     @Override
@@ -222,6 +209,17 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
             }
         }
         return "";
+    }
+
+    @Override
+    public String checkUser(Long id,String token) throws BillException {
+        SUser user = getUserByToken(token);
+        SRole sRole = roleMapper.selectById(id);
+        if(sRole.getCompId().equals(user.getCompId())){//判断是开发公司
+            return "";
+        }else{
+            return "您没有权限，请联系管理员";
+        }
     }
 
     @Override

@@ -34,6 +34,20 @@
         </if>
     </select>
 
+    <select id="findUserCommList" resultType="com.estate.common.entity.SUser">
+        select u.id,u.name,u.user_name,u.type,u.created_at,u.created_name,u.modified_at,u.modified_name,u.compName,u.orgName,u.comp_id,
+        u.org_id,u.parent_id_list,u.tel,u.state
+        from v_s_user_role u,s_user_comm comm
+        where u.id = comm.user_id and comm.comm_id= #{commId} and u.is_delete=0
+            and u.comp_id = #{compId}
+        <if test="userName != null and userName != ''">
+            and u.user_name like CONCAT('%',#{userName},'%')
+        </if>
+        <if test="name != null and name != ''">
+            and u.name like CONCAT('%',#{name},'%')
+        </if>
+    </select>
+
     <update id="updateUserOrg" parameterType="java.lang.Long">
         update s_user set org_id = null where org_id = #{id}
     </update>
