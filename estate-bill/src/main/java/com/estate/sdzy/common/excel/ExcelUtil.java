@@ -23,6 +23,7 @@ public abstract class ExcelUtil {
     static final String BOOLEAN = "class java.lang.Boolean";
     static final String DATE = "class java.util.Date";
     static final String BIGDECIMAL = "class java.math.BigDecimal";
+    static final String LONG = "class java.lang.Long";
 
     /**
      * 检查文件
@@ -125,6 +126,9 @@ public abstract class ExcelUtil {
             if(BIGDECIMAL.equals(type)){
                 BigDecimal account=(BigDecimal) value;
                 cell.setCellValue(account.doubleValue());
+            }
+            if(LONG.equals(type)){
+                cell.setCellValue((Long)value);
             }
         }
     }

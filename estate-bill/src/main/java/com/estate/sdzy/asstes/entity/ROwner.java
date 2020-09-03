@@ -40,6 +40,18 @@ public class ROwner implements Serializable {
     private Long compId;
 
     /**
+     * 证件类型
+     */
+    @ExcelAnnotation(value = "证件类型",dist = "47")
+    private String certType;
+
+    /**
+     * 证件号码
+     */
+    @ExcelAnnotation(value = "证件号码",master = true)
+    private String certNumber;
+
+    /**
      * 业主名称
      */
     @ExcelAnnotation(value = "业主名称",master = true)
@@ -63,12 +75,6 @@ public class ROwner implements Serializable {
     @ExcelAnnotation(value = "业主邮箱")
     private String eMail;
 
-    /**
-     * 证件类型
-     */
-    @ExcelAnnotation(value = "证件类型",dist = "47")
-    private String certType;
-
     private String wxOpenid;
 
     private String wxUnionid;
@@ -83,11 +89,7 @@ public class ROwner implements Serializable {
 
     private String wxCountry;
 
-    /**
-     * 证件号码
-     */
-    @ExcelAnnotation(value = "证件号码",master = true)
-    private String certNumber;
+
 
     /**
      * 籍贯
