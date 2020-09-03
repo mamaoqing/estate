@@ -55,6 +55,15 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         return billMapper.selectPage(page, queryWrapper);
     }
 
+    @Override
+    public boolean resetBill(Long id) {
+        if(StringUtils.isEmpty(id)){
+            throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        FBill fBill = billMapper.selectById(id);
+        return false;
+    }
+
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {
