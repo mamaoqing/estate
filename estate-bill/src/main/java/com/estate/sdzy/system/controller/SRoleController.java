@@ -70,6 +70,11 @@ public class SRoleController extends BaseController {
         return ResultUtil.success(roleService.checkRoleMenuUser(id));
     }
 
+    @GetMapping("/checkUser/{id}")
+    public Result checkUser(@PathVariable("id") Long id , @RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(roleService.checkUser(id,token));
+    }
+
     @PostMapping("/setRoleMenu")
     public Result setRoleMenu(@RequestBody Map<String,String> roleMenu , @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(roleService.setRoleMenu(roleMenu.get("roleId"),roleMenu.get("menuId"), token));

@@ -145,5 +145,5 @@ public class FCostRule implements Serializable {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date auditTime;
 
-
+    private Long commId;
 }

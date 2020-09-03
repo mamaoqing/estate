@@ -18,4 +18,6 @@ public interface FBillService extends IService<FBill> {
 
     Page<FBill> listBill(Map<String,String> map,String token);
 
+    boolean resetBill(Long id);
+
 }

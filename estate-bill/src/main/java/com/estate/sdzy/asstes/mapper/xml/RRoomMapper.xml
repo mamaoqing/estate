@@ -12,7 +12,7 @@
         r.usable_area,r.garden_area,r.heating_area,r.usable,r.remark,r.created_at,r.created_name,r.modified_at,r.modified_name,b.no as buildingNo,u.no as unitNo
         from r_room r,s_company comp,r_community comm,r_comm_area a,r_building b,r_unit u,s_unit_model m
         <if test="userId!=''and userId!=null">
-            ,s_user_comm u
+            ,s_user_comm uc
         </if>
         where r.comp_id=comp.id and r.comm_id=comm.id and r.comm_area_id=a.id and r.building_id=b.id and r.unit_id=u.id and u.model_id=m.id
          and r.is_delete='0'
@@ -44,7 +44,7 @@
             and r.usable = #{usable}
         </if>
         <if test="userId!=''and userId!=null">
-            and u.user_id=#{userId} and r.comm_id=u.comm_id
+            and uc.user_id=#{userId} and r.comm_id=uc.comm_id
         </if>
          ORDER BY id DESC
         <if test="pageNo!=null and size!=null">
@@ -56,7 +56,7 @@
         select count(r.id)
         from r_room r,s_company comp,r_community comm,r_comm_area a,r_building b,r_unit u,s_unit_model m
         <if test="userId!=''and userId!=null">
-            ,s_user_comm u
+            ,s_user_comm uc
         </if>
         where r.comp_id=comp.id and r.comm_id=comm.id and r.comm_area_id=a.id and r.building_id=b.id and r.unit_id=u.id and u.model_id=m.id
         and r.is_delete='0'
@@ -88,7 +88,7 @@
             and r.usable = #{usable}
         </if>
         <if test="userId!=''and userId!=null">
-            and u.user_id=#{userId} and r.comm_id=u.comm_id
+            and uc.user_id=#{userId} and r.comm_id=uc.comm_id
         </if>
         <if test="pageNo!=null and size!=null">
             limit #{pageNo},#{size}

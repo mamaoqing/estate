@@ -20,6 +20,8 @@ public interface SUserService extends IService<SUser> {
 
     Page<SUser> listUser(String token, Map<String,String> map);
 
+    Page<SUser> listUserComm(String token, Map<String, String> map);
+
     List<SUser> findOne(Integer id);
     SUser findByUserName(String username);
 

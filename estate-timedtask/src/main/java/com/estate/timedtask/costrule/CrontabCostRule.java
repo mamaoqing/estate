@@ -16,11 +16,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author mq
+ */
 public class CrontabCostRule {
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-//        CrontabCostRule.execute();
-//        ConnectUtil.close();
-        getCostRule();
+    public static void main(String[] args) {
+        CrontabCostRule.getCostRule();
+        ConnectUtil.close();
 
     }
 
@@ -36,7 +38,7 @@ public class CrontabCostRule {
             while (resultSet.next()){
                 int cost_rule_id = resultSet.getInt("cost_rule_id");
                 System.out.println(cost_rule_id);
-                execute(cost_rule_id);
+                execute(cost_rule_id,null,null);
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -47,12 +49,12 @@ public class CrontabCostRule {
         }
     }
 
-    public static void execute(int costRuleId) throws SQLException, ClassNotFoundException {
+    public static void execute(int costRuleId,String propertyType,String propertyIds) throws SQLException, ClassNotFoundException {
         Date now = new Date();
         String sql = "select * from f_cost_rule where 1=1 and is_delete = 0 and id=?";
         Object[] arr = {costRuleId};
         ResultSet resultSet = ConnectUtil.executeQuery(sql, arr);
-
+        System.out.println("------------");
         // 获取当前日月
         int day = CalendarUtil.getDay(now);
         int thisMonth = CalendarUtil.getMonth(now);
@@ -61,6 +63,7 @@ public class CrontabCostRule {
             Date end_date = resultSet.getDate("end_date");
             // 计费方式
             String billing_method = resultSet.getString("billing_method");
+            int comm_id = resultSet.getInt("comm_id");
             // 价格
             BigDecimal price = resultSet.getBigDecimal("price");
             // 账单周期
@@ -96,14 +99,14 @@ public class CrontabCostRule {
                     System.out.println(id + "<====>" + BillCycle.WEEK);
                 }
                 // 每月
-                if (BillCycle.MONTH.equals(bill_cycle) && day == bill_day) {
+                if (BillCycle.MONTH.equals(bill_cycle)) {
 
-                    Map<String, List<Integer>> month = ExcuteRule.month(id);
+                    Map<String, List<Integer>> month = ExcuteRule.month(id,propertyType,propertyIds);
                     List<Integer> room = month.get("room");
-                    MonthUtil.monthBill(room, comp_id, liquidated_damages_method, date, price, billing_method, "room", thisMonth, cost_rule_id,comp_id1);
+                    MonthUtil.monthBill(room, comp_id, liquidated_damages_method, date, price, billing_method, "room", thisMonth, cost_rule_id,comp_id1,comm_id);
 
                     List<Integer> park = month.get("park");
-                    MonthUtil.monthBill(park, comp_id, liquidated_damages_method, date, price, billing_method, "park", thisMonth, cost_rule_id,comp_id1);
+                    MonthUtil.monthBill(park, comp_id, liquidated_damages_method, date, price, billing_method, "park", thisMonth, cost_rule_id,comp_id1,comm_id);
 
                 }
                 // 每季度
