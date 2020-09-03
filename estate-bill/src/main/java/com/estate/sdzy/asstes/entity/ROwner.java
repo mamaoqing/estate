@@ -186,5 +186,7 @@ public class ROwner implements Serializable {
     private Long roomId;
     @TableField(exist = false)
     private String propTypes;
+    @TableField(exist = false)
+    private Long propId;
 
 }

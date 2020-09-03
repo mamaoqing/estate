@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.SQLException;
 
 /**
  * <p>
@@ -35,7 +36,7 @@ public class FCostRuleController extends BaseController {
     }
 
     @PostMapping("/insertCostRule")
-    public Result insertCostRule(@RequestBody FCostRule rule, @RequestHeader("Authentication-Token") String token){
+    public Result insertCostRule(@RequestBody FCostRule rule, @RequestHeader("Authentication-Token") String token) throws SQLException, ClassNotFoundException {
         return ResultUtil.success(costRuleService.save(rule,token));
     }
 

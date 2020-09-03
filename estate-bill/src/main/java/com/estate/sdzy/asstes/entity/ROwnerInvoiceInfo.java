@@ -1,8 +1,6 @@
 package com.estate.sdzy.asstes.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,7 +23,7 @@ import java.util.Date;
 public class ROwnerInvoiceInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     private Long ownerId;

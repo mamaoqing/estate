@@ -1,17 +1,24 @@
 package com.estate.sdzy.tariff.entity;
 
 import java.math.BigDecimal;
+
 import com.baomidou.mybatisplus.annotation.IdType;
+
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author mq
@@ -48,6 +55,8 @@ public class FBill implements Serializable {
     /**
      * 账单生成时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date billTime;
 
     /**
@@ -103,7 +112,26 @@ public class FBill implements Serializable {
     /**
      * 收费结束日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date payEndTime;
 
+    /**
+     * 费用标准id
+     */
+    private Long costRuleId;
 
+    /**
+     * 账期
+     */
+    private String accountPeriod;
+
+    /**
+     * 公司id
+     */
+    private Long compId;
+    private Long commId;
+
+    private String beginScale;
+    private String endScale;
 }

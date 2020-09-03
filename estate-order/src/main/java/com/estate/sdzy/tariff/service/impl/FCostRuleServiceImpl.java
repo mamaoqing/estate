@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.OrderException;
+import com.estate.common.util.CreateBillDateUtil;
+import com.estate.common.util.FormatUtil;
 import com.estate.common.util.OrderExceptionEnum;
 import com.estate.sdzy.tariff.entity.FCostItem;
 import com.estate.sdzy.tariff.entity.FCostRule;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -70,13 +74,13 @@ public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule
         Page<FCostRule> fCostRulePage = costRuleMapper.listCostRule(page, queryWrapper);
         List<FCostRule> records = fCostRulePage.getRecords();
         records.forEach(s->{
-            System.out.println(s);
         });
         return costRuleMapper.listCostRule(page,queryWrapper);
     }
 
     @Override
-    public boolean save(FCostRule rule, String token) {
+    @Transactional
+    public boolean save(FCostRule rule, String token) throws ClassNotFoundException {
         SUser user = getUserByToken(token);
         Long costItemId = rule.getCostItemId();
         QueryWrapper<FCostItem> queryWrapper = new QueryWrapper<>();
@@ -88,6 +92,12 @@ public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule
         int insert = costRuleMapper.insert(rule);
         if(insert > 0){
             log.info("费用项目添加成功，添加人:{}",user.getUserName());
+            Date beginDate = rule.getBeginDate();
+            Date endDate = rule.getEndDate();
+            Integer billDay = rule.getBillDay();
+            Long id = rule.getId();
+            String billCycle = rule.getBillCycle();
+            CreateBillDateUtil.getBillDate(beginDate,endDate,billDay,id,billCycle);
             return true;
         }
         log.error("费用项目添加失败");

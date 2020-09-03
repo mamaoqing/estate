@@ -60,6 +60,23 @@ public class RProvinceServiceImpl extends ServiceImpl<RProvinceMapper, RProvince
 
         return cityList;
     }
+    @Override//id
+    public List<RProvince> listProvincesAndCity() {
+        List<RProvince> rProvinces = provinceMapper.selectList(null);
+        for (RProvince province: rProvinces) {
+            province.setName(province.getProvinceName());
+            QueryWrapper<RCity> cityQueryWrapper = new QueryWrapper<>();
+            cityQueryWrapper.eq("province_id", province.getId());
+            List<RCity> rCities = cityMapper.selectList(cityQueryWrapper);
+            for(RCity city : rCities){
+                city.setName(city.getCityName());
+            }
+            province.setChildList(rCities);
+        }
+
+
+        return rProvinces;
+    }
 
     @Override
     public List<RProvince> listProvince() {

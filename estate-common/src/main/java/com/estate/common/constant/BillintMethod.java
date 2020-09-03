@@ -1,4 +1,4 @@
-package com.estate.timedtask.costrule.constant;
+package com.estate.common.constant;
 
 public class BillintMethod {
     public static final String BUILDAREA = "建筑面积";

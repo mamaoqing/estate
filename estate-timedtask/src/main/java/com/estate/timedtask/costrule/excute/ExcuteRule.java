@@ -1,6 +1,6 @@
 package com.estate.timedtask.costrule.excute;
 
-import com.estate.timedtask.costrule.util.ConnectUtil;
+import com.estate.common.util.ConnectUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,6 +25,9 @@ public class ExcuteRule {
         ResultSet resultSet = null;
         List<Integer> roomList = new ArrayList<Integer>();
         List<Integer> parkList = new ArrayList<Integer>();
+        List<Integer> water = new ArrayList<Integer>();
+        List<Integer> an = new ArrayList<Integer>();
+        List<Integer> rq = new ArrayList<Integer>();
         try {
             resultSet = ConnectUtil.executeQuery(sql);
             while (resultSet.next()) {
@@ -32,6 +35,15 @@ public class ExcuteRule {
                 int property_id = resultSet.getInt("property_id");
                 if ("room".equals(property_type)) {
                     roomList.add(property_id);
+                }
+                if ("park".equals(property_type)) {
+                    parkList.add(property_id);
+                }
+                if ("park".equals(property_type)) {
+                    parkList.add(property_id);
+                }
+                if ("park".equals(property_type)) {
+                    parkList.add(property_id);
                 }
                 if ("park".equals(property_type)) {
                     parkList.add(property_id);
@@ -45,6 +57,9 @@ public class ExcuteRule {
 
         map.put("room", roomList);
         map.put("park", parkList);
+        map.put("water", water);
+        map.put("an", an);
+        map.put("rq", rq);
         return map;
     }
 }

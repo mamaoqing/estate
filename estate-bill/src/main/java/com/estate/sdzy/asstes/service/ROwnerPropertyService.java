@@ -5,6 +5,7 @@ import com.estate.sdzy.asstes.entity.ROwnerProperty;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -23,5 +24,10 @@ public interface ROwnerPropertyService extends IService<ROwnerProperty> {
      */
     List<ROwner> ownerProByParkId(Long id);
     List<ROwnerProperty> getOwnerProperty(Long ownerId);
+    List<ROwnerProperty> getAllProperty(Map map,String token);
+    boolean insertRoomOwnerOrPark(Map map, String token);
+    boolean delete(Long id, String token);
+    boolean update(ROwnerProperty ownerProperty, String token);
+    Integer getPageTotal(Map map, String token);
 
 }
