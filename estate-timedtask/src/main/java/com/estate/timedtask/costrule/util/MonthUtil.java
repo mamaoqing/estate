@@ -60,7 +60,6 @@ public class MonthUtil {
      */
     public static void monthBillEstate(List<Integer> room, String comp_id, String liquidated_damages_method,
                                        Date date, BigDecimal price,String type,int thisMonth,long cost_rule_id,int compId,int commId) {
-        System.out.println("====");
         if (room != null && !room.isEmpty()) {
             for (Integer res:room) {
 

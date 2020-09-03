@@ -48,6 +48,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         queryWrapper.eq(!StringUtils.isEmpty(map.get("isPayment")),"is_payment",map.get("isPayment"))
                 .eq(!StringUtils.isEmpty(map.get("isOverdue")),"is_overdue",map.get("isOverdue"))
                 .eq(!StringUtils.isEmpty(map.get("isPrint")),"is_print",map.get("isPrint"))
+                .eq(!StringUtils.isEmpty(map.get("commId")),"comm_id",map.get("commId"))
                 .eq(!StringUtils.isEmpty(map.get("isInvoice")),"is_invoice",map.get("isInvoice"));
         Integer pageNo = Integer.valueOf(map.get("pageNo"));
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));

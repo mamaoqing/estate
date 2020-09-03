@@ -45,13 +45,13 @@ public class ExcuteRule {
                 if ("park".equals(property_type)) {
                     parkList.add(property_id);
                 }
-                if ("park".equals(property_type)) {
+                if ("water".equals(property_type)) {
                     parkList.add(property_id);
                 }
-                if ("park".equals(property_type)) {
+                if ("an".equals(property_type)) {
                     parkList.add(property_id);
                 }
-                if ("park".equals(property_type)) {
+                if ("rq".equals(property_type)) {
                     parkList.add(property_id);
                 }
             }
