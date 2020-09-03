@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 
 import java.io.Serializable;
@@ -132,6 +133,7 @@ public class FBill implements Serializable {
     private Long compId;
 
     private Long commId;
+    @TableField(exist = false)
     private String commName;
 
     private String beginScale;
