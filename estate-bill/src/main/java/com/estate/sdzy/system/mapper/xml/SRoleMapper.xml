@@ -21,7 +21,31 @@
         <if test="type!='' and type!=null">
             and role.type like CONCAT('%',#{type},'%')
         </if>
-        ORDER BY id DESC
-        limit #{pageNo},#{size}
+        <if test="pageNo!=null and size!=null">
+            limit #{pageNo},#{size}
+        </if>
+    </select>
+    <select id="findRoleListNum" resultType="java.lang.Integer" >
+        select count(role.id)
+        from s_role role left join s_company company on role.comp_id=company.id where 1=1
+        <if test="compId.size>0 and compId!=null">
+            and company.id in
+            <foreach collection="compId" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <!-- 有查询公司名称，但查询结果为空-->
+        <if test="compId.size==0 and compid!='' and compid!=null">
+            and company.id = ''
+        </if>
+        <if test="name!=''and name!=null">
+            and role.name like CONCAT('%',#{name},'%')
+        </if>
+        <if test="type!='' and type!=null">
+            and role.type like CONCAT('%',#{type},'%')
+        </if>
+        <if test="pageNo!=null and size!=null">
+            limit #{pageNo},#{size}
+        </if>
     </select>
 </mapper>
