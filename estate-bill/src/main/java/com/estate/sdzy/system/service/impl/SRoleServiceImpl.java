@@ -121,16 +121,22 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
         //同时物理删除用户角色表
         QueryWrapper<SUserRole> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("role_id",id);//根据角色id查询用户角色中间表
-        int userRole = userRoleMapper.delete(queryWrapper);
-        if(userRole<=0){
-            throw new BillException(BillExceptionEnum.SET_USER_ROLE_ERROR);
+        List<SUserRole> sUserRoles = userRoleMapper.selectList(queryWrapper);
+        if(sUserRoles.size()>0){
+            int userRole = userRoleMapper.delete(queryWrapper);
+            if(userRole<=0){
+                throw new BillException(BillExceptionEnum.SET_USER_ROLE_ERROR);
+            }
         }
         //同时物理删除用户菜单表
         QueryWrapper<SRoleMenu> queryRoleMenu = new QueryWrapper<>();
         queryRoleMenu.eq("role_id",id);//根据角色id查询角色菜单中间表
-        int roleMenu = roleMenuMapper.delete(queryRoleMenu);
-        if(roleMenu<=0){
-            throw new BillException(BillExceptionEnum.SET_ROLE_MENU_ERROR);
+        List<SRoleMenu> sRoleMenus = roleMenuMapper.selectList(queryRoleMenu);
+        if(sRoleMenus.size()>0){
+            int roleMenu = roleMenuMapper.delete(queryRoleMenu);
+            if(roleMenu<=0){
+                throw new BillException(BillExceptionEnum.SET_ROLE_MENU_ERROR);
+            }
         }
         if(delete > 0){
             log.info("角色删除成功，删除人={}",user.getUserName());
@@ -203,6 +209,17 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
             }
         }
         return "";
+    }
+
+    @Override
+    public String checkUser(Long id,String token) throws BillException {
+        SUser user = getUserByToken(token);
+        SRole sRole = roleMapper.selectById(id);
+        if(sRole.getCompId().equals(user.getCompId())){//判断是开发公司
+            return "";
+        }else{
+            return "您没有权限，请联系管理员";
+        }
     }
 
     @Override
