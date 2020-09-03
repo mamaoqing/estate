@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.estate.sdzy.system.mapper.SAuditerCnfMapper">
+
+    <select id="getListAuditerCnf" resultType="com.estate.sdzy.system.entity.SAuditerCnf">
+        select
+        s.id,s.comp_id,comp.name as compName,s.comm_id,comm.name as commName,s.type,s.user_id,u.name,s.order_no,s.remark,s.created_at,
+        s.created_name,s.modified_at,s.modified_name
+        from
+        s_auditer_cnf s,s_company comp,r_community comm,s_user u
+        <if test="userId!=''and userId!=null">
+            ,s_user_comm uc
+        </if>
+        where
+        s.comp_id = comp.id and s.comm_id = comm.id and s.user_id = u.id
+        <if test="map.compName!=null and map.compName !=''">
+            and s.comp_id = ${map.compName}
+        </if>
+        <if test="map.commName!=null and map.commName !=''">
+            and s.comm_id = ${map.commName}
+        </if>
+        <if test="map.type!=null and map.type !=''">
+            and s.type = #{map.type}
+        </if>
+        <if test="userId!=''and userId!=null">
+            and uc.user_id=#{userId} and s.comm_id=uc.comm_id
+        </if>
+        <if test="pageNo!=null and size!=null">
+            limit #{pageNo},#{size}
+        </if>
+    </select>
+
+    <select id="getListAuditerCnfNum" resultType="java.lang.Integer">
+        select
+        count(s.id)
+        from
+        s_auditer_cnf s,s_company comp,r_community comm,s_user u
+        <if test="userId!=''and userId!=null">
+            ,s_user_comm ucomm
+        </if>
+        where
+        s.comp_id = comp.id and s.comm_id = comm.id and s.user_id = u.id
+        <if test="map.compName!=null and map.compName !=''">
+            and s.comp_id = ${map.compName}
+        </if>
+        <if test="map.commName!=null and map.commName !=''">
+            and s.comm_id = ${map.commName}
+        </if>
+        <if test="map.type!=null and map.type !=''">
+            and s.type = #{map.type}
+        </if>
+        <if test="userId!=''and userId!=null">
+            and ucomm.user_id=#{userId} and s.comm_id=ucomm.comm_id
+        </if>
+        <if test="pageNo!=null and size!=null">
+            limit #{pageNo},#{size}
+        </if>
+    </select>
+</mapper>
