@@ -43,6 +43,12 @@ public class SUserController extends BaseController {
         return ResultUtil.success(userService.listUser(token,super.getParameterMap(request)));
     }
 
+    @GetMapping("/listUserComm")
+    @ResponseBody
+    public Result listUserComm(@RequestHeader("Authentication-Token") String token,HttpServletRequest request) {
+        return ResultUtil.success(userService.listUserComm(token,super.getParameterMap(request)));
+    }
+
     @PostMapping("/insertUser")
     @ResponseBody
     public Result insertUser(SUser user, @RequestHeader("Authentication-Token") String token) {
