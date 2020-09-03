@@ -1,5 +1,7 @@
 package com.estate.sdzy.asstes.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.sdzy.asstes.entity.RCommunity;
 import com.estate.sdzy.asstes.entity.ROwner;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -24,4 +26,5 @@ public interface ROwnerService extends IService<ROwner> {
     List<ROwner> getOwenerByRoom(Map map, String token);
     List<ROwner> getExcel(Map map, String token);
     void saveOrUpdateOwner(ROwner owner, String token);
+    Integer selectPageTotal(Map map, String token);
 }

@@ -30,6 +30,7 @@ public interface RProvinceService extends IService<RProvince> {
     List<RProvince> listProvince();
 
     List<RProvince> getProvinceChild();
+    List<RProvince> listProvincesAndCity();
 
     List<RCity> getCityList(Long id);
     List<RDistrict> getDistList(Long id);

@@ -1,9 +1,11 @@
 package com.estate.sdzy.asstes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
+import com.estate.sdzy.asstes.entity.RCommunity;
 import com.estate.sdzy.asstes.entity.ROwner;
 import com.estate.sdzy.asstes.entity.ROwnerProperty;
 import com.estate.sdzy.asstes.entity.RRoom;
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +52,9 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
         if (null == user.getCompId()) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
+        if (user.getCompId()!=0){
+            map.put("compId",user.getCompId());
+        }
         return mapper.getOwenerList(map);
     }
 
@@ -63,22 +69,7 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
         owner.setModifiedBy(user.getId());
         owner.setModifiedName(user.getUserName());
 
-        if (owner.getCommId() != null && owner.getCommAreaId() != null && owner.getBuildingId() != null && owner.getRoomId() != null) {
-            ROwnerProperty property = new ROwnerProperty();
-            property.setCompId(owner.getCompId());
-            property.setCommId(owner.getCommId());
-            property.setCommAreaId(owner.getCommAreaId());
-            property.setBuildingId(owner.getBuildingId());
-            property.setPropertyType("房产");
-            property.setPropertyId(owner.getRoomId());
-            property.setOwnerId(owner.getId());
-            property.setCreatedBy(user.getId());
-            property.setCreatedName(user.getUserName());
-            property.setModifiedBy(user.getId());
-            property.setModifiedName(user.getUserName());
-            property.setType(owner.getPropTypes());
-            ownerPropertyMapper.insert(property);
-        }
+
         int insert = mapper.insert(owner);
         if (insert > 0) {
             log.info("业主信息添加成功，添加人={}", user.getUserName());
@@ -207,6 +198,18 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
         }else{
             throw new BillException(415,"导入失败，业主"+owner.getName()+"错误");
         }
+    }
+
+    @Override
+    public Integer selectPageTotal(Map map, String token) {
+        SUser user = getUserByToken(token);
+        if (null == map) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        if (user.getCompId()!=0){
+            map.put("compId",user.getCompId());
+        }
+        return mapper.selectPageTotal(map);
     }
 
     private SUser getUserByToken(String token) {

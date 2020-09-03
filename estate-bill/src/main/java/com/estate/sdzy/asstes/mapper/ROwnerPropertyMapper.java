@@ -21,6 +21,8 @@ public interface ROwnerPropertyMapper extends BaseMapper<ROwnerProperty> {
 
     List<ROwner> ownerProByParkId(@Param("id") Long id,@Param("type")String type,@Param("del")Integer del);
     List<ROwnerProperty> getOwnerProperty(@Param("ownerId") Long ownerId);
+    List<ROwnerProperty> getAllProperty(Map map);
+    Integer getPageTotal(Map map);
 
 
 }
