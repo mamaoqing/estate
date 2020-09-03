@@ -81,6 +81,21 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
     }
 
     @Override
+    public Page<SUser> listUserComm(String token, Map<String, String> map) {
+        Integer pageNo = Integer.valueOf(map.get("pageNo"));
+        Integer size = 10;
+        if (StringUtils.isEmpty(pageNo)) {
+            throw new BillException(BillExceptionEnum.PAGENO_MISS_ERROR);
+        }
+        if (!StringUtils.isEmpty(map.get("size"))) {
+            size = Integer.valueOf(map.get("size"));
+        }
+        SUser user = getUserByToken(token);
+        Page<SUser> page = new Page<>(pageNo, size);
+        return userMapper.findUserCommList(page, map.get("compId"), map.get("userName"), map.get("name"), map.get("commId"),user.getId());
+    }
+
+    @Override
     @Transactional
     public List<SUser> findOne(Integer id) {
         return userMapper.findOne(id);
