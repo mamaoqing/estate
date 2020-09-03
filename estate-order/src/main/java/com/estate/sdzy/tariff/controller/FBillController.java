@@ -33,14 +33,14 @@ public class FBillController  extends BaseController {
         return ResultUtil.success(billService.listBill(super.getParameterMap(request),token));
     }
 
-    @PutMapping("/resetBillAll")
+    @PostMapping("/resetBillAll")
     public Result resetBillAll(HttpServletRequest request,@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success();
     }
 
-    @PutMapping("/resetBill/{id}")
+    @PostMapping("/resetBill/{id}")
     public Result resetBill(@PathVariable("id") Long id,@RequestHeader("Authentication-Token") String token){
-        return ResultUtil.success();
+        return ResultUtil.success(billService.resetBill(id));
     }
 }
 

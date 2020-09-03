@@ -13,12 +13,16 @@ import com.estate.sdzy.asstes.mapper.RRoomMapper;
 import com.estate.sdzy.tariff.entity.FBill;
 import com.estate.sdzy.tariff.mapper.FBillMapper;
 import com.estate.sdzy.tariff.service.FBillService;
+import com.estate.timedtask.costrule.CrontabCostRule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -95,12 +99,27 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
     }
 
     @Override
+    @Transactional
     public boolean resetBill(Long id) {
         if(StringUtils.isEmpty(id)){
             throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
         }
-        FBill fBill = billMapper.selectById(id);
-        return false;
+        FBill bill = billMapper.selectById(id);
+        int i = bill.getPayPrice().compareTo(new BigDecimal(0));
+        // 判断账单是否付款，并且付款金额大于0
+        if("否".equals(bill.getIsPayment()) && i<=0){
+            try {
+                billMapper.deleteById(id);
+                CrontabCostRule.execute(bill.getCostRuleId().intValue(),bill.getPropertyType(),bill.getPropertyId()+"");
+                return true;
+            } catch (SQLException sqlException) {
+                sqlException.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            throw new OrderException(OrderExceptionEnum.SYSTEM_INSERT_ERROR);
+        }
+        throw new OrderException(500,"该账单已经付款，不能重新生成！");
     }
 
     private SUser getUserByToken(String token) {
