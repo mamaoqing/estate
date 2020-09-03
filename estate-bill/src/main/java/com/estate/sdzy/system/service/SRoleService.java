@@ -24,6 +24,7 @@ public interface SRoleService extends IService<SRole> {
     List<SRole> listRole(Map<String,String> map, Integer pageNo, Integer size, String token);
     Integer listRoleNum(Map<String,String> map, Integer pageNo, Integer size, String token);
     String checkRoleMenuUser(Long id) throws BillException;
+    String checkUser(Long id,String token) throws BillException;
     boolean setRoleMenu(String roleId,String menuId, String token);
     List<SMenu> listRoleMenu(String token);
     List<Long> getRoleMenuByRoleId(String roleId);
