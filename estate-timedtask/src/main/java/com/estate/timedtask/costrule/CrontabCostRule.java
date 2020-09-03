@@ -16,11 +16,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author mq
+ */
 public class CrontabCostRule {
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-//        CrontabCostRule.execute();
-//        ConnectUtil.close();
-        getCostRule();
+    public static void main(String[] args) {
+        CrontabCostRule.getCostRule();
+        ConnectUtil.close();
 
     }
 

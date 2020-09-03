@@ -130,4 +130,8 @@ public class FBill implements Serializable {
      * 公司id
      */
     private Long compId;
+    private Long commId;
+
+    private String beginScale;
+    private String endScale;
 }
