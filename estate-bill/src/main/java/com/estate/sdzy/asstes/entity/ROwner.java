@@ -28,6 +28,17 @@ public class ROwner implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+
+
+    /**
+     * 物业公司
+     */
+    private Long compId;
+
+    @TableField(exist = false)
+    @ExcelAnnotation(value = "物业公司",master = true)
+    private String compName;
+
     /**
      * 业主类型
      */
@@ -35,9 +46,16 @@ public class ROwner implements Serializable {
     private String ownerType;
 
     /**
-     * 物业公司
+     * 证件类型
      */
-    private Long compId;
+    @ExcelAnnotation(value = "证件类型",dist = "47")
+    private String certType;
+
+    /**
+     * 证件号码
+     */
+    @ExcelAnnotation(value = "证件号码",master = true)
+    private String certNumber;
 
     /**
      * 业主名称
@@ -63,12 +81,6 @@ public class ROwner implements Serializable {
     @ExcelAnnotation(value = "业主邮箱")
     private String eMail;
 
-    /**
-     * 证件类型
-     */
-    @ExcelAnnotation(value = "证件类型",dist = "47")
-    private String certType;
-
     private String wxOpenid;
 
     private String wxUnionid;
@@ -83,11 +95,7 @@ public class ROwner implements Serializable {
 
     private String wxCountry;
 
-    /**
-     * 证件号码
-     */
-    @ExcelAnnotation(value = "证件号码",master = true)
-    private String certNumber;
+
 
     /**
      * 籍贯
@@ -117,13 +125,10 @@ public class ROwner implements Serializable {
     /**
      * 爱好
      */
+    @ExcelAnnotation(value = "爱好",master = true)
     private String likes;
 
-    /**
-     * 是否删除
-     */
-    @TableLogic
-    private Integer isDelete;
+
 
     /**
      * 状态
@@ -157,24 +162,27 @@ public class ROwner implements Serializable {
 
     @TableField(fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    @ExcelAnnotation(value = "录入时间")
+    @ExcelAnnotation(value = "录入时间",export = false)
     private Date createdAt;
 
     private Long createdBy;
-    @ExcelAnnotation(value = "录入人")
+    @ExcelAnnotation(value = "录入人",export = false)
     private String createdName;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    @ExcelAnnotation(value = "修改时间")
+    @ExcelAnnotation(value = "修改时间",export = false)
     private Date modifiedAt;
 
     private Long modifiedBy;
-    @ExcelAnnotation(value = "修改人")
+    @ExcelAnnotation(value = "修改人",export = false)
     private String modifiedName;
-    @TableField(exist = false)
-    @ExcelAnnotation(value = "物业公司",master = true)
-    private String compName;
+
+    /**
+     * 是否删除
+     */
+    @TableLogic
+    private Integer isDelete;
 
     @TableField(exist = false)
     private Long commId;

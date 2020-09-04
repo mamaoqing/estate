@@ -143,7 +143,7 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
         }
 
         QueryWrapper<ROwner> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("comp_id", owner.getCompId());
+//        queryWrapper.eq("comp_id", owner.getCompId());
         queryWrapper.eq("owner_type", owner.getOwnerType());
         queryWrapper.eq("cert_type", owner.getCertType());
         queryWrapper.eq("cert_number", owner.getCertNumber());

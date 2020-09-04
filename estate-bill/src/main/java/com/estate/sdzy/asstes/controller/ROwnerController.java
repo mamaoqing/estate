@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
@@ -69,6 +70,8 @@ public class ROwnerController {
     public void getExcel(@RequestBody Map<String, String> map, HttpServletResponse response, @RequestHeader("Authentication-Token") String token) {
         SUser user = (SUser) redisUtil.get(token);
         try {
+            map.remove("pageNo");
+            map.remove("size");
             ExportExcel.writeOut(response, "业主信息列表", "com.estate.sdzy.asstes.entity.ROwner",
                     ownerService.getExcel(map, token), "导出人：" + user.getUserName(),false);
         } catch (Exception e) {
@@ -103,6 +106,17 @@ public class ROwnerController {
             ownerService.saveOrUpdateOwner((ROwner) x, token);
         });
         return ResultUtil.success();
+    }
+
+    @PostMapping("/exportTemplate")
+    public void exportTemplate(HttpServletResponse response, HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
+        SUser user = (SUser) redisUtil.get(token);
+        try {
+            ExportExcel.writeOut(response,"业主信息列表导入模板","com.estate.sdzy.asstes.entity.ROwner",
+                    null,"导出人："+user.getUserName(),true);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
 

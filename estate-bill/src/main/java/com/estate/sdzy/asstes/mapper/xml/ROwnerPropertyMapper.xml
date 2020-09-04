@@ -36,6 +36,12 @@
             r_owner.name as owner_name,
             r_owner.owner_type as owner_type,
             r_owner.owner_addr as owner_addr,
+            CASE r_owner_property.property_type
+            WHEN '房产' THEN
+            concat_ws( '-', r_building.`no`,r_unit.`no`,r_room.room_no)
+            WHEN '停车位' THEN
+            r_parking_space.`no`
+            END property_name,
             r_owner.tel,
             r_owner.e_mail as e_mail,
             r_owner.cert_type as cert_type,
@@ -48,14 +54,18 @@
             r_owner.link_tel as link_tel,
             r_owner.link_addr as link_addr,
             r_owner_property.*
-        FROM
+            FROM
             r_owner_property
-        LEFT JOIN r_owner on r_owner_property.owner_id = r_owner.id
-        LEFT JOIN s_company ON r_owner_property.comp_id = s_company.id
-        LEFT JOIN r_community ON r_owner_property.comm_id = r_community.id
-        LEFT JOIN r_comm_area ON r_owner_property.comm_area_id = r_comm_area.id
-        LEFT JOIN r_building ON r_owner_property.building_id = r_building.id
-        WHERE
+            LEFT JOIN r_owner on r_owner_property.owner_id = r_owner.id
+            LEFT JOIN s_company ON r_owner_property.comp_id = s_company.id
+            LEFT JOIN r_community ON r_owner_property.comm_id = r_community.id
+            LEFT JOIN r_comm_area ON r_owner_property.comm_area_id = r_comm_area.id
+            LEFT JOIN r_building ON r_owner_property.building_id = r_building.id
+            LEFT JOIN r_parking_space on r_owner_property.property_id = r_parking_space.id
+            LEFT JOIN r_room on r_owner_property.property_id = r_room.id
+            LEFT JOIN r_unit on r_room.unit_id = r_unit.id
+
+            WHERE
             r_owner_property.is_delete = 0
             <if test="compId!=null and compId !=''">
                 and r_owner_property.comp_id = #{compId}
