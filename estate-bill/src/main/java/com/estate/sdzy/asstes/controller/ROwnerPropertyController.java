@@ -76,6 +76,8 @@ public class ROwnerPropertyController {
     public void exprotExcel(@RequestBody Map map,HttpServletResponse response, HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
         SUser user = rRoomService.getUserByToken(token);
         try {
+            map.remove("pageNo");
+            map.remove("size");
             ExportExcel.writeOut(response,"业主物业关系信息","com.estate.sdzy.asstes.entity.ROwnerProperty",
                     ownerPropertyService.getAllProperty(map,token),"导出人："+user.getUserName(),false);
         }catch (Exception e){
