@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * <p>
@@ -34,8 +35,8 @@ public class FBillController  extends BaseController {
     }
 
     @PostMapping("/resetBillAll")
-    public Result resetBillAll(HttpServletRequest request,@RequestHeader("Authentication-Token") String token){
-        return ResultUtil.success();
+    public Result resetBillAll(@RequestBody Map<String,Object> map, @RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(billService.resetBillAll(map));
     }
 
     @PostMapping("/resetBill/{id}")

@@ -34,6 +34,7 @@
                     <includeSystemScope>true</includeSystemScope>
                     <mainClass>com.estate.timedtask.costrule.CrontabCostRule</mainClass>
                     <fork>true</fork>
+                    <classifier>exec</classifier>
                 </configuration>
             </plugin>
         </plugins>

@@ -49,7 +49,9 @@
                     <includeSystemScope>true</includeSystemScope>
                     <mainClass>com.estate.BillApplication</mainClass>
                     <fork>true</fork>
+                    <classifier>exec</classifier>
                 </configuration>
+
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
