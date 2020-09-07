@@ -21,7 +21,7 @@ public class MonthUtil {
 
     public static void monthBill(List<Integer> room, String comp_id,
                                  String liquidated_damages_method, Date date, BigDecimal price, String billing_method,String type,
-                                 int thisMonth ,long cost_rule_id,int compId,int comm_id) {
+                                 String thisMonth ,long cost_rule_id,int compId,int comm_id) {
         // 物业费
         if (BillintMethod.BUILDAREA.equals(billing_method)) {
             MonthUtil.monthBillEstate(room, comp_id, liquidated_damages_method, date, price,type,thisMonth,cost_rule_id,compId,comm_id);
@@ -59,7 +59,7 @@ public class MonthUtil {
      * @param price                     单价
      */
     public static void monthBillEstate(List<Integer> room, String comp_id, String liquidated_damages_method,
-                                       Date date, BigDecimal price,String type,int thisMonth,long cost_rule_id,int compId,int commId) {
+                                       Date date, BigDecimal price,String type,String thisMonth,long cost_rule_id,int compId,int commId) {
         if (room != null && !room.isEmpty()) {
             for (Integer res:room) {
 
@@ -132,7 +132,7 @@ public class MonthUtil {
     }
 
     public static void monthBillFixed(List<Integer> room, String comp_id, String liquidated_damages_method,
-                                      Date date, BigDecimal price,String type,int thisMonth,long cost_rule_id,int compId,int commId) {
+                                      Date date, BigDecimal price,String type,String thisMonth,long cost_rule_id,int compId,int commId) {
         if (room != null && !room.isEmpty()) {
             for (Integer res:room) {
                 String billNo = CalendarUtil.getTimeMillis(new Date()) + comp_id;

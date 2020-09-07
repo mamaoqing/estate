@@ -37,8 +37,9 @@ public class CrontabCostRule {
             ResultSet resultSet = ConnectUtil.executeQuery(sql, obj);
             while (resultSet.next()){
                 int cost_rule_id = resultSet.getInt("cost_rule_id");
+                String account_period = resultSet.getString("account_period");
                 System.out.println(cost_rule_id);
-                execute(cost_rule_id,null,null);
+                execute(cost_rule_id,null,null,account_period);
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -49,7 +50,7 @@ public class CrontabCostRule {
         }
     }
 
-    public static void execute(int costRuleId,String propertyType,String propertyIds) throws SQLException, ClassNotFoundException {
+    public static void execute(int costRuleId,String propertyType,String propertyIds,String account_period) throws SQLException, ClassNotFoundException {
         Date now = new Date();
         String sql = "select * from f_cost_rule where 1=1 and is_delete = 0 and id=?";
         Object[] arr = {costRuleId};
@@ -103,10 +104,10 @@ public class CrontabCostRule {
 
                     Map<String, List<Integer>> month = ExcuteRule.month(id,propertyType,propertyIds);
                     List<Integer> room = month.get("room");
-                    MonthUtil.monthBill(room, comp_id, liquidated_damages_method, date, price, billing_method, "room", thisMonth, cost_rule_id,comp_id1,comm_id);
+                    MonthUtil.monthBill(room, comp_id, liquidated_damages_method, date, price, billing_method, "room", account_period, cost_rule_id,comp_id1,comm_id);
 
                     List<Integer> park = month.get("park");
-                    MonthUtil.monthBill(park, comp_id, liquidated_damages_method, date, price, billing_method, "park", thisMonth, cost_rule_id,comp_id1,comm_id);
+                    MonthUtil.monthBill(park, comp_id, liquidated_damages_method, date, price, billing_method, "park", account_period, cost_rule_id,comp_id1,comm_id);
 
                 }
                 // 每季度

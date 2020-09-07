@@ -2,6 +2,7 @@ package com.estate.sdzy.tariff.mapper;
 
 import com.estate.sdzy.tariff.entity.FBillDate;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface FBillDateMapper extends BaseMapper<FBillDate> {
 
+    FBillDate billDateByRuleId(@Param("ruleId") Long ruleId);
 }

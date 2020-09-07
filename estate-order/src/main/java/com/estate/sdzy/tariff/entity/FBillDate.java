@@ -41,5 +41,9 @@ public class FBillDate implements Serializable {
      */
     private String updateUser;
 
+    private String accountPeriod;
+
+    private Date endTime;
+
 
 }

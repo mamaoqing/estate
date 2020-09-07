@@ -33,7 +33,6 @@
                     <target>8</target>
                 </configuration>
             </plugin>
-
             <!-- spring boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -49,6 +48,7 @@
                     <includeSystemScope>true</includeSystemScope>
                     <mainClass>com.estate.OrderApplication</mainClass>
                     <fork>true</fork>
+                    <classifier>exec</classifier>
                 </configuration>
             </plugin>
             <plugin>
