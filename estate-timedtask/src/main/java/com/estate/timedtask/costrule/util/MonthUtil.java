@@ -19,6 +19,20 @@ import java.util.List;
 public class MonthUtil {
 
 
+     /**
+      *
+      * @param room 物业的id集合
+      * @param comp_id 公司id
+      * @param liquidated_damages_method 违约金计算方式
+      * @param date 最晚付款时间
+      * @param price 价格
+      * @param billing_method 计费方式
+      * @param type 房产停车位等
+      * @param thisMonth 账单月
+      * @param cost_rule_id 费用标注id
+      * @param compId 公司id
+      * @param comm_id 社区id
+      */
     public static void monthBill(List<Integer> room, String comp_id,
                                  String liquidated_damages_method, Date date, BigDecimal price, String billing_method,String type,
                                  String thisMonth ,long cost_rule_id,int compId,int comm_id) {

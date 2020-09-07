@@ -46,7 +46,7 @@ import java.util.concurrent.atomic.AtomicReference;
 @Service
 @RequiredArgsConstructor(onConstructor = @_(@Autowired))
 public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements FBillService {
-
+//com.estate.sdzy.tariff.mapper.FBillMapper
     private final FBillMapper billMapper;
     private final RedisTemplate redisTemplate;
     private final RRoomMapper rRoomMapper;
@@ -109,14 +109,14 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         SUser user = getUserByToken(token);
         QueryWrapper<FBill> queryWrapper = new QueryWrapper<>();
         if ("超级管理员".equals(user.getType())) {
-            queryWrapper.eq(!StringUtils.isEmpty(map.get("compId")), "comp_id", map.get("compId"));
+            queryWrapper.eq(!StringUtils.isEmpty(map.get("aa.compId")), "comp_id", map.get("compId"));
         } else {
-            queryWrapper.eq("comp_id", user.getCompId());
+            queryWrapper.eq("aa.comp_id", user.getCompId());
         }
         queryWrapper.eq(!StringUtils.isEmpty(map.get("isPayment")), "is_payment", map.get("isPayment"))
                 .eq(!StringUtils.isEmpty(map.get("isOverdue")), "is_overdue", map.get("isOverdue"))
                 .eq(!StringUtils.isEmpty(map.get("isPrint")), "is_print", map.get("isPrint"))
-                .eq(!StringUtils.isEmpty(map.get("commId")), "comm_id", map.get("commId"))
+                .eq(!StringUtils.isEmpty(map.get("commId")), "aa.comm_id", map.get("commId"))
                 .eq(!StringUtils.isEmpty(map.get("type")), "property_type", map.get("type"))
                 .eq(!StringUtils.isEmpty(map.get("costRuleId")), "cost_rule_id", map.get("costRuleId"))
                 .in(!rooms.isEmpty(), "property_id", rooms)
@@ -125,7 +125,8 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         Integer pageNo = Integer.valueOf(map.get("pageNo"));
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
         Page<FBill> page = new Page<>(pageNo, size);
-        return billMapper.selectPage(page, queryWrapper);
+        return billMapper.listBill(page,queryWrapper);
+//        return billMapper.selectPage(page, queryWrapper);
     }
 
     @Override

@@ -138,4 +138,11 @@ public class FBill implements Serializable {
 
     private String beginScale;
     private String endScale;
+    @TableField(exist = false)
+    private String no;
+
+    @TableField(exist = false)
+    private String ruleName;
+
+    private String state;
 }

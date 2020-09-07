@@ -1,6 +1,8 @@
 package com.estate.sdzy.tariff.mapper;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.tariff.entity.FBill;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,4 +24,6 @@ public interface FBillMapper extends BaseMapper<FBill> {
      * @return
      */
     List<Map<String,String>> listOwner(@Param("compId") Long compId);
+
+    Page<FBill> listBill(Page page,@Param("ew") QueryWrapper queryWrapper);
 }
