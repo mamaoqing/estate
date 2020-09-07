@@ -50,6 +50,10 @@ public class ROwnerInvoiceInfo implements Serializable {
     private String bank;
 
     /**
+     * 开票银行
+     */
+    private String bankName;
+    /**
      * 开户银行账号
      */
     private String bankAccountNo;

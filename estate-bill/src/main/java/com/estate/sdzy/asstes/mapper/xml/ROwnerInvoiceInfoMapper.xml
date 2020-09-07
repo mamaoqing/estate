@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.estate.sdzy.asstes.mapper.ROwnerInvoiceInfoMapper">
-
+    <select id="getAllOwnerInvo" parameterType="java.util.Map" resultType="com.estate.sdzy.asstes.entity.ROwnerInvoiceInfo">
+        SELECT
+        s_bank.NAME as bank_name,
+        r_owner_invoice_info.*
+        FROM
+        r_owner_invoice_info
+        LEFT JOIN s_bank ON r_owner_invoice_info.bank = s_bank.NO
+        where r_owner_invoice_info.is_delete=0
+        <if test="ownerId!=null and ownerId!=''">
+        and    r_owner_invoice_info.owner_id = #{ownerId}
+        </if>
+        <if test="pageNo!=null and size!=null">
+            LIMIT #{pageNo},#{size}
+        </if>
+    </select>
+    <select id="getPageTotal" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(r_owner_invoice_info.id)
+        FROM
+        r_owner_invoice_info
+        where r_owner_invoice_info.is_delete=0
+        <if test="ownerId!=null and ownerId!=''">
+            and    r_owner_invoice_info.owner_id = #{ownerId}
+        </if>
+    </select>
 </mapper>

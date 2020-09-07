@@ -14,7 +14,7 @@
         where
         r_owner.is_delete=0
         <if test="compId != null and compId !=''">
-           and  r_owner.comp_id = #{compId}
+            and r_owner.comp_id = #{compId}
         </if>
         <if test="commId != null and commId !=''">
             and r_owner_property.comm_id = #{commId}
@@ -39,41 +39,41 @@
     </select>
     <select id="getExcel" parameterType="java.util.Map" resultType="com.estate.sdzy.asstes.entity.ROwner">
         SELECT
-            s_company.NAME AS comp_name,
-            r_owner.owner_type,
-            r_owner.NAME,
-            r_owner.owner_addr,
-            r_owner.tel,
-            r_owner.e_mail,
-            r_owner.cert_type,
-            r_owner.cert_number,
-            r_owner.industry,
-            r_owner.sex,
-            r_owner.native_place,
-            r_owner.education,
-            r_owner.state,
-            r_owner.link_name,
-            r_owner.link_tel,
-            r_owner.link_addr,
-            r_owner.remark,
-            r_owner.created_name,
-            r_owner.created_at,
-            r_owner.modified_name,
-            r_owner.modified_at
+        s_company.NAME AS comp_name,
+        r_owner.owner_type,
+        r_owner.NAME,
+        r_owner.owner_addr,
+        r_owner.tel,
+        r_owner.e_mail,
+        r_owner.cert_type,
+        r_owner.cert_number,
+        r_owner.industry,
+        r_owner.sex,
+        r_owner.native_place,
+        r_owner.education,
+        r_owner.state,
+        r_owner.link_name,
+        r_owner.link_tel,
+        r_owner.link_addr,
+        r_owner.remark,
+        r_owner.created_name,
+        r_owner.created_at,
+        r_owner.modified_name,
+        r_owner.modified_at
         FROM
-            r_owner
-            LEFT JOIN s_company ON s_company.id = r_owner.comp_id
-            <if test="commId!=null and commId!=''">
-                LEFT JOIN r_owner_property ON r_owner_property.owner_id = r_owner.id
-            </if>
+        r_owner
+        LEFT JOIN s_company ON s_company.id = r_owner.comp_id
+        <if test="commId!=null and commId!=''">
+            LEFT JOIN r_owner_property ON r_owner_property.owner_id = r_owner.id
+        </if>
         WHERE
-            r_owner.is_delete = 0
-            <if test="compId!=null and compId!=''">
-                AND r_owner.comp_id = #{compId}
-            </if>
-            <if test="commId!=null and commId!=''">
-                AND r_owner_property.comm_id = #{commId}
-            </if>
+        r_owner.is_delete = 0
+        <if test="compId!=null and compId!=''">
+            AND r_owner.comp_id = #{compId}
+        </if>
+        <if test="commId!=null and commId!=''">
+            AND r_owner_property.comm_id = #{commId}
+        </if>
     </select>
 
     <select id="selectPageTotal" parameterType="java.util.Map" resultType="java.lang.Integer">
@@ -92,5 +92,44 @@
         <if test="commId!=null and commId!=''">
             AND r_owner_property.comm_id = #{commId}
         </if>
+    </select>
+    <select id="selectRoomByOwnerId" parameterType="java.lang.Integer" resultType="com.estate.sdzy.asstes.entity.RRoom">
+        SELECT
+        	s_company.name as comp_name,
+            r_community.name as comm_name,
+            r_comm_area.name as comm_area_name,
+            r_building.name as building_name,
+            r_unit.name as unit_name,
+	        r_room.*
+        FROM
+            r_owner_property
+            LEFT JOIN r_room ON r_room.id = r_owner_property.property_id
+            LEFT JOIN s_company on s_company.id = r_room.comp_id
+            LEFT JOIN r_community on r_community.id = r_room.comm_id
+            LEFT JOIN r_comm_area on r_comm_area.id = r_room.comm_area_id
+						LEFT JOIN r_building on r_building.id = r_room.building_id
+						LEFT JOIN r_unit on r_unit.id = r_room.unit_id
+        WHERE
+            r_owner_property.is_delete = 0
+            AND r_owner_property.property_type = '房产'
+            AND r_owner_property.owner_id =#{ownerId}
+    </select>
+
+    <select id="selectParkByOwnerId" parameterType="java.lang.Integer" resultType="com.estate.sdzy.asstes.entity.RParkingSpace">
+        SELECT
+        	s_company.name as comp_name,
+            r_community.name as comm_name,
+            r_comm_area.name as area_name,
+            r_parking_space.*
+        FROM
+            r_owner_property
+            LEFT JOIN r_parking_space ON r_parking_space.id = r_owner_property.property_id
+            LEFT JOIN s_company on s_company.id = r_parking_space.comp_id
+            LEFT JOIN r_community on r_community.id = r_parking_space.comm_id
+            LEFT JOIN r_comm_area on r_comm_area.id = r_parking_space.comm_area_id
+        WHERE
+            r_owner_property.is_delete = 0
+            AND r_owner_property.property_type = '停车位'
+            AND r_owner_property.owner_id =#{ownerId}
     </select>
 </mapper>
