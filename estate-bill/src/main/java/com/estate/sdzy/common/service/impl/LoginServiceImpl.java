@@ -31,7 +31,7 @@ public class LoginServiceImpl implements LoginService {
         String passwd = req.getParameter("passwd");
         SUser user = userService.findByUserName(username);
         if(StringUtils.isEmpty(user)){
-            return ResultUtil.error("没有找到用户信息，请重新确认",0);
+            return ResultUtil.error("没有找到用户信息，请重新确认",1);
         }
         String password = user.getPassword();
         StringBuffer sbf = new StringBuffer(passwd);
@@ -49,7 +49,7 @@ public class LoginServiceImpl implements LoginService {
             redisUtil.set(token, user, 500 * 60);
             return ResultUtil.success(token);
         }else{
-            return ResultUtil.error("登陆失败，请联系管理员",0);
+            return ResultUtil.error("登陆失败，请联系管理员",1);
         }
     }
 
