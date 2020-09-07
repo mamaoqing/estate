@@ -129,11 +129,8 @@ public class CrontabCostRule {
     public static boolean isMonth(int month) {
         switch (month) {
             case 4:
-                return true;
             case 7:
-                return true;
             case 10:
-                return true;
             case 1:
                 return true;
             default:
