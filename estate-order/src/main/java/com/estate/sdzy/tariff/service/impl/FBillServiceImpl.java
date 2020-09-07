@@ -6,8 +6,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.OrderException;
 import com.estate.common.util.OrderExceptionEnum;
+import com.estate.sdzy.asstes.entity.ROwner;
+import com.estate.sdzy.asstes.entity.ROwnerProperty;
 import com.estate.sdzy.asstes.entity.RParkingSpace;
 import com.estate.sdzy.asstes.entity.RRoom;
+import com.estate.sdzy.asstes.mapper.ROwnerMapper;
+import com.estate.sdzy.asstes.mapper.ROwnerPropertyMapper;
 import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
 import com.estate.sdzy.asstes.mapper.RRoomMapper;
 import com.estate.sdzy.tariff.entity.FBill;
@@ -48,6 +52,8 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
     private final RRoomMapper rRoomMapper;
     private final RParkingSpaceMapper parkingSpaceMapper;
     private final FBillDateMapper billDateMapper;
+    private final ROwnerMapper rOwnerMapper;
+    private final ROwnerPropertyMapper ownerPropertyMapper;
 
     @Override
     public Page<FBill> listBill(Map<String, String> map, String token) {
@@ -79,6 +85,23 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
 
             }
         }
+        List<Long> propertyIdList = new ArrayList<>();
+        if(!StringUtils.isEmpty(map.get("owners"))){
+        List<Long> ownerIds = new ArrayList<>();
+            String ownerName = map.get("owners");
+            QueryWrapper<ROwner> ownerQueryWrapper = new QueryWrapper<>();
+            ownerQueryWrapper.eq("name",ownerName);
+            List<ROwner> rOwners = rOwnerMapper.selectList(ownerQueryWrapper);
+            for (ROwner rOwner : rOwners) {
+                ownerIds.add(rOwner.getId());
+            }
+            QueryWrapper<ROwnerProperty> ownerPropertyQueryWrapper = new QueryWrapper<>();
+            ownerPropertyQueryWrapper.in(!ownerIds.isEmpty(), "owner_id", ownerIds);
+            List<ROwnerProperty> rOwnerProperties = ownerPropertyMapper.selectList(ownerPropertyQueryWrapper);
+            rOwnerProperties.forEach(res->{
+                propertyIdList.add(res.getPropertyId());
+            });
+        }
         if (StringUtils.isEmpty(map.get("pageNo"))) {
             log.error("参数错误，请输入页码");
             throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
@@ -97,6 +120,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 .eq(!StringUtils.isEmpty(map.get("type")), "property_type", map.get("type"))
                 .eq(!StringUtils.isEmpty(map.get("costRuleId")), "cost_rule_id", map.get("costRuleId"))
                 .in(!rooms.isEmpty(), "property_id", rooms)
+                .in(!propertyIdList.isEmpty(), "property_id", propertyIdList)
                 .eq(!StringUtils.isEmpty(map.get("isInvoice")), "is_invoice", map.get("isInvoice"));
         Integer pageNo = Integer.valueOf(map.get("pageNo"));
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
@@ -189,6 +213,15 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
            }
         }
         return false;
+    }
+
+    @Override
+    public List<ROwner> listOwner(String token) {
+        SUser user = getUserByToken(token);
+        QueryWrapper<ROwner> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("DISTINCT name").eq("comp_id",user.getCompId());
+        List<ROwner> rOwners = rOwnerMapper.selectList(queryWrapper);
+        return rOwners;
     }
 
     private SUser getUserByToken(String token) {
