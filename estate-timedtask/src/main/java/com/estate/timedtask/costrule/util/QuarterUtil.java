@@ -21,7 +21,8 @@ public class QuarterUtil {
      * @param date                      最晚付款时间，超出该时间之后，需要按照违约金计算方式来计算利息。
      * @param price                     单价
      */
-    public static void quarterBill(List<Integer> room, String comp_id, String liquidated_damages_method, Date date, BigDecimal price, String billing_method) {
+    public static void quarterBill(List<Integer> room, String comp_id, String liquidated_damages_method,
+                                   Date date, BigDecimal price, String tableName,int compId,int commId,String billing_method) {
         // 物业费
         if (BillintMethod.BUILDAREA.equals(billing_method)) {
             QuarterUtil.quarterBillEstate(room, comp_id, liquidated_damages_method, date, price, billing_method);

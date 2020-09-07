@@ -130,7 +130,7 @@ public class CrontabCostRule {
         switch (month) {
             case 4:
                 return true;
-            case 8:
+            case 7:
                 return true;
             case 10:
                 return true;
