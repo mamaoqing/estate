@@ -14,6 +14,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -32,16 +33,17 @@ public class ROwnerInvoiceInfoServiceImpl extends ServiceImpl<ROwnerInvoiceInfoM
     @Autowired
     private RedisTemplate redisTemplate;
 
+
     @Override
-    public List<ROwnerInvoiceInfo> getListByOwnerId(Long ownerId, String token) {
+    public List<ROwnerInvoiceInfo> getList(Map map, String token) {
         getUserByToken(token);
-        if (null == ownerId) {
+        if (null == map) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
-        QueryWrapper<ROwnerInvoiceInfo> wrapper = new QueryWrapper<>();
-        wrapper.eq("owner_id",ownerId);
-        wrapper.eq("is_delete",0);
-        return mapper.selectList(wrapper);
+//        QueryWrapper<ROwnerInvoiceInfo> wrapper = new QueryWrapper<>();
+//        wrapper.eq("owner_id",ownerId);
+//        wrapper.eq("is_delete",0);
+        return mapper.getAllOwnerInvo(map);
     }
 
     @Override
@@ -90,6 +92,15 @@ public class ROwnerInvoiceInfoServiceImpl extends ServiceImpl<ROwnerInvoiceInfoM
             return true;
         }
         throw new BillException(BillExceptionEnum.SYSTEM_DELETE_ERROR);
+    }
+
+    @Override
+    public Integer getPageTotal(Map map, String token) {
+        SUser user = getUserByToken(token);
+        if (null == map) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        return mapper.getPageTotal(map);
     }
 
     @Override
