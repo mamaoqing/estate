@@ -8,8 +8,9 @@ import java.sql.SQLException;
 public class ExcuteSql {
 
     private static String sql = "insert into f_bill (bill_no,property_id,property_type," +
-            "bill_time,is_overdue,is_payment,overdue_cost,overdue_rule,price,pay_price,sale_price,is_print,is_invoice,pay_end_time,cost_rule_id,account_period,comp_id,comm_id)" +
-            "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+            "bill_time,is_overdue,is_payment,overdue_cost,overdue_rule,price,pay_price," +
+            "sale_price,is_print,is_invoice,pay_end_time,cost_rule_id,account_period,comp_id,comm_id,begin_scale,end_scale)" +
+            "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     public static Integer esecuteSQL(String sql , Object[] objects) throws SQLException, ClassNotFoundException {
 

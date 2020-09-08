@@ -104,10 +104,10 @@ public class CrontabCostRule {
 
                     Map<String, List<Integer>> month = ExcuteRule.month(id,propertyType,propertyIds);
                     List<Integer> room = month.get("room");
-                    MonthUtil.monthBill(room, comp_id, liquidated_damages_method, date, price, billing_method, "room", account_period, cost_rule_id,comp_id1,comm_id);
+                    MonthUtil.monthBill(room, comp_id, liquidated_damages_method, date, price, billing_method, "房产", account_period, cost_rule_id,comp_id1,comm_id);
 
                     List<Integer> park = month.get("park");
-                    MonthUtil.monthBill(park, comp_id, liquidated_damages_method, date, price, billing_method, "park", account_period, cost_rule_id,comp_id1,comm_id);
+                    MonthUtil.monthBill(park, comp_id, liquidated_damages_method, date, price, billing_method, "停车位", account_period, cost_rule_id,comp_id1,comm_id);
 
                 }
                 // 每季度
@@ -129,11 +129,8 @@ public class CrontabCostRule {
     public static boolean isMonth(int month) {
         switch (month) {
             case 4:
-                return true;
-            case 8:
-                return true;
+            case 7:
             case 10:
-                return true;
             case 1:
                 return true;
             default:

@@ -9,5 +9,12 @@ estate-autocode
 log.log
 logs
 pom.xml
+estate-common/src/main/java/com/estate/common/util/MainTest.java
 # Created by .ignore support plugin (hsz.mobi)
 /estate-bill/src/test/
+estate-common/src/main/java/com/estate/common/service/
+estate-common/src/main/resources/
+estate-common/src/test/
+estate-order/src/test/
+estate-timedtask/src/main/resources/
+estate-timedtask/src/test/

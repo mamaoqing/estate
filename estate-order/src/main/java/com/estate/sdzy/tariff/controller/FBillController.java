@@ -43,5 +43,10 @@ public class FBillController  extends BaseController {
     public Result resetBill(@PathVariable("id") Long id,@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(billService.resetBill(id));
     }
+
+    @GetMapping("/listOwner")
+    public Result listOwner(@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(billService.listOwner(token));
+    }
 }
 

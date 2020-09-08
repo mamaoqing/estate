@@ -9,9 +9,9 @@ import java.sql.SQLException;
 public class BaseUtil {
 
     public static void say(Integer res, StringBuilder sb, String type,String thisMonth) {
-        if ("room".equals(type)) {
+        if ("房产".equals(type)) {
             BaseUtil.room(res, sb,thisMonth);
-        } else if ("park".equals(type)) {
+        } else if ("停车位".equals(type)) {
             BaseUtil.park(res, sb, thisMonth);
         }
     }
