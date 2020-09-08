@@ -108,8 +108,9 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         }
         SUser user = getUserByToken(token);
         QueryWrapper<FBill> queryWrapper = new QueryWrapper<>();
+        queryWrapper.isNotNull("aa.id");
         if ("超级管理员".equals(user.getType())) {
-            queryWrapper.eq(!StringUtils.isEmpty(map.get("aa.compId")), "comp_id", map.get("compId"));
+            queryWrapper.eq(!StringUtils.isEmpty(map.get("compId")), "aa.comp_id", map.get("compId"));
         } else {
             queryWrapper.eq("aa.comp_id", user.getCompId());
         }
