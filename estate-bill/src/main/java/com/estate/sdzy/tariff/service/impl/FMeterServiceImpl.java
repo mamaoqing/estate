@@ -37,28 +37,37 @@ public class FMeterServiceImpl extends ServiceImpl<FMeterMapper, FMeter> impleme
     private FMeterMapper fMeterMapper;
 
     @Override
-    public boolean save(FMeter fMeter, String token) {
-        SUser user = getUserByToken(token);
-        if (null == fMeter) {
-            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+    public String save(FMeter fMeter, String token) {
+        QueryWrapper<FMeter> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comm_id",fMeter.getCommId());
+        queryWrapper.eq("no",fMeter.getNo());//仪表编号
+        queryWrapper.eq("is_delete",0);
+        List<FMeter> meters = fMeterMapper.selectList(queryWrapper);
+        if(meters.size()>0){
+            return "仪表编号重复";
+        }else{
+            SUser user = getUserByToken(token);
+            if (null == fMeter) {
+                throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+            }
+            if(StringUtils.isEmpty(fMeter.getNewNum())){
+                fMeter.setNewNum(new BigDecimal("0"));
+            }
+            if(StringUtils.isEmpty(fMeter.getBillNum())){
+                fMeter.setBillNum(new BigDecimal("0"));
+            }
+            fMeter.setCreatedBy(user.getId());
+            fMeter.setCreatedName(user.getUserName());
+            fMeter.setModifiedBy(user.getId());
+            fMeter.setModifiedName(user.getUserName());
+            int insert = fMeterMapper.insert(fMeter);
+            if (insert > 0) {
+                log.info("仪表添加成功，添加人={}", user.getUserName());
+            } else {
+                throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+            }
+            return "仪表添加成功";
         }
-        if(StringUtils.isEmpty(fMeter.getNewNum())){
-            fMeter.setNewNum(new BigDecimal("0"));
-        }
-        if(StringUtils.isEmpty(fMeter.getBillNum())){
-            fMeter.setBillNum(new BigDecimal("0"));
-        }
-        fMeter.setCreatedBy(user.getId());
-        fMeter.setCreatedName(user.getUserName());
-        fMeter.setModifiedBy(user.getId());
-        fMeter.setModifiedName(user.getUserName());
-        int insert = fMeterMapper.insert(fMeter);
-        if (insert > 0) {
-            log.info("仪表添加成功，添加人={}", user.getUserName());
-        } else {
-            throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
-        }
-        return insert > 0;
     }
 
     @Override
@@ -103,6 +112,11 @@ public class FMeterServiceImpl extends ServiceImpl<FMeterMapper, FMeter> impleme
         }
     }
 
+    @Override
+    public String getPropertyName(Long id) {
+        return fMeterMapper.getPropertyName(id);
+    }
+
     public boolean updateMeter(FMeter fMeterUpload, String token, Long id) {
         SUser user = getUserByToken(token);
         Integer update = fMeterMapper.updateMeter(fMeterUpload.getState(), fMeterUpload.getRemark(), user.getId(),
@@ -116,20 +130,30 @@ public class FMeterServiceImpl extends ServiceImpl<FMeterMapper, FMeter> impleme
     }
 
     @Override
-    public boolean update(FMeter fMeter, String token) {
-        SUser user = getUserByToken(token);
-        if (null == fMeter) {
-            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+    public String update(FMeter fMeter, String token) {
+        QueryWrapper<FMeter> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comm_id",fMeter.getCommId());
+        queryWrapper.eq("no",fMeter.getNo());//仪表编号
+        queryWrapper.eq("is_delete",0);
+        List<FMeter> meters = fMeterMapper.selectList(queryWrapper);
+        if(meters.size()>0){
+            return "仪表编号重复";
+        }else{
+            SUser user = getUserByToken(token);
+            if (null == fMeter) {
+                throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+            }
+            fMeter.setModifiedBy(user.getId());
+            fMeter.setModifiedName(user.getUserName());
+            int update = fMeterMapper.updateById(fMeter);
+            if (update > 0) {
+                log.info("仪表修改成功，修改人={}", user.getUserName());
+            } else {
+                //throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+                return "修改数据系统异常";
+            }
+            return "仪表修改成功";
         }
-        fMeter.setModifiedBy(user.getId());
-        fMeter.setModifiedName(user.getUserName());
-        int update = fMeterMapper.updateById(fMeter);
-        if (update > 0) {
-            log.info("仪表修改成功，修改人={}", user.getUserName());
-        } else {
-            throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
-        }
-        return update > 0;
     }
 
     @Override
@@ -162,11 +186,11 @@ public class FMeterServiceImpl extends ServiceImpl<FMeterMapper, FMeter> impleme
         }
         SUser user = getUserByToken(token);
         if(user.getCompId()==0){
-            List<FMeter> listMeter = fMeterMapper.getListMeter(map.get("compName"),map.get("commName"),map.get("commAreaName"),map.get("propertyType"),map.get("propertyName"),
+            List<FMeter> listMeter = fMeterMapper.getListMeter(map.get("ownerName"),map.get("compName"),map.get("commName"),map.get("commAreaName"),map.get("propertyType"),map.get("propertyName"),
                     map.get("type"),map.get("no") ,(pageNo-1)*size,size,null);
             return listMeter;
         }else{
-            List<FMeter> listMeter = fMeterMapper.getListMeter(map.get("compName"),map.get("commName"),map.get("commAreaName"),map.get("propertyType"),map.get("propertyName"),
+            List<FMeter> listMeter = fMeterMapper.getListMeter(map.get("ownerName"),map.get("compName"),map.get("commName"),map.get("commAreaName"),map.get("propertyType"),map.get("propertyName"),
                     map.get("type"),map.get("no") ,(pageNo-1)*size,size,user.getId());
             return listMeter;
         }
@@ -176,11 +200,11 @@ public class FMeterServiceImpl extends ServiceImpl<FMeterMapper, FMeter> impleme
     public Integer listNum(Map<String, String> map, String token) {
         SUser user = getUserByToken(token);
         if(user.getCompId()==0){
-            Integer list = fMeterMapper.getListMeterNum(map.get("compName"),map.get("commName"),map.get("commAreaName"),map.get("propertyType"),map.get("propertyName"),
+            Integer list = fMeterMapper.getListMeterNum(map.get("ownerName"),map.get("compName"),map.get("commName"),map.get("commAreaName"),map.get("propertyType"),map.get("propertyName"),
                     map.get("type"),map.get("no") ,null,null,null);
             return list;
         }else{
-            Integer list = fMeterMapper.getListMeterNum(map.get("compName"),map.get("commName"),map.get("commAreaName"),map.get("propertyType"),map.get("propertyName"),
+            Integer list = fMeterMapper.getListMeterNum(map.get("ownerName"),map.get("compName"),map.get("commName"),map.get("commAreaName"),map.get("propertyType"),map.get("propertyName"),
                     map.get("type"),map.get("no") ,null,null,user.getId());
             return list;
         }
@@ -190,11 +214,11 @@ public class FMeterServiceImpl extends ServiceImpl<FMeterMapper, FMeter> impleme
     public List<FMeter> listAll(Map<String, String> map, String token) {
         SUser user = getUserByToken(token);
         if(user.getCompId()==0){
-            List<FMeter> listMeter = fMeterMapper.getListMeter(map.get("compName"),map.get("commName"),map.get("commAreaName"),map.get("propertyType"),map.get("propertyName"),
+            List<FMeter> listMeter = fMeterMapper.getListMeter(map.get("ownerName"),map.get("compName"),map.get("commName"),map.get("commAreaName"),map.get("propertyType"),map.get("propertyName"),
                     map.get("type"),map.get("no") ,null,null,null);
             return listMeter;
         }else{
-            List<FMeter> listMeter = fMeterMapper.getListMeter(map.get("compName"),map.get("commName"),map.get("commAreaName"),map.get("propertyType"),map.get("propertyName"),
+            List<FMeter> listMeter = fMeterMapper.getListMeter(map.get("ownerName"),map.get("compName"),map.get("commName"),map.get("commAreaName"),map.get("propertyType"),map.get("propertyName"),
                     map.get("type"),map.get("no") ,null,null,user.getId());
             return listMeter;
         }
