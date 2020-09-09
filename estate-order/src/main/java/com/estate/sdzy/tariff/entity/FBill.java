@@ -1,20 +1,16 @@
 package com.estate.sdzy.tariff.entity;
 
-import java.math.BigDecimal;
-
 import com.baomidou.mybatisplus.annotation.IdType;
-
-import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.TableId;
-
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * <p>
@@ -134,4 +130,5 @@ public class FBill implements Serializable {
 
     private String beginScale;
     private String endScale;
+    private String state;
 }
