@@ -16,12 +16,13 @@ import java.util.Map;
  */
 public interface FMeterService extends IService<FMeter> {
 
-    boolean save(FMeter fMeter, String token);
+    String save(FMeter fMeter, String token);
     void saveOrUpdateMeter(FMeter fMeter, String token);
-    boolean update(FMeter fMeter, String token);
+    String update(FMeter fMeter, String token);
     boolean delete(String id,String token);
     List<FMeter> list(Map<String,String> map, Integer pageNo, Integer size, String token);
     Integer listNum(Map<String,String> map,String token);
     List<FMeter> listAll(Map<String, String> parameterMap, String token);
     String checkMeterNo(FMeter fMeter);
+    String getPropertyName(Long id);
 }
