@@ -41,12 +41,7 @@ public class FMeterController extends BaseController {
 
     @PostMapping("/insertMeter")
     public Result insertMeter(@RequestBody FMeter fMeter, @RequestHeader("Authentication-Token") String token) {
-        boolean save = fMeterService.save(fMeter, token);
-        if (save) {
-            log.info("添加仪表成功，公司id={}", fMeter.getId());
-            return ResultUtil.success("添加仪表成功");
-        }
-        return ResultUtil.error("添加仪表失败！", 1);
+        return ResultUtil.success(fMeterService.save(fMeter, token));
     }
 
     @PutMapping("/updateMeter")
@@ -67,6 +62,11 @@ public class FMeterController extends BaseController {
     @DeleteMapping("/{id}")
     public Result deleteMeter(@PathVariable("id") String id, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fMeterService.delete(id, token));
+    }
+
+    @GetMapping("/getPropertyName/{id}")
+    public Result getPropertyName(@PathVariable("id") Long id, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(fMeterService.getPropertyName(id));
     }
 
     @PostMapping("/checkMeterNo")
