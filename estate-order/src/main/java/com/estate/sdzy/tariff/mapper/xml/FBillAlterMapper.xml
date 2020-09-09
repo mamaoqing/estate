@@ -2,4 +2,119 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.estate.sdzy.tariff.mapper.FBillAlterMapper">
 
+    <select id="getListBillAlter" resultType="com.estate.sdzy.tariff.entity.FBillAlter">
+        select a.id,a.comp_id,a.comm_id,a.bill_id,a.alter_fee,a.alter_reason,a.alter_by,a.alter_time,a.audi_reason,
+        a.auditor,a.audit_time,a.state,a.remark,
+        r.name as costRuleName,
+        b.account_period,b.property_type,b.property_id,v.propertyName,b.price,b.state as billState,
+        u.name as alterByName,u2.name as auditorName,u2.user_name as userName,
+        comp.name as compName,comm.name as commName
+        from f_bill_alter a,f_bill b,f_cost_rule r,s_company comp,r_community comm,v_f_meter v,s_user u,s_auditer_cnf au,s_user u2
+        <if test="userId!='' and userId!=null">
+            ,s_user_comm uc
+        </if>
+        where a.bill_id = b.id and b.cost_rule_id = r.id and a.comp_id = comp.id and a.comm_id = comm.id and v.property_id = b.property_id
+        and a.alter_by = u.id and a.auditor = au.id and au.user_id = u2.id
+        <if test="map.compId!='' and map.compId!=null">
+            and a.comp_id = #{map.compId}
+        </if>
+        <if test="map.commId!='' and map.commId!=null">
+            and a.comm_id = #{map.commId}
+        </if>
+        <if test="map.ruleId!='' and map.ruleId!=null">
+            and r.id = #{map.ruleId}
+        </if>
+        <if test="map.accountPeriod!='' and map.accountPeriod!=null">
+            and b.account_period like CONCAT('%',#{map.accountPeriod},'%')
+        </if>
+        <if test="map.propertyType!='' and map.propertyType!=null">
+            and b.property_type = #{map.propertyType}
+        </if>
+        <if test="map.propertyName!='' and map.propertyName!=null">
+            and v.propertyName like CONCAT('%',#{map.propertyName},'%')
+        </if>
+        <if test="map.alterTimeBegin!='' and map.alterTimeBegin!=null and map.alterTimeEnd!='' and map.alterTimeEnd!=null">
+            and a.alter_time between #{map.alterTimeBegin} and #{map.alterTimeEnd}
+        </if>
+        <if test="map.alterTimeBegin!='' and map.alterTimeBegin!=null and (map.alterTimeEnd=='' or map.alterTimeEnd==null)">
+            and a.alter_time &gt;= #{map.alterTimeBegin}
+        </if>
+        <if test="(map.alterTimeBegin=='' or map.alterTimeBegin==null) and map.alterTimeEnd!='' and map.alterTimeEnd!=null">
+            and a.alter_time &lt;= #{map.alterTimeEnd}
+        </if>
+        <if test="map.alterBy!='' and map.alterBy!=null">
+            and u.name like CONCAT('%',#{map.alterBy},'%')
+        </if>
+        <if test="map.auditor!='' and map.auditor!=null">
+            and a.auditor = #{map.auditor}
+        </if>
+        <if test="map.state!='' and map.state!=null">
+            and a.state = #{map.state}
+        </if>
+        <if test="map.billState!='' and map.billState!=null">
+            and b.state = #{map.billState}
+        </if>
+        <if test="userId!='' and userId!=null">
+            and uc.user_id=#{userId} and a.comm_id=uc.comm_id
+        </if>
+        <if test="pageNo!=null and size!=null">
+            limit #{pageNo},#{size}
+        </if>
+    </select>
+
+    <select id="getListBillAlterNum" resultType="java.lang.Integer">
+        select count(a.id)
+        from f_bill_alter a,f_bill b,f_cost_rule r,s_company comp,r_community comm,v_f_meter v,s_user u,s_auditer_cnf au,s_user u2
+        <if test="userId!='' and userId!=null">
+            ,s_user_comm uc
+        </if>
+        where a.bill_id = b.id and b.cost_rule_id = r.id and a.comp_id = comp.id and a.comm_id = comm.id and v.property_id = b.property_id
+        and a.alter_by = u.id and a.auditor = au.id and au.user_id = u2.id
+        <if test="map.compId!='' and map.compId!=null">
+            and a.comp_id = #{map.compId}
+        </if>
+        <if test="map.commId!='' and map.commId!=null">
+            and a.comm_id = #{map.commId}
+        </if>
+        <if test="map.ruleId!='' and map.ruleId!=null">
+            and r.id = #{map.ruleId}
+        </if>
+        <if test="map.accountPeriod!='' and map.accountPeriod!=null">
+            and b.account_period like CONCAT('%',#{map.accountPeriod},'%')
+        </if>
+        <if test="map.propertyType!='' and map.propertyType!=null">
+            and b.property_type = #{map.propertyType}
+        </if>
+        <if test="map.propertyName!='' and map.propertyName!=null">
+            and v.propertyName like CONCAT('%',#{map.propertyName},'%')
+        </if>
+        <if test="map.alterTimeBegin!='' and map.alterTimeBegin!=null and map.alterTimeEnd!=''and map.alterTimeEnd!=null">
+            and a.alter_time between #{map.alterTimeBegin} and #{map.alterTimeEnd}
+        </if>
+        <if test="map.alterTimeBegin!='' and map.alterTimeBegin!=null and (map.alterTimeEnd=='' or map.alterTimeEnd==null)">
+            and a.alter_time &gt;= #{map.alterTimeBegin}
+        </if>
+        <if test="(map.alterTimeBegin=='' or map.alterTimeBegin==null) and map.alterTimeEnd!='' and map.alterTimeEnd!=null">
+            and a.alter_time &lt;= #{map.alterTimeEnd}
+        </if>
+        <if test="map.alterBy!='' and map.alterBy!=null">
+            and u.name like CONCAT('%',#{map.alterBy},'%')
+        </if>
+        <if test="map.auditor!='' and map.auditor!=null">
+            and a.auditor = #{map.auditor}
+        </if>
+        <if test="map.state!='' and map.state!=null">
+            and a.state = #{map.state}
+        </if>
+        <if test="map.billState!='' and map.billState!=null">
+            and b.state = #{map.billState}
+        </if>
+        <if test="userId!='' and userId!=null">
+            and uc.user_id=#{userId} and a.comm_id=uc.comm_id
+        </if>
+        <if test="pageNo!=null and size!=null">
+            limit #{pageNo},#{size}
+        </if>
+    </select>
+
 </mapper>
