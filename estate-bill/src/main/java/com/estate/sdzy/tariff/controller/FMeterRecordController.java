@@ -41,12 +41,13 @@ public class FMeterRecordController extends BaseController {
 
     @PostMapping("/insertMeterRecord")
     public Result insertMeterRecord(@RequestBody FMeterRecord fMeterRecord, @RequestHeader("Authentication-Token") String token) {
-        boolean save = fMeterRecordService.save(fMeterRecord, token);
-        if (save) {
-            log.info("添加仪表成功，公司id={}", fMeterRecord.getId());
-            return ResultUtil.success("添加仪表成功");
-        }
-        return ResultUtil.error("添加仪表失败！", 1);
+        return ResultUtil.success(fMeterRecordService.save(fMeterRecord, token));
+    }
+
+    @PostMapping("/insertMeterRecordByMeterId")
+    public Result insertMeterRecordByMeterId(@RequestBody FMeterRecord fMeterRecord,@RequestHeader("Authentication-Token") String token) {
+        String save = fMeterRecordService.saveByMeterId(fMeterRecord,token);
+        return ResultUtil.success(save);
     }
 
     @PutMapping("/updateMeterRecord")
