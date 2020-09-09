@@ -2,8 +2,10 @@ package com.estate.sdzy.tariff.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.estate.sdzy.asstes.entity.ROwner;
 import com.estate.sdzy.tariff.entity.FBill;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,5 +19,10 @@ import java.util.Map;
 public interface FBillService extends IService<FBill> {
 
     Page<FBill> listBill(Map<String,String> map,String token);
+
+    boolean resetBill(Long id);
+    boolean resetBillAll(Map<String,Object> mqp);
+
+    List<ROwner> listOwner(String token);
 
 }

@@ -8,10 +8,10 @@ import java.sql.SQLException;
 
 public class BaseUtil {
 
-    public static void say(Integer res, StringBuilder sb, String type,int thisMonth) {
-        if ("room".equals(type)) {
+    public static void say(Integer res, StringBuilder sb, String type,String thisMonth) {
+        if ("房产".equals(type)) {
             BaseUtil.room(res, sb,thisMonth);
-        } else if ("park".equals(type)) {
+        } else if ("停车位".equals(type)) {
             BaseUtil.park(res, sb, thisMonth);
         }
     }
@@ -22,7 +22,7 @@ public class BaseUtil {
      * @param sb
      * @param thisMonth
      */
-    public static void room(Integer res, StringBuilder sb,int thisMonth) {
+    public static void room(Integer res, StringBuilder sb,String thisMonth) {
         String roomDetail = "select aa.room_no,aa.building_area,bb.name,cc.name,dd.name,ee.name from r_room aa,r_comm_area bb," +
                 "r_community cc,r_building dd,r_unit ee where aa.comm_area_id = bb.id and aa.comm_id = cc.id and aa.building_id = dd.id and aa.unit_id = ee.id and  aa.id = " + res;
 
@@ -45,7 +45,7 @@ public class BaseUtil {
         }
     }
 
-    public static void park(Integer res, StringBuilder sb,int thisMonth) {
+    public static void park(Integer res, StringBuilder sb,String thisMonth) {
         String roomDetail = "select aa.use_property,aa.no,aa.size,bb.name commName,cc.name commAreaName " +
                 "from r_parking_space aa,r_community bb,r_comm_area cc where aa.comm_id = bb.id and aa.comm_area_id=cc.id and aa.id=" + res;
 

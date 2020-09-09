@@ -5,6 +5,7 @@ import com.estate.common.entity.SUser;
 import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.ROwner;
+import com.estate.sdzy.asstes.entity.RRoom;
 import com.estate.sdzy.asstes.service.ROwnerService;
 import com.estate.sdzy.common.excel.ExportExcel;
 import com.estate.sdzy.common.excel.ImportExcel;
@@ -15,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
@@ -41,12 +43,12 @@ public class ROwnerController {
     @PostMapping("/getOwenerList")
     public Result getOwenerList(@RequestBody Map<String, Long> map, @RequestHeader("Authentication-Token") String token) {
         Map data = new HashMap();
-        if(!StringUtils.isEmpty(map.get("pageNo"))&&!StringUtils.isEmpty(map.get("size"))){
-            Long pageNum = (map.get("pageNo")-1)*map.get("size");
-            map.put("pageNo",pageNum);
+        if (!StringUtils.isEmpty(map.get("pageNo")) && !StringUtils.isEmpty(map.get("size"))) {
+            Long pageNum = (map.get("pageNo") - 1) * map.get("size");
+            map.put("pageNo", pageNum);
         }
-        data.put("data",ownerService.getOwenerList(map, token));
-        data.put("pageTotal",ownerService.selectPageTotal(map,token));
+        data.put("data", ownerService.getOwenerList(map, token));
+        data.put("pageTotal", ownerService.selectPageTotal(map, token));
         return ResultUtil.success(data);
     }
 
@@ -69,8 +71,10 @@ public class ROwnerController {
     public void getExcel(@RequestBody Map<String, String> map, HttpServletResponse response, @RequestHeader("Authentication-Token") String token) {
         SUser user = (SUser) redisUtil.get(token);
         try {
+            map.remove("pageNo");
+            map.remove("size");
             ExportExcel.writeOut(response, "业主信息列表", "com.estate.sdzy.asstes.entity.ROwner",
-                    ownerService.getExcel(map, token), "导出人：" + user.getUserName(),false);
+                    ownerService.getExcel(map, token), "导出人：" + user.getUserName(), false);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,6 +107,27 @@ public class ROwnerController {
             ownerService.saveOrUpdateOwner((ROwner) x, token);
         });
         return ResultUtil.success();
+    }
+
+    @PostMapping("/exportTemplate")
+    public void exportTemplate(HttpServletResponse response, HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
+        SUser user = (SUser) redisUtil.get(token);
+        try {
+            ExportExcel.writeOut(response, "业主信息列表导入模板", "com.estate.sdzy.asstes.entity.ROwner",
+                    null, "导出人：" + user.getUserName(), true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @GetMapping("getRoomByOwnerId/{ownerId}")
+    public Result getRoomByOwnerId(@PathVariable Integer ownerId, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(ownerService.selectRoomByOwnerId(ownerId, token));
+    }
+
+    @GetMapping("getParkByOwnerId/{ownerId}")
+    public Result getParkByOwnerId(@PathVariable Integer ownerId, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(ownerService.selectParkByOwnerId(ownerId, token));
     }
 }
 

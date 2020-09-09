@@ -33,7 +33,6 @@
                     <target>8</target>
                 </configuration>
             </plugin>
-
             <!-- spring boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -49,6 +48,7 @@
                     <includeSystemScope>true</includeSystemScope>
                     <mainClass>com.estate.OrderApplication</mainClass>
                     <fork>true</fork>
+                    <classifier>exec</classifier>
                 </configuration>
             </plugin>
             <plugin>
@@ -187,6 +187,28 @@
         <dependency>
             <groupId>com.estate</groupId>
             <artifactId>estate-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.estate</groupId>
+            <artifactId>estate-timedtask</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.estate</groupId>
+            <artifactId>estate-bill</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.estate</groupId>
+            <artifactId>estate-bill</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.estate</groupId>
+            <artifactId>estate-bill</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

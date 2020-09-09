@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
-import com.estate.sdzy.asstes.entity.RCommunity;
-import com.estate.sdzy.asstes.entity.ROwner;
-import com.estate.sdzy.asstes.entity.ROwnerProperty;
-import com.estate.sdzy.asstes.entity.RRoom;
+import com.estate.sdzy.asstes.entity.*;
 import com.estate.sdzy.asstes.mapper.ROwnerInvoiceInfoMapper;
 import com.estate.sdzy.asstes.mapper.ROwnerMapper;
 import com.estate.sdzy.asstes.mapper.ROwnerPropertyMapper;
@@ -137,13 +134,13 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
 
     @Override
     public ROwner getCount(ROwner owner, String token) {
-        SUser user = getUserByToken(token);
+        getUserByToken(token);
         if (null == owner) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
 
         QueryWrapper<ROwner> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("comp_id", owner.getCompId());
+//        queryWrapper.eq("comp_id", owner.getCompId());
         queryWrapper.eq("owner_type", owner.getOwnerType());
         queryWrapper.eq("cert_type", owner.getCertType());
         queryWrapper.eq("cert_number", owner.getCertNumber());
@@ -159,11 +156,29 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
 
     @Override
     public List<ROwner> getOwenerByRoom(Map map, String token) {
-        SUser user = getUserByToken(token);
+        getUserByToken(token);
         if (null == map) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
         return mapper.getOwenerByRoom(map);
+    }
+
+    @Override
+    public List<RRoom> selectRoomByOwnerId(Integer ownerId, String token) {
+        getUserByToken(token);
+        if (null == ownerId) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        return mapper.selectRoomByOwnerId(ownerId);
+    }
+
+    @Override
+    public List<RParkingSpace> selectParkByOwnerId(Integer ownerId, String token) {
+        getUserByToken(token);
+        if (null == ownerId) {
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        return mapper.selectParkByOwnerId(ownerId);
     }
 
     @Override

@@ -36,4 +36,8 @@
     <select id="getParkingByParkingNo"  resultType="java.lang.Long">
         select id from r_parking_space where no=#{parkingNo} and is_delete = 0 and comm_area_id=#{commAreaId}
     </select>
+
+    <select id="getOwnerId"  resultType="java.lang.Long">
+        select id from r_owner where is_delete=0 and owner_type=#{ownerType} and cert_type=#{certType} and cert_number=#{certNumber}
+    </select>
 </mapper>

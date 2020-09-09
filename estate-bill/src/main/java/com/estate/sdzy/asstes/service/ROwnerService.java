@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.asstes.entity.RCommunity;
 import com.estate.sdzy.asstes.entity.ROwner;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.estate.sdzy.asstes.entity.RParkingSpace;
+import com.estate.sdzy.asstes.entity.RRoom;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,8 @@ public interface ROwnerService extends IService<ROwner> {
     boolean deleteIds(String delIds, String token);
     ROwner getCount(ROwner owner, String token);
     List<ROwner> getOwenerByRoom(Map map, String token);
+    List<RRoom> selectRoomByOwnerId(Integer ownerId,String token);
+    List<RParkingSpace> selectParkByOwnerId(Integer ownerId, String token);
     List<ROwner> getExcel(Map map, String token);
     void saveOrUpdateOwner(ROwner owner, String token);
     Integer selectPageTotal(Map map, String token);

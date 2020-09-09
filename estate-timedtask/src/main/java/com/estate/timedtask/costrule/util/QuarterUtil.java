@@ -13,15 +13,22 @@ import java.util.List;
 public class QuarterUtil {
 
     /**
-     * 物业费类型的，不需要按照使用量来计算价格。
      *
-     * @param room                      房间列表
-     * @param comp_id                   公司di
+     * @param room 物业的id集合
+     * @param comp_id 公司id
      * @param liquidated_damages_method 违约金计算方式
-     * @param date                      最晚付款时间，超出该时间之后，需要按照违约金计算方式来计算利息。
-     * @param price                     单价
+     * @param date 最晚付款时间
+     * @param price 价格
+     * @param billing_method 计费方式
+     * @param type 房产停车位等
+     * @param thisMonth 账单月
+     * @param cost_rule_id 费用标注id
+     * @param compId 公司id
+     * @param comm_id 社区id
      */
-    public static void quarterBill(List<Integer> room, String comp_id, String liquidated_damages_method, Date date, BigDecimal price, String billing_method) {
+    public static void quarterBill(List<Integer> room, String comp_id,
+                                   String liquidated_damages_method, Date date, BigDecimal price, String billing_method,String type,
+                                   String thisMonth ,long cost_rule_id,int compId,int comm_id) {
         // 物业费
         if (BillintMethod.BUILDAREA.equals(billing_method)) {
             QuarterUtil.quarterBillEstate(room, comp_id, liquidated_damages_method, date, price, billing_method);

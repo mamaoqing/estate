@@ -6,7 +6,11 @@ import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.ROwnerInvoiceInfo;
 import com.estate.sdzy.asstes.service.ROwnerInvoiceInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -23,9 +27,16 @@ public class ROwnerInvoiceInfoController {
     @Autowired
     public ROwnerInvoiceInfoService ownerInvoiceInfoService;
 
-    @GetMapping("/getListByOwnerId")
-    public Result getListByOwnerId(@RequestParam("ownerId") Long ownerId, @RequestHeader("Authentication-Token") String token) {
-        return ResultUtil.success(ownerInvoiceInfoService.getListByOwnerId(ownerId, token));
+    @PostMapping("/getList")
+    public Result getListByOwnerId(@RequestBody Map<String, Long> map, @RequestHeader("Authentication-Token") String token) {
+        Map data = new HashMap();
+        if (!StringUtils.isEmpty(map.get("pageNo")) && !StringUtils.isEmpty(map.get("size"))) {
+            Long pageNum = (map.get("pageNo") - 1) * map.get("size");
+            map.put("pageNo", pageNum);
+        }
+        data.put("data", ownerInvoiceInfoService.getList(map, token));
+        data.put("pageTotal", ownerInvoiceInfoService.getPageTotal(map, token));
+        return ResultUtil.success(data);
     }
 
     @PostMapping("/add")
@@ -41,10 +52,10 @@ public class ROwnerInvoiceInfoController {
     @PostMapping("/getInfo")
     public Result getInfo(@RequestBody ROwnerInvoiceInfo ownerInvoiceInfo, @RequestHeader("Authentication-Token") String token) {
         ROwnerInvoiceInfo info = ownerInvoiceInfoService.getInfo(ownerInvoiceInfo, token);
-        if (info!=null){
+        if (info != null) {
             return ResultUtil.success(info);
-        }else{
-            return ResultUtil.error("没有找打相同的信息",1);
+        } else {
+            return ResultUtil.error("没有找打相同的信息", 1);
         }
     }
 

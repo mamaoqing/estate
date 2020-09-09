@@ -31,6 +31,8 @@ public interface RParkingSpaceMapper extends BaseMapper<RParkingSpace> {
 
     Long getAreaIdByName(@Param("name") String areaName);
 
+    Long getOwnerId(@Param("ownerType") String ownerType,@Param("certType") String certType,@Param("certNumber") String certNumber);
+
     List<RBuilding> getBuildingByName(@Param("name") String buildingName, @Param("commAreaId") Long commAreaId);
 
     List<RUnit>  getUnitByName(@Param("name") String unitName, @Param("buildingId") Long buildingId);

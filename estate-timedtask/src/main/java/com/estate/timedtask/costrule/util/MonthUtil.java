@@ -19,30 +19,46 @@ import java.util.List;
 public class MonthUtil {
 
 
-    public static void monthBill(List<Integer> room, String comp_id, String liquidated_damages_method, Date date, BigDecimal price, String billing_method,String type,int thisMonth ,long cost_rule_id,int compId) {
+     /**
+      *
+      * @param room 物业的id集合
+      * @param comp_id 公司id
+      * @param liquidated_damages_method 违约金计算方式
+      * @param date 最晚付款时间
+      * @param price 价格
+      * @param billing_method 计费方式
+      * @param type 房产停车位等
+      * @param thisMonth 账单月
+      * @param cost_rule_id 费用标注id
+      * @param compId 公司id
+      * @param comm_id 社区id
+      */
+    public static void monthBill(List<Integer> room, String comp_id,
+                                 String liquidated_damages_method, Date date, BigDecimal price, String billing_method,String type,
+                                 String thisMonth ,long cost_rule_id,int compId,int comm_id) {
         // 物业费
         if (BillintMethod.BUILDAREA.equals(billing_method)) {
-            MonthUtil.monthBillEstate(room, comp_id, liquidated_damages_method, date, price,type,thisMonth,cost_rule_id,compId);
+            MonthUtil.monthBillEstate(room, comp_id, liquidated_damages_method, date, price,type,thisMonth,cost_rule_id,compId,comm_id);
         }
         // 水表
         if (BillintMethod.WATERMETER.equals(billing_method)) {
-            MonthUtil.monthBillWater(room, comp_id, liquidated_damages_method, date, price, "水表",compId);
+            MonthUtil.monthBillWater(room, comp_id, liquidated_damages_method, date, price, "水表",compId,comm_id);
         }
         // 电表
         if (BillintMethod.AMMETER.equals(billing_method)) {
-            MonthUtil.monthBillWater(room, comp_id, liquidated_damages_method, date, price, "电表",compId);
+            MonthUtil.monthBillWater(room, comp_id, liquidated_damages_method, date, price, "电表",compId,comm_id);
         }
         // 煤气表
         if (BillintMethod.GASMETER.equals(billing_method)) {
-            MonthUtil.monthBillWater(room, comp_id, liquidated_damages_method, date, price, "煤气表",compId);
+            MonthUtil.monthBillWater(room, comp_id, liquidated_damages_method, date, price, "煤气表",compId,comm_id);
         }
         // 定额
         if (BillintMethod.FIXED.equals(billing_method)) {
-            MonthUtil.monthBillFixed(room, comp_id, liquidated_damages_method, date, price,type,thisMonth,cost_rule_id,compId);
+            MonthUtil.monthBillFixed(room, comp_id, liquidated_damages_method, date, price,type,thisMonth,cost_rule_id,compId,comm_id);
         }
         // 临时收费
         if (BillintMethod.TEMPORARY.equals(billing_method)) {
-            MonthUtil.monthBillFixed(room, comp_id, liquidated_damages_method, date, price,type,thisMonth,cost_rule_id,compId);
+            MonthUtil.monthBillFixed(room, comp_id, liquidated_damages_method, date, price,type,thisMonth,cost_rule_id,compId,comm_id);
         }
     }
 
@@ -57,7 +73,7 @@ public class MonthUtil {
      * @param price                     单价
      */
     public static void monthBillEstate(List<Integer> room, String comp_id, String liquidated_damages_method,
-                                       Date date, BigDecimal price,String type,int thisMonth,long cost_rule_id,int compId) {
+                                       Date date, BigDecimal price,String type,String thisMonth,long cost_rule_id,int compId,int commId) {
         if (room != null && !room.isEmpty()) {
             for (Integer res:room) {
 
@@ -74,7 +90,7 @@ public class MonthUtil {
                     // 计算总价格
                     BigDecimal allPrice = MonthUtil.totalPrice(price,area);
                     sb.append(allPrice).append("。请在").append(MonthUtil.dataToString(date,"yyyy-MM-dd")).append("之前交纳。谢谢！");
-                    Object[] bill = {billNo, res, type, new Date(), "否", "否", 0, liquidated_damages_method, allPrice, 0, 0, "否", "否", date,cost_rule_id,thisMonth,compId};
+                    Object[] bill = {billNo, res, type, new Date(), "否", "否", 0, liquidated_damages_method, allPrice, 0, 0, "否", "否", date,cost_rule_id,thisMonth,compId,commId,null,null};
                     Integer integer = ExcuteSql.esecuteSQL(bill);
                     ConnectUtil.getConnection().commit();
                     System.out.println(sb.toString());
@@ -98,7 +114,8 @@ public class MonthUtil {
      * @param date                      最晚付款时间，超出该时间之后，需要按照违约金计算方式来计算利息。
      * @param price                     单价，单价
      */
-    public static void monthBillWater(List<Integer> room, String comp_id, String liquidated_damages_method, Date date, BigDecimal price, String tableName,int compId) {
+    public static void monthBillWater(List<Integer> room, String comp_id, String liquidated_damages_method,
+                                      Date date, BigDecimal price, String tableName,int compId,int commId) {
         if (room != null && !room.isEmpty()) {
             for (Integer res:room) {
                 String billNo = CalendarUtil.getTimeMillis(new Date()) + comp_id;
@@ -107,15 +124,17 @@ public class MonthUtil {
                 try {
                     ResultSet resultSet = ConnectUtil.executeQuery(useSql);
                     BigDecimal use = new BigDecimal(0);
+                    BigDecimal new_num = new BigDecimal(0);
+                    BigDecimal bill_num =new BigDecimal(0);
                     while (resultSet.next()){
-                        BigDecimal new_num = resultSet.getBigDecimal("new_num");
-                        BigDecimal bill_num = resultSet.getBigDecimal("bill_num");
+                        new_num = resultSet.getBigDecimal("new_num");
+                        bill_num = resultSet.getBigDecimal("bill_num");
                         use = bill_num.subtract(new_num);
 
                     }
                     // 计算总价格
                     BigDecimal allPrice = MonthUtil.totalPrice(price,use);
-                    Object[] bill = {billNo, res, "room", new Date(), "否", "否", 0, liquidated_damages_method, allPrice, 0, 0, "否", "否", date,"",compId};
+                    Object[] bill = {billNo, res, "room", new Date(), "否", "否", 0, liquidated_damages_method, allPrice, 0, 0, "否", "否", date,"",compId,commId,bill_num,new_num};
                     Integer integer = ExcuteSql.esecuteSQL(bill);
                     ConnectUtil.getConnection().commit();
                 } catch (SQLException sqlException) {
@@ -130,7 +149,7 @@ public class MonthUtil {
     }
 
     public static void monthBillFixed(List<Integer> room, String comp_id, String liquidated_damages_method,
-                                      Date date, BigDecimal price,String type,int thisMonth,long cost_rule_id,int compId) {
+                                      Date date, BigDecimal price,String type,String thisMonth,long cost_rule_id,int compId,int commId) {
         if (room != null && !room.isEmpty()) {
             for (Integer res:room) {
                 String billNo = CalendarUtil.getTimeMillis(new Date()) + comp_id;
@@ -140,7 +159,7 @@ public class MonthUtil {
                     BaseUtil.say(res,sb,type,thisMonth);
                     // 计算总价格
                     BigDecimal allPrice = MonthUtil.totalPrice(price, new BigDecimal(1));
-                    Object[] bill = {billNo, res, type, new Date(), "否", "否", 0, liquidated_damages_method, allPrice, 0, 0, "否", "否", date,cost_rule_id,thisMonth,compId};
+                    Object[] bill = {billNo, res, type, new Date(), "否", "否", 0, liquidated_damages_method, allPrice, 0, 0, "否", "否", date,cost_rule_id,thisMonth,compId,commId,null,null};
                     // 返回添加的id;
                     sb.append(allPrice).append("元").append("。请在").append(MonthUtil.dataToString(date,"yyyy-MM-dd")).append("之前交纳。谢谢！");
                     System.out.println(sb.toString());

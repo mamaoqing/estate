@@ -7,14 +7,12 @@ import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.tariff.service.FBillService;
 import com.estate.sdzy.tariff.service.impl.FBillServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * <p>
@@ -34,6 +32,21 @@ public class FBillController  extends BaseController {
     @GetMapping("/listBill")
     public Result listBill(HttpServletRequest request,@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(billService.listBill(super.getParameterMap(request),token));
+    }
+
+    @PostMapping("/resetBillAll")
+    public Result resetBillAll(@RequestBody Map<String,Object> map, @RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(billService.resetBillAll(map));
+    }
+
+    @PostMapping("/resetBill/{id}")
+    public Result resetBill(@PathVariable("id") Long id,@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(billService.resetBill(id));
+    }
+
+    @GetMapping("/listOwner")
+    public Result listOwner(@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(billService.listOwner(token));
     }
 }
 

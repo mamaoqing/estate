@@ -1,15 +1,26 @@
 package com.estate.sdzy.asstes.controller;
 
 
+import com.estate.common.entity.SUser;
 import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
+import com.estate.sdzy.asstes.entity.ROwner;
 import com.estate.sdzy.asstes.entity.ROwnerProperty;
 import com.estate.sdzy.asstes.service.ROwnerPropertyService;
+import com.estate.sdzy.asstes.service.RRoomService;
+import com.estate.sdzy.common.excel.ExportExcel;
+import com.estate.sdzy.common.excel.ImportExcel;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +37,8 @@ public class ROwnerPropertyController {
 
     @Autowired
     private ROwnerPropertyService ownerPropertyService;
+    @Autowired
+    private RRoomService rRoomService;
 
     @GetMapping("/ownerPro/{id}")
     public Result ownerPro(@PathVariable("id") Long id) {
@@ -59,6 +72,19 @@ public class ROwnerPropertyController {
         return ResultUtil.success(ownerPropertyService.update(ownerProperty, token));
     }
 
+    @PostMapping("/export")
+    public void exprotExcel(@RequestBody Map map,HttpServletResponse response, HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
+        SUser user = rRoomService.getUserByToken(token);
+        try {
+            map.remove("pageNo");
+            map.remove("size");
+            ExportExcel.writeOut(response,"业主物业关系信息","com.estate.sdzy.asstes.entity.ROwnerProperty",
+                    ownerPropertyService.getAllProperty(map,token),"导出人："+user.getUserName(),false);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     @PostMapping("/insertRoomOwnerOrPark")
     public Result getOwnerProperty(@RequestBody Map map, @RequestHeader("Authentication-Token") String token) {
         boolean b = ownerPropertyService.insertRoomOwnerOrPark(map, token);
@@ -67,6 +93,31 @@ public class ROwnerPropertyController {
         } else {
             return ResultUtil.error("业主重复", 1);
         }
+    }
+
+    @PostMapping("/exportTemplate")
+    public void exportTemplate(HttpServletResponse response, HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
+        SUser user = rRoomService.getUserByToken(token);
+        try {
+            ExportExcel.writeOut(response,"业主物业关系信息列表导入模板","com.estate.sdzy.asstes.entity.ROwnerProperty",
+                    null,"导出人："+user.getUserName(),true);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @DeleteMapping("/deleteIds")
+    public Result deleteIds(@Param("delIds") String delIds, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(ownerPropertyService.deleteIds(delIds, token));
+    }
+
+    @PostMapping("/upload")
+    public Result upload(@RequestParam("file") MultipartFile file, @RequestHeader("Authentication-Token") String token) throws IOException, ClassNotFoundException {
+        List<Object> fileData = ImportExcel.getFileData(file, "com.estate.sdzy.asstes.entity.ROwnerProperty");
+        fileData.forEach(x -> {
+            ownerPropertyService.saveOrUpdateOwnerProp((ROwnerProperty) x, token);
+        });
+        return ResultUtil.success();
     }
 }
 
