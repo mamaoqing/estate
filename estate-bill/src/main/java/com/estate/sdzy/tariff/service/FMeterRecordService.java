@@ -16,9 +16,10 @@ import java.util.Map;
  */
 public interface FMeterRecordService extends IService<FMeterRecord> {
 
-    boolean save(FMeterRecord fMeterRecord, String token);
+    String save(FMeterRecord fMeterRecord, String token);
+    String saveByMeterId(FMeterRecord fMeterRecord, String token);
     void saveOrIgnoreMeter(FMeterRecord fMeterRecord, String token);
-    boolean update(FMeterRecord fMeterRecord, String token);
+    String update(FMeterRecord fMeterRecord, String token);
     boolean delete(String id,String token);
     List<FMeterRecord> list(Map<String,String> map, Integer pageNo, Integer size, String token);
     Integer listNum(Map<String,String> map,String token);
