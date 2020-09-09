@@ -6,13 +6,17 @@
         SELECT m.propertyName,m.comp_id,m.comm_id,m.comm_area_id,
         m.id,m.property_type,m.property_id,m.compName,m.commName,m.commAreaName,m.type,m.no,m.name,
         m.state,m.remark,m.created_at,m.created_name,m.modified_at,m.modified_name,m.new_num,
-        m.meter_read_time,m.bill_num,m.bill_date
+        m.meter_read_time,m.bill_num,m.bill_date,
+        (select name from r_owner where id in (select owner_id from r_owner_property where property_id=m.property_id) limit 1) as ownerName
         FROM
         v_f_meter m
         <if test="userId!=''and userId!=null">
             ,s_user_comm u
         </if>
         where 1=1
+        <if test="ownerName!=''and ownerName!=null">
+            and m.property_id in (select property_id from r_owner_property where owner_id in (select id from r_owner where name like CONCAT('%',#{ownerName},'%')))
+        </if>
         <if test="compId!=''and compId!=null">
             and m.comp_id = #{compId}
         </if>
@@ -50,6 +54,9 @@
             ,s_user_comm u
         </if>
         where 1=1
+        <if test="ownerName!=''and ownerName!=null">
+            and m.property_id in (select property_id from r_owner_property where owner_id in (select id from r_owner where name like CONCAT('%',#{ownerName},'%')))
+        </if>
         <if test="compId!=''and compId!=null">
             and m.comp_id = #{compId}
         </if>
@@ -82,5 +89,9 @@
 
     <select id="getMeterByNo" resultType="java.lang.Long">
         select id from f_meter where is_delete='0' and no=#{no} and comm_id=#{commId}
+    </select>
+
+    <select id="getPropertyName" resultType="java.lang.String">
+        select propertyName from v_f_meter where property_id=#{id}
     </select>
 </mapper>
