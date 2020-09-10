@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -45,7 +46,8 @@ public class FMeterRecordServiceImpl extends ServiceImpl<FMeterRecordMapper, FMe
     private FMeterMapper fMeterMapper;
 
     @Override
-    public boolean save(FMeterRecord fMeterRecord, String token) {
+    @Transactional
+    public String save(FMeterRecord fMeterRecord, String token) {
         SUser user = getUserByToken(token);
         if (null == fMeterRecord) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
@@ -64,9 +66,25 @@ public class FMeterRecordServiceImpl extends ServiceImpl<FMeterRecordMapper, FMe
             fMeterService.update(fMeter,token);
             log.info("仪表添加成功，添加人={}", user.getUserName());
         } else {
-            throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+            //throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+            return "添加数据系统异常";
         }
-        return insert > 0;
+        return "仪表添加成功";
+    }
+
+    @Override
+    public String saveByMeterId(FMeterRecord fMeterRecord, String token) {
+        FMeter fMeter = fMeterMapper.selectById(fMeterRecord.getMeterId());
+        fMeterRecord.setCompId(fMeter.getCompId());
+        fMeterRecord.setCommId(fMeter.getCommId());
+        fMeterRecord.setPropertyType(fMeter.getPropertyType());
+        fMeterRecord.setPropertyId(fMeter.getPropertyId());
+        fMeterRecord.setType(fMeter.getType());
+        if(fMeterRecord.getNewNum().compareTo(fMeter.getBillNum())==1||fMeterRecord.getNewNum().compareTo(fMeter.getBillNum())==0){
+            return save(fMeterRecord,token);
+        }else{
+            return "抄表刻度小于仪表的账单刻度";
+        }
     }
 
     @Override
@@ -87,25 +105,33 @@ public class FMeterRecordServiceImpl extends ServiceImpl<FMeterRecordMapper, FMe
     }
 
     @Override
-    public boolean update(FMeterRecord fMeterRecord, String token) {
-        SUser user = getUserByToken(token);
-        if (null == fMeterRecord) {
-            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+    public String update(FMeterRecord fMeterRecord, String token) {
+        FMeter fMeter = fMeterMapper.selectById(fMeterRecord.getMeterId());
+        //判断抄表刻度表里的抄表刻度大于等于仪表表里的账单刻度
+        if(fMeterRecord.getNewNum().compareTo(fMeter.getBillNum())==1||fMeterRecord.getNewNum().compareTo(fMeter.getBillNum())==0){
+            SUser user = getUserByToken(token);
+            if (null == fMeterRecord) {
+                throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+            }
+            fMeterRecord.setModifiedBy(user.getId());
+            fMeterRecord.setModifiedName(user.getUserName());
+            int update = fMeterRecordMapper.updateById(fMeterRecord);
+            if (update > 0) {
+                log.info("仪表抄表修改成功，修改人={}", user.getUserName());
+                //同时修改仪表表中抄表刻度和抄表时间（系统时间）
+                //FMeter fMeter = fMeterService.getById(fMeterRecord.getMeterId());
+                fMeter.setNewNum(fMeterRecord.getNewNum());
+                fMeter.setMeterReadTime(fMeterRecord.getModifiedAt());
+                fMeterService.update(fMeter, token);
+            } else {
+                //throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+                return "修改数据系统异常";
+            }
+            return "仪表抄表修改成功";
+        }else{
+            return "抄表刻度小于仪表的账单刻度";
         }
-        fMeterRecord.setModifiedBy(user.getId());
-        fMeterRecord.setModifiedName(user.getUserName());
-        int update = fMeterRecordMapper.updateById(fMeterRecord);
-        if (update > 0) {
-            //同时修改仪表表中抄表刻度和抄表时间（系统时间）
-            FMeter fMeter = fMeterService.getById(fMeterRecord.getMeterId());
-            fMeter.setNewNum(fMeterRecord.getNewNum());
-            fMeter.setMeterReadTime(fMeterRecord.getModifiedAt());
-            fMeterService.update(fMeter,token);
-            log.info("仪表修改成功，修改人={}", user.getUserName());
-        } else {
-            throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
-        }
-        return update > 0;
+
     }
 
     @Override

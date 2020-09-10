@@ -44,6 +44,11 @@ public class SAuditerCnfController extends BaseController {
         return ResultUtil.success(sAuditerCnfService.list(super.getParameterMap(request),pageNo,size,token));
     }
 
+    @GetMapping("/listAllAuditerCnf")
+    public Result listAllAuditerCnf(HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(sAuditerCnfService.listAll(super.getParameterMap(request),token));
+    }
+
     @GetMapping("/listAuditerCnfNum")
     public Result listAuditerCnfNum(HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(sAuditerCnfService.listNum(super.getParameterMap(request),token));

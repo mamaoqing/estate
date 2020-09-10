@@ -64,6 +64,8 @@ public class FMeter implements Serializable {
     @ExcelAnnotation(value = "物业编号",master = true)
     private String propertyName;
 
+    @TableField(exist = false)
+    private String ownerName;
     /**
      * 仪表类型（水表、电表、煤气表）
      */

@@ -91,6 +91,18 @@ public class SAuditerCnfServiceImpl extends ServiceImpl<SAuditerCnfMapper, SAudi
     }
 
     @Override
+    public List<SAuditerCnf> listAll(Map<String, String> map,  String token) {
+        SUser user = getUserByToken(token);
+        if(user.getCompId()==0){
+            List<SAuditerCnf> listAuditerCnf = sAuditerCnfMapper.getListAuditerCnf(map,null,null,null);
+            return listAuditerCnf;
+        }else{
+            List<SAuditerCnf> listAuditerCnf = sAuditerCnfMapper.getListAuditerCnf(map,null,null,user.getId());
+            return listAuditerCnf;
+        }
+    }
+
+    @Override
     public Integer listNum(Map<String, String> map, String token) {
         SUser user = getUserByToken(token);
         if(user.getCompId()==0){

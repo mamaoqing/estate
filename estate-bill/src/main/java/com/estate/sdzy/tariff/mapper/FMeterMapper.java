@@ -16,13 +16,14 @@ import java.util.List;
  */
 public interface FMeterMapper extends BaseMapper<FMeter> {
 
-    List<FMeter> getListMeter(@Param("compId") String compId, @Param("commId") String  commId, @Param("commAreaId") String  commAreaId,@Param("propertyType") String  propertyType,
+    List<FMeter> getListMeter(@Param("ownerName") String ownerName,@Param("compId") String compId, @Param("commId") String  commId, @Param("commAreaId") String  commAreaId,@Param("propertyType") String  propertyType,
                               @Param("propertyName") String propertyName,@Param("type") String type,@Param("no") String no,
                               @Param("pageNo") Integer pageNo,@Param("size") Integer size,@Param("userId") Long userId);
-    Integer getListMeterNum(@Param("compId") String compId, @Param("commId") String  commId, @Param("commAreaId") String  commAreaId,@Param("propertyType") String  propertyType,
+    Integer getListMeterNum(@Param("ownerName") String ownerName,@Param("compId") String compId, @Param("commId") String  commId, @Param("commAreaId") String  commAreaId,@Param("propertyType") String  propertyType,
                               @Param("propertyName") String propertyName,@Param("type") String type,@Param("no") String no,
                               @Param("pageNo") Integer pageNo,@Param("size") Integer size,@Param("userId") Long userId);
     Integer updateMeter(@Param("state") String state,@Param("remark") String remark,@Param("userId") Long userId,
                         @Param("userName") String userName,@Param("id") Long id);
     List<Long>  getMeterByNo(@Param("no") String no,@Param("commId") Long commId);
+    String getPropertyName(@Param("id") Long id);
 }

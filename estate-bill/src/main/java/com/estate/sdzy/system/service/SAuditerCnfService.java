@@ -12,6 +12,7 @@ public interface SAuditerCnfService extends IService<SAuditerCnf> {
     boolean update(SAuditerCnf sAuditerCnf, String token);
     boolean delete(String id,String token);
     List<SAuditerCnf> list(Map<String,String> map, Integer pageNo, Integer size, String token);
+    List<SAuditerCnf> listAll(Map<String, String> map, String token);
     Integer listNum(Map<String,String> map,String token);
     String checkSAuditerCnf(SAuditerCnf sAuditerCnf);
 }

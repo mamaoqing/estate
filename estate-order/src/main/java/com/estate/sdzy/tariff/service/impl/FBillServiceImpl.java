@@ -35,10 +35,8 @@ import org.springframework.util.StringUtils;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>
@@ -129,6 +127,10 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 .in(!rooms.isEmpty(), "property_id", rooms)
                 .in(!propertyIdList.isEmpty(), "property_id", propertyIdList)
                 .eq(!StringUtils.isEmpty(map.get("isInvoice")), "is_invoice", map.get("isInvoice"));
+        //updateByMazhongcai 20200907
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("commId")),"comm_id",map.get("commId"));
+        queryWrapper.ne(!StringUtils.isEmpty(map.get("state")),"state",map.get("state"));
+        //updateByMazhongcai
         Integer pageNo = Integer.valueOf(map.get("pageNo"));
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
         Page<FBill> page = new Page<>(pageNo, size);
