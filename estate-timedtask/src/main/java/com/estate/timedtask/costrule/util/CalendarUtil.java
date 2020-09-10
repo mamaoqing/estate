@@ -1,5 +1,6 @@
 package com.estate.timedtask.costrule.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -15,7 +16,7 @@ public class CalendarUtil {
     /**
      * 精确到毫秒的完整时间    如：yyyy-MM-dd HH:mm:ss.S
      */
-    public static String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.S";
+    public static String FORMAT_FULL = "yyyyMMddHHmmss";
     /**
      * 中文简写  如：2010年12月01日
      */
@@ -61,11 +62,11 @@ public class CalendarUtil {
      * @param date
      * @return
      */
-    public static long getTimeMillis(Date date){
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        long timeInMillis = calendar.getTimeInMillis();
-        return timeInMillis;
+    public static String getTimeMillis(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat(CalendarUtil.FORMAT_FULL);
+        String format = sdf.format(date);
+
+        return format;
     }
 
     public static Date getDate(Date date ,Integer day){
@@ -74,5 +75,15 @@ public class CalendarUtil {
         calc.add(Calendar.DATE,day);
 
         return calc.getTime();
+    }
+
+    public static boolean compareDate(Date date){
+        if(null == date){
+            return false;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat(CalendarUtil.FORMAT_SHORT);
+        String d = sdf.format(date);
+        String now = sdf.format(new Date());
+        return d.equals(now);
     }
 }

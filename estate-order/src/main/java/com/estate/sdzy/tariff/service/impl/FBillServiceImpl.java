@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.OrderException;
+import com.estate.common.util.ConnectUtil;
 import com.estate.common.util.OrderExceptionEnum;
 import com.estate.sdzy.asstes.entity.ROwner;
 import com.estate.sdzy.asstes.entity.ROwnerProperty;
@@ -20,10 +21,14 @@ import com.estate.sdzy.tariff.mapper.FBillDateMapper;
 import com.estate.sdzy.tariff.mapper.FBillMapper;
 import com.estate.sdzy.tariff.service.FBillService;
 import com.estate.timedtask.costrule.CrontabCostRule;
+import com.estate.timedtask.costrule.excute.ExcuteSql;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
@@ -44,9 +49,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since 2020-08-27
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @_(@Autowired))
 public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements FBillService {
-//com.estate.sdzy.tariff.mapper.FBillMapper
+    //com.estate.sdzy.tariff.mapper.FBillMapper
     private final FBillMapper billMapper;
     private final RedisTemplate redisTemplate;
     private final RRoomMapper rRoomMapper;
@@ -60,7 +66,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         List<Long> rooms = new ArrayList<>();
         if (!StringUtils.isEmpty(map.get("type"))) {
             String type = map.get("type");
-            if ("room".equals(type)) {
+            if ("房产".equals(type)) {
                 String no = map.get("no");
                 if (!StringUtils.isEmpty(no)) {
                     QueryWrapper<RRoom> queryWrapper = new QueryWrapper<>();
@@ -72,7 +78,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 }
 
             }
-            if ("park".equals(type)) {
+            if ("停车位".equals(type)) {
                 String no = map.get("no");
                 if (!StringUtils.isEmpty(no)) {
                     QueryWrapper<RParkingSpace> queryWrapper = new QueryWrapper<>();
@@ -86,11 +92,11 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
             }
         }
         List<Long> propertyIdList = new ArrayList<>();
-        if(!StringUtils.isEmpty(map.get("owners"))){
-        List<Long> ownerIds = new ArrayList<>();
+        if (!StringUtils.isEmpty(map.get("owners"))) {
+            List<Long> ownerIds = new ArrayList<>();
             String ownerName = map.get("owners");
             QueryWrapper<ROwner> ownerQueryWrapper = new QueryWrapper<>();
-            ownerQueryWrapper.eq("name",ownerName);
+            ownerQueryWrapper.eq("name", ownerName);
             List<ROwner> rOwners = rOwnerMapper.selectList(ownerQueryWrapper);
             for (ROwner rOwner : rOwners) {
                 ownerIds.add(rOwner.getId());
@@ -98,7 +104,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
             QueryWrapper<ROwnerProperty> ownerPropertyQueryWrapper = new QueryWrapper<>();
             ownerPropertyQueryWrapper.in(!ownerIds.isEmpty(), "owner_id", ownerIds);
             List<ROwnerProperty> rOwnerProperties = ownerPropertyMapper.selectList(ownerPropertyQueryWrapper);
-            rOwnerProperties.forEach(res->{
+            rOwnerProperties.forEach(res -> {
                 propertyIdList.add(res.getPropertyId());
             });
         }
@@ -126,7 +132,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         Integer pageNo = Integer.valueOf(map.get("pageNo"));
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
         Page<FBill> page = new Page<>(pageNo, size);
-        return billMapper.listBill(page,queryWrapper);
+        return billMapper.listBill(page, queryWrapper);
 //        return billMapper.selectPage(page, queryWrapper);
     }
 
@@ -142,7 +148,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         if ("否".equals(bill.getIsPayment()) && i <= 0) {
             try {
                 billMapper.deleteById(id);
-                CrontabCostRule.execute(bill.getCostRuleId().intValue(), bill.getPropertyType(), bill.getPropertyId() + "", bill.getAccountPeriod());
+                CrontabCostRule.execute(bill.getCostRuleId().intValue(), bill.getPropertyType(), bill.getPropertyId() + "", bill.getAccountPeriod(), true, null);
                 return true;
             } catch (SQLException sqlException) {
                 sqlException.printStackTrace();
@@ -155,75 +161,90 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
     }
 
     @Override
-    @Transactional
-    public boolean resetBillAll(Map<String, Object> map) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public boolean resetBillAll(Map<String, Object> map, String token) {
+        SUser user = getUserByToken(token);
         Object ruleId = map.get("ruleId");
         if (StringUtils.isEmpty(ruleId)) {
             throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
         }
         FBillDate fBillDate = billDateMapper.billDateByRuleId(Long.valueOf(ruleId.toString()));
+        if (null == fBillDate) {
+            throw new OrderException(500, "暂时没有需要生成的账单！");
+        }
         String accountPeriod = fBillDate.getAccountPeriod();
         if (!StringUtils.isEmpty(accountPeriod)) {
             QueryWrapper<FBill> billQueryWrapper = new QueryWrapper<>();
             billQueryWrapper.eq("cost_rule_id", ruleId).eq("account_period", accountPeriod);
-            List<FBill> fBills = billMapper.selectList(billQueryWrapper);
-            StringBuilder sb = new StringBuilder("");
+            Integer count = billMapper.selectCount(billQueryWrapper);
             // 如果查询结果是空的，表示还没有生成账单。可以手动生成。
-           if(!fBills.isEmpty()){
-               for (FBill res : fBills) {
-                   String types = "";
-                   // 区分车位房产等
-                   if ("room".equals(res.getPropertyType())) {
-                       types = "room";
-                   }
-                   if ("park".equals(res.getPropertyType())) {
-                       types = "park";
-                   }
-                   if ("an".equals(res.getPropertyType())) {
-                       types = "an";
-                   }
-                   if ("rq".equals(res.getPropertyType())) {
-                       types = "rq";
-                   }
-                   if ("water".equals(res.getPropertyType())) {
-                       types = "water";
-                   }
-                   int i = res.getPayPrice().compareTo(new BigDecimal(0));
-                   if ("否".equals(res.getIsPayment()) && i <= 0) {
-                       // 符合条件的先执行删除，在重新生成。
-                       sb.append(res.getId()).append(",");
-                       if (!StringUtils.isEmpty(res.getPropertyId())) {
-                           try {
-                               billMapper.deleteById(res.getId());
-                               CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), types, res.getPropertyId() + "", res.getAccountPeriod());
-                               return true;
-                           } catch (Exception sqlException) {
-                               throw new OrderException(500,"批量重新生成账单异常");
-                           }
-                       }
-                   }
-               }
-           }else{
-               try {
-                   CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), null, null,accountPeriod);
-                   return true;
-               } catch (SQLException sqlException) {
-                   sqlException.printStackTrace();
-               } catch (ClassNotFoundException e) {
-                   e.printStackTrace();
-               }
-           }
+//                throw new OrderException(OrderExceptionEnum.SYSTEM_UPDATE_ERROR);
+            if (count > 0) {
+//                QueryWrapper<FBill> queryWrapper = new QueryWrapper<>();
+//                queryWrapper.eq("cost_rule_id", ruleId);
+                //billMapper.delete(queryWrapper);
+                String sql = "delete from f_bill where cost_rule_id = ? and (is_payment = '否' or pay_price = 0)";
+                String resetMeter = "update f_meter aa,f_bill bb,f_cost_rule cc set aa.bill_num =bb.begin_scale where " +
+                        "aa.property_id = bb.property_id and aa.property_type=bb.property_type and bb.cost_rule_id=? and bb.account_period=? " +
+                        "and aa.type = cc.billing_method and bb.cost_rule_id = cc.id and (bb.is_payment ='否' or bb.pay_price =0) and cc.billing_method in('水表','电表','煤气表')";
+                Object[] reset = {ruleId, accountPeriod};
+                Object[] obj = {ruleId};
+                try {
+                    String insertSql = "insert into f_bill_copy (bill_no,property_id,property_type,bill_time,is_overdue,is_payment,overdue_cost,overdue_rule,price,pay_price,sale_price,is_print,is_invoice,pay_end_time,cost_rule_id,account_period,comp_id,comm_id,begin_scale,end_scale ,create_name,delete_time,delete_user) select bill_no,property_id,property_type,bill_time,is_overdue,is_payment,overdue_cost,overdue_rule,price,pay_price,sale_price,is_print,is_invoice,pay_end_time,cost_rule_id,account_period,comp_id,comm_id,begin_scale,end_scale,create_name,?,? from f_bill where cost_rule_id = " + ruleId + " and (is_payment = '否' or pay_price = 0) and account_period='" + accountPeriod + "'";
+                    Object[] o = {new Date(), user.getUserName()};
+                    String update = "update f_bill set bill_no = id";
+                    ExcuteSql.executeSql(insertSql, o, null);
+                    // 重新生长仪表的时候，将读数重置回生成账单之前的数据
+                    ExcuteSql.executeSql(resetMeter, reset, null);
+
+                    // 重新生成新的账单之前先将原来的账单删除
+                    ExcuteSql.executeSql(sql, obj, null);
+
+                    CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), "", "", accountPeriod, true, null);
+                    ExcuteSql.executeSql(update, new Object[0], null);
+                } catch (Exception sqlException) {
+                    sqlException.printStackTrace();
+                    throw new OrderException(500, "批量重新生成账单异常");
+                }
+            } else {
+                try {
+                    CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), null, null, accountPeriod, true, null);
+                } catch (Exception sqlException) {
+                    sqlException.printStackTrace();
+                }
+            }
         }
-        return false;
+        return true;
     }
 
     @Override
     public List<ROwner> listOwner(String token) {
         SUser user = getUserByToken(token);
         QueryWrapper<ROwner> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("DISTINCT name").eq("comp_id",user.getCompId());
+        queryWrapper.select("DISTINCT name").eq("comp_id", user.getCompId());
         List<ROwner> rOwners = rOwnerMapper.selectList(queryWrapper);
         return rOwners;
+    }
+
+    @Override
+    public boolean doPay(Map<String, Object> map, String token) {
+        SUser user = getUserByToken(token);
+        Object id = map.get("id");
+        Object price = map.get("price");
+        if (StringUtils.isEmpty(id) || StringUtils.isEmpty(price)) {
+            throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        BigDecimal b = new BigDecimal(price.toString());
+        FBill fBill = billMapper.selectById(Long.valueOf(id.toString()));
+        fBill.setIsPayment("是");
+        fBill.setPayPrice(b.add(fBill.getPayPrice()));
+        fBill.setState("已支付");
+        int i = billMapper.updateById(fBill);
+        if (i > 0) {
+            log.info("收款成功，收款人：{}。收款金额：", user.getUserName(), b);
+            return true;
+        }
+        return false;
     }
 
     private SUser getUserByToken(String token) {

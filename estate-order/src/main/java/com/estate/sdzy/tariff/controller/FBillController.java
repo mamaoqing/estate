@@ -36,7 +36,7 @@ public class FBillController  extends BaseController {
 
     @PostMapping("/resetBillAll")
     public Result resetBillAll(@RequestBody Map<String,Object> map, @RequestHeader("Authentication-Token") String token){
-        return ResultUtil.success(billService.resetBillAll(map));
+        return ResultUtil.success(billService.resetBillAll(map,token));
     }
 
     @PostMapping("/resetBill/{id}")
@@ -47,6 +47,11 @@ public class FBillController  extends BaseController {
     @GetMapping("/listOwner")
     public Result listOwner(@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(billService.listOwner(token));
+    }
+
+    @PostMapping("/doPay")
+    public Result doPay(@RequestBody Map<String,Object> map,@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(billService.doPay(map, token));
     }
 }
 

@@ -66,7 +66,7 @@ public class FCostRuleRoomServiceImpl extends ServiceImpl<FCostRuleRoomMapper, F
             FCostRuleRoom f = new FCostRuleRoom();
             f.setCostRuleId(Long.valueOf(ruleId.toString()));
             f.setPropertyId(Long.valueOf(room));
-            f.setPropertyType("room");
+            f.setPropertyType("房产");
             int insert = costRuleRoomMapper.insert(f);
             if (!(insert > 0)) {
                 throw new OrderException(OrderExceptionEnum.SYSTEM_INSERT_ERROR);
@@ -94,7 +94,7 @@ public class FCostRuleRoomServiceImpl extends ServiceImpl<FCostRuleRoomMapper, F
             FCostRuleRoom f = new FCostRuleRoom();
             f.setCostRuleId(Long.valueOf(ruleId));
             f.setPropertyId(Long.valueOf(room));
-            f.setPropertyType("park");
+            f.setPropertyType("停车位");
             int insert = costRuleRoomMapper.insert(f);
             if (!(insert > 0)) {
                 throw new OrderException(OrderExceptionEnum.SYSTEM_INSERT_ERROR);
