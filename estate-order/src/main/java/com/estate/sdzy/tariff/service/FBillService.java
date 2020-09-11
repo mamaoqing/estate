@@ -27,4 +27,8 @@ public interface FBillService extends IService<FBill> {
 
     boolean doPay(Map<String,Object> map ,String token);
 
+    List<Map<String,Object>> getOwners(Map<String,Object> map);
+
+    boolean save(FBill bill,String token);
+
 }

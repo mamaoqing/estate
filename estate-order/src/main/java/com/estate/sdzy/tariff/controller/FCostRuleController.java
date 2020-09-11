@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * <p>
@@ -64,5 +65,12 @@ public class FCostRuleController extends BaseController {
     public Result getCostRuleName(@PathVariable("id") Long id){
         return ResultUtil.success(costRuleService.getCostRuleName(id));
     }
+
+    @GetMapping("/{id}")
+    public Result getCostRule(@PathVariable("id") Long id){
+        return ResultUtil.success(costRuleService.getById(id));
+    }
+
+
 }
 

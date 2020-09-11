@@ -112,7 +112,7 @@ public class CrontabCostRule {
                 }
                 // 每周
                 if (BillCycle.WEEK.equals(bill_cycle) && b) {
-                    System.out.println(id + "<====>" + BillCycle.WEEK);
+
                 }
                 // 每月
                 if (BillCycle.MONTH.equals(bill_cycle)) {

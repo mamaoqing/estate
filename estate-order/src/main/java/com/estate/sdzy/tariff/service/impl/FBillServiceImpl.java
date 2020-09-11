@@ -17,8 +17,10 @@ import com.estate.sdzy.asstes.mapper.RParkingSpaceMapper;
 import com.estate.sdzy.asstes.mapper.RRoomMapper;
 import com.estate.sdzy.tariff.entity.FBill;
 import com.estate.sdzy.tariff.entity.FBillDate;
+import com.estate.sdzy.tariff.entity.FCostRule;
 import com.estate.sdzy.tariff.mapper.FBillDateMapper;
 import com.estate.sdzy.tariff.mapper.FBillMapper;
+import com.estate.sdzy.tariff.mapper.FCostRuleMapper;
 import com.estate.sdzy.tariff.service.FBillService;
 import com.estate.timedtask.costrule.CrontabCostRule;
 import com.estate.timedtask.costrule.excute.ExcuteSql;
@@ -53,6 +55,7 @@ import java.util.Map;
 public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements FBillService {
     //com.estate.sdzy.tariff.mapper.FBillMapper
     private final FBillMapper billMapper;
+    private final FCostRuleMapper costRuleMapper;
     private final RedisTemplate redisTemplate;
     private final RRoomMapper rRoomMapper;
     private final RParkingSpaceMapper parkingSpaceMapper;
@@ -251,6 +254,51 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Map<String, Object>> getOwners(Map<String, Object> map) {
+        List<Map<String, Object>> list = new ArrayList<>();
+                Object propertyType = map.get("propertyType");
+        Object propertyId = map.get("propertyId");
+        if (StringUtils.isEmpty(propertyId) || StringUtils.isEmpty(propertyType)){
+            throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        String type= propertyType.toString();
+        if("房产".equals(type)){
+            list = billMapper.listOwnerRoom(Long.valueOf(propertyId.toString()));
+        }else if("停车位".equals(type)){
+            list = billMapper.listOwnerPark(Long.valueOf(propertyId.toString()));
+        }
+        return list;
+    }
+
+    @Override
+    public boolean save(FBill bill, String token) {
+        SUser user = getUserByToken(token);
+        if(null == bill){
+            throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        Long costRuleId = bill.getCostRuleId();
+        FCostRule fCostRule = costRuleMapper.selectById(costRuleId);
+        BigDecimal price = fCostRule.getPrice();
+        BigDecimal count = new BigDecimal(bill.getCount());
+        bill.setPrice(price.multiply(count));
+        bill.setCreateName(user.getUserName());
+        bill.setIsOverdue("否");
+        if(null==bill.getPayPrice() || "否".equals(bill.getIsPayment())){
+            bill.setPayPrice(new BigDecimal(0));
+        }
+        bill.setOverdueRule(fCostRule.getLiquidatedDamagesMethod());
+        bill.setBillTime(new Date());
+        int insert = billMapper.insert(bill);
+        bill.setBillNo(bill.getId()+"");
+        billMapper.updateById(bill);
+        if(insert > 0){
+            log.info("账单信息添加成功,添加人:{}",user.getUserName());
+            return true;
+        }
+        throw new OrderException(OrderExceptionEnum.SYSTEM_INSERT_ERROR);
     }
 
     private SUser getUserByToken(String token) {

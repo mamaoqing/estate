@@ -4,6 +4,7 @@ package com.estate.sdzy.tariff.controller;
 import com.estate.common.controller.BaseController;
 import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
+import com.estate.sdzy.tariff.entity.FBill;
 import com.estate.sdzy.tariff.service.FBillService;
 import com.estate.sdzy.tariff.service.impl.FBillServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,16 @@ public class FBillController  extends BaseController {
     @PostMapping("/doPay")
     public Result doPay(@RequestBody Map<String,Object> map,@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(billService.doPay(map, token));
+    }
+
+    @PostMapping("/getOwners")
+    public Result getOwners(@RequestBody Map<String,Object> map){
+        return ResultUtil.success(billService.getOwners(map));
+    }
+
+    @PostMapping("/insertBill")
+    public Result insertBill(@RequestBody FBill bill,@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(billService.save(bill,token));
     }
 }
 
