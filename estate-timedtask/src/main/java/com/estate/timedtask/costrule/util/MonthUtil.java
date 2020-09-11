@@ -41,6 +41,10 @@ public class MonthUtil {
         if (BillintMethod.BUILDAREA.equals(billing_method)) {
             MonthUtil.monthBillEstate(comp_id, liquidated_damages_method, date, price, type, thisMonth, cost_rule_id, compId, comm_id, billing_method);
         }
+        // 暖气费用
+        if (BillintMethod.USEAREA.equals(billing_method)) {
+            MonthUtil.monthBillHot(comp_id, liquidated_damages_method, date, price, type, thisMonth, cost_rule_id, compId, comm_id, billing_method);
+        }
         // 水表
         if (BillintMethod.WATERMETER.equals(billing_method)) {
             MonthUtil.monthBillWater(comp_id, price, compId, comm_id, type, liquidated_damages_method, date, thisMonth, type, cost_rule_id, BillintMethod.WATERMETER, BillintMethod.WATERMETER);
@@ -78,6 +82,32 @@ public class MonthUtil {
      * @param billMethod 计费方式
      */
     public static void monthBillEstate(String comp_id, String liquidated_damages_method,
+                                       Date date, BigDecimal price, String type, String thisMonth, long cost_rule_id, int compId, int commId, String billMethod) {
+
+        Object[] obj = MonthUtil.getObj(CalendarUtil.getTimeMillis(new Date()) + comp_id, type, "否", "否", liquidated_damages_method, price, date, thisMonth, compId, commId, null, null, "定时任务",  cost_rule_id);
+        try {
+            ExcuteSql.executeSql(obj, billMethod);
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     * @param comp_id 公司id 0001 格式
+     * @param liquidated_damages_method 违约金计算方式
+     * @param date 最后付款时间
+     * @param price 单价
+     * @param type 物业类型
+     * @param thisMonth 账期
+     * @param cost_rule_id 费用标注 id
+     * @param compId 公司id
+     * @param commId 社区id
+     * @param billMethod 计费方式
+     */
+    public static void monthBillHot(String comp_id, String liquidated_damages_method,
                                        Date date, BigDecimal price, String type, String thisMonth, long cost_rule_id, int compId, int commId, String billMethod) {
 
         Object[] obj = MonthUtil.getObj(CalendarUtil.getTimeMillis(new Date()) + comp_id, type, "否", "否", liquidated_damages_method, price, date, thisMonth, compId, commId, null, null, "定时任务",  cost_rule_id);

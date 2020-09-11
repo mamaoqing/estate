@@ -43,7 +43,7 @@ public class CrontabCostRule {
                 java.sql.Date create_bill_date = resultSet.getDate("create_bill_date");
 
                 System.out.println(cost_rule_id);
-                execute(cost_rule_id, null, null, account_period, false,create_bill_date);
+                execute(cost_rule_id, null, null, account_period, false, create_bill_date);
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -61,12 +61,12 @@ public class CrontabCostRule {
      * @param propertyType   物业类型
      * @param propertyIds    物业id，房产停车位id
      * @param account_period 账期
-     * @param flag 手动生成标志，自动为false
-     * @param billDay 自动生成账期时间，如果手动点击为null;
+     * @param flag           手动生成标志，自动为false
+     * @param billDay        自动生成账期时间，如果手动点击为null;
      * @throws SQLException           sql
      * @throws ClassNotFoundException yc
      */
-    public static void execute(int costRuleId, String propertyType, String propertyIds, String account_period, boolean flag,Date billDay) throws SQLException, ClassNotFoundException {
+    public static void execute(int costRuleId, String propertyType, String propertyIds, String account_period, boolean flag, Date billDay) throws SQLException, ClassNotFoundException {
         Date now = new Date();
         String sql = "select * from f_cost_rule where 1=1 and is_delete = 0 and id=?";
         Object[] arr = {costRuleId};
@@ -132,28 +132,32 @@ public class CrontabCostRule {
                 }
             }
             // 每半年
-            if (BillCycle.HALFAYEAR.equals(bill_cycle) && (b||flag)) {
+            if (BillCycle.HALFAYEAR.equals(bill_cycle) && (b || flag)) {
                 if (price_unit.contains("季")) {
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(2)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(2)), billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
-                }
-                if (price_unit.contains("月")) {
+                } else if (price_unit.contains("月")) {
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(6)), billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(6)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
-                    System.out.println(id);
+                } else {
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price, billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price, billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
                 }
-                // 每年
-                if (BillCycle.YEAR.equals(bill_cycle) && (b||flag)) {
-                    if (price_unit.contains("季")) {
-                        MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(4)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
-                        MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(4)), billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
-                    }
-                    if (price_unit.contains("月")) {
-                        MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(12)), billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
-                        MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(12)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
-                        System.out.println(id);
-                    }
+
+            }
+            // 每年
+            if (BillCycle.YEAR.equals(bill_cycle) && (b || flag)) {
+                if (price_unit.contains("季")) {
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(4)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(4)), billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
+                } else if (price_unit.contains("月")) {
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(12)), billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(12)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
+                } else {
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price, billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price, billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
                 }
+
             }
             // 每两月
             if (BillCycle.TWOYEAR.equals(bill_cycle) && (b || flag)) {
