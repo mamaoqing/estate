@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
+import com.estate.common.exception.BillException;
 import com.estate.common.exception.OrderException;
+import com.estate.common.util.BillExceptionEnum;
 import com.estate.common.util.OrderExceptionEnum;
 import com.estate.sdzy.asstes.entity.ROwner;
 import com.estate.sdzy.asstes.entity.ROwnerProperty;
@@ -21,6 +23,7 @@ import com.estate.sdzy.tariff.mapper.FBillMapper;
 import com.estate.sdzy.tariff.service.FBillService;
 import com.estate.timedtask.costrule.CrontabCostRule;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -43,6 +46,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author mq
  * @since 2020-08-27
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor = @_(@Autowired))
 public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements FBillService {
@@ -60,7 +64,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         List<Long> rooms = new ArrayList<>();
         if (!StringUtils.isEmpty(map.get("type"))) {
             String type = map.get("type");
-            if ("room".equals(type)) {
+            if ("房产".equals(type)) {
                 String no = map.get("no");
                 if (!StringUtils.isEmpty(no)) {
                     QueryWrapper<RRoom> queryWrapper = new QueryWrapper<>();
@@ -72,7 +76,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 }
 
             }
-            if ("park".equals(type)) {
+            if ("停车位".equals(type)) {
                 String no = map.get("no");
                 if (!StringUtils.isEmpty(no)) {
                     QueryWrapper<RParkingSpace> queryWrapper = new QueryWrapper<>();
@@ -119,6 +123,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 .eq(!StringUtils.isEmpty(map.get("isPrint")), "is_print", map.get("isPrint"))
                 .eq(!StringUtils.isEmpty(map.get("commId")), "aa.comm_id", map.get("commId"))
                 .eq(!StringUtils.isEmpty(map.get("type")), "property_type", map.get("type"))
+                .eq(!StringUtils.isEmpty(map.get("billNo")), "bill_no", map.get("billNo"))
                 .eq(!StringUtils.isEmpty(map.get("costRuleId")), "cost_rule_id", map.get("costRuleId"))
                 .in(!rooms.isEmpty(), "property_id", rooms)
                 .in(!propertyIdList.isEmpty(), "property_id", propertyIdList)
@@ -215,6 +220,26 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
            }
         }
         return false;
+    }
+
+    @Override
+    public boolean addBill(FBill bill,String token) {
+        SUser user = (SUser) getUserByToken(token);
+        if (StringUtils.isEmpty(bill)) {
+            throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        bill.setCreateName("临时账单");
+        bill.setAccountPeriod("临时账单");
+        bill.setIsInvoice("否");
+        bill.setIsOverdue("否");
+        bill.setIsPayment("否");
+        bill.setIsPrint("否");
+        int insert = billMapper.insert(bill);
+        if (insert>0){
+            log.info("账单信息添加成功，添加人={}", user.getUserName());
+            return true;
+        }
+        throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
     }
 
     @Override

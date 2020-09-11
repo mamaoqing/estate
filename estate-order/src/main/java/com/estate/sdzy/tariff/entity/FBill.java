@@ -131,7 +131,8 @@ public class FBill implements Serializable {
      * 公司id
      */
     private Long compId;
-
+    @TableField(exist = false)
+    private String compName;
     private Long commId;
     @TableField(exist = false)
     private String commName;
@@ -145,4 +146,7 @@ public class FBill implements Serializable {
     private String ruleName;
 
     private String state;
+    @TableField(exist = false)
+    private String createName;
+
 }

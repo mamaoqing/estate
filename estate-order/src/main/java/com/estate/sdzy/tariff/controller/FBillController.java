@@ -4,6 +4,7 @@ package com.estate.sdzy.tariff.controller;
 import com.estate.common.controller.BaseController;
 import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
+import com.estate.sdzy.tariff.entity.FBill;
 import com.estate.sdzy.tariff.service.FBillService;
 import com.estate.sdzy.tariff.service.impl.FBillServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author mq
@@ -24,28 +25,33 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/order/fBill")
-public class FBillController  extends BaseController {
+public class FBillController extends BaseController {
 
     @Autowired
     private FBillService billService;
 
     @GetMapping("/listBill")
-    public Result listBill(HttpServletRequest request,@RequestHeader("Authentication-Token") String token){
-        return ResultUtil.success(billService.listBill(super.getParameterMap(request),token));
+    public Result listBill(HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(billService.listBill(super.getParameterMap(request), token));
     }
 
     @PostMapping("/resetBillAll")
-    public Result resetBillAll(@RequestBody Map<String,Object> map, @RequestHeader("Authentication-Token") String token){
+    public Result resetBillAll(@RequestBody Map<String, Object> map, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(billService.resetBillAll(map));
     }
 
     @PostMapping("/resetBill/{id}")
-    public Result resetBill(@PathVariable("id") Long id,@RequestHeader("Authentication-Token") String token){
+    public Result resetBill(@PathVariable("id") Long id, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(billService.resetBill(id));
     }
 
+    @PostMapping("/insertBill")
+    public Result insertBill(@RequestBody FBill bill, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(billService.addBill(bill, token));
+    }
+
     @GetMapping("/listOwner")
-    public Result listOwner(@RequestHeader("Authentication-Token") String token){
+    public Result listOwner(@RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(billService.listOwner(token));
     }
 }

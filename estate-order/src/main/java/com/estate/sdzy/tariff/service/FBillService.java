@@ -22,6 +22,7 @@ public interface FBillService extends IService<FBill> {
 
     boolean resetBill(Long id);
     boolean resetBillAll(Map<String,Object> mqp);
+    boolean addBill(FBill bill,String token);
 
     List<ROwner> listOwner(String token);
 
