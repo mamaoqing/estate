@@ -113,8 +113,8 @@ public class MonthUtil {
             connection = TransactionConnUtil.getConnection();
             String sqlMeter = "INSERT INTO f_bill (bill_no,property_id,property_type,bill_time,is_overdue,is_payment,overdue_cost,overdue_rule,price,pay_price,sale_price,is_print,is_invoice,pay_end_time,cost_rule_id,account_period,comp_id,comm_id,begin_scale,end_scale,create_name) SELECT ?,aa.property_id,?,now(),?,?,0,?,? * (bb.new_num-bb.bill_num),0,0,'否','否',?,aa.cost_rule_id,?,?,?,bill_num,new_num,? FROM f_cost_rule_room aa,f_meter bb WHERE aa.property_id = bb.property_id AND aa.property_type =? and aa.property_type=bb.property_type and bb.type=? AND aa.cost_rule_id = ?";
             TransactionConnUtil.executeUpdate(sqlMeter, obj);
-            String sql = "update f_meter aa,f_cost_rule_room bb,f_bill cc set aa.bill_num=aa.new_num where aa.property_id=bb.property_id and bb.cost_rule_id=? and aa.type=? and (cc.is_payment = '否' or cc.pay_price = 0)  and cc.property_id=aa.property_id and cc.property_type=aa.property_type";
-            Object[] update = {cost_rule_id,meterType};
+            String sql = "update f_meter aa,f_cost_rule_room bb,f_bill cc set aa.bill_num=aa.new_num where aa.property_id=bb.property_id and bb.cost_rule_id=? and aa.type=? and (cc.is_payment = '否' or cc.pay_price = 0)  and cc.property_id=aa.property_id and cc.property_type=aa.property_type and cc.property_type=?";
+            Object[] update = {cost_rule_id,meterType,types};
             TransactionConnUtil.executeUpdate(sql,update);
             connection.commit();
         } catch (SQLException sqlException) {
