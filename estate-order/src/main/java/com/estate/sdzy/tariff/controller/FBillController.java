@@ -36,23 +36,38 @@ public class FBillController extends BaseController {
     }
 
     @PostMapping("/resetBillAll")
-    public Result resetBillAll(@RequestBody Map<String, Object> map, @RequestHeader("Authentication-Token") String token) {
-        return ResultUtil.success(billService.resetBillAll(map));
+    public Result resetBillAll(@RequestBody Map<String,Object> map, @RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(billService.resetBillAll(map,token));
     }
 
     @PostMapping("/resetBill/{id}")
-    public Result resetBill(@PathVariable("id") Long id, @RequestHeader("Authentication-Token") String token) {
+    public Result resetBill(@PathVariable("id") Long id,@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(billService.resetBill(id));
     }
 
-    @PostMapping("/insertBill")
-    public Result insertBill(@RequestBody FBill bill, @RequestHeader("Authentication-Token") String token) {
+    @PostMapping("/addBill")
+    public Result addBill(@RequestBody FBill bill, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(billService.addBill(bill, token));
     }
 
     @GetMapping("/listOwner")
-    public Result listOwner(@RequestHeader("Authentication-Token") String token) {
+    public Result listOwner(@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(billService.listOwner(token));
+    }
+
+    @PostMapping("/doPay")
+    public Result doPay(@RequestBody Map<String,Object> map,@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(billService.doPay(map, token));
+    }
+
+    @PostMapping("/getOwners")
+    public Result getOwners(@RequestBody Map<String,Object> map){
+        return ResultUtil.success(billService.getOwners(map));
+    }
+
+    @PostMapping("/insertBill")
+    public Result insertBill(@RequestBody FBill bill,@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(billService.save(bill,token));
     }
 }
 

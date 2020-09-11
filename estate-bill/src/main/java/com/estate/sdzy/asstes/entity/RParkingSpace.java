@@ -147,5 +147,7 @@ public class RParkingSpace implements Serializable {
     @TableLogic
     private Integer isDelete;
 
+    private String plateNumber;
+
 
 }

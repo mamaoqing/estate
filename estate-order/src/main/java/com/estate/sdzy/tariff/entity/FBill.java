@@ -88,7 +88,7 @@ public class FBill implements Serializable {
     /**
      * 已经付的钱
      */
-    private BigDecimal payPrice;
+        private BigDecimal payPrice;
 
     /**
      * 备注
@@ -139,14 +139,15 @@ public class FBill implements Serializable {
 
     private String beginScale;
     private String endScale;
+    private String state;
     @TableField(exist = false)
     private String no;
 
     @TableField(exist = false)
     private String ruleName;
 
-    private String state;
     @TableField(exist = false)
     private String createName;
 
+    private Integer count;
 }

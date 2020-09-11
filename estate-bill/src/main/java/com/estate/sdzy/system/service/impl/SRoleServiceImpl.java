@@ -215,7 +215,7 @@ public class SRoleServiceImpl extends ServiceImpl<SRoleMapper, SRole> implements
     public String checkUser(Long id,String token) throws BillException {
         SUser user = getUserByToken(token);
         SRole sRole = roleMapper.selectById(id);
-        if(sRole.getCompId().equals(user.getCompId())){//判断是开发公司
+        if(user.getCompId()==0){//判断是开发公司
             return "";
         }else{
             return "您没有权限，请联系管理员";

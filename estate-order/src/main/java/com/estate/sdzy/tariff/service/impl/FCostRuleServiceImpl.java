@@ -2,10 +2,10 @@ package com.estate.sdzy.tariff.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.OrderException;
 import com.estate.common.util.CreateBillDateUtil;
-import com.estate.common.util.FormatUtil;
 import com.estate.common.util.OrderExceptionEnum;
 import com.estate.sdzy.tariff.entity.FCostItem;
 import com.estate.sdzy.tariff.entity.FCostRule;
@@ -14,7 +14,6 @@ import com.estate.sdzy.tariff.mapper.FCostItemMapper;
 import com.estate.sdzy.tariff.mapper.FCostRuleMapper;
 import com.estate.sdzy.tariff.mapper.FCostRuleRoomMapper;
 import com.estate.sdzy.tariff.service.FCostRuleService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -76,6 +74,18 @@ public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule
         records.forEach(s->{
         });
         return costRuleMapper.listCostRule(page,queryWrapper);
+    }
+
+    @Override
+    public List<FCostRule> listAllCostRule(String token) {
+        SUser user = getUserByToken(token);
+        if(user.getCompId()==0){
+            List<FCostRule> listCostRule = costRuleMapper.listAllCostRule(null);
+            return listCostRule;
+        }else{
+            List<FCostRule> listCostRule = costRuleMapper.listAllCostRule(user.getId());
+            return listCostRule;
+        }
     }
 
     @Override
@@ -138,6 +148,14 @@ public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule
         }
         log.error("费用项目删除失败");
         throw new OrderException(OrderExceptionEnum.SYSTEM_DELETE_ERROR);
+    }
+
+    public String getCostRuleName(Long id){
+        if(costRuleMapper.selectById(id)!=null){
+            return costRuleMapper.selectById(id).getName();
+        }else{
+            return "";
+        }
     }
 
     private SUser getUserByToken(String token) {

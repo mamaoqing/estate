@@ -7,4 +7,16 @@
         ${ew.customSqlSegment}
         and aa.comp_id = dd.id and aa.cost_type_id = bb.id and aa.cost_item_id = cc.id
     </select>
+
+    <select id="listAllCostRule" resultType="com.estate.sdzy.tariff.entity.FCostRule">
+        select r.id,r.name
+            from f_cost_rule r
+        <if test="userId!='' and userId!=null">
+            ,s_user_comm comm
+        </if>
+        where r.is_delete = '0'
+        <if test="userId!='' and userId!=null">
+            and comm.user_id=#{userId} and r.comm_id = comm.comm_id
+        </if>
+    </select>
 </mapper>

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * <p>
@@ -35,6 +36,11 @@ public class FCostRuleController extends BaseController {
         return ResultUtil.success(costRuleService.listCostRule(super.getParameterMap(request),token));
     }
 
+    @GetMapping("/listAllCostRule")
+    public Result listAllCostRule(HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(costRuleService.listAllCostRule(token));
+    }
+
     @PostMapping("/insertCostRule")
     public Result insertCostRule(@RequestBody FCostRule rule, @RequestHeader("Authentication-Token") String token) throws SQLException, ClassNotFoundException {
         return ResultUtil.success(costRuleService.save(rule,token));
@@ -54,5 +60,17 @@ public class FCostRuleController extends BaseController {
     public Result costItemList(@PathVariable("compId") Long compId){
         return ResultUtil.success(costItemService.costItemList(compId));
     }
+
+    @GetMapping("/getCostRuleName/{id}")
+    public Result getCostRuleName(@PathVariable("id") Long id){
+        return ResultUtil.success(costRuleService.getCostRuleName(id));
+    }
+
+    @GetMapping("/{id}")
+    public Result getCostRule(@PathVariable("id") Long id){
+        return ResultUtil.success(costRuleService.getById(id));
+    }
+
+
 }
 

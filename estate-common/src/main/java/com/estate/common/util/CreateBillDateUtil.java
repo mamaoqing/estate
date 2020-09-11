@@ -48,6 +48,11 @@ public class CreateBillDateUtil {
         if (BillCycle.HALFAYEAR.equals(billCycle)) {
             CreateBillDateUtil.bannian(begin, end, day, costRuleId);
         }
+        // 没两个月
+        if (BillCycle.TWOYEAR.equals(billCycle)) {
+            CreateBillDateUtil.createTwoMonthBillDate(begin, end, day, costRuleId);
+        }
+
 
     }
 
@@ -84,6 +89,47 @@ public class CreateBillDateUtil {
             Object[] obj = {costRuleId, calendar.getTime(), fmt, time};
             CreateBillDateUtil.executeSql(obj);
             CreateBillDateUtil.createMonthBillDate(time, end, day, costRuleId);
+        }
+    }
+
+    /**
+     * 每2月生成一次账单
+     *
+     * @param begin      开始时间
+     * @param end        结束时间
+     * @param day        账单日
+     * @param costRuleId 费用标准的id
+     */
+    public static void createTwoMonthBillDate(Date begin, Date end, Integer day, Long costRuleId) {
+        Calendar calendar = Calendar.getInstance();
+        // 判断时间是否正确
+        if (begin.before(end)) {
+//            calendar.setTime(begin);
+//            calendar.add(Calendar.DATE, day);
+//            Object[] obj = {costRuleId, calendar.getTime()};
+//            CreateBillDateUtil.executeSql(obj);
+//            // 下一个月
+//            int next = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+//            calendar.add(Calendar.DAY_OF_MONTH, next);
+//            calendar.add(Calendar.DATE, day);
+//            Date time = calendar.getTime();
+//            CreateBillDateUtil.createMonthBillDate(time, end, day, costRuleId);
+            calendar.setTime(begin);
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH) + 1;
+            String fmt = "";
+            if (month + 1 > 12) {
+                fmt = year + "年" + month +"、"+year+1+"年"+ "1月账单";
+            } else {
+                fmt = year + "年" + month + "、" + (month + 1) + "月账单";
+            }
+            calendar.set(Calendar.DAY_OF_MONTH, 1);
+            calendar.add(Calendar.MONTH, 2);
+            Date time = calendar.getTime();
+            calendar.add(Calendar.DATE, day);
+            Object[] obj = {costRuleId, calendar.getTime(), fmt, time};
+            CreateBillDateUtil.executeSql(obj);
+            CreateBillDateUtil.createTwoMonthBillDate(time, end, day, costRuleId);
         }
     }
 
@@ -174,7 +220,7 @@ public class CreateBillDateUtil {
                     fmt = year + "年，第四季度 10，11，12月份账单";
                     calendar.set(Calendar.DAY_OF_MONTH, day);
                     try {
-                        year1 = getYear(year+1, "-01-01");
+                        year1 = getYear(year + 1, "-01-01");
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -183,7 +229,7 @@ public class CreateBillDateUtil {
                     break;
             }
             calendar.setTime(year1);
-            calendar.add(Calendar.DATE,day);
+            calendar.add(Calendar.DATE, day);
             CreateBillDateUtil.doSwitch(sql, costRuleId, calendar, fmt, year1);
 //            calendar.add(Calendar.MONTH, 3); // 1.9
             calendar.set(Calendar.DAY_OF_MONTH, 1); // 11
@@ -236,7 +282,7 @@ public class CreateBillDateUtil {
                     fmt = year + "年，下半年 7，8，9，10，11，12月份账单";
                     calendar.set(Calendar.DAY_OF_MONTH, day);
                     try {
-                        year1 = getYear(year+1, "-01-01");
+                        year1 = getYear(year + 1, "-01-01");
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
@@ -245,7 +291,7 @@ public class CreateBillDateUtil {
                     break;
             }
             calendar.setTime(year1);
-            calendar.add(Calendar.DATE,day);
+            calendar.add(Calendar.DATE, day);
             CreateBillDateUtil.doSwitch(sql, costRuleId, calendar, fmt, year1);
             calendar.set(Calendar.DAY_OF_MONTH, 1);
             CreateBillDateUtil.bannian(calendar.getTime(), end, day, costRuleId);
@@ -264,21 +310,22 @@ public class CreateBillDateUtil {
     public static void createYearBillDate(Date begin, Date end, Integer day, Long costRuleId) {
         Calendar calendar = Calendar.getInstance();
         if (begin.before(end)) {
+            Date year1 = null;
             try {
                 calendar.setTime(begin);
                 int year = calendar.get(Calendar.YEAR);
-                String fmt = year+"年账单";
-                Date year1 = getYear(year+1, "-01-01");
+                String fmt = year + "年账单";
+                year1 = getYear(year + 1, "-01-01");
                 // 本年第一天
                 calendar.setTime(CreateBillDateUtil.getYear(calendar));
                 calendar.add(Calendar.DATE, day);
-                Object[] obj = {costRuleId, calendar.getTime(),fmt,year1};
+                Object[] obj = {costRuleId, calendar.getTime(), fmt, year1};
                 CreateBillDateUtil.executeSql(obj);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             calendar.add(Calendar.YEAR, 1);
-            createYearBillDate(calendar.getTime(), end, day, costRuleId);
+            createYearBillDate(year1, end, day, costRuleId);
         }
     }
 
@@ -296,10 +343,12 @@ public class CreateBillDateUtil {
             calendar.setTime(begin);
             Date nextWeekMonday = getNextWeekMonday(calendar.getTime());
             calendar.setTime(nextWeekMonday);
+            Date time = calendar.getTime();
+            String fmt ="周账单";
             calendar.add(Calendar.DATE, day);
-            Object[] obj = {costRuleId, calendar.getTime()};
+            Object[] obj = {costRuleId, calendar.getTime(),"",time};
             CreateBillDateUtil.executeSql(obj);
-            CreateBillDateUtil.createWeekBillDate(calendar.getTime(), end, day, costRuleId);
+            CreateBillDateUtil.createWeekBillDate(time, end, day, costRuleId);
         }
     }
 
@@ -339,12 +388,11 @@ public class CreateBillDateUtil {
     }
 
     /**
-     *
-     * @param sql 需要执行的sql
+     * @param sql        需要执行的sql
      * @param costRuleId 费用标准id
-     * @param calendar 时间
-     * @param fmt 账期
-     * @param endTime 账期结束时间
+     * @param calendar   时间
+     * @param fmt        账期
+     * @param endTime    账期结束时间
      */
     public static void doSwitch(String sql, Long costRuleId, Calendar calendar, String fmt, Date endTime) {
         Object[] obj = new Object[]{costRuleId, calendar.getTime(), fmt, endTime};

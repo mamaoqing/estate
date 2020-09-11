@@ -1,10 +1,12 @@
 package com.estate.sdzy.tariff.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.tariff.entity.FCostRule;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -17,4 +19,6 @@ import org.apache.ibatis.annotations.Param;
 public interface FCostRuleMapper extends BaseMapper<FCostRule> {
 
     Page<FCostRule> listCostRule(Page<FCostRule> page, @Param("ew")QueryWrapper<FCostRule> queryWrapper);
+
+    List<FCostRule> listAllCostRule(@Param("userId") Long userId);
 }
