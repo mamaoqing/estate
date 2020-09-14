@@ -24,4 +24,5 @@ public interface FCostRuleService extends IService<FCostRule> {
     boolean saveOrUpdate(FCostRule rule,String token);
     boolean removeById(Long id ,String token);
     String getCostRuleName(Long id);
+    List<FCostRule> getRuleByOwnerId(Long ownerId);
 }
