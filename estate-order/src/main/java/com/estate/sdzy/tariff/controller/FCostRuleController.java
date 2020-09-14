@@ -64,5 +64,10 @@ public class FCostRuleController extends BaseController {
     public Result getCostRuleName(@PathVariable("id") Long id){
         return ResultUtil.success(costRuleService.getCostRuleName(id));
     }
+
+    @GetMapping("/getRuleByOwnerId/{ownerId}")
+    public Result getRuleByOwnerId(@PathVariable("ownerId") Long ownerId){
+        return ResultUtil.success(costRuleService.getRuleByOwnerId(ownerId));
+    }
 }
 
