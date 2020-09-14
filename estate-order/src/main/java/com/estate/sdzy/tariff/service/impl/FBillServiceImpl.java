@@ -135,8 +135,8 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 .in(!propertyIdList.isEmpty(), "property_id", propertyIdList)
                 .eq(!StringUtils.isEmpty(map.get("isInvoice")), "is_invoice", map.get("isInvoice"));
         //updateByMazhongcai 20200907
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("commId")),"comm_id",map.get("commId"));
-        queryWrapper.ne(!StringUtils.isEmpty(map.get("state")),"state",map.get("state"));
+        queryWrapper.ne(!StringUtils.isEmpty(map.get("state")),"aa.state",map.get("state"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("id")),"aa.id",map.get("id"));
         //updateByMazhongcai
         Integer pageNo = Integer.valueOf(map.get("pageNo"));
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
@@ -171,7 +171,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
 
     @Override
     @Transactional
-    public boolean resetBillAll(Map<String, Object> map) {
+    public boolean resetBillAll(Map<String, Object> map, String token) {
         Object ruleId = map.get("ruleId");
         if (StringUtils.isEmpty(ruleId)) {
             throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
@@ -187,50 +187,50 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
             List<FBill> fBills = billMapper.selectList(billQueryWrapper);
             StringBuilder sb = new StringBuilder("");
             // 如果查询结果是空的，表示还没有生成账单。可以手动生成。
-           if(!fBills.isEmpty()){
-               for (FBill res : fBills) {
-                   String types = "";
-                   // 区分车位房产等
-                   if ("room".equals(res.getPropertyType())) {
-                       types = "room";
-                   }
-                   if ("park".equals(res.getPropertyType())) {
-                       types = "park";
-                   }
-                   if ("an".equals(res.getPropertyType())) {
-                       types = "an";
-                   }
-                   if ("rq".equals(res.getPropertyType())) {
-                       types = "rq";
-                   }
-                   if ("water".equals(res.getPropertyType())) {
-                       types = "water";
-                   }
-                   int i = res.getPayPrice().compareTo(new BigDecimal(0));
-                   if ("否".equals(res.getIsPayment()) && i <= 0) {
-                       // 符合条件的先执行删除，在重新生成。
-                       sb.append(res.getId()).append(",");
-                       if (!StringUtils.isEmpty(res.getPropertyId())) {
-                           try {
-                               billMapper.deleteById(res.getId());
-                               CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), types, res.getPropertyId() + "", res.getAccountPeriod());
-                               return true;
-                           } catch (Exception sqlException) {
-                               throw new OrderException(500,"批量重新生成账单异常");
-                           }
-                       }
-                   }
-               }
-           }else{
-               try {
-                   CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), null, null,accountPeriod);
-                   return true;
-               } catch (SQLException sqlException) {
-                   sqlException.printStackTrace();
-               } catch (ClassNotFoundException e) {
-                   e.printStackTrace();
-               }
-           }
+            if(!fBills.isEmpty()){
+                for (FBill res : fBills) {
+                    String types = "";
+                    // 区分车位房产等
+                    if ("room".equals(res.getPropertyType())) {
+                        types = "room";
+                    }
+                    if ("park".equals(res.getPropertyType())) {
+                        types = "park";
+                    }
+                    if ("an".equals(res.getPropertyType())) {
+                        types = "an";
+                    }
+                    if ("rq".equals(res.getPropertyType())) {
+                        types = "rq";
+                    }
+                    if ("water".equals(res.getPropertyType())) {
+                        types = "water";
+                    }
+                    int i = res.getPayPrice().compareTo(new BigDecimal(0));
+                    if ("否".equals(res.getIsPayment()) && i <= 0) {
+                        // 符合条件的先执行删除，在重新生成。
+                        sb.append(res.getId()).append(",");
+                        if (!StringUtils.isEmpty(res.getPropertyId())) {
+                            try {
+                                billMapper.deleteById(res.getId());
+                                CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), types, res.getPropertyId() + "", res.getAccountPeriod());
+                                return true;
+                            } catch (Exception sqlException) {
+                                throw new OrderException(500,"批量重新生成账单异常");
+                            }
+                        }
+                    }
+                }
+            }else{
+                try {
+                    CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), null, null,accountPeriod);
+                    return true;
+                } catch (SQLException sqlException) {
+                    sqlException.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return false;
     }
