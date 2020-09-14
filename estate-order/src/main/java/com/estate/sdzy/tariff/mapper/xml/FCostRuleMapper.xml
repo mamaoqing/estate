@@ -19,4 +19,23 @@
             and comm.user_id=#{userId} and r.comm_id = comm.comm_id
         </if>
     </select>
+
+    <select id="getRuleByOwnerId" resultType="com.estate.sdzy.tariff.entity.FCostRule">
+        select r.id,r.name,rr.property_type,rr.property_id,
+(CASE
+		WHEN rr.property_type = '房产' THEN
+		(
+		SELECT
+			concat( b.no, '-', u.no, '-', room.room_no )
+		FROM
+			r_room room,r_building b,r_unit u
+		WHERE
+			room.id = rr.property_id
+			AND room.building_id = b.id
+			AND room.unit_id = u.id
+		) ELSE ( SELECT p.no FROM r_parking_space p WHERE p.id = rr.property_id )
+	END) AS propertyName
+        from f_cost_rule r,f_cost_rule_room rr,r_owner_property p,r_owner o
+        where r.id=rr.cost_rule_id and rr.property_id = p.property_id and p.owner_id = o.id and o.id=#{ownerId}
+    </select>
 </mapper>
