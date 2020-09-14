@@ -88,7 +88,7 @@ public class FBill implements Serializable {
     /**
      * 已经付的钱
      */
-    private BigDecimal payPrice;
+        private BigDecimal payPrice;
 
     /**
      * 备注
@@ -131,7 +131,8 @@ public class FBill implements Serializable {
      * 公司id
      */
     private Long compId;
-
+    @TableField(exist = false)
+    private String compName;
     private Long commId;
     @TableField(exist = false)
     private String commName;
@@ -144,4 +145,9 @@ public class FBill implements Serializable {
 
     @TableField(exist = false)
     private String ruleName;
+
+    @TableField(exist = false)
+    private String createName;
+
+    private Integer count;
 }

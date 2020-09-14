@@ -18,12 +18,9 @@ import java.util.Map;
  * @since 2020-08-27
  */
 public interface FBillMapper extends BaseMapper<FBill> {
-    /**
-     *
-     * @param compId
-     * @return
-     */
-    List<Map<String,String>> listOwner(@Param("compId") Long compId);
 
     Page<FBill> listBill(Page page,@Param("ew") QueryWrapper queryWrapper);
+
+    List<Map<String,Object>> listOwnerRoom(@Param("propertyId") Long propertyId);
+    List<Map<String,Object>> listOwnerPark(@Param("propertyId") Long propertyId);
 }

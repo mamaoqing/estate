@@ -7,5 +7,6 @@ public class BillCycle {
     public final static String QUARTER = "每季度";
     public final static String HALFAYEAR = "每半年";
     public final static String YEAR = "每年";
+    public final static String TWOYEAR = "每两月";
 
 }

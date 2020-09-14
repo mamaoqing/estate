@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.estate.sdzy.tariff.mapper.FFinanceRecordMapper">
-
+    <select id="getOwnerPropId" resultType="java.lang.Long">
+        select DISTINCT property_id from r_owner_property where owner_id =#{ownerId}
+    </select>
 </mapper>

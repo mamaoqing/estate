@@ -2,13 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.estate.sdzy.tariff.mapper.FCostRuleRoomMapper">
     <select id="getRoomIds" resultType="java.lang.String" parameterType="java.lang.Long">
-        SELECT GROUP_CONCAT(property_id) FROM f_cost_rule_room where cost_rule_id = #{ruleId} and property_type='room'
+        SELECT GROUP_CONCAT(property_id) FROM f_cost_rule_room where cost_rule_id = #{ruleId} and property_type='房产'
     </select>
     <select id="getParkIds" resultType="java.lang.String" parameterType="java.lang.Long">
-        SELECT GROUP_CONCAT(property_id) FROM f_cost_rule_room where cost_rule_id = #{ruleId} and property_type='park'
+        SELECT GROUP_CONCAT(property_id) FROM f_cost_rule_room where cost_rule_id = #{ruleId} and property_type='停车位'
     </select>
     <select id="costPark" resultType="java.util.Map" >
         select aa.*,dd.name commName,cc.name commAreaName,bb.id ids from r_parking_space aa, f_cost_rule_room bb ,r_comm_area cc,r_community dd
-where aa.id = bb.property_id and aa.comm_area_id=cc.id and aa.comm_id = dd.id and bb.property_type='park' and bb.cost_rule_id=#{ruleId} and aa.is_delete=0
+where aa.id = bb.property_id and aa.comm_area_id=cc.id and aa.comm_id = dd.id and bb.property_type='停车位' and bb.cost_rule_id=#{ruleId} and aa.is_delete=0
     </select>
 </mapper>

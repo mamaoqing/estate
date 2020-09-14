@@ -2,8 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.estate.sdzy.tariff.mapper.FBillMapper">
 
-    <select id="listOwner" resultType="java.util.Map">
-            select distinct name from r_owner  where comp_id =#{compId}
+    <select id="listOwnerRoom" resultType="java.util.Map">
+        select dd.* from r_owner_property aa ,r_room bb,r_owner dd
+        where 1=1 and aa.property_id = bb.id and aa.owner_id = dd.id
+        and aa.property_id=#{propertyId} and dd.is_delete = 0
+    </select>
+    <select id="listOwnerPark" resultType="java.util.Map">
+        select dd.* from r_owner_property aa ,r_parking_space bb,r_owner dd
+        where 1=1 and aa.property_id = bb.id and aa.owner_id = dd.id
+        and aa.property_id=#{propertyId} and dd.is_delete = 0
     </select>
 
     <select id="listBill" resultType="com.estate.sdzy.tariff.entity.FBill">
@@ -15,12 +22,18 @@
                 ( SELECT cc.roomNo FROM v_room_roomNo cc WHERE aa.property_id = cc.id AND cc.is_delete = 0 )
                END as NO,
                bb.NAME ruleName,
+               cc.name comp_name,
+                dd.name comm_name,
                aa.*
               FROM
                f_bill aa,
-               f_cost_rule bb
+               f_cost_rule bb,
+                 s_company cc,
+                 r_community dd
         ${ew.customSqlSegment}
         and aa.cost_rule_id = bb.id
+        and aa.comp_id = cc.id
+		and aa.comm_id = dd.id
         AND bb.is_delete = 0
     </select>
 </mapper>
