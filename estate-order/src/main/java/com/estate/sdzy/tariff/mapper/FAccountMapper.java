@@ -21,5 +21,5 @@ public interface FAccountMapper extends BaseMapper<FAccount> {
 
     FAccount getAccount(@Param("ownerId") Long ownerId,@Param("ruleId") Long ruleId);
 
-    String getMaxNo();
+    Long getMaxNo();
 }
