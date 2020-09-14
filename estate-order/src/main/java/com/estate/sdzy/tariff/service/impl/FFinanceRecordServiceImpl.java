@@ -119,6 +119,10 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
         FFinanceRecord record = new FFinanceRecord();
         record.setCompId(compId);
         record.setCommId(commId);
+        boolean isYc = false;
+        if (!StringUtils.isEmpty(map.get("isYc"))){
+            isYc = true;
+        }
 //        record.setNo(map.get("no"));
         record.setOperType(map.get("operType"));
         record.setPaymentMethod(map.get("paymentMethod"));
@@ -161,7 +165,7 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
                 fFinanceBillRecord.setCost(bill.getPayPrice());
                 fFinanceBillRecords.add(fFinanceBillRecord);
             }
-            if (map.get("isYc").equals("true")&&payPrice.compareTo(new BigDecimal("0"))==1&&!StringUtils.isEmpty(map.get("accountId"))){
+            if (isYc&&payPrice.compareTo(new BigDecimal("0"))==1&&!StringUtils.isEmpty(map.get("accountId"))){
                 FAccount account = accountMapper.selectById(map.get("accountId"));
                 account.setFee(account.getFee().add(payPrice));
                 accountMapper.updateById(account);
