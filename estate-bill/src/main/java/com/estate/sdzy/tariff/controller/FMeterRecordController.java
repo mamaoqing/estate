@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -45,8 +46,8 @@ public class FMeterRecordController extends BaseController {
     }
 
     @PostMapping("/insertMeterRecordByMeterId")
-    public Result insertMeterRecordByMeterId(@RequestBody FMeterRecord fMeterRecord,@RequestHeader("Authentication-Token") String token) {
-        String save = fMeterRecordService.saveByMeterId(fMeterRecord,token);
+    public Result insertMeterRecordByMeterId(Long meterId, BigDecimal newNum, @RequestHeader("Authentication-Token") String token) {
+        String save = fMeterRecordService.saveByMeterId(meterId,newNum,token);
         return ResultUtil.success(save);
     }
 

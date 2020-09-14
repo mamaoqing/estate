@@ -86,6 +86,19 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
     }
 
     @Override
+    public boolean save(FFinanceRecord financeRecord, String token){
+        SUser user = getUserByToken(token);
+        financeRecord.setCreatedBy(user.getId());
+        financeRecord.setCreatedName(user.getName());
+        int insert = mapper.insert(financeRecord);
+        if(insert > 0){
+            log.info("财务流水信息添加成功，添加人:{}",user.getUserName());
+            return true;
+        }
+        throw new OrderException(OrderExceptionEnum.SYSTEM_INSERT_ERROR);
+    }
+
+    @Override
     public boolean payPrice(Map<String,String> map, String token) {
         SUser user = getUserByToken(token);
         if (StringUtils.isEmpty(map)) {

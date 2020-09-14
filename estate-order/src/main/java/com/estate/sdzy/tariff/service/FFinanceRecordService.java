@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import java.security.acl.Owner;
 import java.util.List;
 import java.util.Map;
+import com.estate.sdzy.tariff.entity.FFinanceRecord;
 
 /**
  * <p>
@@ -25,4 +26,5 @@ public interface FFinanceRecordService extends IService<FFinanceRecord> {
     boolean payPrice(Map<String,String> map, String token);
     List<ROwner> getOwnerByName(String ownerName, String tel,String token);
     Page<FBill> getOwnerBill(Long ownerId, Long pageNo, Long size, String token);
+    boolean save(FFinanceRecord financeRecord,String token);
 }

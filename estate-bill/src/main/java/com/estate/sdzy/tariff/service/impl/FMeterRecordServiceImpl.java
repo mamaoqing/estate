@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -63,17 +64,28 @@ public class FMeterRecordServiceImpl extends ServiceImpl<FMeterRecordMapper, FMe
             FMeter fMeter = fMeterService.getById(fMeterRecord.getMeterId());
             fMeter.setNewNum(fMeterRecord.getNewNum());
             fMeter.setMeterReadTime(fMeterRecord.getModifiedAt());
-            fMeterService.update(fMeter,token);
-            log.info("仪表添加成功，添加人={}", user.getUserName());
+            //fMeterService.update(fMeter,token);
+            fMeter.setModifiedBy(user.getId());
+            fMeter.setModifiedName(user.getUserName());
+            int update = fMeterMapper.updateById(fMeter);
+            if (update > 0) {
+                log.info("仪表修改成功，修改人={}", user.getUserName());
+            }else{
+                throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+            }
+            log.info("仪表抄表添加成功，添加人={}", user.getUserName());
         } else {
             //throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
             return "添加数据系统异常";
         }
-        return "仪表添加成功";
+        return "仪表抄表添加成功";
     }
 
     @Override
-    public String saveByMeterId(FMeterRecord fMeterRecord, String token) {
+    public String saveByMeterId(Long meterId, BigDecimal newNum, String token) {
+        FMeterRecord fMeterRecord = new FMeterRecord();
+        fMeterRecord.setMeterId(meterId);
+        fMeterRecord.setNewNum(newNum);
         FMeter fMeter = fMeterMapper.selectById(fMeterRecord.getMeterId());
         fMeterRecord.setCompId(fMeter.getCompId());
         fMeterRecord.setCommId(fMeter.getCommId());

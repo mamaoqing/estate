@@ -135,8 +135,8 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 .in(!propertyIdList.isEmpty(), "property_id", propertyIdList)
                 .eq(!StringUtils.isEmpty(map.get("isInvoice")), "is_invoice", map.get("isInvoice"));
         //updateByMazhongcai 20200907
-        queryWrapper.ne(!StringUtils.isEmpty(map.get("state")),"aa.state",map.get("state"));
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("id")),"aa.id",map.get("id"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("commId")),"comm_id",map.get("commId"));
+        queryWrapper.ne(!StringUtils.isEmpty(map.get("state")),"state",map.get("state"));
         //updateByMazhongcai
         Integer pageNo = Integer.valueOf(map.get("pageNo"));
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
