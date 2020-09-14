@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.estate.sdzy.tariff.mapper.FAccountMapper">
     <select id="listAccount" resultType="com.estate.sdzy.tariff.entity.FAccount">
-        select a.id,a.comp_id,a.comm_id,o.id as ownerId,comp.name as compName,comm.name as commName,o.name as ownerName,o.tel as ownerTel,
+        select a.id,a.comp_id,a.type,a.comm_id,o.id as ownerId,comp.name as compName,comm.name as commName,o.name as ownerName,o.tel as ownerTel,
         a.name,a.no,a.fee,a.created_name,a.created_at,a.modified_at,a.modified_name
         from
         f_account a,f_account_cost_item item,s_company comp,r_community comm,r_owner o
@@ -17,11 +17,11 @@
             and a.comm_id = #{map.commId}
         </if>
         <if test="map.ownerName!='' and map.ownerName!=null">
-            and o.ownerName like CONCAT('%',#{map.ownerName},'%')
+            and o.name like CONCAT('%',#{map.ownerName},'%')
         </if>
         <if test="map.propertyName!='' and map.propertyName!=null">
-            item.property_id in (select m.property_id from f_account_cost_item item,v_f_meter m where item.property_id=m.property_id
-            and m.propertyName like CONCAT('%',#{map.propertyName},'%'))
+            and item.property_id in (select m.property_id from f_account_cost_item item,v_f_meter m where item.property_id=m.property_id
+                and m.propertyName like CONCAT('%',#{map.propertyName},'%'))
         </if>
         <if test="map.name!='' and map.name!=null">
             and a.name like CONCAT('%',#{map.name},'%')
