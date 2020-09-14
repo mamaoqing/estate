@@ -21,4 +21,6 @@ public interface FCostRuleMapper extends BaseMapper<FCostRule> {
     Page<FCostRule> listCostRule(Page<FCostRule> page, @Param("ew")QueryWrapper<FCostRule> queryWrapper);
 
     List<FCostRule> listAllCostRule(@Param("userId") Long userId);
+
+    List<FCostRule> getRuleByOwnerId(@Param("ownerId")Long ownerId);
 }
