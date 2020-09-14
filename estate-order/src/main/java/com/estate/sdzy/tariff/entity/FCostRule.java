@@ -34,6 +34,22 @@ public class FCostRule implements Serializable {
     private String costTypeName;
 
     /**
+     * 物业类型
+     */
+    @TableField(exist = false)
+    private String propertyType;
+    /**
+     * 物业id
+     */
+    @TableField(exist = false)
+    private String propertyId;
+    /**
+     * 物业名称
+     */
+    @TableField(exist = false)
+    private String propertyName;
+
+    /**
      * 费用项目id
      */
     private Long costItemId;
