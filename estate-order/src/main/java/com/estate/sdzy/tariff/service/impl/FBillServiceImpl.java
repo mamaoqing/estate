@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.exception.OrderException;
-import com.estate.common.util.ConnectUtil;
 import com.estate.common.util.BillExceptionEnum;
+import com.estate.common.util.ConnectUtil;
 import com.estate.common.util.OrderExceptionEnum;
 import com.estate.sdzy.asstes.entity.ROwner;
 import com.estate.sdzy.asstes.entity.ROwnerProperty;
@@ -129,7 +129,6 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 .eq(!StringUtils.isEmpty(map.get("isPrint")), "is_print", map.get("isPrint"))
                 .eq(!StringUtils.isEmpty(map.get("commId")), "aa.comm_id", map.get("commId"))
                 .eq(!StringUtils.isEmpty(map.get("type")), "property_type", map.get("type"))
-                .eq(!StringUtils.isEmpty(map.get("billNo")), "bill_no", map.get("billNo"))
                 .eq(!StringUtils.isEmpty(map.get("costRuleId")), "cost_rule_id", map.get("costRuleId"))
                 .in(!rooms.isEmpty(), "property_id", rooms)
                 .in(!propertyIdList.isEmpty(), "property_id", propertyIdList)
@@ -170,73 +169,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
     }
 
     @Override
-    @Transactional
-    public boolean resetBillAll(Map<String, Object> map, String token) {
-        Object ruleId = map.get("ruleId");
-        if (StringUtils.isEmpty(ruleId)) {
-            throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
-        }
-        FBillDate fBillDate = billDateMapper.billDateByRuleId(Long.valueOf(ruleId.toString()));
-        if (null == fBillDate) {
-            throw new OrderException(500, "暂时没有需要生成的账单！");
-        }
-        String accountPeriod = fBillDate.getAccountPeriod();
-        if (!StringUtils.isEmpty(accountPeriod)) {
-            QueryWrapper<FBill> billQueryWrapper = new QueryWrapper<>();
-            billQueryWrapper.eq("cost_rule_id", ruleId).eq("account_period", accountPeriod);
-            List<FBill> fBills = billMapper.selectList(billQueryWrapper);
-            StringBuilder sb = new StringBuilder("");
-            // 如果查询结果是空的，表示还没有生成账单。可以手动生成。
-            if(!fBills.isEmpty()){
-                for (FBill res : fBills) {
-                    String types = "";
-                    // 区分车位房产等
-                    if ("room".equals(res.getPropertyType())) {
-                        types = "room";
-                    }
-                    if ("park".equals(res.getPropertyType())) {
-                        types = "park";
-                    }
-                    if ("an".equals(res.getPropertyType())) {
-                        types = "an";
-                    }
-                    if ("rq".equals(res.getPropertyType())) {
-                        types = "rq";
-                    }
-                    if ("water".equals(res.getPropertyType())) {
-                        types = "water";
-                    }
-                    int i = res.getPayPrice().compareTo(new BigDecimal(0));
-                    if ("否".equals(res.getIsPayment()) && i <= 0) {
-                        // 符合条件的先执行删除，在重新生成。
-                        sb.append(res.getId()).append(",");
-                        if (!StringUtils.isEmpty(res.getPropertyId())) {
-                            try {
-                                billMapper.deleteById(res.getId());
-                                CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), types, res.getPropertyId() + "", res.getAccountPeriod());
-                                return true;
-                            } catch (Exception sqlException) {
-                                throw new OrderException(500,"批量重新生成账单异常");
-                            }
-                        }
-                    }
-                }
-            }else{
-                try {
-                    CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), null, null,accountPeriod);
-                    return true;
-                } catch (SQLException sqlException) {
-                    sqlException.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean addBill(FBill bill,String token) {
+    public boolean addBill(FBill bill, String token) {
         SUser user = (SUser) getUserByToken(token);
         if (StringUtils.isEmpty(bill)) {
             throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
@@ -253,6 +186,66 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
             return true;
         }
         throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public boolean resetBillAll(Map<String, Object> map, String token) {
+        SUser user = getUserByToken(token);
+        Object ruleId = map.get("ruleId");
+        if (StringUtils.isEmpty(ruleId)) {
+            throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        FBillDate fBillDate = billDateMapper.billDateByRuleId(Long.valueOf(ruleId.toString()));
+        if (null == fBillDate) {
+            throw new OrderException(500, "暂时没有需要生成的账单！");
+        }
+        String accountPeriod = fBillDate.getAccountPeriod();
+        if (!StringUtils.isEmpty(accountPeriod)) {
+            QueryWrapper<FBill> billQueryWrapper = new QueryWrapper<>();
+            billQueryWrapper.eq("cost_rule_id", ruleId).eq("account_period", accountPeriod);
+            Integer count = billMapper.selectCount(billQueryWrapper);
+            // 如果查询结果是空的，表示还没有生成账单。可以手动生成。
+//                throw new OrderException(OrderExceptionEnum.SYSTEM_UPDATE_ERROR);
+            if (count > 0) {
+//                QueryWrapper<FBill> queryWrapper = new QueryWrapper<>();
+//                queryWrapper.eq("cost_rule_id", ruleId);
+                //billMapper.delete(queryWrapper);
+                String sql = "delete from f_bill where cost_rule_id = ? and (is_payment = '否' or pay_price = 0) and account_period = ?";
+                String resetMeter = "update f_meter aa,f_bill bb,f_cost_rule cc set aa.bill_num =bb.begin_scale where " +
+                        "aa.property_id = bb.property_id and aa.property_type=bb.property_type and bb.cost_rule_id=? and bb.account_period=? " +
+                        "and aa.type = cc.billing_method and bb.cost_rule_id = cc.id and (bb.is_payment ='否' or bb.pay_price =0) and cc.billing_method in('水表','电表','煤气表')";
+                Object[] reset = {ruleId, accountPeriod};
+                Object[] obj = {ruleId,accountPeriod};
+                try {
+                    String insertSql = "insert into f_bill_copy (bill_no,property_id,property_type,bill_time,is_overdue,is_payment,overdue_cost,overdue_rule,price,pay_price,sale_price,is_print,is_invoice,pay_end_time,cost_rule_id,account_period,comp_id,comm_id,begin_scale,end_scale ,create_name,delete_time,delete_user) select bill_no,property_id,property_type,bill_time,is_overdue,is_payment,overdue_cost,overdue_rule,price,pay_price,sale_price,is_print,is_invoice,pay_end_time,cost_rule_id,account_period,comp_id,comm_id,begin_scale,end_scale,create_name,?,? from f_bill where cost_rule_id = " + ruleId + " and (is_payment = '否' or pay_price = 0) and account_period='" + accountPeriod + "'";
+                    Object[] o = {new Date(), user.getUserName()};
+                    String update = "update f_bill set bill_no = id";
+                    ExcuteSql.executeSql(insertSql, o, null);
+                    // 重新生长仪表的时候，将读数重置回生成账单之前的数据
+                    ExcuteSql.executeSql(resetMeter, reset, null);
+                    log.info("重置仪表读数sql:{}",resetMeter);
+
+                    // 重新生成新的账单之前先将原来的账单删除
+                    ExcuteSql.executeSql(sql, obj, null);
+                    log.info("删除之前的账单sql:{}",sql);
+
+                    CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), "", "", accountPeriod, true, null);
+                    ExcuteSql.executeSql(update, new Object[0], null);
+                    log.info("设置账单号sql:{}",update);
+                } catch (Exception sqlException) {
+                    sqlException.printStackTrace();
+                    throw new OrderException(500, "批量重新生成账单异常");
+                }
+            } else {
+                try {
+                    CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), null, null, accountPeriod, true, null);
+                } catch (Exception sqlException) {
+                    sqlException.printStackTrace();
+                }
+            }
+        }
+        return true;
     }
 
     @Override
