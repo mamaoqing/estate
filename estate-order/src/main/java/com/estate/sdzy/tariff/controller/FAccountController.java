@@ -45,5 +45,10 @@ public class FAccountController extends BaseController {
     public Result getAccount(Long ownerId,Long ruleId ){
         return ResultUtil.success(accountService.getAccount(ownerId,ruleId));
     }
+
+    @GetMapping("/getAccountByOwnerId/{ownerId}")
+    public Result getAccountByOwnerId(@PathVariable("ownerId") Long ownerId,@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(accountService.getAccountByOwnerId(ownerId,token));
+    }
 }
 

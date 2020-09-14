@@ -12,12 +12,15 @@ import com.estate.sdzy.asstes.entity.ROwnerProperty;
 import com.estate.sdzy.asstes.mapper.ROwnerMapper;
 import com.estate.sdzy.asstes.mapper.ROwnerPropertyMapper;
 import com.estate.sdzy.asstes.service.ROwnerPropertyService;
+import com.estate.sdzy.tariff.entity.FAccount;
 import com.estate.sdzy.tariff.entity.FBill;
 import com.estate.sdzy.tariff.entity.FFinanceBillRecord;
 import com.estate.sdzy.tariff.entity.FFinanceRecord;
+import com.estate.sdzy.tariff.mapper.FAccountMapper;
 import com.estate.sdzy.tariff.mapper.FBillMapper;
 import com.estate.sdzy.tariff.mapper.FFinanceBillRecordMapper;
 import com.estate.sdzy.tariff.mapper.FFinanceRecordMapper;
+import com.estate.sdzy.tariff.service.FAccountService;
 import com.estate.sdzy.tariff.service.FBillService;
 import com.estate.sdzy.tariff.service.FFinanceBillRecordService;
 import com.estate.sdzy.tariff.service.FFinanceRecordService;
@@ -60,6 +63,8 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
     private FBillMapper billMapper;
     @Autowired
     private FFinanceBillRecordService fFinanceBillRecordService;
+    @Autowired
+    private FAccountMapper accountMapper;
 
 
     @Override
@@ -156,8 +161,10 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
                 fFinanceBillRecord.setCost(bill.getPayPrice());
                 fFinanceBillRecords.add(fFinanceBillRecord);
             }
-            if (payPrice.compareTo(new BigDecimal("0"))==1){
-
+            if (map.get("isYc").equals("true")&&payPrice.compareTo(new BigDecimal("0"))==1&&!StringUtils.isEmpty(map.get("accountId"))){
+                FAccount account = accountMapper.selectById(map.get("accountId"));
+                account.setFee(account.getFee().add(payPrice));
+                accountMapper.updateById(account);
             }
             fFinanceBillRecordService.saveBatch(fFinanceBillRecords);
             return true;
