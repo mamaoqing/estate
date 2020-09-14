@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.estate.sdzy.tariff.entity.FAccount;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,4 +24,6 @@ public interface FAccountService extends IService<FAccount> {
     boolean saveOrUpdate(FAccount item,String token);
 
     FAccount getAccount(Long ownerId,Long ruleId);
+
+    List<FAccount> getAccountByOwnerId(Long ownerId, String token);
 }

@@ -188,6 +188,16 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
         }
     }
 
+    public List<FAccount> getAccountByOwnerId(Long ownerId,String token){
+        getUserByToken(token);
+        if(StringUtils.isEmpty(ownerId)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        QueryWrapper<FAccount> w = new QueryWrapper<>();
+        w.eq("owner_id",ownerId);
+        return accountMapper.selectList(w);
+    }
+
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {

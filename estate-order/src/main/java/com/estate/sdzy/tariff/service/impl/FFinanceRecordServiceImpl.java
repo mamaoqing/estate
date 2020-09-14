@@ -2,7 +2,6 @@ package com.estate.sdzy.tariff.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.exception.OrderException;
@@ -13,11 +12,15 @@ import com.estate.sdzy.asstes.entity.ROwnerProperty;
 import com.estate.sdzy.asstes.mapper.ROwnerMapper;
 import com.estate.sdzy.asstes.mapper.ROwnerPropertyMapper;
 import com.estate.sdzy.asstes.service.ROwnerPropertyService;
+import com.estate.sdzy.tariff.entity.FAccount;
 import com.estate.sdzy.tariff.entity.FBill;
 import com.estate.sdzy.tariff.entity.FFinanceBillRecord;
 import com.estate.sdzy.tariff.entity.FFinanceRecord;
+import com.estate.sdzy.tariff.mapper.FAccountMapper;
 import com.estate.sdzy.tariff.mapper.FBillMapper;
 import com.estate.sdzy.tariff.mapper.FFinanceRecordMapper;
+import com.estate.sdzy.tariff.service.FAccountService;
+import com.estate.sdzy.tariff.service.FBillService;
 import com.estate.sdzy.tariff.service.FFinanceBillRecordService;
 import com.estate.sdzy.tariff.service.FFinanceRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +60,8 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
     private FBillMapper billMapper;
     @Autowired
     private FFinanceBillRecordService fFinanceBillRecordService;
+    @Autowired
+    private FAccountMapper accountMapper;
     @Autowired
     private FFinanceRecordMapper financeRecordMapper;
 
@@ -125,6 +130,10 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
         FFinanceRecord record = new FFinanceRecord();
         record.setCompId(compId);
         record.setCommId(commId);
+        boolean isYc = false;
+        if (!StringUtils.isEmpty(map.get("isYc"))){
+            isYc = true;
+        }
 //        record.setNo(map.get("no"));
         record.setOperType(map.get("operType"));
         record.setPaymentMethod(map.get("paymentMethod"));
@@ -167,8 +176,10 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
                 fFinanceBillRecord.setCost(bill.getPayPrice());
                 fFinanceBillRecords.add(fFinanceBillRecord);
             }
-            if (payPrice.compareTo(new BigDecimal("0"))==1){
-
+            if (isYc&&payPrice.compareTo(new BigDecimal("0"))==1&&!StringUtils.isEmpty(map.get("accountId"))){
+                FAccount account = accountMapper.selectById(map.get("accountId"));
+                account.setFee(account.getFee().add(payPrice));
+                accountMapper.updateById(account);
             }
             fFinanceBillRecordService.saveBatch(fFinanceBillRecords);
             return true;
