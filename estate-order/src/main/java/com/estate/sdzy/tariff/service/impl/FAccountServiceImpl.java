@@ -195,7 +195,7 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
         }
         QueryWrapper<FAccount> w = new QueryWrapper<>();
         w.eq("owner_id",ownerId);
-        return accountMapper.selectList(w);
+        return fAccountMapper.selectList(w);
     }
 
     private SUser getUserByToken(String token) {
