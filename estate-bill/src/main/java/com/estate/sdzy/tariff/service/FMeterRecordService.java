@@ -3,6 +3,7 @@ package com.estate.sdzy.tariff.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.estate.sdzy.tariff.entity.FMeterRecord;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 public interface FMeterRecordService extends IService<FMeterRecord> {
 
     String save(FMeterRecord fMeterRecord, String token);
-    String saveByMeterId(FMeterRecord fMeterRecord, String token);
+    String saveByMeterId(Long meterId, BigDecimal newNum, String token);
     void saveOrIgnoreMeter(FMeterRecord fMeterRecord, String token);
     String update(FMeterRecord fMeterRecord, String token);
     boolean delete(String id,String token);
