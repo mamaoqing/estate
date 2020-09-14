@@ -6,9 +6,9 @@ import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.tariff.entity.FAccount;
 import com.estate.sdzy.tariff.service.FAccountService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/order/fAccount")
 public class FAccountController extends BaseController {
 
-    @Autowired
+    @Resource(name="accountService")
     private FAccountService accountService;
 
     @GetMapping("/listAccount")

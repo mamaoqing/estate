@@ -33,12 +33,12 @@ import java.util.Map;
  * @author mzc
  * @since 2020-09-10
  */
-@Service
+@Service(value="accountService")
 @Slf4j
 public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> implements FAccountService {
 
     @Autowired
-    private FAccountMapper accountMapper;
+    private FAccountMapper fAccountMapper;
 
     @Autowired
     private FFinanceRecordService financeRecordService;
@@ -63,10 +63,10 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
         SUser user = getUserByToken(token);
         Page<FAccount> page = new Page<>(pageNo,size);
         if(user.getCompId()==0){
-            Page<FAccount> listAccount = accountMapper.listAccount(page,map,null);
+            Page<FAccount> listAccount = fAccountMapper.listAccount(page,map,null);
             return listAccount;
         }else{
-            Page<FAccount> listAccount = accountMapper.listAccount(page,map,user.getId());
+            Page<FAccount> listAccount = fAccountMapper.listAccount(page,map,user.getId());
             return listAccount;
         }
     }
@@ -75,8 +75,8 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
     public boolean save(FAccount account, String token) {
         QueryWrapper<FAccount> queryWrapper = new QueryWrapper();
         queryWrapper.eq("no",account.getNo());
-        List<FAccount> fAccounts = accountMapper.selectList(queryWrapper);
-        if(fAccounts.size()>0){
+        List<FAccount> fAccounts = fAccountMapper.selectList(queryWrapper);
+        if(fAccounts.size()>0&&StringUtils.isEmpty(account.getId())){
             return false;
         }else{
             if(!StringUtils.isEmpty(account.getId())){//执行修改操作
@@ -90,17 +90,17 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
                 account.setModifiedBy(user.getId());
                 account.setModifiedName(user.getName());
                 if(StringUtils.isEmpty(account.getNo())){
-                    String maxNo = accountMapper.getMaxNo();
+                    String maxNo = String.valueOf(fAccountMapper.getMaxNo()+1);
                     account.setNo(maxNo);
                 }
-                int insert = accountMapper.insert(account);
+                int insert = fAccountMapper.insert(account);
                 if (insert > 0) {
                 /*如果选出的业主与费用标准与之前的账号验证相同，其他数据将带出原账户信息，添加账户操作改修改账户操作，
                 账户名称（不是手工输入，而是通过业主名称和费用标准名称组合生成。），预存账号编号（可以自动生产可以手工输入，保证同一社区的唯一性），
                 输入余额、备注信息，录入人为当前登录人，录入时间为系统时间，修改人为当前登录人、修改时间为系统时间。
                 增加一个账户信息的同时添加一条财务流水，操作f_account、f_finance_record两个表*/
                     log.info("费用项目添加成功，添加人:{}", user.getUserName());
-                    saveFinanceRecord(account,token,false);
+                    saveFinanceRecord(account,token,true);
                     saveAccountCostItem(account,token);
                     return true;
                 }
@@ -137,10 +137,14 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
         financeRecord.setAccountId(account.getId());
         if(isUpdate){//修改操作
             financeRecord.setOperType("预存");
-            financeRecord.setCost(account.getFeeAdd());
+            if(StringUtils.isEmpty(account.getFeeAdd())){
+                financeRecord.setCost(account.getFee());
+            }else{
+                financeRecord.setCost(account.getFeeAdd());
+            }
         }else{
             financeRecord.setOperType("取现");
-            financeRecord.setCost(account.getFee());
+            financeRecord.setCost(account.getFeeAdd());
         }
         financeRecord.setOwnerId(account.getOwnerId());
         financeRecord.setPaymentMethod(account.getPaymentMethod());
@@ -161,14 +165,14 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
         }
         account.setModifiedBy(user.getId());
         account.setModifiedName(user.getName());
-        int update = accountMapper.updateById(account);
+        int update = fAccountMapper.updateById(account);
         if(update > 0){
             if(account.getIsReNew()) {//续费
                 log.info("续费成功，修改人:{}", user.getUserName());
                 saveFinanceRecord(account,token,true);
             }else{
                 log.info("提现成功，修改人:{}", user.getUserName());
-                saveFinanceRecord(account,token,true);
+                saveFinanceRecord(account,token,false);
             }
             return true;
         }
@@ -176,7 +180,7 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
     }
 
     public FAccount getAccount(Long ownerId,Long ruleId){
-        FAccount account = accountMapper.getAccount(ownerId, ruleId);
+        FAccount account = fAccountMapper.getAccount(ownerId, ruleId);
         if(account!=null){
             return account;
         }else{
@@ -191,7 +195,7 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
         }
         QueryWrapper<FAccount> w = new QueryWrapper<>();
         w.eq("owner_id",ownerId);
-        return accountMapper.selectList(w);
+        return fAccountMapper.selectList(w);
     }
 
     private SUser getUserByToken(String token) {

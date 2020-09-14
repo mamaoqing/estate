@@ -2,6 +2,7 @@ package com.estate.sdzy.tariff.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.exception.OrderException;
@@ -18,13 +19,9 @@ import com.estate.sdzy.tariff.entity.FFinanceBillRecord;
 import com.estate.sdzy.tariff.entity.FFinanceRecord;
 import com.estate.sdzy.tariff.mapper.FAccountMapper;
 import com.estate.sdzy.tariff.mapper.FBillMapper;
-import com.estate.sdzy.tariff.mapper.FFinanceBillRecordMapper;
 import com.estate.sdzy.tariff.mapper.FFinanceRecordMapper;
-import com.estate.sdzy.tariff.service.FAccountService;
-import com.estate.sdzy.tariff.service.FBillService;
 import com.estate.sdzy.tariff.service.FFinanceBillRecordService;
 import com.estate.sdzy.tariff.service.FFinanceRecordService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +61,8 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
     private FFinanceBillRecordService fFinanceBillRecordService;
     @Autowired
     private FAccountMapper accountMapper;
+    @Autowired
+    private FFinanceRecordMapper financeRecordMapper;
 
 
     @Override
@@ -101,6 +99,18 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
             return true;
         }
         throw new OrderException(OrderExceptionEnum.SYSTEM_INSERT_ERROR);
+    }
+
+    @Override
+    public Page<FFinanceRecord> getFinanceRecords(Map<String, String> map,Integer pageNo, Integer size) {
+        if (StringUtils.isEmpty(pageNo)) {
+            throw new BillException(BillExceptionEnum.PAGENO_MISS_ERROR);
+        }
+        if (!StringUtils.isEmpty(map.get("size"))) {
+            size = Integer.valueOf(map.get("size"));
+        }
+        Page<FFinanceRecord> page = new Page<>(pageNo,size);
+        return financeRecordMapper.getFinanceRecords(page,map);
     }
 
     @Override
