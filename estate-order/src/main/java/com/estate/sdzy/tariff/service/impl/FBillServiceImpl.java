@@ -171,7 +171,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
 
     @Override
     @Transactional
-    public boolean resetBillAll(Map<String, Object> map) {
+    public boolean resetBillAll(Map<String, Object> map, String token) {
         Object ruleId = map.get("ruleId");
         if (StringUtils.isEmpty(ruleId)) {
             throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
@@ -213,7 +213,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                        if (!StringUtils.isEmpty(res.getPropertyId())) {
                            try {
                                billMapper.deleteById(res.getId());
-                               CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), types, res.getPropertyId() + "", res.getAccountPeriod());
+                               CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), "", "", accountPeriod,true,null);
                                return true;
                            } catch (Exception sqlException) {
                                throw new OrderException(500,"批量重新生成账单异常");
@@ -223,7 +223,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                }
            }else{
                try {
-                   CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), null, null,accountPeriod);
+                   CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), "", "", accountPeriod,true,null);
                    return true;
                } catch (SQLException sqlException) {
                    sqlException.printStackTrace();
