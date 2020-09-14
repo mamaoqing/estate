@@ -149,5 +149,8 @@ public class FBill implements Serializable {
     @TableField(exist = false)
     private String createName;
 
+    @TableField(exist = false)
+    private Long ownerId;
+
     private Integer count;
 }
