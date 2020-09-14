@@ -158,6 +158,11 @@ public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule
         }
     }
 
+    @Override
+    public List<FCostRule> getRuleByOwnerId(Long ownerId) {
+        return costRuleMapper.getRuleByOwnerId(ownerId);
+    }
+
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {
