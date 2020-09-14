@@ -1,7 +1,7 @@
 package com.estate.sdzy.tariff.service;
 
-import com.estate.sdzy.tariff.entity.FFinanceRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.estate.sdzy.tariff.entity.FFinanceRecord;
 
 /**
  * <p>
@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface FFinanceRecordService extends IService<FFinanceRecord> {
 
+    boolean save(FFinanceRecord financeRecord,String token);
 }
