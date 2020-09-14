@@ -130,6 +130,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 .eq(!StringUtils.isEmpty(map.get("commId")), "aa.comm_id", map.get("commId"))
                 .eq(!StringUtils.isEmpty(map.get("type")), "property_type", map.get("type"))
                 .eq(!StringUtils.isEmpty(map.get("costRuleId")), "cost_rule_id", map.get("costRuleId"))
+                .eq(!StringUtils.isEmpty(map.get("billNo")), "bill_no", map.get("billNo"))
                 .in(!rooms.isEmpty(), "property_id", rooms)
                 .in(!propertyIdList.isEmpty(), "property_id", propertyIdList)
                 .eq(!StringUtils.isEmpty(map.get("isInvoice")), "is_invoice", map.get("isInvoice"));
