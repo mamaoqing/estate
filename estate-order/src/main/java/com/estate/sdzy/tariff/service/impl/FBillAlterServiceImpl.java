@@ -152,11 +152,11 @@ public class FBillAlterServiceImpl extends ServiceImpl<FBillAlterMapper, FBillAl
         SUser user = getUserByToken(token);
         Page<SUser> page = new Page<>();
         if(user.getCompId()==0){
-            Page<FBillAlter> listBillAlter = fBillAlterMapper.getListBillAlter(page,map,null,null,null);
-            return listBillAlter.getRecords();
+            List<FBillAlter> listBillAlter = fBillAlterMapper.getBillAlterLists(null);
+            return listBillAlter;
         }else{
-            Page<FBillAlter> listBillAlter = fBillAlterMapper.getListBillAlter(page,map,null,null,user.getId());
-            return listBillAlter.getRecords();
+            List<FBillAlter> listBillAlter = fBillAlterMapper.getBillAlterLists(user.getId());
+            return listBillAlter;
         }
     }
 

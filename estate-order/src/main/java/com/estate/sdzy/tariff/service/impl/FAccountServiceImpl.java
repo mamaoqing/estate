@@ -198,6 +198,15 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
         return fAccountMapper.selectList(w);
     }
 
+    @Override
+    public List<Map<String,String>> listTypes(Map<String, String> map, String token) {
+        if("房产".equals(map.get("propertyType"))){
+            return fAccountMapper.getRoom(map);
+        }else{
+            return fAccountMapper.getParking(map);
+        }
+    }
+
     private SUser getUserByToken(String token) {
         Object o = redisTemplate.opsForValue().get(token);
         if (null == o) {

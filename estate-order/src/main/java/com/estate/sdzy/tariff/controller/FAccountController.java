@@ -50,5 +50,10 @@ public class FAccountController extends BaseController {
     public Result getAccountByOwnerId(@PathVariable("ownerId") Long ownerId,@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(accountService.getAccountByOwnerId(ownerId,token));
     }
+
+    @GetMapping("/getType")
+    public Result getType(@RequestHeader("Authentication-Token") String token, HttpServletRequest request){
+        return ResultUtil.success(accountService.listTypes(super.getParameterMap(request),token));
+    }
 }
 
