@@ -138,6 +138,20 @@ public class CrontabCostRule {
             }
             // 每半年
             if (BillCycle.HALFAYEAR.equals(bill_cycle) && (b || flag)) {
+                // 上半年
+                boolean first = account_period.contains("6");
+                // 下半年
+                boolean second = account_period.contains("7");
+                String substring = account_period.substring(0, 4);
+                int day = 0;
+                if(first){
+                    day = Integer.valueOf(substring)%4 == 0? 182: 181;
+                }
+                if (second){
+                    day = 184;
+                }
+
+
                 if (price_unit.contains("季")) {
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(2)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(2)), billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
@@ -146,8 +160,8 @@ public class CrontabCostRule {
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(6)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
                 } else if (price_unit.contains("天")) {
 
-                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(180)), billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
-                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(180)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(day)), billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(day)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
                 } else {
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price, billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price, billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);

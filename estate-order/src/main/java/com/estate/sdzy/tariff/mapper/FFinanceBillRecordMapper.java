@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.tariff.entity.FFinanceBillRecord;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,4 +19,6 @@ import java.util.Map;
 public interface FFinanceBillRecordMapper extends BaseMapper<FFinanceBillRecord> {
 
     Page<FFinanceBillRecord> getFinanceBillRecord(Page<FFinanceBillRecord> page, @Param("map") Map<String, String> map);
+
+    List<Map<String ,Object>> findMap(@Param("billId") long billId);
 }
