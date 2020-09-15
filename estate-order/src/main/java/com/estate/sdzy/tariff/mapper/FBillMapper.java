@@ -20,7 +20,7 @@ import java.util.Map;
 public interface FBillMapper extends BaseMapper<FBill> {
 
     Page<FBill> listBill(Page page,@Param("ew") QueryWrapper queryWrapper);
-
+    List<FBill> listBillNoPage(@Param("ew") QueryWrapper queryWrapper);
     List<Map<String,Object>> listOwnerRoom(@Param("propertyId") Long propertyId);
     List<Map<String,Object>> listOwnerPark(@Param("propertyId") Long propertyId);
 }

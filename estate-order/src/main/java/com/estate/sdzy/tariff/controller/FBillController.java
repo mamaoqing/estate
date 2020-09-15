@@ -35,6 +35,11 @@ public class FBillController extends BaseController {
         return ResultUtil.success(billService.listBill(super.getParameterMap(request), token));
     }
 
+    @GetMapping("/listBillNoPage")
+    public Result listBillNoPage(HttpServletRequest request, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(billService.listBillNoPage(super.getParameterMap(request), token));
+    }
+
     @PostMapping("/resetBillAll")
     public Result resetBillAll(@RequestBody Map<String,Object> map, @RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(billService.resetBillAll(map,token));

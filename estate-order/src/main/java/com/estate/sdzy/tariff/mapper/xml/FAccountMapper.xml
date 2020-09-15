@@ -20,12 +20,12 @@
             and o.name like CONCAT('%',#{map.ownerName},'%')
         </if>
         <if test="map.propertyType=='房产' and map.propertyName!='' and map.propertyName!=null">
-            and o.id in (select op.owner_id from r_owner_property op,v_room_roomNo r
-            where op.property_id = r.id and r.roomNo like CONCAT('%',#{map.propertyName},'%') and op.property_type='房产')
+            and o.id in (select op.owner_id from r_owner_property op
+            where op.property_id = #{map.propertyName} and op.property_type='房产')
         </if>
         <if test="map.propertyType=='停车位' and map.propertyName!='' and map.propertyName!=null">
-            and o.id in (select op.owner_id from r_owner_property op,r_parking_space p
-            where op.property_id = p.id and p.no like CONCAT('%',#{map.propertyName},'%') and op.property_type='停车位')
+            and o.id in (select op.owner_id from r_owner_property op
+            where op.property_id = #{map.propertyName} and op.property_type='停车位')
         </if>
         <if test="map.name!='' and map.name!=null">
             and a.name like CONCAT('%',#{map.name},'%')
@@ -46,5 +46,26 @@
 
     <select id="getMaxNo" resultType="java.lang.Long">
         select max(no) from f_account
+    </select>
+
+    <select id="getRoom" resultType="java.util.Map">
+        select id,roomNo as propertyName from v_room_roomNo where 1=1
+        <if test="map.compId!='' and map.compId!=null">
+         and comp_id = #{map.compId}
+        </if>
+        <if test="map.commId!='' and map.commId!=null">
+         and comm_id = #{map.commId}
+        </if>
+         and id in (select property_id from r_owner_property where property_type='房产')
+    </select>
+    <select id="getParking" resultType="java.util.Map">
+        select id,no as propertyName from r_parking_space where 1=1
+        <if test="map.compId!='' and map.compId!=null">
+            and comp_id = #{map.compId}
+        </if>
+        <if test="map.commId!='' and map.commId!=null">
+            and comm_id = #{map.commId}
+        </if>
+        and id in (select property_id from r_owner_property where property_type='停车位')
     </select>
 </mapper>

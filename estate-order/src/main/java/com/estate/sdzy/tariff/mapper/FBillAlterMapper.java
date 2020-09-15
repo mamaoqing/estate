@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.tariff.entity.FBillAlter;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,4 +19,6 @@ import java.util.Map;
 public interface FBillAlterMapper extends BaseMapper<FBillAlter> {
 
     Page<FBillAlter> getListBillAlter(Page page, @Param("map") Map<String,String> map, @Param("pageNo") Integer pageNo, @Param("size") Integer size, @Param("userId") Long userId);
+
+    List<FBillAlter> getBillAlterLists(@Param("userId") Long userId);
 }
