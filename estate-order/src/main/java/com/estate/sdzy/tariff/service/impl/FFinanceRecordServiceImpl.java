@@ -2,6 +2,7 @@ package com.estate.sdzy.tariff.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.exception.OrderException;
@@ -12,16 +13,15 @@ import com.estate.sdzy.asstes.entity.ROwnerProperty;
 import com.estate.sdzy.asstes.mapper.ROwnerMapper;
 import com.estate.sdzy.asstes.mapper.ROwnerPropertyMapper;
 import com.estate.sdzy.asstes.service.ROwnerPropertyService;
+import com.estate.sdzy.tariff.entity.FAccount;
 import com.estate.sdzy.tariff.entity.FBill;
 import com.estate.sdzy.tariff.entity.FFinanceBillRecord;
 import com.estate.sdzy.tariff.entity.FFinanceRecord;
+import com.estate.sdzy.tariff.mapper.FAccountMapper;
 import com.estate.sdzy.tariff.mapper.FBillMapper;
-import com.estate.sdzy.tariff.mapper.FFinanceBillRecordMapper;
 import com.estate.sdzy.tariff.mapper.FFinanceRecordMapper;
-import com.estate.sdzy.tariff.service.FBillService;
 import com.estate.sdzy.tariff.service.FFinanceBillRecordService;
 import com.estate.sdzy.tariff.service.FFinanceRecordService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.security.acl.Owner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +59,10 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
     private FBillMapper billMapper;
     @Autowired
     private FFinanceBillRecordService fFinanceBillRecordService;
+    @Autowired
+    private FAccountMapper accountMapper;
+    @Autowired
+    private FFinanceRecordMapper financeRecordMapper;
 
 
     @Override
@@ -99,6 +102,18 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
     }
 
     @Override
+    public Page<FFinanceRecord> getFinanceRecords(Map<String, String> map,Integer pageNo, Integer size) {
+        if (StringUtils.isEmpty(pageNo)) {
+            throw new BillException(BillExceptionEnum.PAGENO_MISS_ERROR);
+        }
+        if (!StringUtils.isEmpty(map.get("size"))) {
+            size = Integer.valueOf(map.get("size"));
+        }
+        Page<FFinanceRecord> page = new Page<>(pageNo,size);
+        return financeRecordMapper.getFinanceRecords(page,map);
+    }
+
+    @Override
     public boolean payPrice(Map<String,String> map, String token) {
         SUser user = getUserByToken(token);
         if (StringUtils.isEmpty(map)) {
@@ -114,6 +129,10 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
         FFinanceRecord record = new FFinanceRecord();
         record.setCompId(compId);
         record.setCommId(commId);
+        boolean isYc = false;
+        if (!StringUtils.isEmpty(map.get("isYc"))){
+            isYc = true;
+        }
 //        record.setNo(map.get("no"));
         record.setOperType(map.get("operType"));
         record.setPaymentMethod(map.get("paymentMethod"));
@@ -137,6 +156,7 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
                 BigDecimal payNumber = bill.getPrice().subtract(bill.getPayPrice());
                 if (payPrice.compareTo(payNumber)==1||payPrice.compareTo(payNumber)==0){
                     bill.setState("已付款");
+                    bill.setIsPayment("是");
                     bill.setPayPrice(bill.getPrice());
                     payPrice = payPrice.subtract(bill.getPrice());
                     billMapper.updateById(bill);
@@ -156,8 +176,10 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
                 fFinanceBillRecord.setCost(bill.getPayPrice());
                 fFinanceBillRecords.add(fFinanceBillRecord);
             }
-            if (payPrice.compareTo(new BigDecimal("0"))==1){
-
+            if (isYc&&payPrice.compareTo(new BigDecimal("0"))==1&&!StringUtils.isEmpty(map.get("accountId"))){
+                FAccount account = accountMapper.selectById(map.get("accountId"));
+                account.setFee(account.getFee().add(payPrice));
+                accountMapper.updateById(account);
             }
             fFinanceBillRecordService.saveBatch(fFinanceBillRecords);
             return true;
@@ -173,7 +195,7 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
         }
         QueryWrapper<ROwner> wrapper = new QueryWrapper<>();
         if (!StringUtils.isEmpty(ownerName)){
-            wrapper.like("name", ownerName);
+            wrapper.eq("name", ownerName);
         }
         if (!StringUtils.isEmpty(tel)){
             wrapper.eq("tel", tel);

@@ -1,7 +1,8 @@
 package com.estate.sdzy.tariff.mapper;
 
-import com.estate.sdzy.tariff.entity.FFinanceRecord;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.sdzy.tariff.entity.FFinanceRecord;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -17,4 +18,6 @@ import java.util.Map;
  */
 public interface FFinanceRecordMapper extends BaseMapper<FFinanceRecord> {
     List<Long> getOwnerPropId(@Param("ownerId") Long ownerId);
+
+    Page<FFinanceRecord> getFinanceRecords(Page<FFinanceRecord> page,@Param("map") Map<String, String> map);
 }

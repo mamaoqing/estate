@@ -7,7 +7,6 @@ import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.exception.OrderException;
 import com.estate.common.util.BillExceptionEnum;
-import com.estate.common.util.ConnectUtil;
 import com.estate.common.util.OrderExceptionEnum;
 import com.estate.sdzy.asstes.entity.ROwner;
 import com.estate.sdzy.asstes.entity.ROwnerProperty;
@@ -28,7 +27,6 @@ import com.estate.timedtask.costrule.CrontabCostRule;
 import com.estate.timedtask.costrule.excute.ExcuteSql;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jsqlparser.expression.operators.conditional.OrExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -112,6 +110,17 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 propertyIdList.add(res.getPropertyId());
             });
         }
+
+        if (!StringUtils.isEmpty(map.get("ownersId"))) {
+            String ownerId = map.get("ownersId");
+            QueryWrapper<ROwnerProperty> ownerPropertyQueryWrapper = new QueryWrapper<>();
+            ownerPropertyQueryWrapper.eq(!StringUtils.isEmpty(ownerId), "owner_id", ownerId);
+            List<ROwnerProperty> rOwnerProperties = ownerPropertyMapper.selectList(ownerPropertyQueryWrapper);
+            rOwnerProperties.forEach(res -> {
+                propertyIdList.add(res.getPropertyId());
+            });
+
+        }
         if (StringUtils.isEmpty(map.get("pageNo"))) {
             log.error("参数错误，请输入页码");
             throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
@@ -130,13 +139,22 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 .eq(!StringUtils.isEmpty(map.get("commId")), "aa.comm_id", map.get("commId"))
                 .eq(!StringUtils.isEmpty(map.get("type")), "property_type", map.get("type"))
                 .eq(!StringUtils.isEmpty(map.get("costRuleId")), "cost_rule_id", map.get("costRuleId"))
+                .eq(!StringUtils.isEmpty(map.get("billNo")), "bill_no", map.get("billNo"))
+//                .eq(!StringUtils.isEmpty(map.get("aa.state")), "state", map.get("state"))
                 .in(!rooms.isEmpty(), "property_id", rooms)
                 .in(!propertyIdList.isEmpty(), "property_id", propertyIdList)
+
                 .eq(!StringUtils.isEmpty(map.get("isInvoice")), "is_invoice", map.get("isInvoice"));
+        if (!StringUtils.isEmpty(map.get("ownersId"))) {
+            queryWrapper.or(qw->qw.eq("property_type","其他").eq("property_id",map.get("ownersId")));
+        }
+
         //updateByMazhongcai 20200907
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("commId")),"comm_id",map.get("commId"));
-        queryWrapper.ne(!StringUtils.isEmpty(map.get("state")),"state",map.get("state"));
+        queryWrapper.ne(!StringUtils.isEmpty(map.get("state")),"aa.state",map.get("state"));
         //updateByMazhongcai
+        if (!StringUtils.isEmpty(map.get("state1"))) {
+            queryWrapper.and(qw->qw.eq("aa.state",map.get("state1")));
+        }
         Integer pageNo = Integer.valueOf(map.get("pageNo"));
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
         Page<FBill> page = new Page<>(pageNo, size);
@@ -174,11 +192,15 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         if (StringUtils.isEmpty(bill)) {
             throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
         }
+        if (!StringUtils.isEmpty(bill.getPropertyType())&&bill.getPropertyType().equals("其他")){
+            bill.setPropertyId(bill.getOwnerId());
+        }
         bill.setCreateName("临时账单");
         bill.setAccountPeriod("临时账单");
         bill.setIsInvoice("否");
         bill.setIsOverdue("否");
         bill.setIsPayment("否");
+        bill.setBillTime(new Date());
         bill.setIsPrint("否");
         int insert = billMapper.insert(bill);
         if (insert>0){
@@ -251,7 +273,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
     public List<ROwner> listOwner(String token) {
         SUser user = getUserByToken(token);
         QueryWrapper<ROwner> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("DISTINCT name").eq("comp_id", user.getCompId());
+        queryWrapper.select("DISTINCT name,id").eq("comp_id", user.getCompId());
         List<ROwner> rOwners = rOwnerMapper.selectList(queryWrapper);
         return rOwners;
     }

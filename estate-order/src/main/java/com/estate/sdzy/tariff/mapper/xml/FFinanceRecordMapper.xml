@@ -4,4 +4,10 @@
     <select id="getOwnerPropId" resultType="java.lang.Long">
         select DISTINCT property_id from r_owner_property where owner_id =#{ownerId}
     </select>
+    <select id="getFinanceRecords" resultType="com.estate.sdzy.tariff.entity.FFinanceRecord">
+        select r.id,r.no,r.oper_type,r.cost,a.name as accountName,a.no as accountNo,r.payment_method,r.created_at,r.created_name,
+        o.name as ownerName
+        from f_finance_record r,f_account a,r_owner o
+        where r.account_id=${map.accountId} and r.account_id = a.id and r.owner_id=o.id
+    </select>
 </mapper>

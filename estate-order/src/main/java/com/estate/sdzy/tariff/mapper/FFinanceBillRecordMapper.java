@@ -1,7 +1,11 @@
 package com.estate.sdzy.tariff.mapper;
 
-import com.estate.sdzy.tariff.entity.FFinanceBillRecord;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.sdzy.tariff.entity.FFinanceBillRecord;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -13,4 +17,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface FFinanceBillRecordMapper extends BaseMapper<FFinanceBillRecord> {
 
+    Page<FFinanceBillRecord> getFinanceBillRecord(Page<FFinanceBillRecord> page, @Param("map") Map<String, String> map);
 }

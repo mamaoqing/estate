@@ -6,14 +6,23 @@
         select a.id,a.comp_id,a.comm_id,a.bill_id,a.alter_fee,a.alter_reason,a.alter_by,a.alter_time,a.audi_reason,
         a.auditor,a.audit_time,a.state,a.remark,
         r.name as costRuleName,
-        b.account_period,b.property_type,b.property_id,v.propertyName,b.price,b.state as billState,
+        b.account_period,b.property_type,b.property_id,
+            (CASE WHEN b.property_type = '房产' THEN
+            (SELECT DISTINCT concat( bd.no, '-', unit.no, '-', room.room_no )
+            FROM
+            r_room room,r_building bd,r_unit unit
+            WHERE
+            room.id = b.property_id AND room.building_id = bd.id AND room.unit_id = unit.id
+            ) ELSE ( SELECT DISTINCT p.no FROM r_parking_space p WHERE p.id = b.property_id )
+            END) AS propertyName,
+        b.price,b.state as billState,
         u.name as alterByName,u2.name as auditorName,u2.user_name as userName,
         comp.name as compName,comm.name as commName
-        from f_bill_alter a,f_bill b,f_cost_rule r,s_company comp,r_community comm,v_f_meter v,s_user u,s_auditer_cnf au,s_user u2
+        from f_bill_alter a,f_bill b,f_cost_rule r,s_company comp,r_community comm,s_user u,s_auditer_cnf au,s_user u2
         <if test="userId!='' and userId!=null">
             ,s_user_comm uc
         </if>
-        where a.bill_id = b.id and b.cost_rule_id = r.id and a.comp_id = comp.id and a.comm_id = comm.id and v.property_id = b.property_id
+        where a.bill_id = b.id and b.cost_rule_id = r.id and a.comp_id = comp.id and a.comm_id = comm.id
         and a.alter_by = u.id and a.auditor = au.id and au.user_id = u2.id
         <if test="map.compId!='' and map.compId!=null">
             and a.comp_id = #{map.compId}
@@ -27,12 +36,16 @@
         <if test="map.accountPeriod!='' and map.accountPeriod!=null">
             and b.account_period like CONCAT('%',#{map.accountPeriod},'%')
         </if>
-        <if test="map.propertyType!='' and map.propertyType!=null">
-            and b.property_type = #{map.propertyType}
+
+        <if test="map.propertyType=='房产' and map.propertyName!='' and map.propertyName!=null">
+            and b.id in (select b.id from v_room_roomNo r
+            where b.property_id = r.id and r.roomNo like CONCAT('%',#{map.propertyName},'%') and b.property_type='房产')
         </if>
-        <if test="map.propertyName!='' and map.propertyName!=null">
-            and v.propertyName like CONCAT('%',#{map.propertyName},'%')
+        <if test="map.propertyType=='停车位' and map.propertyName!='' and map.propertyName!=null">
+            and b.id in (select b.id from r_parking_space p
+            where b.property_id = p.id and p.no like CONCAT('%',#{map.propertyName},'%') and b.property_type='停车位')
         </if>
+
         <if test="map.alterTimeBegin!='' and map.alterTimeBegin!=null and map.alterTimeEnd!='' and map.alterTimeEnd!=null">
             and a.alter_time between #{map.alterTimeBegin} and #{map.alterTimeEnd}
         </if>
