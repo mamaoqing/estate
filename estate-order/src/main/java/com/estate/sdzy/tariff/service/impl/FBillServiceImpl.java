@@ -151,6 +151,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
 
         //updateByMazhongcai 20200907
         queryWrapper.ne(!StringUtils.isEmpty(map.get("state")),"aa.state",map.get("state"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("id")),"aa.id",map.get("id"));
         //updateByMazhongcai
         if (!StringUtils.isEmpty(map.get("state1"))) {
             queryWrapper.and(qw->qw.eq("aa.state",map.get("state1")));
