@@ -26,4 +26,6 @@ public interface FAccountService extends IService<FAccount> {
     FAccount getAccount(Long ownerId,Long ruleId);
 
     List<FAccount> getAccountByOwnerId(Long ownerId, String token);
+
+    List<Map<String,String>> listTypes(Map<String,String> map,String token);
 }
