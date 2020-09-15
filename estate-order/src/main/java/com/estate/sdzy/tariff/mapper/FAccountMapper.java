@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.tariff.entity.FAccount;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,4 +23,7 @@ public interface FAccountMapper extends BaseMapper<FAccount> {
     FAccount getAccount(@Param("ownerId") Long ownerId,@Param("ruleId") Long ruleId);
 
     Long getMaxNo();
+
+    List<Map<String,String>> getRoom(@Param("map") Map<String,String> map);
+    List<Map<String,String>> getParking(@Param("map") Map<String,String> map);
 }
