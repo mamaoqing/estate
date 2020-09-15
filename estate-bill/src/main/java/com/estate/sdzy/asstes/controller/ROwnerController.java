@@ -5,7 +5,6 @@ import com.estate.common.entity.SUser;
 import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.asstes.entity.ROwner;
-import com.estate.sdzy.asstes.entity.RRoom;
 import com.estate.sdzy.asstes.service.ROwnerService;
 import com.estate.sdzy.common.excel.ExportExcel;
 import com.estate.sdzy.common.excel.ImportExcel;
@@ -41,11 +40,11 @@ public class ROwnerController {
     private RedisUtil redisUtil;
 
     @PostMapping("/getOwenerList")
-    public Result getOwenerList(@RequestBody Map<String, Long> map, @RequestHeader("Authentication-Token") String token) {
+    public Result getOwenerList(@RequestBody Map<String, String> map, @RequestHeader("Authentication-Token") String token) {
         Map data = new HashMap();
         if (!StringUtils.isEmpty(map.get("pageNo")) && !StringUtils.isEmpty(map.get("size"))) {
-            Long pageNum = (map.get("pageNo") - 1) * map.get("size");
-            map.put("pageNo", pageNum);
+            Long pageNum = (Long.valueOf(map.get("pageNo")) - 1) * Long.valueOf(map.get("size"));
+            map.put("pageNo", String.valueOf(pageNum));
         }
         data.put("data", ownerService.getOwenerList(map, token));
         data.put("pageTotal", ownerService.selectPageTotal(map, token));
