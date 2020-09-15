@@ -156,6 +156,7 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
                 BigDecimal payNumber = bill.getPrice().subtract(bill.getPayPrice());
                 if (payPrice.compareTo(payNumber)==1||payPrice.compareTo(payNumber)==0){
                     bill.setState("已付款");
+                    bill.setIsPayment("是");
                     bill.setPayPrice(bill.getPrice());
                     payPrice = payPrice.subtract(bill.getPrice());
                     billMapper.updateById(bill);
@@ -194,7 +195,7 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
         }
         QueryWrapper<ROwner> wrapper = new QueryWrapper<>();
         if (!StringUtils.isEmpty(ownerName)){
-            wrapper.like("name", ownerName);
+            wrapper.eq("name", ownerName);
         }
         if (!StringUtils.isEmpty(tel)){
             wrapper.eq("tel", tel);
