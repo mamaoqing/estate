@@ -222,17 +222,16 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                     Object[] o = {new Date(), user.getUserName()};
                     String update = "update f_bill set bill_no = id";
                     ExcuteSql.executeSql(insertSql, o, null);
+
                     // 重新生长仪表的时候，将读数重置回生成账单之前的数据
                     ExcuteSql.executeSql(resetMeter, reset, null);
-                    log.info("重置仪表读数sql:{}",resetMeter);
 
                     // 重新生成新的账单之前先将原来的账单删除
                     ExcuteSql.executeSql(sql, obj, null);
-                    log.info("删除之前的账单sql:{}",sql);
 
                     CrontabCostRule.execute(Integer.valueOf(ruleId.toString()), "", "", accountPeriod, true, null);
+
                     ExcuteSql.executeSql(update, new Object[0], null);
-                    log.info("设置账单号sql:{}",update);
                 } catch (Exception sqlException) {
                     sqlException.printStackTrace();
                     throw new OrderException(500, "批量重新生成账单异常");
