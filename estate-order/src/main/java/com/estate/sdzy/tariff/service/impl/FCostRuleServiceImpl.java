@@ -69,6 +69,7 @@ public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule
                     .eq(!StringUtils.isEmpty(map.get("compId")),"aa.comp_id", map.get("compId"));
         }
         queryWrapper.eq(!StringUtils.isEmpty(map.get("costTypeId")),"cost_item_id", map.get("costTypeId"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("commId")),"aa.comm_id", map.get("commId"));
         Page<FCostRule> fCostRulePage = costRuleMapper.listCostRule(page, queryWrapper);
         List<FCostRule> records = fCostRulePage.getRecords();
         records.forEach(s->{

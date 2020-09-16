@@ -21,7 +21,7 @@
         </if>
         <if test="name!=''and name!=null">
             and r.name like CONCAT('%',#{name},'%')
-        </if>o
+        </if>
         <if test="commName!=''and commName!=null">
             and r.comm_id = #{commName}
         </if>

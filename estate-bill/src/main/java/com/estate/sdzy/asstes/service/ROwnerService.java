@@ -24,6 +24,7 @@ public interface ROwnerService extends IService<ROwner> {
     boolean update(ROwner owner, String token);
     boolean delete(Long id, String token);
     boolean deleteIds(String delIds, String token);
+    List<ROwner> listOwnerByCommId(Map<String,String> map,String token);
     ROwner getCount(ROwner owner, String token);
     List<ROwner> getOwenerByRoom(Map map, String token);
     List<RRoom> selectRoomByOwnerId(Integer ownerId,String token);
