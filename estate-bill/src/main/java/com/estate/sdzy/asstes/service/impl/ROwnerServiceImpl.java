@@ -164,6 +164,13 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
     }
 
     @Override
+    public List<ROwner> listOwnerByCommId(Map<String,String> map,String token) {
+        SUser user = getUserByToken(token);
+        List<ROwner> rOwners = mapper.getOwenerByCommId(map);
+        return rOwners;
+    }
+
+    @Override
     public List<RRoom> selectRoomByOwnerId(Integer ownerId, String token) {
         getUserByToken(token);
         if (null == ownerId) {

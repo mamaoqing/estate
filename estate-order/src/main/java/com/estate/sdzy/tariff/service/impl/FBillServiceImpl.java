@@ -353,6 +353,8 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         return rOwners;
     }
 
+
+
     @Override
     public boolean doPay(Map<String, Object> map, String token) {
         SUser user = getUserByToken(token);

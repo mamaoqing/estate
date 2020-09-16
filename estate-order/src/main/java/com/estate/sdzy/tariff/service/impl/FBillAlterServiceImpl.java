@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +51,9 @@ public class FBillAlterServiceImpl extends ServiceImpl<FBillAlterMapper, FBillAl
         }
         fBillAlter.setAlterBy(user.getId());
         fBillAlter.setState("已提交");
+        if (StringUtils.isEmpty(fBillAlter.getAlterTime())){
+            fBillAlter.setAlterTime(new Date());
+        }
         int insert = fBillAlterMapper.insert(fBillAlter);
         if (insert > 0) {
             log.info("费用调整添加成功，添加人={}", user.getUserName());
