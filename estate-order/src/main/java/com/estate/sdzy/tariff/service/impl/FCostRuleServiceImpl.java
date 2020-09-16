@@ -7,9 +7,11 @@ import com.estate.common.entity.SUser;
 import com.estate.common.exception.OrderException;
 import com.estate.common.util.CreateBillDateUtil;
 import com.estate.common.util.OrderExceptionEnum;
+import com.estate.sdzy.tariff.entity.FBillDate;
 import com.estate.sdzy.tariff.entity.FCostItem;
 import com.estate.sdzy.tariff.entity.FCostRule;
 import com.estate.sdzy.tariff.entity.FCostRuleRoom;
+import com.estate.sdzy.tariff.mapper.FBillDateMapper;
 import com.estate.sdzy.tariff.mapper.FCostItemMapper;
 import com.estate.sdzy.tariff.mapper.FCostRuleMapper;
 import com.estate.sdzy.tariff.mapper.FCostRuleRoomMapper;
@@ -42,6 +44,7 @@ public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule
     private final RedisTemplate redisTemplate;
     private final FCostItemMapper costItemMapper;
     private final FCostRuleRoomMapper costRuleRoomMapper;
+    private final FBillDateMapper billDateMapper;
 
     @Override
     public Page<FCostRule> listCostRule(Map<String, String> map, String token) {
@@ -68,8 +71,8 @@ public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule
                     .eq(!StringUtils.isEmpty(map.get("isDelete")), "aa.is_delete", map.get("isDelete"))
                     .eq(!StringUtils.isEmpty(map.get("compId")),"aa.comp_id", map.get("compId"));
         }
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("costTypeId")),"cost_item_id", map.get("costTypeId"));
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("commId")),"aa.comm_id", map.get("commId"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("costTypeId")),"cost_item_id", map.get("costTypeId"))
+        .eq(!StringUtils.isEmpty(map.get("commId")),"comm_id", map.get("commId"));
         Page<FCostRule> fCostRulePage = costRuleMapper.listCostRule(page, queryWrapper);
         List<FCostRule> records = fCostRulePage.getRecords();
         records.forEach(s->{
@@ -121,6 +124,13 @@ public class FCostRuleServiceImpl extends ServiceImpl<FCostRuleMapper, FCostRule
         rule.setModifiedBy(user.getId());
         rule.setModifiedName(user.getUserName());
         int update = costRuleMapper.updateById(rule);
+
+        FCostRule fCostRule = costRuleMapper.selectById(rule.getId());
+        QueryWrapper<FBillDate> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("cost_rule_id",fCostRule.getId());
+        List<FBillDate> fBillDates = billDateMapper.selectList(queryWrapper);
+
+
         if(update > 0){
             log.info("费用项目更新成功，修改人:{}",user.getUserName());
             return true;

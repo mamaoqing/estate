@@ -15,6 +15,7 @@
         <module>estate-autocode</module>
         <module>estate-timedtask</module>
         <module>estate-wechat</module>
+        <module>estate-account</module>
     </modules>
 
     <properties>

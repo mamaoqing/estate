@@ -6,6 +6,7 @@ import com.estate.common.util.FormatUtil;
 import com.estate.common.util.TransactionConnUtil;
 import com.estate.timedtask.costrule.excute.ExcuteRule;
 import com.estate.timedtask.costrule.util.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -21,6 +22,7 @@ import java.util.Map;
 /**
  * @author mq
  */
+@Slf4j
 public class CrontabCostRule {
     public static void main(String[] args) {
         CrontabCostRule.getCostRule();
@@ -71,7 +73,6 @@ public class CrontabCostRule {
         String sql = "select * from f_cost_rule where 1=1 and is_delete = 0 and id=?";
         Object[] arr = {costRuleId};
         ResultSet resultSet = ConnectUtil.executeQuery(sql, arr);
-        System.out.println("------------");
         // 获取当前日月
         boolean b = CalendarUtil.compareDate(billDay);
         int thisMonth = CalendarUtil.getMonth(now);
@@ -108,11 +109,15 @@ public class CrontabCostRule {
             if (now.after(begin_date) && now.before(end_date)) {
                 // 每天
                 if (BillCycle.DAY.equals(bill_cycle) && b) {
-
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price, billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price, billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
                 }
                 // 每周
                 if (BillCycle.WEEK.equals(bill_cycle) && b) {
-
+                    if (price_unit.contains("/天")) {
+                        MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(7)), billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
+                        MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(7)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
+                    }
                 }
                 // 每月
                 if (BillCycle.MONTH.equals(bill_cycle)) {
@@ -133,12 +138,30 @@ public class CrontabCostRule {
             }
             // 每半年
             if (BillCycle.HALFAYEAR.equals(bill_cycle) && (b || flag)) {
+                // 上半年
+                boolean first = account_period.contains("6");
+                // 下半年
+                boolean second = account_period.contains("7");
+                String substring = account_period.substring(0, 4);
+                int day = 0;
+                if(first){
+                    day = Integer.valueOf(substring)%4 == 0? 182: 181;
+                }
+                if (second){
+                    day = 184;
+                }
+
+
                 if (price_unit.contains("季")) {
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(2)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(2)), billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
                 } else if (price_unit.contains("月")) {
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(6)), billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(6)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
+                } else if (price_unit.contains("天")) {
+
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(day)), billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
+                    MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price.multiply(new BigDecimal(day)), billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
                 } else {
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price, billing_method, "停车位", account_period, cost_rule_id, comp_id1, comm_id);
                     MonthUtil.monthBill(comp_id, liquidated_damages_method, date, price, billing_method, "房产", account_period, cost_rule_id, comp_id1, comm_id);
@@ -183,5 +206,25 @@ public class CrontabCostRule {
             default:
                 return false;
         }
+    }
+
+    public static int getDay(Date early, Date late) {
+
+        java.util.Calendar calst = java.util.Calendar.getInstance();
+        java.util.Calendar caled = java.util.Calendar.getInstance();
+        calst.setTime(early);
+        caled.setTime(late);
+        //设置时间为0时
+        calst.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        calst.set(java.util.Calendar.MINUTE, 0);
+        calst.set(java.util.Calendar.SECOND, 0);
+        caled.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        caled.set(java.util.Calendar.MINUTE, 0);
+        caled.set(java.util.Calendar.SECOND, 0);
+        //得到两个日期相差的天数
+        int days = ((int) (caled.getTime().getTime() / 1000) - (int) (calst
+                .getTime().getTime() / 1000)) / 3600 / 24;
+
+        return days;
     }
 }

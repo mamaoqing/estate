@@ -294,7 +294,7 @@ public class CreateBillDateUtil {
             calendar.add(Calendar.DATE, day);
             CreateBillDateUtil.doSwitch(sql, costRuleId, calendar, fmt, year1);
             calendar.set(Calendar.DAY_OF_MONTH, 1);
-            CreateBillDateUtil.bannian(calendar.getTime(), end, day, costRuleId);
+            CreateBillDateUtil.bannian(year1, end, day, costRuleId);
 
         }
     }
