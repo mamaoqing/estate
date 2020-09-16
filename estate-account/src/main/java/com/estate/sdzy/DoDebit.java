@@ -1,6 +1,5 @@
 package com.estate.sdzy;
 
-import com.estate.common.util.ConnectUtil;
 import com.estate.common.util.TransactionConnUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -79,7 +78,6 @@ public class DoDebit {
                 price = result.getBigDecimal("price");
                 // 结算的钱，减去优惠加上违约金减去已经支付的钱。
                 aaa = result.getBigDecimal("aaa");
-                System.out.println(aaa+"==========>"+price+"==============="+count+"==============="+fee+"==============="+subtract);
                 if (null == price) {
                     price = new BigDecimal(0);
                 }
@@ -118,12 +116,9 @@ public class DoDebit {
 
             Integer integer = TransactionConnUtil.executeUpdate(insertFinanceFRecordSql, objs, true);
 
-            System.out.println(insertFinanceFRecordSql);
-            System.out.println(fee+"---------"+objs[5]);
 
             String updateAccount = "update f_account set fee = ? where id = ?";
             fee=fee.subtract(count);
-            System.out.println(fee);
             Object[] accout = {fee,account_id};
 
             Integer integer2 = TransactionConnUtil.executeUpdate(updateAccount, accout);
