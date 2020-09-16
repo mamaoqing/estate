@@ -27,7 +27,7 @@ public class DoDebit {
         c.setTime(now);
         c.add(Calendar.DATE, -1);
         Date time = c.getTime();
-        String sql = "select id,owner_id fee from f_account aa where aa.fee > 0";
+        String sql = "select id,owner_id, fee from f_account aa where aa.fee > 0";
 
         try {
             ResultSet resultSet = TransactionConnUtil.executeQuery(sql);
@@ -60,6 +60,8 @@ public class DoDebit {
         String payMent = "否";
         String operType = "支付";
         String payment_method = "自动扣费";
+        BigDecimal aaa = new BigDecimal(0);
+        BigDecimal subtract =new BigDecimal(0);
         try {
             connection = TransactionConnUtil.getConnection();
             while (result.next()) {
@@ -73,41 +75,39 @@ public class DoDebit {
                 BigDecimal money = new BigDecimal(0);
                 // 付的钱
                 BigDecimal payPrice = new BigDecimal(0);
-                // 是否支付
-               payMent = "否";
-                // 支付状态
-                operType = "支付";
-                // 扣费方式
-                payment_method = "自动扣费";
 
+                price = result.getBigDecimal("price");
                 // 结算的钱，减去优惠加上违约金减去已经支付的钱。
-                price = result.getBigDecimal("aaa");
-                System.out.println("==========>"+price+"===============");
+                aaa = result.getBigDecimal("aaa");
+                System.out.println(aaa+"==========>"+price+"==============="+count+"==============="+fee+"==============="+subtract);
                 if (null == price) {
                     price = new BigDecimal(0);
                 }
                 if (null == fee) {
                     fee = new BigDecimal(0);
                 }
-                BigDecimal subtract = fee.subtract(count);
-                if (!(subtract.compareTo(price) < 1)) {
-                    money = fee.subtract(price);
-                    payPrice = price;
-                    payMent = "是";
-                } else {
-                    payPrice = subtract;
-                }
-                // 账户余额不小于账单总金额
                 if ((fee.compareTo(count) < 1)) {
                     break;
                 }
+                subtract = fee.subtract(count);
+                if ((subtract.compareTo(aaa) == 1)) {
+//                    money = fee.subtract(price);
+                    payPrice = price;
+                    payMent = "是";
+                    count = count.add(aaa);
+                } else {
+                    payPrice = subtract;
+                    count=fee;
+                }
+                // 账户余额不小于账单总金额
+
                 Object[] o = {compId, commId,id,payPrice,now,null};
                 // 更新f_bill
-                count = count.add(payPrice);
+
                 String updateBill = "update f_bill set pay_price = ? , is_payment = ? where id = ?";
                 Object[] b = {payPrice,payMent,id};
                 TransactionConnUtil.executeUpdate(updateBill, b);
-                objs = new Object[]{compId, commId, no, account_id, operType, payPrice, owner_id, payment_method, now};
+//                objs = new Object[]{compId, commId, no, account_id, operType, payPrice, owner_id, payment_method, now};
                 list.add(o);
             }
             objs = new Object[]{compId, commId, no, account_id, operType, count, owner_id, payment_method, now};
@@ -119,11 +119,13 @@ public class DoDebit {
             Integer integer = TransactionConnUtil.executeUpdate(insertFinanceFRecordSql, objs, true);
 
             System.out.println(insertFinanceFRecordSql);
-            System.out.println(objs[5]);
+            System.out.println(fee+"---------"+objs[5]);
 
-            String updateAccount = "update f_account set fee =fee- ? where id = ?";
-            Object[] accout = {fee.subtract(count),account_id};
-            
+            String updateAccount = "update f_account set fee = ? where id = ?";
+            fee=fee.subtract(count);
+            System.out.println(fee);
+            Object[] accout = {fee,account_id};
+
             Integer integer2 = TransactionConnUtil.executeUpdate(updateAccount, accout);
             for (Object[] objects : list) {
                 String insertFinanceBillRecord = "insert into f_finance_bill_record(comp_id,comm_id,bill_id,cost,created_at,finance_record_id)" +
