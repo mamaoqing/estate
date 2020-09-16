@@ -129,6 +129,11 @@ public class ROwnerController {
         return ResultUtil.success(ownerService.selectRoomByOwnerId(ownerId, token));
     }
 
+    @PostMapping("/listOwnerByCommId")
+    public Result listOwnerByCommId(@RequestBody Map<String,String> map,@RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(ownerService.listOwnerByCommId(map,token));
+    }
+
     @GetMapping("getParkByOwnerId/{ownerId}")
     public Result getParkByOwnerId(@PathVariable Integer ownerId, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(ownerService.selectParkByOwnerId(ownerId, token));

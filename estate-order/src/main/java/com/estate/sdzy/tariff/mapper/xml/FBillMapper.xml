@@ -36,4 +36,28 @@
 		and aa.comm_id = dd.id
         AND bb.is_delete = 0
     </select>
+
+    <select id="listBillNoPage" resultType="com.estate.sdzy.tariff.entity.FBill">
+         SELECT DISTINCT
+            CASE WHEN
+              aa.property_type = '停车位' THEN
+               ( SELECT dd.`no` FROM r_parking_space dd WHERE aa.property_id = dd.id AND dd.is_delete = 0 )
+              else
+                ( SELECT cc.roomNo FROM v_room_roomNo cc WHERE aa.property_id = cc.id AND cc.is_delete = 0 )
+               END as NO,
+               bb.NAME ruleName,
+               cc.name comp_name,
+                dd.name comm_name,
+               aa.*
+              FROM
+               f_bill aa,
+               f_cost_rule bb,
+                 s_company cc,
+                 r_community dd
+        ${ew.customSqlSegment}
+        and aa.cost_rule_id = bb.id
+        and aa.comp_id = cc.id
+		and aa.comm_id = dd.id
+        AND bb.is_delete = 0
+    </select>
 </mapper>

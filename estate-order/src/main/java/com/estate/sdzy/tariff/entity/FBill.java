@@ -153,4 +153,5 @@ public class FBill implements Serializable {
     private Long ownerId;
 
     private Integer count;
+
 }

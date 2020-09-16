@@ -4,6 +4,7 @@ import com.estate.common.util.ConnectUtil;
 import com.estate.common.constant.BillintMethod;
 import com.estate.common.util.TransactionConnUtil;
 import com.estate.timedtask.costrule.excute.ExcuteSql;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -19,6 +20,7 @@ import java.util.List;
  * @author mmq
  * 　　* @date 2020/9/2 9:10
  */
+@Slf4j
 public class MonthUtil {
 
 
@@ -37,11 +39,11 @@ public class MonthUtil {
     public static void monthBill( String comp_id,
                                  String liquidated_damages_method, Date date, BigDecimal price, String billing_method, String type,
                                  String thisMonth, long cost_rule_id, int compId, int comm_id) {
-        // 物业费
+        // 物业费、建筑面积
         if (BillintMethod.BUILDAREA.equals(billing_method)) {
             MonthUtil.monthBillEstate(comp_id, liquidated_damages_method, date, price, type, thisMonth, cost_rule_id, compId, comm_id, billing_method);
         }
-        // 暖气费用
+        // 暖气费用 、使用面积
         if (BillintMethod.USEAREA.equals(billing_method)) {
             MonthUtil.monthBillHot(comp_id, liquidated_damages_method, date, price, type, thisMonth, cost_rule_id, compId, comm_id, billing_method);
         }
@@ -146,6 +148,8 @@ public class MonthUtil {
             String sql = "update f_meter aa,f_cost_rule_room bb,f_bill cc set aa.bill_num=aa.new_num where aa.property_id=bb.property_id and bb.cost_rule_id=? and aa.type=? and (cc.is_payment = '否' or cc.pay_price = 0)  and cc.property_id=aa.property_id and cc.property_type=aa.property_type and cc.property_type=?";
             Object[] update = {cost_rule_id,meterType,types};
             TransactionConnUtil.executeUpdate(sql,update);
+            String updateBill = "update f_bill set bill_no = id";
+            TransactionConnUtil.executeUpdate(updateBill,new Object[0]);
             connection.commit();
         } catch (SQLException sqlException) {
             try {

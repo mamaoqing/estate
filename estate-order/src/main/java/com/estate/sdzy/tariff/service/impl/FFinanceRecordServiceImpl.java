@@ -125,66 +125,88 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
         List<ROwnerProperty> rOwnerProperties = ownerPropertyMapper.selectList(queryWrapper);
         Long compId = rOwnerProperties.get(0).getCompId();
         Long commId = rOwnerProperties.get(0).getCommId();
-        BigDecimal payPrice = new BigDecimal(map.get("cost"));
+        BigDecimal payPrice = new BigDecimal(map.get("fukuan"));
+        BigDecimal cost = new BigDecimal(map.get("cost"));
         FFinanceRecord record = new FFinanceRecord();
         record.setCompId(compId);
         record.setCommId(commId);
-        boolean isYc = false;
-        if (!StringUtils.isEmpty(map.get("isYc"))){
-            isYc = true;
-        }
-//        record.setNo(map.get("no"));
-        record.setOperType(map.get("operType"));
+        record.setCreatedBy(user.getId());
+        record.setCreatedName(user.getUserName());
         record.setPaymentMethod(map.get("paymentMethod"));
         record.setOwnerId(Long.parseLong(map.get("ownerId")));
         record.setRemark(map.get("remark"));
-        record.setCost(payPrice);
-        record.setCreatedBy(user.getId());
-        record.setCreatedName(user.getUserName());
-        int insert = mapper.insert(record);
-        if (insert > 0) {
-            log.info("财务流水信息添加成功，添加人={}", user.getUserName());
-            String[] split = map.get("payIds").split(",");
-            QueryWrapper<FBill> wrapper = new QueryWrapper<>();
 
-            wrapper.in("id",split);
-            wrapper.orderByDesc("pay_end_time");
-            List<FBill> fBills = billMapper.selectList(wrapper);
-            List<FFinanceBillRecord> fFinanceBillRecords = new ArrayList<>();
-
-            for (FBill bill:fBills){
-                BigDecimal payNumber = bill.getPrice().subtract(bill.getPayPrice());
-                if (payPrice.compareTo(payNumber)==1||payPrice.compareTo(payNumber)==0){
-                    bill.setState("已付款");
-                    bill.setIsPayment("是");
-                    bill.setPayPrice(bill.getPrice());
-                    payPrice = payPrice.subtract(bill.getPrice());
-                    billMapper.updateById(bill);
-                }else{
-                    bill.setPayPrice(payPrice.add(bill.getPayPrice()));
-                    payPrice = new BigDecimal("0");
-                    billMapper.updateById(bill);
-                    break;
-                }
-                FFinanceBillRecord fFinanceBillRecord = new FFinanceBillRecord();
-                fFinanceBillRecord.setCreatedBy(user.getId());
-                fFinanceBillRecord.setCreatedName(user.getUserName());
-                fFinanceBillRecord.setCompId(compId);
-                fFinanceBillRecord.setCommId(commId);
-                fFinanceBillRecord.setFinanceRecordId(record.getId());
-                fFinanceBillRecord.setBillId(bill.getId());
-                fFinanceBillRecord.setCost(bill.getPayPrice());
-                fFinanceBillRecords.add(fFinanceBillRecord);
-            }
-            if (isYc&&payPrice.compareTo(new BigDecimal("0"))==1&&!StringUtils.isEmpty(map.get("accountId"))){
-                FAccount account = accountMapper.selectById(map.get("accountId"));
-                account.setFee(account.getFee().add(payPrice));
-                accountMapper.updateById(account);
-            }
-            fFinanceBillRecordService.saveBatch(fFinanceBillRecords);
-            return true;
+        if(!StringUtils.isEmpty(map.get("isYc"))&&!StringUtils.isEmpty(map.get("ycje"))&&map.get("isYc").equals("true")){
+            record.setOperType("预存");
+            record.setAccountId(Long.parseLong(map.get("accountId")));
+            record.setCost(new BigDecimal(map.get("ycje")));
+            mapper.insert(record);
+            FAccount account = accountMapper.selectById(map.get("accountId"));
+            account.setFee(account.getFee().add(payPrice));
+            accountMapper.updateById(account);
         }
-        throw new BillException(BillExceptionEnum.SYSTEM_INSERT_ERROR);
+        record.setId(null);
+        record.setOperType("支付");
+        record.setCost(cost);
+        mapper.insert(record);
+
+        String[] split = map.get("payIds").split(",");
+        QueryWrapper<FBill> wrapper = new QueryWrapper<>();
+
+        wrapper.in("id",split);
+        wrapper.orderByDesc("pay_end_time");
+        List<FBill> fBills = billMapper.selectList(wrapper);
+        List<FFinanceBillRecord> fFinanceBillRecords = new ArrayList<>();
+
+        for (FBill bill:fBills){
+            if (StringUtils.isEmpty(bill.getSalePrice())){
+                bill.setSalePrice(new BigDecimal("0"));
+            }
+            if (StringUtils.isEmpty(bill.getOverdueCost())){
+                bill.setOverdueCost(new BigDecimal("0"));
+            }
+            if (StringUtils.isEmpty(bill.getPayPrice())){
+                bill.setPayPrice(new BigDecimal("0"));
+            }
+            BigDecimal payNumber = bill.getPrice().subtract(bill.getPayPrice().subtract(bill.getSalePrice()).add(bill.getOverdueCost()));
+            if (payNumber.equals("0")){
+                continue;
+            }
+
+            if (payPrice.compareTo(payNumber)==1||payPrice.compareTo(payNumber)==0){
+                bill.setState("已支付");
+                bill.setIsPayment("是");
+                bill.setIsPrint("否");
+                bill.setIsOverdue("否");
+                bill.setIsInvoice("否");
+                bill.setPayPrice(bill.getPrice());
+                payPrice = payPrice.subtract(bill.getPrice());
+                billMapper.updateById(bill);
+            }else{
+                bill.setPayPrice(payPrice.add(bill.getPayPrice()));
+                payPrice = new BigDecimal("0");
+                bill.setIsPayment("是");
+                bill.setIsPrint("否");
+                bill.setIsOverdue("否");
+                bill.setIsInvoice("否");
+                billMapper.updateById(bill);
+                break;
+            }
+            FFinanceBillRecord fFinanceBillRecord = new FFinanceBillRecord();
+            fFinanceBillRecord.setCreatedBy(user.getId());
+            fFinanceBillRecord.setCreatedName(user.getUserName());
+            fFinanceBillRecord.setCompId(compId);
+            fFinanceBillRecord.setCompId(compId);
+            fFinanceBillRecord.setCommId(commId);
+            fFinanceBillRecord.setFinanceRecordId(record.getId());
+            fFinanceBillRecord.setBillId(bill.getId());
+            fFinanceBillRecord.setCost(bill.getPayPrice());
+            fFinanceBillRecords.add(fFinanceBillRecord);
+        }
+
+        fFinanceBillRecordService.saveBatch(fFinanceBillRecords);
+        return true;
+
     }
 
     @Override

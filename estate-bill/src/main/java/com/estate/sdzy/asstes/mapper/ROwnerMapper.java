@@ -24,6 +24,7 @@ public interface ROwnerMapper extends BaseMapper<ROwner> {
     Page<ROwner> getOwenerPageList(Page<ROwner> page,@Param("map") Map map);
     List<ROwner> getOwenerByRoom(Map map);
     List<ROwner> getExcel(Map map);
+    List<ROwner> getOwenerByCommId(Map map);
     List<RRoom> selectRoomByOwnerId(Integer ownerId);
     List<RParkingSpace> selectParkByOwnerId(Integer ownerId);
     Integer selectPageTotal(Map map);

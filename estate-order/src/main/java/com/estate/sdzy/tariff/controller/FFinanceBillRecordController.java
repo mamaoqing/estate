@@ -7,6 +7,7 @@ import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.tariff.service.FFinanceBillRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +31,11 @@ public class FFinanceBillRecordController extends BaseController {
     @GetMapping("/listFinanceBillRecord")
     public Result listFinanceBillRecord(Integer pageNo, Integer size, HttpServletRequest request){
         return ResultUtil.success(financeBillRecordService.getFinanceBillRecords(super.getParameterMap(request),pageNo,size));
+    }
+
+    @GetMapping("/{billId}")
+    public Result listFinanceBillRecords(@PathVariable("billId") Long billId){
+        return ResultUtil.success(financeBillRecordService.getFFinanceBillRecord(billId));
     }
 }
 

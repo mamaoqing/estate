@@ -152,7 +152,7 @@ public class FCostRuleRoomServiceImpl extends ServiceImpl<FCostRuleRoomMapper, F
         QueryWrapper<FCostRuleRoom> queryWrapper = new QueryWrapper<>();
         String[] split = ids.split(",");
         List<String> strings = Arrays.asList(split);
-        queryWrapper.in("property_id", strings).eq("property_type","park").eq("cost_rule_id",ruleId);
+        queryWrapper.in("property_id", strings).eq("property_type","停车位").eq("cost_rule_id",ruleId);
         int delete = costRuleRoomMapper.delete(queryWrapper);
         if (delete > 0) {
             log.info("删除成功");

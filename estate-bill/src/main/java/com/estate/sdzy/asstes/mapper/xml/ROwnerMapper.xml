@@ -26,7 +26,17 @@
             LIMIT ${pageNo},${size}
         </if>
     </select>
-
+    <select id="getOwenerByCommId" parameterType="java.util.Map" resultType="com.estate.sdzy.asstes.entity.ROwner">
+        SELECT DISTINCT NAME
+            ,
+            aa.id
+        FROM
+            r_owner aa
+            LEFT JOIN r_owner_property bb ON aa.id = bb.owner_id
+        WHERE
+            aa.comp_id = #{compId}
+            AND bb.comm_id =#{commId}
+    </select>
     <select id="getOwenerByRoom" parameterType="java.util.Map" resultType="com.estate.sdzy.asstes.entity.ROwner">
         SELECT
             r_owner_property.id as prop_id,

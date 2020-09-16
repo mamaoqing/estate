@@ -23,7 +23,6 @@ public class ExcuteSql {
     //private static String sql = "insert into f_bill (bill_no,property_id,property_type,bill_time,is_overdue,is_payment,overdue_cost,overdue_rule,price,pay_price,sale_price,is_print,is_invoice,pay_end_time,cost_rule_id,account_period,comp_id,comm_id,begin_scale,end_scale,create_name) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'定时任务')";
 
     public static Integer executeSql(String sql, Object[] objects,String type) throws SQLException, ClassNotFoundException {
-
         if (StringUtils.isEmpty(sql) && BillintMethod.BUILDAREA.equals(type)) {
             sql = ExcuteSql.sqlBuildArea;
         }
@@ -37,10 +36,8 @@ public class ExcuteSql {
             sql = ExcuteSql.sqlFixed;
         }
         Integer integer = ConnectUtil.executeUpdate(sql, objects);
-        log.info("执行的添加账单sql:{}",sql);
         String update = "update f_bill set bill_no = id";
         ConnectUtil.executeUpdate(update,new Object[0]);
-        log.info("执行的更新账单号sql:{}",update);
         return integer;
     }
 

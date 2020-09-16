@@ -40,10 +40,14 @@ public class TransactionConnUtil {
      */
     public static Integer executeUpdate(String sql, Object[] objects) throws SQLException, ClassNotFoundException {
         preparedStatement = getConnection().prepareStatement(sql);
+        StringBuilder params = new StringBuilder();
         for (int i = 0; i < objects.length; i++) {
+            params.append(objects[i]).append(",");
             preparedStatement.setObject(i + 1, objects[i]);
         }
         int i = preparedStatement.executeUpdate();
+        System.out.println("执行的sql："+sql);
+        System.out.println("参数："+params.toString());
         return i;
     }
 
@@ -83,6 +87,38 @@ public class TransactionConnUtil {
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
+        }
+    }
+
+    /**
+     * @param sql
+     * @param objects
+     * @return
+     * @throws SQLException
+     * @throws ClassNotFoundException
+     */
+    public static Integer executeUpdate(String sql, Object[] objects,boolean flag) throws SQLException, ClassNotFoundException {
+        if (flag) {
+            preparedStatement = getConnection().prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+            StringBuilder params = new StringBuilder();
+            for (int i = 0; i < objects.length; i++) {
+                params.append(objects[i]).append(",");
+                preparedStatement.setObject(i + 1, objects[i]);
+            }
+
+            int i = preparedStatement.executeUpdate();
+            resultSet = preparedStatement.getGeneratedKeys();
+
+            System.out.println("执行的sql："+sql);
+            System.out.println("参数："+params.toString());
+            Integer id = 0;
+            if(resultSet.next()){
+                id = resultSet.getInt(1);
+            }
+
+            return id;
+        }else{
+            return executeUpdate(sql,objects);
         }
     }
 }
