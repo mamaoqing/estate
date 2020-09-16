@@ -40,8 +40,17 @@
         <if test="map.propertyType!='' and map.propertyType!=null">
             and b.property_type = #{map.propertyType}
         </if>
-        <if test="map.propertyName!='' and map.propertyName!=null">
-            and b.property_id = #{map.propertyName}
+        <if test="map.propertyType=='房产' and map.propertyName!='' and map.propertyName!=null">
+            and b.id in (select b.id from v_room_roomNo r
+            where b.property_id = r.id and r.roomNo like CONCAT('%',#{map.propertyName},'%') and b.property_type='房产')
+        </if>
+        <if test="map.propertyType=='停车位' and map.propertyName!='' and map.propertyName!=null">
+            and b.id in (select b.id from r_parking_space p
+            where b.property_id = p.id and p.no like CONCAT('%',#{map.propertyName},'%') and b.property_type='停车位')
+        </if>
+        <if test="map.propertyName!='' and map.propertyName!=null and (map.propertyType=='' or map.propertyType==null)">
+            and b.id in (select b.id from r_parking_space p
+            where b.property_id = p.id and p.no like CONCAT('%',#{map.propertyName},'%') )
         </if>
 
         <if test="map.alterTimeBegin!='' and map.alterTimeBegin!=null and map.alterTimeEnd!='' and map.alterTimeEnd!=null">
