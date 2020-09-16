@@ -52,12 +52,12 @@ public class FAccount implements Serializable {
      * 费用标准id
      */
     @TableField(exist = false)
-    private Long ruleId;
+    private String ruleId;
 
     @TableField(exist = false)
     private String propertyName;
     @TableField(exist = false)
-    private Long propertyId;
+    private String propertyId;
     @TableField(exist = false)
     private String propertyType;
 
