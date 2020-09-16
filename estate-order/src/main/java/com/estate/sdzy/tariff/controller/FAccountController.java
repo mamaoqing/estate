@@ -42,7 +42,7 @@ public class FAccountController extends BaseController {
     }
 
     @PostMapping("/getAccount")
-    public Result getAccount(Long ownerId,Long ruleId ){
+    public Result getAccount(Long ownerId,String ruleId ){
         return ResultUtil.success(accountService.getAccount(ownerId,ruleId));
     }
 
