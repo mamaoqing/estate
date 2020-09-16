@@ -21,7 +21,7 @@
         </if>
         <if test="name!=''and name!=null">
             and r.name like CONCAT('%',#{name},'%')
-        </if>o
+        </if>
         <if test="commName!=''and commName!=null">
             and r.comm_id = #{commName}
         </if>
@@ -46,7 +46,7 @@
         <if test="userId!=''and userId!=null">
             and uc.user_id=#{userId} and r.comm_id=uc.comm_id
         </if>
-         ORDER BY id DESC
+
         <if test="pageNo!=null and size!=null">
             limit #{pageNo},#{size}
         </if>
