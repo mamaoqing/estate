@@ -1,9 +1,8 @@
 package com.estate.sdzy.asstes.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.estate.sdzy.asstes.entity.RCommunity;
-import com.estate.sdzy.asstes.entity.ROwner;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.estate.sdzy.asstes.entity.ROwner;
 import com.estate.sdzy.asstes.entity.RParkingSpace;
 import com.estate.sdzy.asstes.entity.RRoom;
 
@@ -20,6 +19,7 @@ import java.util.Map;
  */
 public interface ROwnerService extends IService<ROwner> {
     List<ROwner> getOwenerList(Map map, String token);
+    Page<ROwner> getOwenerPageList(Map map, String token);
     boolean insert(ROwner owner, String token);
     boolean update(ROwner owner, String token);
     boolean delete(Long id, String token);
