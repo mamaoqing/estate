@@ -30,7 +30,7 @@
                 </executions>
                 <configuration>
                     <includeSystemScope>true</includeSystemScope>
-                    <mainClass>com.estate.timedtask.costrule.CrontabCostRule</mainClass>
+                    <mainClass>com.estate.sdzy.DoDebit</mainClass>
                     <fork>true</fork>
                     <classifier>exec</classifier>
                 </configuration>

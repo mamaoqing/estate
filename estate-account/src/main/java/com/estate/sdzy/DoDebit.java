@@ -51,6 +51,7 @@ public class DoDebit {
                 }
                 System.out.println(fee+"<=--==-=-=-=-=>");
                 BigDecimal price = resultSet.getBigDecimal("price");
+                BigDecimal sale_price = resultSet.getBigDecimal("sale_price");
                 // 扣款省下的余额
                 BigDecimal money = new BigDecimal(0);
                 // 付的钱
@@ -58,12 +59,17 @@ public class DoDebit {
                 // 是否支付
                 String payMent = "否";
                 String operType = "支付";
+                String state = "未支付";
                 String payment_method = "自动扣费";
                 String no = UUID.randomUUID().toString().replace("-", "");
                 // 保证总金额和余额不为空
                 if (null == price) {
                     price = new BigDecimal(0);
                 }
+                if (null == sale_price) {
+                    sale_price = new BigDecimal(0);
+                }
+                price = price.subtract(sale_price);
                 if (null == fee) {
                     fee = new BigDecimal(0);
                 }
@@ -72,6 +78,7 @@ public class DoDebit {
                     money = fee.subtract(price);
                     payPrice = price;
                     payMent = "是";
+                    state = "已支付";
                 } else {
                     payPrice = fee;
                 }
@@ -94,8 +101,8 @@ public class DoDebit {
                 System.out.println(integer2+"||--------------------||"+payPrice);
 
                 // 更新f_bill
-                String updateBill = "update f_bill set pay_price = ? , is_payment = ? where id = ?";
-                Object[] b = {payPrice,payMent,id};
+                String updateBill = "update f_bill set pay_price = ? , is_payment = ? ,state = ? where id = ?";
+                Object[] b = {payPrice,payMent,state,id};
                 Integer integer1 = TransactionConnUtil.executeUpdate(updateBill, b);
 
                 // 提交事务。
