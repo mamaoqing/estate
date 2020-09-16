@@ -82,26 +82,28 @@ public class DoDebit {
 
                 // 结算的钱，减去优惠加上违约金减去已经支付的钱。
                 price = result.getBigDecimal("aaa");
+                System.out.println("==========>"+price+"===============");
                 if (null == price) {
                     price = new BigDecimal(0);
                 }
                 if (null == fee) {
                     fee = new BigDecimal(0);
                 }
-                if (!(fee.compareTo(price) < 1)) {
+                BigDecimal subtract = fee.subtract(count);
+                if (!(subtract.compareTo(price) < 1)) {
                     money = fee.subtract(price);
                     payPrice = price;
                     payMent = "是";
                 } else {
-                    payPrice = fee;
+                    payPrice = subtract;
                 }
-                count.add(price);
                 // 账户余额不小于账单总金额
                 if ((fee.compareTo(count) < 1)) {
                     break;
                 }
                 Object[] o = {compId, commId,id,payPrice,now,null};
                 // 更新f_bill
+                count = count.add(payPrice);
                 String updateBill = "update f_bill set pay_price = ? , is_payment = ? where id = ?";
                 Object[] b = {payPrice,payMent,id};
                 TransactionConnUtil.executeUpdate(updateBill, b);
@@ -115,7 +117,11 @@ public class DoDebit {
                     "values(?,?,?,?,?,?,?,?,?)";
 
             Integer integer = TransactionConnUtil.executeUpdate(insertFinanceFRecordSql, objs, true);
-            String updateAccount = "update f_account set fee = ? where id = ?";
+
+            System.out.println(insertFinanceFRecordSql);
+            System.out.println(objs[5]);
+
+            String updateAccount = "update f_account set fee =fee- ? where id = ?";
             Object[] accout = {fee.subtract(count),account_id};
             
             Integer integer2 = TransactionConnUtil.executeUpdate(updateAccount, accout);
