@@ -88,6 +88,13 @@ public class DoDebit {
                 if (null == fee) {
                     fee = new BigDecimal(0);
                 }
+                if (!(fee.compareTo(price) < 1)) {
+                    money = fee.subtract(price);
+                    payPrice = price;
+                    payMent = "是";
+                } else {
+                    payPrice = fee;
+                }
                 count.add(price);
                 // 账户余额不小于账单总金额
                 if ((fee.compareTo(count) < 1)) {
