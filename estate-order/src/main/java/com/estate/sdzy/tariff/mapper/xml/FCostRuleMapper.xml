@@ -21,7 +21,7 @@
     </select>
 
     <select id="getRuleByOwnerId" resultType="com.estate.sdzy.tariff.entity.FCostRule">
-        select r.id,r.name,rr.property_type,rr.property_id,
+        select distinct r.id,r.name,rr.property_type,rr.property_id,
 (CASE
 		WHEN rr.property_type = '房产' THEN
 		(
