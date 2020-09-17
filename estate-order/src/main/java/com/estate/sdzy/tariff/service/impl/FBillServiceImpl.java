@@ -152,12 +152,10 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
             if ("房产".equals(type)) {
                 String no = map.get("no");
                 if (!StringUtils.isEmpty(no)) {
-                    QueryWrapper<RRoom> queryWrapper = new QueryWrapper<>();
-                    queryWrapper.eq("room_no", no);
-                    List<RRoom> rRooms = rRoomMapper.selectList(queryWrapper);
-                    rRooms.forEach(res -> {
-                        rooms.add(res.getId());
-                    });
+                    List<RRoom> rRooms = billMapper.selectMapLists(no);
+                    for (RRoom rRoom : rRooms) {
+                        rooms.add(rRoom.getId());
+                    }
                 }
 
             }
