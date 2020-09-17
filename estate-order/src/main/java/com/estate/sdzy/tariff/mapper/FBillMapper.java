@@ -3,6 +3,7 @@ package com.estate.sdzy.tariff.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.sdzy.asstes.entity.RRoom;
 import com.estate.sdzy.tariff.entity.FBill;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,4 +24,6 @@ public interface FBillMapper extends BaseMapper<FBill> {
     List<FBill> listBillNoPage(@Param("ew") QueryWrapper queryWrapper);
     List<Map<String,Object>> listOwnerRoom(@Param("propertyId") Long propertyId);
     List<Map<String,Object>> listOwnerPark(@Param("propertyId") Long propertyId);
+
+    List<RRoom> selectMapLists(@Param("no") String no);
 }
