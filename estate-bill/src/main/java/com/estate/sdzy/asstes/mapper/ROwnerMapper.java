@@ -1,9 +1,10 @@
 package com.estate.sdzy.asstes.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.estate.sdzy.asstes.entity.*;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.estate.sdzy.asstes.entity.ROwner;
+import com.estate.sdzy.asstes.entity.RParkingSpace;
+import com.estate.sdzy.asstes.entity.RRoom;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.Map;
 public interface ROwnerMapper extends BaseMapper<ROwner> {
 
     List<ROwner> getOwenerList(Map map);
+    Page<ROwner> getOwenerPageList(Page<ROwner> page,@Param("map") Map map);
     List<ROwner> getOwenerByRoom(Map map);
     List<ROwner> getExcel(Map map);
     List<ROwner> getOwenerByCommId(Map map);

@@ -148,4 +148,19 @@
             AND r_owner_property.property_type = '停车位'
             AND r_owner_property.owner_id =#{ownerId}
     </select>
+
+    <select id="getOwenerPageList" parameterType="java.util.Map" resultType="com.estate.sdzy.asstes.entity.ROwner">
+        select comp.name as comp_name,o.*
+        from r_owner o,s_company comp
+        where o.comp_id = comp.id and o.is_delete='0'
+        <if test="map.compId != null and map.compId !=''">
+            and o.comp_id =  #{map.compId}
+        </if>
+        <if test="map.commId != null and map.commId !=''">
+            and o.id in (select op.owner_id from r_owner_property op where op.owner_id=o.id and op.comm_id = #{map.commId})
+        </if>
+        <if test="map.name != null and map.name !=''">
+            and o.name like CONCAT('%',#{map.name},'%')
+        </if>
+    </select>
 </mapper>

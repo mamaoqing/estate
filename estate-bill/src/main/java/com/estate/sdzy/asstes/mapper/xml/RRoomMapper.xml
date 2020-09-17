@@ -46,7 +46,7 @@
         <if test="userId!=''and userId!=null">
             and uc.user_id=#{userId} and r.comm_id=uc.comm_id
         </if>
-         ORDER BY id DESC
+
         <if test="pageNo!=null and size!=null">
             limit #{pageNo},#{size}
         </if>
