@@ -142,7 +142,7 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
             record.setCost(new BigDecimal(map.get("ycje")));
             mapper.insert(record);
             FAccount account = accountMapper.selectById(map.get("accountId"));
-            account.setFee(account.getFee().add(payPrice));
+            account.setFee(account.getFee().add(new BigDecimal(map.get("ycje"))));
             accountMapper.updateById(account);
         }
         record.setId(null);
