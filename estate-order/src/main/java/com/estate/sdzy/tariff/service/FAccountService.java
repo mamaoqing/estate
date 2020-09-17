@@ -23,7 +23,7 @@ public interface FAccountService extends IService<FAccount> {
 
     boolean saveOrUpdate(FAccount item,String token);
 
-    FAccount getAccount(Long ownerId,Long ruleId);
+    FAccount getAccount(Long ownerId,String ruleId);
 
     List<FAccount> getAccountByOwnerId(Long ownerId, String token);
 

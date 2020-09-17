@@ -2,22 +2,22 @@ package com.estate.sdzy.asstes.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
 import com.estate.common.exception.BillException;
 import com.estate.common.util.BillExceptionEnum;
-import com.estate.sdzy.asstes.entity.*;
+import com.estate.sdzy.asstes.entity.ROwner;
+import com.estate.sdzy.asstes.entity.RParkingSpace;
+import com.estate.sdzy.asstes.entity.RRoom;
 import com.estate.sdzy.asstes.mapper.ROwnerInvoiceInfoMapper;
 import com.estate.sdzy.asstes.mapper.ROwnerMapper;
 import com.estate.sdzy.asstes.mapper.ROwnerPropertyMapper;
 import com.estate.sdzy.asstes.service.ROwnerService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +53,13 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
             map.put("compId",user.getCompId());
         }
         return mapper.getOwenerList(map);
+    }
+
+    @Override
+    public Page<ROwner> getOwenerPageList(Map map, String token) {
+        Page<ROwner> page = new Page<>(Long.valueOf((String) map.get("pageNo")), Long.valueOf((String) map.get("size")));
+        Page<ROwner> listOwner = mapper.getOwenerPageList(page,map);
+        return listOwner;
     }
 
     @Override

@@ -10,9 +10,11 @@ import com.estate.common.util.BillExceptionEnum;
 import com.estate.common.util.OrderExceptionEnum;
 import com.estate.sdzy.tariff.entity.FAccount;
 import com.estate.sdzy.tariff.entity.FAccountCostItem;
+import com.estate.sdzy.tariff.entity.FCostRule;
 import com.estate.sdzy.tariff.entity.FFinanceRecord;
 import com.estate.sdzy.tariff.mapper.FAccountCostItemMapper;
 import com.estate.sdzy.tariff.mapper.FAccountMapper;
+import com.estate.sdzy.tariff.mapper.FCostRuleMapper;
 import com.estate.sdzy.tariff.service.FAccountCostItemService;
 import com.estate.sdzy.tariff.service.FAccountService;
 import com.estate.sdzy.tariff.service.FFinanceRecordService;
@@ -20,8 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +45,9 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
     private FAccountMapper fAccountMapper;
 
     @Autowired
+    private FAccountCostItemMapper fAccountCostItemMapper;
+
+    @Autowired
     private FFinanceRecordService financeRecordService;
 
     @Autowired
@@ -51,6 +58,9 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Autowired
+    private FCostRuleMapper fCostRuleMapper;
 
     @Override
     public Page<FAccount> listAccount(Map<String, String> map,Integer pageNo, Integer size,String token) {
@@ -72,6 +82,7 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
     }
 
     @Override
+    @Transactional
     public boolean save(FAccount account, String token) {
         QueryWrapper<FAccount> queryWrapper = new QueryWrapper();
         queryWrapper.eq("no",account.getNo());
@@ -81,7 +92,8 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
         }else{
             if(!StringUtils.isEmpty(account.getId())){//执行修改操作
                 saveOrUpdate(account,token);
-                saveAccountCostItem(account,token);
+                //saveAccountCostItem(account,token);
+                //saveFinanceRecord(account,token,true);
                 return true;
             }else{
                 SUser user = getUserByToken(token);
@@ -90,8 +102,7 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
                 account.setModifiedBy(user.getId());
                 account.setModifiedName(user.getName());
                 if(StringUtils.isEmpty(account.getNo())){
-                    String maxNo = String.valueOf(fAccountMapper.getMaxNo()+1);
-                    account.setNo(maxNo);
+                    account.setNo(String.valueOf(System.currentTimeMillis()));
                 }
                 int insert = fAccountMapper.insert(account);
                 if (insert > 0) {
@@ -110,24 +121,39 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
     }
 
     public boolean saveAccountCostItem(FAccount account,String token){
-        QueryWrapper<FAccountCostItem> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("account_id",account.getId());
-        queryWrapper.eq("rule_id",account.getRuleId());
-        queryWrapper.eq("property_id",account.getPropertyId());
-        List<FAccountCostItem> fAccountCostItems = accountCostItemMapper.selectList(queryWrapper);
-        if(fAccountCostItems.size()>0){
+        if(account.getRuleId().indexOf(",")!=-1){//多选费用标准
+            String[] splits = account.getRuleId().split(",");
+            String[] pn = account.getPropertyType().split(",");
+            String[] pi = account.getPropertyId().split(",");
+            for(int i=0;i<splits.length;i++){
+                QueryWrapper<FAccountCostItem> queryWrapper = new QueryWrapper<>();
+                queryWrapper.eq("account_id",account.getId());
+                queryWrapper.eq("rule_id",splits[i]);
+
+                queryWrapper.eq("property_type",pn[i]);
+                queryWrapper.eq("property_id",pi[i]);
+                List<FAccountCostItem> fAccountCostItems = accountCostItemMapper.selectList(queryWrapper);
+                if(fAccountCostItems.size()>0){
+                    throw new OrderException(OrderExceptionEnum.SYSTEM_INSERT_ERROR);
+                }
+                save(account,token,Long.valueOf(splits[i]),pn[i],pi[i]);
+            }
             return true;
         }else{
-            FAccountCostItem item = new FAccountCostItem();
-            item.setCompId(account.getCompId());
-            item.setCommId(account.getCommId());
-            item.setRuleId(account.getRuleId());
-            item.setAccountId(account.getId());
-            item.setPropertyId(account.getPropertyId());
-            item.setPropertyType(account.getPropertyType());
-            boolean save = accountCostItemService.save(item, token);
-            return save;
+            return save(account,token,Long.valueOf(account.getRuleId()),account.getPropertyType(),account.getPropertyId());
         }
+    }
+
+    public Boolean save(FAccount account,String token,Long ruleId,String propertyType,String propertyId){
+        FAccountCostItem item = new FAccountCostItem();
+        item.setCompId(account.getCompId());
+        item.setCommId(account.getCommId());
+        item.setRuleId(ruleId);
+        item.setAccountId(account.getId());
+        item.setPropertyId(Long.valueOf(propertyId));
+        item.setPropertyType(propertyType);
+        boolean save = accountCostItemService.save(item, token);
+        return save;
     }
 
     public boolean saveFinanceRecord(FAccount account,String token,boolean isUpdate){
@@ -179,13 +205,59 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
         throw new OrderException(OrderExceptionEnum.SYSTEM_UPDATE_ERROR);
     }
 
-    public FAccount getAccount(Long ownerId,Long ruleId){
+    public FAccount getAccount(Long ownerId,String ruleId){
+        //判断用户是否已将建立账号
+        QueryWrapper<FAccount> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("owner_id",ownerId);
+        List<FAccount> fAccounts = fAccountMapper.selectList(queryWrapper);//业主所有的账号
+        if(fAccounts.size()>0){//该业主已经有账号
+            List<FCostRule> fCostRules = fCostRuleMapper.getRuleByOwnerId(ownerId);//与业主对应的所有的费用标准
+            //根据账户查找对应的ruleIds,如果查出的ruleIds和传过来的ruleId相同，则表示已经按照对应的费用标准建立了账号
+            //如果不同则表示没有建立对应标准的账号
+            String[] split = ruleId.split(",");
+            List<String> ruleIds = Arrays.asList(split);
+
+            for(FAccount a:fAccounts){
+                //判断每一个账号是否与
+                //select distinct rule_id from f_account_cost_item where account_id in (select id from f_account where owner_id=26)
+                //如果完全相同则返回该账单
+                QueryWrapper<FAccountCostItem> queryWrapperItem = new QueryWrapper<>();
+                queryWrapperItem.eq("account_id",a.getId());
+                List<FAccountCostItem> fAccountItems = fAccountCostItemMapper.selectList(queryWrapperItem);
+                if(ruleIds.size()==fAccountItems.size()&&ruleIds.size()>1){
+                    boolean islike = true;
+                    for(FAccountCostItem item:fAccountItems){
+                        if(!ruleIds.contains(String.valueOf(item.getRuleId()))){//如果不同则返回null
+                            islike = false;
+                            break;
+                        }
+                    }
+                    if(islike){
+                        return a;
+                    }
+                }else if(ruleIds.size()==fAccountItems.size()&&ruleIds.size()==1){
+                    for(FAccountCostItem item:fAccountItems){
+                        if(ruleIds.contains(String.valueOf(item.getRuleId()))){//如果相同同则返回账单
+                            return a;
+                        }else{
+                        }
+                    }
+                }
+            }
+            return null;
+        }else{//该业主没有帐户
+            return null;
+        }/*
+        //
+
+
+
         FAccount account = fAccountMapper.getAccount(ownerId, ruleId);
         if(account!=null){
             return account;
         }else{
             return null;
-        }
+        }*/
     }
 
     public List<FAccount> getAccountByOwnerId(Long ownerId,String token){
