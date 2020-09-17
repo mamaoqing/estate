@@ -59,5 +59,6 @@
         and aa.comp_id = cc.id
 		and aa.comm_id = dd.id
         AND bb.is_delete = 0
+        LIMIT 500
     </select>
 </mapper>
