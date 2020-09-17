@@ -186,7 +186,7 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
                 bill.setPayPrice(payPrice.add(bill.getPayPrice()));
                 payPrice = new BigDecimal("0");
                 bill.setState("未支付");
-                bill.setIsPayment("是");
+                bill.setIsPayment("否");
                 bill.setIsPrint("否");
                 bill.setIsOverdue("否");
                 bill.setIsInvoice("否");
