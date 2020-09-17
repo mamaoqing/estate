@@ -1,5 +1,6 @@
 package com.estate.sdzy;
 
+import com.estate.common.util.ConnectUtil;
 import com.estate.common.util.TransactionConnUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +35,7 @@ public class DoDebit {
                 int account_id = resultSet.getInt("id");
                 int owner_id = resultSet.getInt("owner_id");
                 BigDecimal fee = resultSet.getBigDecimal("fee");
-                String billSql = "select bb.*,price-sale_price-pay_price+overdue_cost aaa from f_account_cost_item aa, f_bill bb where aa.property_type = bb.property_type and aa.property_id = bb.property_id and aa.account_id =? and aa.rule_id  = bb.cost_rule_id  and bb.state ='未支付' and is_payment='否'";
+                String billSql = "select bb.*,price-sale_price-pay_price+overdue_cost aaa from f_account_cost_item aa, f_bill bb where aa.property_type = bb.property_type and aa.property_id = bb.property_id and aa.account_id =? and aa.rule_id  = bb.cost_rule_id and is_payment='否'";
                 Object[] obj = {account_id};
                 ResultSet result = TransactionConnUtil.executeQuery(billSql, obj);
                 exeute(result, fee, account_id, now, owner_id);
@@ -78,6 +79,7 @@ public class DoDebit {
                 price = result.getBigDecimal("price");
                 // 结算的钱，减去优惠加上违约金减去已经支付的钱。
                 aaa = result.getBigDecimal("aaa");
+                System.out.println(aaa+"==========>"+price+"==============="+count+"==============="+fee+"==============="+subtract);
                 if (null == price) {
                     price = new BigDecimal(0);
                 }
@@ -116,9 +118,12 @@ public class DoDebit {
 
             Integer integer = TransactionConnUtil.executeUpdate(insertFinanceFRecordSql, objs, true);
 
+            System.out.println(insertFinanceFRecordSql);
+            System.out.println(fee+"---------"+objs[5]);
 
             String updateAccount = "update f_account set fee = ? where id = ?";
             fee=fee.subtract(count);
+            System.out.println(fee);
             Object[] accout = {fee,account_id};
 
             Integer integer2 = TransactionConnUtil.executeUpdate(updateAccount, accout);
