@@ -14,4 +14,6 @@ import com.estate.sdzy.tariff.entity.FAccountCostItem;
 public interface FAccountCostItemService extends IService<FAccountCostItem> {
 
     boolean save(FAccountCostItem item,String token);
+
+    boolean deleteItem(Long id, String token);
 }
