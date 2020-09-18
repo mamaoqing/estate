@@ -66,32 +66,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
     @Override
     public Page<FBill> listBill(Map<String, String> map, String token) {
         List<Long> rooms = new ArrayList<>();
-        if (!StringUtils.isEmpty(map.get("type"))) {
-            String type = map.get("type");
-            if ("房产".equals(type)) {
-                String no = map.get("no");
-                if (!StringUtils.isEmpty(no)) {
 
-                    List<RRoom> rRooms = billMapper.selectMapLists(no);
-                    for (RRoom rRoom : rRooms) {
-                        rooms.add(rRoom.getId());
-                    }
-                }
-
-            }
-            if ("停车位".equals(type)) {
-                String no = map.get("no");
-                if (!StringUtils.isEmpty(no)) {
-                    QueryWrapper<RParkingSpace> queryWrapper = new QueryWrapper<>();
-                    queryWrapper.eq("no", no);
-                    List<RParkingSpace> rRooms = parkingSpaceMapper.selectList(queryWrapper);
-                    rRooms.forEach(res -> {
-                        rooms.add(res.getId());
-                    });
-                }
-
-            }
-        }
 
 
         if (StringUtils.isEmpty(map.get("pageNo"))) {
@@ -114,10 +89,48 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 .eq(!StringUtils.isEmpty(map.get("costRuleId")), "cost_rule_id", map.get("costRuleId"))
                 .eq(!StringUtils.isEmpty(map.get("billNo")), "bill_no", map.get("billNo"))
 //                .eq(!StringUtils.isEmpty(map.get("aa.state")), "state", map.get("state"))
-                .in(!rooms.isEmpty(), "property_id", rooms)
+//                .in(!rooms.isEmpty(), "property_id", rooms)
 
 
                 .eq(!StringUtils.isEmpty(map.get("isInvoice")), "is_invoice", map.get("isInvoice"));
+        if (!StringUtils.isEmpty(map.get("type"))) {
+            String type = map.get("type");
+            if ("房产".equals(type)) {
+                String no = map.get("no");
+                if (!StringUtils.isEmpty(no)) {
+
+                    List<RRoom> rRooms = billMapper.selectMapLists(no);
+                    for (RRoom rRoom : rRooms) {
+                        rooms.add(rRoom.getId());
+                    }
+                    if(rooms.isEmpty()){
+                        queryWrapper.isNull("aa.id");
+                    }else{
+                        queryWrapper.in("property_id", rooms);
+                    }
+                }
+
+            }
+            if ("停车位".equals(type)) {
+                String no = map.get("no");
+                if (!StringUtils.isEmpty(no)) {
+                    QueryWrapper<RParkingSpace> queryWrapper1 = new QueryWrapper<>();
+                    queryWrapper1.eq("no", no);
+                    List<RParkingSpace> rRooms = parkingSpaceMapper.selectList(queryWrapper1);
+                    rRooms.forEach(res -> {
+                        rooms.add(res.getId());
+                    });
+                    if(rooms.isEmpty()){
+                        queryWrapper.isNull("aa.id");
+                    }else{
+                        queryWrapper.in("property_id", rooms);
+                    }
+                }
+
+
+            }
+        }
+
         List<Long> propertyIdList = new ArrayList<>();
         if (!StringUtils.isEmpty(map.get("owners"))) {
             List<Long> ownerIds = new ArrayList<>();
@@ -143,6 +156,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
 
         //updateByMazhongcai 20200907
         queryWrapper.ne(!StringUtils.isEmpty(map.get("state")),"aa.state",map.get("state"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("state1")),"aa.state",map.get("state1"));
         //updateByMazhongcai
         Integer pageNo = Integer.valueOf(map.get("pageNo"));
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
@@ -153,59 +167,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
     @Override
     public List<FBill> listBillNoPage(Map<String, String> map, String token) {
         List<Long> rooms = new ArrayList<>();
-        if (!StringUtils.isEmpty(map.get("type"))) {
-            String type = map.get("type");
-            if ("房产".equals(type)) {
-                String no = map.get("no");
-                if (!StringUtils.isEmpty(no)) {
-                    List<RRoom> rRooms = billMapper.selectMapLists(no);
-                    for (RRoom rRoom : rRooms) {
-                        rooms.add(rRoom.getId());
-                    }
-                }
 
-            }
-            if ("停车位".equals(type)) {
-                String no = map.get("no");
-                if (!StringUtils.isEmpty(no)) {
-                    QueryWrapper<RParkingSpace> queryWrapper = new QueryWrapper<>();
-                    queryWrapper.eq("no", no);
-                    List<RParkingSpace> rRooms = parkingSpaceMapper.selectList(queryWrapper);
-                    rRooms.forEach(res -> {
-                        rooms.add(res.getId());
-                    });
-                }
-
-            }
-        }
-        List<Long> propertyIdList = new ArrayList<>();
-        if (!StringUtils.isEmpty(map.get("owners"))) {
-            List<Long> ownerIds = new ArrayList<>();
-            String ownerName = map.get("owners");
-            QueryWrapper<ROwner> ownerQueryWrapper = new QueryWrapper<>();
-            ownerQueryWrapper.eq("name", ownerName);
-            List<ROwner> rOwners = rOwnerMapper.selectList(ownerQueryWrapper);
-            for (ROwner rOwner : rOwners) {
-                ownerIds.add(rOwner.getId());
-            }
-            QueryWrapper<ROwnerProperty> ownerPropertyQueryWrapper = new QueryWrapper<>();
-            ownerPropertyQueryWrapper.in(!ownerIds.isEmpty(), "owner_id", ownerIds);
-            List<ROwnerProperty> rOwnerProperties = ownerPropertyMapper.selectList(ownerPropertyQueryWrapper);
-            rOwnerProperties.forEach(res -> {
-                propertyIdList.add(res.getPropertyId());
-            });
-        }
-
-        if (!StringUtils.isEmpty(map.get("ownersId"))) {
-            String ownerId = map.get("ownersId");
-            QueryWrapper<ROwnerProperty> ownerPropertyQueryWrapper = new QueryWrapper<>();
-            ownerPropertyQueryWrapper.eq(!StringUtils.isEmpty(ownerId), "owner_id", ownerId);
-            List<ROwnerProperty> rOwnerProperties = ownerPropertyMapper.selectList(ownerPropertyQueryWrapper);
-            rOwnerProperties.forEach(res -> {
-                propertyIdList.add(res.getPropertyId());
-            });
-
-        }
         if (StringUtils.isEmpty(map.get("pageNo"))) {
             log.error("参数错误，请输入页码");
             throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
@@ -222,22 +184,74 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 .eq(!StringUtils.isEmpty(map.get("isOverdue")), "is_overdue", map.get("isOverdue"))
                 .eq(!StringUtils.isEmpty(map.get("isPrint")), "is_print", map.get("isPrint"))
                 .eq(!StringUtils.isEmpty(map.get("commId")), "aa.comm_id", map.get("commId"))
-                .eq(!StringUtils.isEmpty(map.get("state")),"aa.state",map.get("state"))
                 .eq(!StringUtils.isEmpty(map.get("type")), "property_type", map.get("type"))
                 .eq(!StringUtils.isEmpty(map.get("costRuleId")), "cost_rule_id", map.get("costRuleId"))
                 .eq(!StringUtils.isEmpty(map.get("billNo")), "bill_no", map.get("billNo"))
 //                .eq(!StringUtils.isEmpty(map.get("aa.state")), "state", map.get("state"))
+//                .in(!rooms.isEmpty(), "property_id", rooms)
 
 
                 .eq(!StringUtils.isEmpty(map.get("isInvoice")), "is_invoice", map.get("isInvoice"));
-        if (!StringUtils.isEmpty(map.get("ownersId"))&&StringUtils.isEmpty(map.get("type"))) {
-            queryWrapper.and(qw->qw.in(!rooms.isEmpty(), "property_id", rooms)
-                    .in(!propertyIdList.isEmpty(), "property_id", propertyIdList).or(qw2->qw2.eq("property_type","其他").eq("property_id",map.get("ownersId"))));
-        }else{
-            queryWrapper.in(!rooms.isEmpty(), "property_id", rooms)
-                    .in(!propertyIdList.isEmpty(), "property_id", propertyIdList);
+        if (!StringUtils.isEmpty(map.get("type"))) {
+            String type = map.get("type");
+            if ("房产".equals(type)) {
+                String no = map.get("no");
+                if (!StringUtils.isEmpty(no)) {
+
+                    List<RRoom> rRooms = billMapper.selectMapLists(no);
+                    for (RRoom rRoom : rRooms) {
+                        rooms.add(rRoom.getId());
+                    }
+                    if(rooms.isEmpty()){
+                        queryWrapper.isNull("aa.id");
+                    }else{
+                        queryWrapper.in("property_id", rooms);
+                    }
+                }
+
+            }
+            if ("停车位".equals(type)) {
+                String no = map.get("no");
+                if (!StringUtils.isEmpty(no)) {
+                    QueryWrapper<RParkingSpace> queryWrapper1 = new QueryWrapper<>();
+                    queryWrapper1.eq("no", no);
+                    List<RParkingSpace> rRooms = parkingSpaceMapper.selectList(queryWrapper1);
+                    rRooms.forEach(res -> {
+                        rooms.add(res.getId());
+                    });
+                    if(rooms.isEmpty()){
+                        queryWrapper.isNull("aa.id");
+                    }else{
+                        queryWrapper.in("property_id", rooms);
+                    }
+                }
+            }
         }
-        return billMapper.listBillNoPage(queryWrapper);
+
+        List<Long> propertyIdList = new ArrayList<>();
+        if (!StringUtils.isEmpty(map.get("ownersId"))) {
+            String ownerId = map.get("ownersId");
+            QueryWrapper<ROwnerProperty> ownerPropertyQueryWrapper = new QueryWrapper<>();
+            ownerPropertyQueryWrapper.eq(!StringUtils.isEmpty(ownerId), "owner_id", ownerId);
+            List<ROwnerProperty> rOwnerProperties = ownerPropertyMapper.selectList(ownerPropertyQueryWrapper);
+            rOwnerProperties.forEach(res -> {
+                propertyIdList.add(res.getPropertyId());
+            });
+            if(propertyIdList.isEmpty()){
+                queryWrapper.isNull("aa.id");
+            }else {
+                queryWrapper.in("property_id", propertyIdList);
+            }
+        }
+
+        List<FBill> fBills = billMapper.listBillNoPage(queryWrapper);
+        if (!StringUtils.isEmpty(map.get("ownersId"))&&StringUtils.isEmpty(map.get("type"))||map.get("type").equals("业主")) {
+            QueryWrapper<FBill> wrapper = new QueryWrapper<>();
+            wrapper.eq("property_type","业主");
+            List<FBill> fBills1 = billMapper.selectList(wrapper);
+            fBills.addAll(fBills1);
+        }
+        return fBills;
     }
 
     @Override
