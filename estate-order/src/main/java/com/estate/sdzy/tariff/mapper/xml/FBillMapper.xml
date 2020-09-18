@@ -59,5 +59,10 @@
         and aa.comp_id = cc.id
 		and aa.comm_id = dd.id
         AND bb.is_delete = 0
+        LIMIT 500
+    </select>
+
+    <select id="selectMapLists" resultType="com.estate.sdzy.asstes.entity.RRoom" parameterType="java.lang.String">
+        SELECT * FROM v_room_roomNo where roomNo like CONCAT('%',#{no},'%')
     </select>
 </mapper>

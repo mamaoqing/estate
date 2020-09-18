@@ -215,6 +215,9 @@ public class RRoom implements Serializable {
     //@TableLogic
     private Integer isDelete;
 
+    @TableField(exist = false)
+    private String no;
+
 
 
 

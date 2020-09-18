@@ -162,4 +162,6 @@ public class FCostRule implements Serializable {
     private Date auditTime;
 
     private Long commId;
+
+    private Double liquidatedCount;
 }

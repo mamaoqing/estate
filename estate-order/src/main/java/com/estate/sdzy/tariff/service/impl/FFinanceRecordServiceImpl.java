@@ -142,12 +142,12 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
             record.setCost(new BigDecimal(map.get("ycje")));
             mapper.insert(record);
             FAccount account = accountMapper.selectById(map.get("accountId"));
-            account.setFee(account.getFee().add(payPrice));
+            account.setFee(account.getFee().add(new BigDecimal(map.get("ycje"))));
             accountMapper.updateById(account);
         }
         record.setId(null);
         record.setOperType("支付");
-        record.setCost(cost);
+        record.setCost(payPrice);
         mapper.insert(record);
 
         String[] split = map.get("payIds").split(",");
@@ -173,6 +173,15 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
                 continue;
             }
 
+            FFinanceBillRecord fFinanceBillRecord = new FFinanceBillRecord();
+            fFinanceBillRecord.setCreatedBy(user.getId());
+            fFinanceBillRecord.setCreatedName(user.getUserName());
+            fFinanceBillRecord.setCompId(compId);
+            fFinanceBillRecord.setCompId(compId);
+            fFinanceBillRecord.setCommId(commId);
+            fFinanceBillRecord.setFinanceRecordId(record.getId());
+
+
             if (payPrice.compareTo(payNumber)==1||payPrice.compareTo(payNumber)==0){
                 bill.setState("已支付");
                 bill.setIsPayment("是");
@@ -182,26 +191,25 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
                 bill.setPayPrice(bill.getPrice());
                 payPrice = payPrice.subtract(bill.getPrice());
                 billMapper.updateById(bill);
+                fFinanceBillRecord.setBillId(bill.getId());
+                fFinanceBillRecord.setCost(payNumber);
+                fFinanceBillRecords.add(fFinanceBillRecord);
             }else{
                 bill.setPayPrice(payPrice.add(bill.getPayPrice()));
-                payPrice = new BigDecimal("0");
-                bill.setIsPayment("是");
+//                payPrice = new BigDecimal("0");
+                bill.setState("未支付");
+                bill.setIsPayment("否");
                 bill.setIsPrint("否");
                 bill.setIsOverdue("否");
                 bill.setIsInvoice("否");
                 billMapper.updateById(bill);
+                fFinanceBillRecord.setBillId(bill.getId());
+                fFinanceBillRecord.setCost(payPrice);
+                fFinanceBillRecords.add(fFinanceBillRecord);
+
                 break;
             }
-            FFinanceBillRecord fFinanceBillRecord = new FFinanceBillRecord();
-            fFinanceBillRecord.setCreatedBy(user.getId());
-            fFinanceBillRecord.setCreatedName(user.getUserName());
-            fFinanceBillRecord.setCompId(compId);
-            fFinanceBillRecord.setCompId(compId);
-            fFinanceBillRecord.setCommId(commId);
-            fFinanceBillRecord.setFinanceRecordId(record.getId());
-            fFinanceBillRecord.setBillId(bill.getId());
-            fFinanceBillRecord.setCost(bill.getPayPrice());
-            fFinanceBillRecords.add(fFinanceBillRecord);
+
         }
 
         fFinanceBillRecordService.saveBatch(fFinanceBillRecords);
