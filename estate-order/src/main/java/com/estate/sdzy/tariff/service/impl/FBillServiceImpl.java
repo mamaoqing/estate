@@ -245,9 +245,10 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         }
 
         List<FBill> fBills = billMapper.listBillNoPage(queryWrapper);
-        if (!StringUtils.isEmpty(map.get("ownersId"))&&StringUtils.isEmpty(map.get("type"))||map.get("type").equals("业主")) {
+        if ((!StringUtils.isEmpty(map.get("ownersId"))&&StringUtils.isEmpty(map.get("type")))||(!StringUtils.isEmpty(map.get("type"))&&map.get("type").equals("业主"))) {
             QueryWrapper<FBill> wrapper = new QueryWrapper<>();
             wrapper.eq("property_type","业主");
+            wrapper.eq("property_id",map.get("ownersId"));
             List<FBill> fBills1 = billMapper.selectList(wrapper);
             fBills.addAll(fBills1);
         }

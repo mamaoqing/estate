@@ -4,13 +4,12 @@
     <select id="getOwenerList" parameterType="java.util.Map" resultType="com.estate.sdzy.asstes.entity.ROwner">
         SELECT
         s_company.name as comp_name,
+        r_owner_property.comm_id as comm_id,
         r_owner.*
         FROM
         r_owner
         LEFT JOIN s_company on r_owner.comp_id = s_company.id
-        <if test="commId != null and commId !=''">
-            LEFT JOIN r_owner_property on r_owner_property.owner_id= r_owner.id
-        </if>
+        LEFT JOIN r_owner_property on r_owner_property.owner_id= r_owner.id
         where
         r_owner.is_delete=0
         <if test="compId != null and compId !=''">
