@@ -83,7 +83,7 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
 
     @Override
     @Transactional
-    public boolean save(FAccount account, String token) {
+    public boolean saveAccount(FAccount account, String token) {
         QueryWrapper<FAccount> queryWrapper = new QueryWrapper();
         queryWrapper.eq("no",account.getNo());
         List<FAccount> fAccounts = fAccountMapper.selectList(queryWrapper);
@@ -134,7 +134,7 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
                 queryWrapper.eq("property_id",pi[i]);
                 List<FAccountCostItem> fAccountCostItems = accountCostItemMapper.selectList(queryWrapper);
                 if(fAccountCostItems.size()>0){
-                    throw new OrderException(OrderExceptionEnum.SYSTEM_INSERT_ERROR);
+                    throw new OrderException(OrderExceptionEnum.SYSTEM_SELECT_ERROR);
                 }
                 save(account,token,Long.valueOf(splits[i]),pn[i],pi[i]);
             }
@@ -175,7 +175,7 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
         financeRecord.setOwnerId(account.getOwnerId());
         financeRecord.setPaymentMethod(account.getPaymentMethod());
         financeRecord.setRemark(account.getRemark());
-        boolean save = financeRecordService.save(financeRecord, token);
+        boolean save = financeRecordService.saveRecord(financeRecord, token);
         return save;
     }
 
@@ -193,16 +193,46 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
         account.setModifiedName(user.getName());
         int update = fAccountMapper.updateById(account);
         if(update > 0){
-            if(account.getIsReNew()) {//续费
-                log.info("续费成功，修改人:{}", user.getUserName());
-                saveFinanceRecord(account,token,true);
+            if(StringUtils.isEmpty(account.getIsReNew())){
+                log.info("修改账户成功，修改人:{}", user.getUserName());
             }else{
-                log.info("提现成功，修改人:{}", user.getUserName());
-                saveFinanceRecord(account,token,false);
+                if(account.getIsReNew()) {//续费
+                    log.info("续费成功，修改人:{}", user.getUserName());
+                    saveFinanceRecord(account,token,true);
+                }else {
+                    log.info("提现成功，修改人:{}", user.getUserName());
+                    saveFinanceRecord(account,token,false);
+                }
             }
             return true;
         }
         throw new OrderException(OrderExceptionEnum.SYSTEM_UPDATE_ERROR);
+    }
+
+    @Transactional
+    @Override
+    public boolean doUpdate(FAccount account, String token){
+        saveOrUpdate(account, token);
+        FAccount findAccount = getAccount(account.getOwnerId(), account.getRuleId());
+        if(findAccount!=null){//说明已经有相应的费用项目对应的账户，不可编辑
+            return false;
+        }else{
+            QueryWrapper<FAccountCostItem> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("account_id",account.getId());
+            int delete = fAccountCostItemMapper.delete(queryWrapper);
+            if(delete>0){
+                saveAccountCostItem(account, token);
+            }else{
+                throw new OrderException(OrderExceptionEnum.SYSTEM_DELETE_ERROR);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public List<FAccountCostItem> getAccountItemByAccountId(String accountId) {
+        List<FAccountCostItem> accountItems = fAccountMapper.getAccountItemByAccountId(accountId);
+        return accountItems;
     }
 
     public FAccount getAccount(Long ownerId,String ruleId){
