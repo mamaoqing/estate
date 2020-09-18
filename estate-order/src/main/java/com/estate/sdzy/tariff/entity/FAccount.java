@@ -44,6 +44,12 @@ public class FAccount implements Serializable {
     private String commName;
 
     /**
+     * 费用项目
+     */
+    @TableField(exist = false)
+    private String ruleName;
+
+    /**
      * 业主id
      */
     private Long ownerId;
