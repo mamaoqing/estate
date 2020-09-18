@@ -55,6 +55,16 @@ public class FAccountCostItem implements Serializable {
      * 物业类型
      */
     private String propertyType;
+    /**
+     * 费用项
+     */
+    @TableField(exist = false)
+    private String name;
+    /**
+     * 物业编号
+     */
+    @TableField(exist = false)
+    private String propertyName;
 
     /**
      * 物业id
