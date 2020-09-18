@@ -3,11 +3,10 @@
 <mapper namespace="com.estate.sdzy.tariff.mapper.FFinanceBillRecordMapper">
 
     <select id="getFinanceBillRecord" resultType="com.estate.sdzy.tariff.entity.FFinanceBillRecord">
-        select r.no,a.no as accountNo,r.cost,br.created_at,br.created_name,rule.name
+        select r.no,r.cost,br.created_at,br.created_name,rule.name
         from
-        f_finance_bill_record br,f_account a ,f_finance_record r,f_account_cost_item i,f_cost_rule rule
-        where br.finance_record_id = r.id and r.account_id=a.id and a.id=i.account_id and i.rule_id = rule.id and a.id=${map.accountId}
-
+        f_finance_bill_record br,f_finance_record r,f_bill b,f_cost_rule rule
+        where br.finance_record_id = r.id and br.bill_id = b.id and b.cost_rule_id = rule.id and r.id=#{map.billId}
     </select>
 
     <select id="findMap" resultType="java.util.Map" parameterType="java.lang.Long">
