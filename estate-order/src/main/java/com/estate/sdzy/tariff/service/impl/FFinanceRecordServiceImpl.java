@@ -89,7 +89,7 @@ public class FFinanceRecordServiceImpl extends ServiceImpl<FFinanceRecordMapper,
     }
 
     @Override
-    public boolean save(FFinanceRecord financeRecord, String token){
+    public boolean saveRecord(FFinanceRecord financeRecord, String token){
         SUser user = getUserByToken(token);
         financeRecord.setCreatedBy(user.getId());
         financeRecord.setCreatedName(user.getName());
