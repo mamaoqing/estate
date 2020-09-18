@@ -1,6 +1,5 @@
 package com.estate.sdzy.tariff.service;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.estate.sdzy.tariff.entity.FFinanceBillRecord;
 
@@ -17,7 +16,7 @@ import java.util.Map;
  */
 public interface FFinanceBillRecordService extends IService<FFinanceBillRecord> {
 
-    Page<FFinanceBillRecord> getFinanceBillRecords(Map<String,String> map, Integer pageNo, Integer size);
+    List<FFinanceBillRecord> getFinanceBillRecords(Map<String,String> map, Integer pageNo, Integer size);
 
     List<Map<String,Object>> getFFinanceBillRecord(Long id);
 }

@@ -2,7 +2,9 @@ package com.estate.sdzy.tariff.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
+import com.estate.common.exception.BillException;
 import com.estate.common.exception.OrderException;
+import com.estate.common.util.BillExceptionEnum;
 import com.estate.common.util.OrderExceptionEnum;
 import com.estate.sdzy.tariff.entity.FAccountCostItem;
 import com.estate.sdzy.tariff.mapper.FAccountCostItemMapper;
@@ -11,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 /**
  * <p>
@@ -41,6 +44,20 @@ public class FAccountCostItemServiceImpl extends ServiceImpl<FAccountCostItemMap
             return true;
         }
         throw new OrderException(OrderExceptionEnum.SYSTEM_INSERT_ERROR);
+    }
+
+    @Override
+    public boolean deleteItem(Long id, String token) {
+        SUser user = getUserByToken(token);
+        if(StringUtils.isEmpty(id)){
+            throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        int i = accountCostItemMapper.deleteById(id);
+        if(i>0){
+            log.info("账户费用项删除成功，删除人={}",user.getUserName());
+            return true;
+        }
+        throw new OrderException(OrderExceptionEnum.SYSTEM_DELETE_ERROR);
     }
 
     private SUser getUserByToken(String token) {
