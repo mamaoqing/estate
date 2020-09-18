@@ -98,10 +98,12 @@ public class FBillAlterServiceImpl extends ServiceImpl<FBillAlterMapper, FBillAl
             }
         }else{
             //调整金额的负值不能大于（账单总价格-已经付的钱+逾期产生的费用+费用调整）
+            //账单总价格-已经付的钱+逾期产生的费用+费用调整+这次调整不能小于0
             //this.priceCul = list.price-list.payPrice+list.overdueCost+list.salePrice;
-            BigDecimal add = fBill.getPrice().subtract(fBill.getPayPrice()).add(fBill.getOverdueCost()).add(fBill.getSalePrice());
+            BigDecimal add = fBill.getPrice().subtract(fBill.getPayPrice()).add(fBill.getOverdueCost()).add(fBill.getSalePrice()).add(fBillAlter.getAlterFee());
             //调整金额的负值大于（账单总价格-已经付的钱+逾期产生的费用+费用调整）
-            if(fBillAlter.getAlterFee().multiply(new BigDecimal(-1)).compareTo(add)==1){
+            //账单总价格-已经付的钱+逾期产生的费用+费用调整+这次调整小于0
+            if(new BigDecimal(0).compareTo(add)==1){//表示0>add
                 return "2";//提示"减免金额不能大于应付金额"
             }else{
                 fBillAlter.setAlterBy(user.getId());
