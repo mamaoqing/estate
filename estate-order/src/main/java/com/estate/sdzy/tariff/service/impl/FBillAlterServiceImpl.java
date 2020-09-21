@@ -1,5 +1,6 @@
 package com.estate.sdzy.tariff.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.estate.common.entity.SUser;
@@ -164,6 +165,13 @@ public class FBillAlterServiceImpl extends ServiceImpl<FBillAlterMapper, FBillAl
             List<FBillAlter> listBillAlter = fBillAlterMapper.getBillAlterLists(user.getId());
             return listBillAlter;
         }
+    }
+
+    @Override
+    public List<FBillAlter> getBillAlertByBillId(Long billId, String token) {
+        getUserByToken(token);
+        List<FBillAlter> fBillAlters = fBillAlterMapper.getBillAlterByBillId(billId);
+        return fBillAlters;
     }
 
     public SUser getUserByToken(String token) {
