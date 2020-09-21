@@ -51,6 +51,11 @@ public class FBillAlterController extends BaseController {
         return ResultUtil.success(fBillAlterService.list(super.getParameterMap(request),pageNo,size,token));
     }
 
+    @GetMapping("/listBillAlterByBillId/{billId}")
+    public Result listBillAlterByBillId(@PathVariable("billId") Long billId, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(fBillAlterService.getBillAlertByBillId(billId,token));
+    }
+
     @DeleteMapping("/{id}")
     public Result deleteAuditerCnf(@PathVariable("id") String id, @RequestHeader("Authentication-Token") String token) {
         return ResultUtil.success(fBillAlterService.delete(id, token));

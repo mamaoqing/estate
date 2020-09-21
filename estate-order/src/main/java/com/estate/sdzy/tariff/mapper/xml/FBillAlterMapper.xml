@@ -164,4 +164,7 @@
         </if>
     </select>
 
+    <select id="getBillAlterByBillId" resultType="com.estate.sdzy.tariff.entity.FBillAlter">
+        select aa.*,bb.name as alter_by_name from f_bill_alter aa LEFT JOIN s_user bb on aa.alter_by = bb.id  where aa.bill_id= #{billId} and aa.state ='同意'
+    </select>
 </mapper>
