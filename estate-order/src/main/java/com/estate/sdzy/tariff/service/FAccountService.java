@@ -24,7 +24,7 @@ public interface FAccountService extends IService<FAccount> {
 
     boolean saveOrUpdate(FAccount item,String token);
 
-    FAccount getAccount(Long ownerId,String ruleId);
+    FAccount getAccount(Long ownerId,String ruleId,String propertyType,String propertyId);
 
     List<FAccount> getAccountByOwnerId(Long ownerId, String token);
 
