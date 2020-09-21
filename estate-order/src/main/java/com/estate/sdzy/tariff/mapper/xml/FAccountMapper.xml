@@ -3,7 +3,8 @@
 <mapper namespace="com.estate.sdzy.tariff.mapper.FAccountMapper">
     <select id="listAccount" resultType="com.estate.sdzy.tariff.entity.FAccount">
         select a.id,a.comp_id,a.type,a.comm_id,o.id as ownerId,comp.name as compName,comm.name as commName,o.name as ownerName,o.tel as ownerTel,
-        a.name,a.no,a.fee,a.created_name,a.created_at,a.modified_at,a.modified_name
+        a.name,a.no,a.fee,a.created_name,a.created_at,a.modified_at,a.modified_name,
+        (select GROUP_CONCAT(DISTINCT r.name) from f_account_cost_item i,f_cost_rule r where i.rule_id=r.id and i.account_id=a.id) as ruleName
         from
         f_account a,s_company comp,r_community comm,r_owner o
         <if test="userId!='' and userId!=null">
@@ -67,5 +68,23 @@
             and comm_id = #{map.commId}
         </if>
         and id in (select property_id from r_owner_property where property_type='停车位')
+    </select>
+
+    <select id="getAccountItemByAccountId" resultType="com.estate.sdzy.tariff.entity.FAccountCostItem">
+        select i.id,i.property_type,r.name,r.id as ruleId,i.property_id,
+        (CASE
+                WHEN i.property_type = '房产' THEN
+                (
+                SELECT
+                    concat( b.no, '-', u.no, '-', room.room_no )
+                FROM
+                    r_room room,r_building b,r_unit u
+                WHERE
+                    room.id = i.property_id
+                    AND room.building_id = b.id
+                    AND room.unit_id = u.id
+                ) ELSE ( SELECT p.no FROM r_parking_space p WHERE p.id = i.property_id )
+            END) AS propertyName
+        from f_account_cost_item i,f_cost_rule r where i.rule_id=r.id and account_id=#{accountId}
     </select>
 </mapper>

@@ -52,6 +52,7 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
         if (user.getCompId()!=0){
             map.put("compId",user.getCompId());
         }
+        List<ROwner> owenerList = mapper.getOwenerList(map);
         return mapper.getOwenerList(map);
     }
 

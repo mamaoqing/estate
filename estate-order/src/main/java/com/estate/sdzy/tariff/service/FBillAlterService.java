@@ -22,4 +22,5 @@ public interface FBillAlterService extends IService<FBillAlter> {
     boolean delete(String id,String token);
     Page<FBillAlter> list(Map<String,String> map, Integer pageNo, Integer size, String token);
     List<FBillAlter> listAll(Map<String, String> parameterMap, String token);
+    List<FBillAlter> getBillAlertByBillId(Long billId, String token);
 }

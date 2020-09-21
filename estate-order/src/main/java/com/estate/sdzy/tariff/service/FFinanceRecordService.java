@@ -23,6 +23,6 @@ public interface FFinanceRecordService extends IService<FFinanceRecord> {
     boolean payPrice(Map<String,String> map, String token);
     List<ROwner> getOwnerByName(String ownerName, String tel,String token);
     Page<FBill> getOwnerBill(Long ownerId, Long pageNo, Long size, String token);
-    boolean save(FFinanceRecord financeRecord,String token);
+    boolean saveRecord(FFinanceRecord financeRecord,String token);
     Page<FFinanceRecord> getFinanceRecords(Map<String,String> map,Integer pageNo, Integer size);
 }

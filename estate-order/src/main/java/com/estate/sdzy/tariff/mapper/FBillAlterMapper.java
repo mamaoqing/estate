@@ -21,4 +21,5 @@ public interface FBillAlterMapper extends BaseMapper<FBillAlter> {
     Page<FBillAlter> getListBillAlter(Page page, @Param("map") Map<String,String> map, @Param("pageNo") Integer pageNo, @Param("size") Integer size, @Param("userId") Long userId);
 
     List<FBillAlter> getBillAlterLists(@Param("userId") Long userId);
+    List<FBillAlter> getBillAlterByBillId(@Param("billId") Long billId);
 }

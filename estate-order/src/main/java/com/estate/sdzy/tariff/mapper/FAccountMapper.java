@@ -3,6 +3,7 @@ package com.estate.sdzy.tariff.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.estate.sdzy.tariff.entity.FAccount;
+import com.estate.sdzy.tariff.entity.FAccountCostItem;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -26,4 +27,6 @@ public interface FAccountMapper extends BaseMapper<FAccount> {
 
     List<Map<String,String>> getRoom(@Param("map") Map<String,String> map);
     List<Map<String,String>> getParking(@Param("map") Map<String,String> map);
+
+    List<FAccountCostItem> getAccountItemByAccountId(@Param("accountId") String accountId);
 }

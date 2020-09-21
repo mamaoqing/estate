@@ -33,7 +33,7 @@ public class FAccountController extends BaseController {
 
     @PostMapping("/insertAccount")
     public Result insertAccountCostItem(@RequestHeader("Authentication-Token") String token, @RequestBody FAccount account){
-        return ResultUtil.success(accountService.save(account,token));
+        return ResultUtil.success(accountService.saveAccount(account,token));
     }
 
     @PutMapping("/updateAccount")
@@ -41,9 +41,14 @@ public class FAccountController extends BaseController {
         return ResultUtil.success(accountService.saveOrUpdate(account,token));
     }
 
+    @PutMapping("/doUpdate")
+    public Result doUpdate(@RequestHeader("Authentication-Token") String token, @RequestBody FAccount account){
+        return ResultUtil.success(accountService.doUpdate(account,token));
+    }
+
     @PostMapping("/getAccount")
-    public Result getAccount(Long ownerId,String ruleId ){
-        return ResultUtil.success(accountService.getAccount(ownerId,ruleId));
+    public Result getAccount(Long ownerId,String ruleId,String propertyType,String propertyId ){
+        return ResultUtil.success(accountService.getAccount(ownerId,ruleId,propertyType,propertyId));
     }
 
     @GetMapping("/getAccountByOwnerId/{ownerId}")
@@ -54,6 +59,11 @@ public class FAccountController extends BaseController {
     @GetMapping("/getType")
     public Result getType(@RequestHeader("Authentication-Token") String token, HttpServletRequest request){
         return ResultUtil.success(accountService.listTypes(super.getParameterMap(request),token));
+    }
+
+    @PostMapping("/getAccountItemByAccountId")
+    public Result getAccountItemByAccountId(String accountId){
+        return ResultUtil.success(accountService.getAccountItemByAccountId(accountId));
     }
 }
 
