@@ -57,6 +57,14 @@ public class ROwnerServiceImpl extends ServiceImpl<ROwnerMapper, ROwner> impleme
     }
 
     @Override
+    public List<ROwner> getOwners(Map map, String token) {
+        QueryWrapper<ROwner> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("comp_id",map.get("compId"));
+        List<ROwner> rOwners = mapper.selectList(queryWrapper);
+        return rOwners;
+    }
+
+    @Override
     public Page<ROwner> getOwenerPageList(Map map, String token) {
         Page<ROwner> page = new Page<>(Long.valueOf((String) map.get("pageNo")), Long.valueOf((String) map.get("size")));
         Page<ROwner> listOwner = mapper.getOwenerPageList(page,map);
