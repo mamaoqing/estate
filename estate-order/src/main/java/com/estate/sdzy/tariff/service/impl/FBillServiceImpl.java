@@ -156,7 +156,6 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
 
         //updateByMazhongcai 20200907
         queryWrapper.ne(!StringUtils.isEmpty(map.get("state")),"aa.state",map.get("state"));
-        queryWrapper.eq(!StringUtils.isEmpty(map.get("state1")),"aa.state",map.get("state1"));
         //updateByMazhongcai
         Integer pageNo = Integer.valueOf(map.get("pageNo"));
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
@@ -192,6 +191,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
 
 
                 .eq(!StringUtils.isEmpty(map.get("isInvoice")), "is_invoice", map.get("isInvoice"));
+                queryWrapper.eq(!StringUtils.isEmpty(map.get("state")),"aa.state",map.get("state"));
         if (!StringUtils.isEmpty(map.get("type"))) {
             String type = map.get("type");
             if ("房产".equals(type)) {
@@ -252,6 +252,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
             List<FBill> fBills1 = billMapper.selectList(wrapper);
             fBills.addAll(fBills1);
         }
+
         return fBills;
     }
 
