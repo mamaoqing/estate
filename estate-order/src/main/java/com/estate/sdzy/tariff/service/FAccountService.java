@@ -30,7 +30,7 @@ public interface FAccountService extends IService<FAccount> {
 
     List<Map<String,String>> listTypes(Map<String,String> map,String token);
 
-    boolean doUpdate(FAccount account, String token);
+    String doUpdate(FAccount account, String token);
 
     List<FAccountCostItem> getAccountItemByAccountId(String accountId);
 }
