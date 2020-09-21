@@ -15,7 +15,7 @@
             room.id = b.property_id AND room.building_id = bd.id AND room.unit_id = unit.id
             ) ELSE ( SELECT DISTINCT p.no FROM r_parking_space p WHERE p.id = b.property_id )
             END) AS propertyName,
-        b.price,b.state as billState,
+        b.price,b.state as billState,b.pay_price,b.sale_price,b.overdue_cost,
         u.name as alterByName,u2.name as auditorName,u2.user_name as userName,
         comp.name as compName,comm.name as commName
         from f_bill_alter a,f_bill b,f_cost_rule r,s_company comp,r_community comm,s_user u,s_auditer_cnf au,s_user u2
