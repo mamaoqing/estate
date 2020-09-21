@@ -61,6 +61,11 @@ public class FBillAlterController extends BaseController {
         return ResultUtil.success(fBillAlterService.delete(id, token));
     }
 
+    @PostMapping("/getUser")
+    public Result getUser(@RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(rRoomService.getUserByToken(token));
+    }
+
     @PostMapping("/export")
     public void testExprotExcel(HttpServletResponse response, HttpServletRequest request, @RequestHeader("Authentication-Token") String token){
         SUser user = rRoomService.getUserByToken(token);

@@ -104,7 +104,7 @@ public class DoDebit {
                 Object[] o = {compId, commId,id,payPrice,now,null};
                 // 更新f_bill
 
-                String updateBill = "update f_bill set pay_price = ? , is_payment = ? where id = ?";
+                String updateBill = "update f_bill set pay_price = ? , is_payment = ? where id = ?,state='已支付'";
                 Object[] b = {payPrice,payMent,id};
                 TransactionConnUtil.executeUpdate(updateBill, b);
 //                objs = new Object[]{compId, commId, no, account_id, operType, payPrice, owner_id, payment_method, now};

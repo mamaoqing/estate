@@ -56,6 +56,11 @@ public class ROwnerController {
         return ResultUtil.success(ownerService.getOwenerPageList(map, token));
     }
 
+    @PostMapping("/getOwners")
+    public Result getOwners(@RequestBody Map<String, String> map, @RequestHeader("Authentication-Token") String token) {
+        return ResultUtil.success(ownerService.getOwners(map, token));
+    }
+
     @PostMapping("/getOwenerByRoom")
     public List<ROwner> getOwenerByRoom(@RequestBody Map<String, String> map, @RequestHeader("Authentication-Token") String token) {
         return ownerService.getOwenerByRoom(map, token);
