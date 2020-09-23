@@ -7,6 +7,7 @@ import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.tariff.entity.FBill;
 import com.estate.sdzy.tariff.service.FBillService;
 import com.estate.sdzy.tariff.service.impl.FBillServiceImpl;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +59,11 @@ public class FBillController extends BaseController {
     @GetMapping("/listOwner")
     public Result listOwner(@RequestHeader("Authentication-Token") String token){
         return ResultUtil.success(billService.listOwner(token));
+    }
+
+    @GetMapping("/updateBillPrint")
+    public Result updateBillPrint(@Param("billIds") String billIds, @RequestHeader("Authentication-Token") String token){
+        return ResultUtil.success(billService.updateBillPrint(billIds,token));
     }
 
     @PostMapping("/doPay")

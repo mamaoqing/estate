@@ -68,7 +68,6 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         List<Long> rooms = new ArrayList<>();
 
 
-
         if (StringUtils.isEmpty(map.get("pageNo"))) {
             log.error("参数错误，请输入页码");
             throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
@@ -103,9 +102,9 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                     for (RRoom rRoom : rRooms) {
                         rooms.add(rRoom.getId());
                     }
-                    if(rooms.isEmpty()){
+                    if (rooms.isEmpty()) {
                         queryWrapper.isNull("aa.id");
-                    }else{
+                    } else {
                         queryWrapper.in("property_id", rooms);
                     }
                 }
@@ -120,9 +119,9 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                     rRooms.forEach(res -> {
                         rooms.add(res.getId());
                     });
-                    if(rooms.isEmpty()){
+                    if (rooms.isEmpty()) {
                         queryWrapper.isNull("aa.id");
-                    }else{
+                    } else {
                         queryWrapper.in("property_id", rooms);
                     }
                 }
@@ -147,15 +146,15 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
             rOwnerProperties.forEach(res -> {
                 propertyIdList.add(res.getPropertyId());
             });
-            if(propertyIdList.isEmpty()){
+            if (propertyIdList.isEmpty()) {
                 queryWrapper.isNull("aa.id");
-            }else {
+            } else {
                 queryWrapper.in("property_id", propertyIdList);
             }
         }
 
         //updateByMazhongcai 20200907
-        queryWrapper.ne(!StringUtils.isEmpty(map.get("state")),"aa.state",map.get("state"));
+        queryWrapper.ne(!StringUtils.isEmpty(map.get("state")), "aa.state", map.get("state"));
         //updateByMazhongcai
         Integer pageNo = Integer.valueOf(map.get("pageNo"));
         Integer size = StringUtils.isEmpty(map.get("size")) ? 10 : Integer.valueOf(map.get("size"));
@@ -186,12 +185,10 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                 .eq(!StringUtils.isEmpty(map.get("type")), "property_type", map.get("type"))
                 .eq(!StringUtils.isEmpty(map.get("costRuleId")), "cost_rule_id", map.get("costRuleId"))
                 .eq(!StringUtils.isEmpty(map.get("billNo")), "bill_no", map.get("billNo"))
-//                .eq(!StringUtils.isEmpty(map.get("aa.state")), "state", map.get("state"))
-//                .in(!rooms.isEmpty(), "property_id", rooms)
 
 
                 .eq(!StringUtils.isEmpty(map.get("isInvoice")), "is_invoice", map.get("isInvoice"));
-                queryWrapper.eq(!StringUtils.isEmpty(map.get("state")),"aa.state",map.get("state"));
+        queryWrapper.eq(!StringUtils.isEmpty(map.get("state")), "aa.state", map.get("state"));
         if (!StringUtils.isEmpty(map.get("type"))) {
             String type = map.get("type");
             if ("房产".equals(type)) {
@@ -202,9 +199,9 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                     for (RRoom rRoom : rRooms) {
                         rooms.add(rRoom.getId());
                     }
-                    if(rooms.isEmpty()){
+                    if (rooms.isEmpty()) {
                         queryWrapper.isNull("aa.id");
-                    }else{
+                    } else {
                         queryWrapper.in("property_id", rooms);
                     }
                 }
@@ -219,9 +216,9 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                     rRooms.forEach(res -> {
                         rooms.add(res.getId());
                     });
-                    if(rooms.isEmpty()){
+                    if (rooms.isEmpty()) {
                         queryWrapper.isNull("aa.id");
-                    }else{
+                    } else {
                         queryWrapper.in("property_id", rooms);
                     }
                 }
@@ -237,18 +234,21 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
             rOwnerProperties.forEach(res -> {
                 propertyIdList.add(res.getPropertyId());
             });
-            if(propertyIdList.isEmpty()){
+            if (propertyIdList.isEmpty()) {
                 queryWrapper.isNull("aa.id");
-            }else {
+            } else {
                 queryWrapper.in("property_id", propertyIdList);
             }
         }
 
         List<FBill> fBills = billMapper.listBillNoPage(queryWrapper);
-        if ((!StringUtils.isEmpty(map.get("ownersId"))&&StringUtils.isEmpty(map.get("type")))||(!StringUtils.isEmpty(map.get("type"))&&map.get("type").equals("业主"))) {
+        if ((!StringUtils.isEmpty(map.get("ownersId")) && StringUtils.isEmpty(map.get("type"))) || (!StringUtils.isEmpty(map.get("type")) && map.get("type").equals("业主"))) {
             QueryWrapper<FBill> wrapper = new QueryWrapper<>();
-            wrapper.eq("property_type","业主");
-            wrapper.eq("property_id",map.get("ownersId"));
+            wrapper.eq("property_type", "业主");
+            wrapper.eq("property_id", map.get("ownersId"))
+                    .eq(!StringUtils.isEmpty(map.get("isPayment")), "is_payment", map.get("isPayment"))
+                    .eq(!StringUtils.isEmpty(map.get("isOverdue")), "is_overdue", map.get("isOverdue"))
+                    .eq(!StringUtils.isEmpty(map.get("isPrint")), "is_print", map.get("isPrint"));
             List<FBill> fBills1 = billMapper.selectList(wrapper);
             fBills.addAll(fBills1);
         }
@@ -286,7 +286,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         if (StringUtils.isEmpty(bill)) {
             throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
         }
-        if (!StringUtils.isEmpty(bill.getPropertyType())&&bill.getPropertyType().equals("其他")){
+        if (!StringUtils.isEmpty(bill.getPropertyType()) && bill.getPropertyType().equals("其他")) {
             bill.setPropertyId(bill.getOwnerId());
         }
         bill.setCreateName("临时账单");
@@ -297,7 +297,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         bill.setBillTime(new Date());
         bill.setIsPrint("否");
         int insert = billMapper.insert(bill);
-        if (insert>0){
+        if (insert > 0) {
             log.info("账单信息添加成功，添加人={}", user.getUserName());
             return true;
         }
@@ -332,7 +332,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
                         "aa.property_id = bb.property_id and aa.property_type=bb.property_type and bb.cost_rule_id=? and bb.account_period=? " +
                         "and aa.type = cc.billing_method and bb.cost_rule_id = cc.id and (bb.is_payment ='否' or bb.pay_price =0) and cc.billing_method in('水表','电表','煤气表')";
                 Object[] reset = {ruleId, accountPeriod};
-                Object[] obj = {ruleId,accountPeriod};
+                Object[] obj = {ruleId, accountPeriod};
                 try {
                     String insertSql = "insert into f_bill_copy (bill_no,property_id,property_type,bill_time,is_overdue,is_payment,overdue_cost,overdue_rule,price,pay_price,sale_price,is_print,is_invoice,pay_end_time,cost_rule_id,account_period,comp_id,comm_id,begin_scale,end_scale ,create_name,delete_time,delete_user) select bill_no,property_id,property_type,bill_time,is_overdue,is_payment,overdue_cost,overdue_rule,price,pay_price,sale_price,is_print,is_invoice,pay_end_time,cost_rule_id,account_period,comp_id,comm_id,begin_scale,end_scale,create_name,?,? from f_bill where cost_rule_id = " + ruleId + " and (is_payment = '否' or pay_price = 0) and account_period='" + accountPeriod + "'";
                     Object[] o = {new Date(), user.getUserName()};
@@ -364,6 +364,23 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
     }
 
     @Override
+    public boolean updateBillPrint(String ids, String token) {
+        if (StringUtils.isEmpty(ids)) {
+            throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
+        }
+        String[] split = ids.split(",");
+        QueryWrapper<FBill> w = new QueryWrapper<>();
+        w.in("id", split);
+        FBill bill = new FBill();
+        bill.setIsPrint("是");
+        int update = billMapper.update(bill, w);
+        if(update>0){
+            return true;
+        }
+        throw new BillException(BillExceptionEnum.SYSTEM_UPDATE_ERROR);
+    }
+
+    @Override
     public List<ROwner> listOwner(String token) {
         SUser user = getUserByToken(token);
         QueryWrapper<ROwner> queryWrapper = new QueryWrapper<>();
@@ -371,7 +388,6 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         List<ROwner> rOwners = rOwnerMapper.selectList(queryWrapper);
         return rOwners;
     }
-
 
 
     @Override
@@ -398,15 +414,15 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
     @Override
     public List<Map<String, Object>> getOwners(Map<String, Object> map) {
         List<Map<String, Object>> list = new ArrayList<>();
-                Object propertyType = map.get("propertyType");
+        Object propertyType = map.get("propertyType");
         Object propertyId = map.get("propertyId");
-        if (StringUtils.isEmpty(propertyId) || StringUtils.isEmpty(propertyType)){
+        if (StringUtils.isEmpty(propertyId) || StringUtils.isEmpty(propertyType)) {
             throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
         }
-        String type= propertyType.toString();
-        if("房产".equals(type)){
+        String type = propertyType.toString();
+        if ("房产".equals(type)) {
             list = billMapper.listOwnerRoom(Long.valueOf(propertyId.toString()));
-        }else if("停车位".equals(type)){
+        } else if ("停车位".equals(type)) {
             list = billMapper.listOwnerPark(Long.valueOf(propertyId.toString()));
         }
         return list;
@@ -415,7 +431,7 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
     @Override
     public boolean save(FBill bill, String token) {
         SUser user = getUserByToken(token);
-        if(null == bill){
+        if (null == bill) {
             throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
         }
         Long costRuleId = bill.getCostRuleId();
@@ -425,16 +441,16 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
         bill.setPrice(price.multiply(count));
         bill.setCreateName(user.getUserName());
         bill.setIsOverdue("否");
-        if(null==bill.getPayPrice() || "否".equals(bill.getIsPayment())){
+        if (null == bill.getPayPrice() || "否".equals(bill.getIsPayment())) {
             bill.setPayPrice(new BigDecimal(0));
         }
         bill.setOverdueRule(fCostRule.getLiquidatedDamagesMethod());
         bill.setBillTime(new Date());
         int insert = billMapper.insert(bill);
-        bill.setBillNo(bill.getId()+"");
+        bill.setBillNo(bill.getId() + "");
         billMapper.updateById(bill);
-        if(insert > 0){
-            log.info("账单信息添加成功,添加人:{}",user.getUserName());
+        if (insert > 0) {
+            log.info("账单信息添加成功,添加人:{}", user.getUserName());
             return true;
         }
         throw new OrderException(OrderExceptionEnum.SYSTEM_INSERT_ERROR);
