@@ -21,6 +21,8 @@ public class WeChatResources {
     /** 微信支付密码  819088 */
     public static final String APPPAYSECRET = "7308a4a2c5081dcb34549005cee28b3d";
 
+    public static final String NOTIFYURL = "http://qjwsg.free.idcfengye.com/pay/notify";
+
     /** 微信支付证书保存位置 */
     public static final String CERPATH = "C:\\Users\\Administrator\\Desktop\\WXCertUtil\\cert\\apiclient_cert.p12";
 

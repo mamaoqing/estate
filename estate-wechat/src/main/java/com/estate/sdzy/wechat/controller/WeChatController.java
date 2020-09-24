@@ -158,6 +158,7 @@ public class WeChatController {
         try {
             ResultSet result = ConnectUtil.executeQuery(sql);
             StringBuffer listBillId = new StringBuffer();
+            int comp_id = 0,comm_id = 0;
             while (result.next()) {
                 Map<String, Object> map = new HashMap<>(16);
 
@@ -169,8 +170,8 @@ public class WeChatController {
                 String property_type = result.getString("property_type");
                 BigDecimal price = result.getBigDecimal("price");
                 String room = result.getString("room");
-                int comp_id = result.getInt("comp_id");
-                int comm_id = result.getInt("comm_id");
+                comp_id = result.getInt("comp_id");
+                comm_id = result.getInt("comm_id");
                 listBillId.append(bill_no).append(",");
                 map.put("bill_no", bill_no);
                 map.put("costName", costName);
@@ -182,6 +183,8 @@ public class WeChatController {
                 map.put("room", room);
                 list.add(map);
             }
+            request.setAttribute("comp_id",comp_id);
+            request.setAttribute("comm_id",comm_id);
             request.setAttribute("list",list);
             request.setAttribute("listBillId",listBillId.toString());
             ResultSet sum = ConnectUtil.executeQuery(sumSql);

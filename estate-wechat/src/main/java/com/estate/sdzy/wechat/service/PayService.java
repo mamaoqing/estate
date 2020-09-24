@@ -12,4 +12,6 @@ import com.lly835.bestpay.model.PayResponse;
 public interface PayService {
 
     PayResponse create(Double price,String openid,String orderId,String orderName);
+
+    PayResponse notify(String data);
 }

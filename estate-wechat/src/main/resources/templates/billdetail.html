@@ -2,12 +2,10 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>账单详情</title>
+    <script th:src="@{/js/jquery-3.5.1.min.js}"></script>
 </head>
 <body>
-<p th:text="${openid}"></p>
-<p>123456789</p>
-
 <table>
     <tr th:each="area:${list}" style="border: 1px solid #cccccc">
         <td  th:text="${area.bill_no}" hidden></td>
@@ -22,12 +20,21 @@
 <p>总金额：</p>
 <p th:text="${sumPrice}"></p>
 
-<input />
+<input type="number" value="" id="price"/>
 <button onclick="pay()">支付</button>
 </body>
 <script>
     function pay() {
-        location.href="/pay/create?";
+
+        var listBillId = $("#listBillId").val();
+        var compId = $("#compId").val();
+        var commId = $("#commId").val();
+        var price = $("#price").val();
+        if(price == '' ||price == undefined || price == null){
+            alert("付款金额不能为空！");
+            return false;
+        }
+        location.href="/pay/create?payPrice="+price+"&compId=[[${comp_id}]]&commId=[[${comm_id}]]&listBillId=[[${listBillId}]]&openid=[[${openid}]]";
     }
 </script>
 </html>

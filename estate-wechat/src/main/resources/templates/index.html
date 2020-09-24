@@ -13,7 +13,7 @@
 <!--<p th:text="${user.openid}"></p>-->
 <form action="/estate/setWeChatUser" method="post">
     <input type="hidden" th:value="${user.openid}" id="openid"/>
-    <input type="hidden" th:value="${listBillId}" id="listBillId"/>
+
     <input type="hidden" th:value="${user.nickname}" id="nickname"/>
     <input type="hidden" th:value="${user.sex}" id="sex"/>
     <input type="hidden" th:value="${user.province}" id="province"/>
@@ -222,7 +222,6 @@
         var city = $("#city").val();
         var country = $("#country").val();
         var headimgurl = $("#headimgurl").val();
-        var listBillId = $("#listBillId").val();
 
         if(commId == '' ||commId == null || commId == 'undefined'){
             return false;
@@ -254,8 +253,7 @@
             province:province,
             city:city,
             country:country,
-            headimgurl:headimgurl,
-            listBillId:listBillId
+            headimgurl:headimgurl
         };
         $.ajax({
             url:'/estate/setWeChatUser',

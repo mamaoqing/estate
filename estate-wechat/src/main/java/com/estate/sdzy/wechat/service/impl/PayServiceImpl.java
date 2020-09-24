@@ -40,4 +40,11 @@ public class PayServiceImpl implements PayService {
 
         return pay;
     }
+
+    @Override
+    public PayResponse notify(String data) {
+        PayResponse payResponse = bestPayService.asyncNotify(data);
+        log.info("支付返回结果是：{}",payResponse);
+        return payResponse;
+    }
 }

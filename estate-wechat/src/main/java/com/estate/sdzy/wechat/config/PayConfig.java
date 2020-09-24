@@ -35,7 +35,7 @@ public class PayConfig {
         wxPayConfig.setMchKey(WeChatResources.APPPAYSECRET);
         // 证书位置
         wxPayConfig.setKeyPath(WeChatResources.CERPATH);
-        wxPayConfig.setNotifyUrl("http://www.baidu.com");
+        wxPayConfig.setNotifyUrl(WeChatResources.NOTIFYURL);
         return wxPayConfig;
     }
 }
