@@ -46,6 +46,8 @@
                 ( SELECT cc.roomNo FROM v_room_roomNo cc WHERE aa.property_id = cc.id AND cc.is_delete = 0 )
                END as NO,
                bb.NAME ruleName,
+               bb.price rulePrice,
+               bb.price_unit priceUnit,
                cc.name comp_name,
                 dd.name comm_name,
                aa.*

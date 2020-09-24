@@ -151,6 +151,10 @@ public class FBill implements Serializable {
 
     @TableField(exist = false)
     private Long ownerId;
+    @TableField(exist = false)
+    private Long rulePrice;
+    @TableField(exist = false)
+    private String priceUnit;
 
     private Integer count;
 

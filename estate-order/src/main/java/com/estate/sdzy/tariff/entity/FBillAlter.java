@@ -85,6 +85,12 @@ public class FBillAlter implements Serializable {
     @ExcelAnnotation(value = "费用金额")
     private BigDecimal price;
 
+    @TableField(exist = false)
+    private BigDecimal payPrice;//已经付的钱
+    @TableField(exist = false)
+    private BigDecimal salePrice;//费用调整
+    @TableField(exist = false)
+    private BigDecimal overdueCost;//逾期产生的费用
     /**
      * 账单状态
      */

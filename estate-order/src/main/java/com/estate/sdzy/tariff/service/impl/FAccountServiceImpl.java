@@ -211,12 +211,13 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
 
     @Transactional
     @Override
-    public boolean doUpdate(FAccount account, String token){
-        saveOrUpdate(account, token);
+    public String doUpdate(FAccount account, String token){
+
         FAccount findAccount = getAccount(account.getOwnerId(), account.getRuleId(),account.getPropertyType(),account.getPropertyId());
         if(findAccount!=null){//说明已经有相应的费用项目对应的账户，不可编辑
-            return false;
+            return String.valueOf(findAccount.getId());
         }else{
+            saveOrUpdate(account, token);
             QueryWrapper<FAccountCostItem> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("account_id",account.getId());
             List<FAccountCostItem> fAccountCostItems = fAccountCostItemMapper.selectList(queryWrapper);
@@ -231,7 +232,7 @@ public class FAccountServiceImpl extends ServiceImpl<FAccountMapper, FAccount> i
                 saveAccountCostItem(account, token);
             }
         }
-        return true;
+        return "修改成功";
     }
 
     @Override
