@@ -2,9 +2,12 @@ package com.estate.sdzy.wechat.controller;
 
 import com.estate.common.util.ConnectUtil;
 import com.estate.common.util.TransactionConnUtil;
+import com.estate.sdzy.wechat.resource.WeChatResources;
 import com.estate.sdzy.wechat.service.PayService;
+import com.estate.sdzy.wechat.util.WeChatUtil;
 import com.lly835.bestpay.model.PayResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -15,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author mq
@@ -99,5 +102,34 @@ public class PayController {
         System.out.println(notifyData);
         PayResponse notify = payService.notify(notifyData);
 
+    }
+
+    @PostMapping("doprestore")
+    public ModelAndView doprestore(HttpServletRequest request){
+        ModelAndView mv = new ModelAndView("pay");
+        String openid = request.getParameter("openid");
+        System.out.println(openid);
+
+        return mv;
+    }
+
+    @RequestMapping("/prestore")
+    public String prestore(HttpServletRequest request) {
+        String code = request.getParameter("code");
+        JSONObject htmlAccessToken = WeChatUtil.getHTMLAccessToken(code);
+        Object access_token = htmlAccessToken.get("access_token");
+        Object openid = htmlAccessToken.get("openid");
+
+        JSONObject userInfo = WeChatUtil.getUserInfo(access_token, openid);
+        String result = null;
+        try {
+            result = new String(userInfo.toString().getBytes("ISO-8859-1"), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        log.info("结果是:{}",result);
+        JSONObject jsonObject = JSONObject.fromObject(result);
+        request.setAttribute("openid",jsonObject.getString("openid"));
+        return "account";
     }
 }

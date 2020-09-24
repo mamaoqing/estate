@@ -30,6 +30,6 @@ public class MenuUtil {
         String accessToken = AccessTokenUtil.getToken();
         System.out.println(accessToken);
         MenuUtil.setMenu(accessToken);
-//        MenuUtil.deleteMenu();
+//        MenuUtil.deleteMenu(accessToken);
     }
 }

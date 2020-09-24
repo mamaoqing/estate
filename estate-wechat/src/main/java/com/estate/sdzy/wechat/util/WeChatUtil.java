@@ -27,7 +27,8 @@ public class WeChatUtil {
      */
     public static Menu initMenu() {
         Menu menu = new Menu();
-
+        String url = "http://qjwsg.free.idcfengye.com/pay/prestore";
+        String replace = WeChatResources.GET_USER_ACC_URL.replace("APPID", WeChatResources.APPID).replace("REDIRECT_URI", url);
         ViewButton viewButton = new ViewButton();
         viewButton.setName("生活圈");
         viewButton.setType("view");
@@ -39,7 +40,7 @@ public class WeChatUtil {
         ViewButton viewButton2 = new ViewButton();
         viewButton2.setName("物业");
         viewButton2.setType("view");
-        viewButton2.setUrl("http://www.baidu.com");
+        viewButton2.setUrl(replace);
 
 
         BaseButton[] baseButtons = new BaseButton[]{viewButton, viewButton1, viewButton2};
