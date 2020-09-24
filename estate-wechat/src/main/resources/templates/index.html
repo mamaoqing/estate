@@ -1,0 +1,274 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <script th:src="@{/js/jquery-3.5.1.min.js}"></script>
+</head>
+<body>
+<!--    <td th:text="${stat.count}"></td>  -->
+<!--    <td th:text="${list.account}"></td>-->
+<!--    <td th:text="${list.name}"></td>-->
+<!--    <td th:text="${list.password}"></td>-->
+<!--    <td th:text="${list.accountType}"></td>-->
+<!--    <td th:text="${list.tel}"></td>-->
+
+<!--<p th:text="${user.openid}"></p>-->
+<form action="/estate/setWeChatUser" method="post">
+    <input type="hidden" th:value="${user.openid}" id="openid"/>
+    <input type="hidden" th:value="${listBillId}" id="listBillId"/>
+    <input type="hidden" th:value="${user.nickname}" id="nickname"/>
+    <input type="hidden" th:value="${user.sex}" id="sex"/>
+    <input type="hidden" th:value="${user.province}" id="province"/>
+    <input type="hidden" th:value="${user.city}" id="city"/>
+    <input type="hidden" th:value="${user.country}" id="country"/>
+    <input type="hidden" th:value="${user.headimgurl}" id="headimgurl"/>
+
+    <select class="area_select notnull" name="compId" id="provinces">
+        <option value="">-选择省-</option>
+        <option th:each="area:${dist.data}" th:value="${area.id}" th:text="${area.provinceName}"></option>
+    </select>
+    <select class="area_select notnull" name="compId" id="citys">
+        <option value="">-选择市-</option>
+        <option th:each="area:${list}" th:value="${area.id}" th:text="${area.name}"></option>
+    </select>
+    <select class="area_select notnull" name="compId" id="district">
+        <option value="">-选择区-</option>
+        <option th:each="area:${list}" th:value="${area.id}" th:text="${area.name}"></option>
+    </select>
+    <select class="area_select notnull" name="commId" id="comm">
+        <option value="">-选择社区-</option>
+    </select>
+    <select class="area_select nomr notnull" name="commAreaId" id="area">
+        <option value="">-选择分区-</option>
+    </select>
+    <select class="area_select nomr notnull" name="buildId" id="build">
+        <option value="">-选择建筑-</option>
+    </select>
+    <select class="area_select nomr notnull" name="unitId" id="unit">
+        <option value="">-选择单元-</option>
+    </select>
+    <select class="area_select nomr notnull" name="roomId" id="room">
+        <option value="">-选择房间-</option>
+    </select>
+
+    <button type="button" id="submit" onclick="dosubmit()"> 提交</button>
+</form>
+
+</body>
+<script>
+    $(document).ready(function () {
+
+        $("#provinces").change(function(){
+            var t = $("#provinces").val();
+            if(t ==''){
+                return;
+            }
+            $.ajax({
+                url:'/estate/getCity',
+                async:false,
+                type:'get',
+                data:{provinceId:t},
+                success:function(data){
+                    var json = $.parseJSON(data.data);
+                    var res = json.data;
+                    var t2 = $("#citys");
+                    t2.html('<option value="">-选择市-</option>')
+                    for ( var i = 0; i < res.length; i++) {
+                        t2.append("<option value='"+res[i].id+"'>"+ res[i].cityName+"</option>");
+                    }
+                }
+            })
+        });
+
+        $("#citys").change(function(){
+            var t = $("#citys").val();
+            if(t ==''){
+                return;
+            }
+            $.ajax({
+                url:'/estate/getDist',
+                async:false,
+                type:'get',
+                data:{provinceId:t},
+                success:function(data){
+                    var json = $.parseJSON(data.data);
+                    var res = json.data;
+                    var t2 = $("#district");
+                    t2.html('<option value="">-选择区-</option>')
+                    for ( var i = 0; i < res.length; i++) {
+                        t2.append("<option value='"+res[i].id+"'>"+ res[i].districtName+"</option>");
+                    }
+                }
+            })
+        });
+
+
+        $("#district").change(function(){
+            var t = $("#district").val();
+            if(t ==''){
+                return;
+            }
+            $.ajax({
+                url:'/estate/getCommList',
+                async:false,
+                type:'get',
+                data:{id:t},
+                success:function(data){
+                    var res = data.data;
+                    var t2 = $("#comm");
+                    t2.html('<option value="">-选择社区-</option>')
+                    for ( var i = 0; i < res.length; i++) {
+                        t2.append("<option value='"+res[i].id+"'>"+ res[i].name+"</option>");
+                    }
+                }
+            })
+        });
+        $("#comm").change(function(){
+            var t = $("#comm").val();
+            if(t ==''){
+                return;
+            }
+
+            $.ajax({
+                url:'/estate/getCommAreaList',
+                async:false,
+                type:'get',
+                data:{id:t},
+                success:function(data){
+                    var res = data.data;
+                    var t3 = $("#area");
+                    t3.html('<option value="">-选择分区-</option>');
+                    for ( var i = 0; i < res.length; i++) {
+                        t3.append("<option value='"+res[i].id+"'>"+ res[i].name+"</option>");
+                    }
+                }
+            })
+        });
+        $("#area").change(function(){
+            var t = $("#area").val();
+            if(t ==''){
+                return;
+            }
+
+            $.ajax({
+                url:'/estate/getBuildList',
+                async:false,
+                type:'get',
+                data:{id:t},
+                success:function(data){
+                    var res = data.data;
+                    var t3 = $("#build");
+                    t3.html('<option value="">-选择楼栋-</option>');
+                    for ( var i = 0; i < res.length; i++) {
+                        t3.append("<option value='"+res[i].id+"'>"+ res[i].name+"</option>");
+                    }
+                }
+            })
+        });
+
+        $("#build").change(function(){
+            var t = $("#build").val();
+            if(t ==''){
+                return;
+            }
+
+            $.ajax({
+                url:'/estate/getUnitList',
+                async:false,
+                type:'get',
+                data:{id:t},
+                success:function(data){
+                    var res = data.data;
+                    var t3 = $("#unit");
+                    t3.html('<option value="">-选择单元-</option>');
+                    for ( var i = 0; i < res.length; i++) {
+                        t3.append("<option value='"+res[i].id+"'>"+ res[i].name+"</option>");
+                    }
+                }
+            })
+        });
+
+        $("#unit").change(function(){
+            var t = $("#unit").val();
+            if(t ==''){
+                return;
+            }
+
+            $.ajax({
+                url:'/estate/getRoomList',
+                async:false,
+                type:'get',
+                data:{id:t},
+                success:function(data){
+                    var res = data.data;
+                    var t3 = $("#room");
+                    t3.html('<option value="">-选择房间-</option>');
+                    for ( var i = 0; i < res.length; i++) {
+                        t3.append("<option value='"+res[i].id+"'>"+ res[i].name+"</option>");
+                    }
+                }
+            })
+        });
+    });
+
+    function dosubmit(){
+        var commId = $("#comm").val();
+        var areaId = $("#area").val();
+        var buildId = $("#build").val();
+        var unitId = $("#unit").val();
+        var roomId = $("#room").val();
+        var openid = $("#openid").val();
+        var nickname = $("#nickname").val();
+        var sex = $("#sex").val();
+        var province = $("#province").val();
+        var city = $("#city").val();
+        var country = $("#country").val();
+        var headimgurl = $("#headimgurl").val();
+        var listBillId = $("#listBillId").val();
+
+        if(commId == '' ||commId == null || commId == 'undefined'){
+            return false;
+        }
+        if(areaId == '' ||areaId == null || areaId == 'undefined'){
+            return false;
+        }
+        if(buildId == '' ||buildId == null || buildId == 'undefined'){
+            return false;
+        }
+        if(unitId == '' ||unitId == null || unitId == 'undefined'){
+            return false;
+        }
+        if(roomId == '' ||roomId == null || roomId == 'undefined'){
+            return false;
+        }
+
+        console.log(openid+"<>"+"<>"+commId+"<>"+areaId+buildId+"<>"+unitId+"<>"+roomId);
+
+        var data = {
+            commId:commId,
+            areaId:areaId,
+            buildId:buildId,
+            unitId:unitId,
+            roomId:roomId,
+            openid:openid,
+            nickname:nickname,
+            sex:sex,
+            province:province,
+            city:city,
+            country:country,
+            headimgurl:headimgurl,
+            listBillId:listBillId
+        };
+        $.ajax({
+            url:'/estate/setWeChatUser',
+            async:false,
+            type:'post',
+            data:data,
+            success:function(data){
+                if(data.data && data.code === 0){
+                    console.log('成功');
+                }
+            }
+        })
+    }
+
+</script>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p th:text="${openid}"></p>
+<p>123456789</p>
+
+<table>
+    <tr th:each="area:${list}" style="border: 1px solid #cccccc">
+        <td  th:text="${area.bill_no}" hidden></td>
+        <td  th:text="${area.costName}"></td>
+        <td  th:text="${area.account_period}"></td>
+        <td  th:text="${area.property_type}"></td>
+        <td  th:text="${area.price}"></td>
+        <td  th:text="${area.room}"></td>
+    </tr>
+</table>
+
+<p>总金额：</p>
+<p th:text="${sumPrice}"></p>
+
+<input />
+<button onclick="pay()">支付</button>
+</body>
+<script>
+    function pay() {
+        location.href="/pay/create?";
+    }
+</script>
+</html>
