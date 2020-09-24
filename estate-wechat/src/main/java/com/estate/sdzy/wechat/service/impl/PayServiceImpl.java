@@ -33,6 +33,7 @@ public class PayServiceImpl implements PayService {
         payRequest.setOrderAmount(price);
         payRequest.setOrderId(orderId);
         payRequest.setOrderName(orderName);
+
         payRequest.setPayTypeEnum(BestPayTypeEnum.WXPAY_MP);
 
         PayResponse pay = bestPayService.pay(payRequest);
