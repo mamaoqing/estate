@@ -43,14 +43,19 @@ public class SendApplication {
     }
 
     public static void findBill(Integer commId) {
-        String sql = "select bb.name,aa.account_period,cc.name commName,cc.id from f_bill aa ,f_cost_rule bb,r_community cc where aa.cost_rule_id = bb.id and aa.comm_id = cc.id and cc.id = ? and aa.is_payment='否' and aa.state='未支付' and bill_time > '2020-08-21' GROUP BY bb.name,aa.account_period,cc.name,cc.id";
+        Date date = new Date();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DATE, -1);
+        Date time = calendar.getTime();
+        String sql = "select bb.name,aa.account_period,cc.name commName,cc.id from f_bill aa ,f_cost_rule bb,r_community cc where aa.cost_rule_id = bb.id and aa.comm_id = cc.id and cc.id = ? and aa.is_payment='否' and aa.state='未支付' and bill_time > ? GROUP BY bb.name,aa.account_period,cc.name,cc.id";
 
         String userSql = "select DISTINCT aa.wx_openid from r_owner aa, r_owner_property bb,f_bill cc  where  aa.id = bb.owner_id and bb.comm_id= ?  and cc.is_payment='否' and cc.state='未支付' and aa.wx_openid is not null  and bill_time > ?";
         StringBuffer title = new StringBuffer();
         StringBuffer content = new StringBuffer();
         String comm = "";
         try {
-            ResultSet resultSet = ConnectUtil.executeQuery(sql, new Object[]{commId});
+            ResultSet resultSet = ConnectUtil.executeQuery(sql, new Object[]{commId,time});
             while (resultSet.next()) {
                 String name = resultSet.getString("name");
                 String account_period = resultSet.getString("account_period");
@@ -66,12 +71,6 @@ public class SendApplication {
             String cont = s1;
             tit = tit + "收费通知";
             cont = cont + "收费通知，请大家及时缴费。";
-            Date date = new Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
-            calendar.add(Calendar.DATE, -1);
-            Date time = calendar.getTime();
-            System.out.println(FormatUtil.dateToString(time, FormatUtil.FORMAT_LONG));
             ResultSet resultSet1 = ConnectUtil.executeQuery(userSql, new Object[]{commId, time});
             while (resultSet1.next()) {
                 String wx_openid = resultSet1.getString("wx_openid");

@@ -56,7 +56,7 @@ public class WeChatController {
 
     @PostMapping("/hello")
     public void sedMessage(HttpServletRequest request, HttpServletResponse response) {
-        log.info("进入微信后台了！！");
+//        log.info("进入微信后台了！！");
         PrintWriter out = null;
         try {
             request.setCharacterEncoding("UTF-8");
@@ -82,10 +82,10 @@ public class WeChatController {
                 m = MessageUtil.initNews(toUserName, fromUserName);
                 // 用户关注时推送消息
             } else if (MessageUtil.MESSAGE_EVENT.equals(msgType)) {
-                log.info("关注消息推送");
+//                log.info("关注消息推送");
                 String event = map.get("Event");
                 if (MessageUtil.MESSAGE_EVENT_SUBSCRIBE.equals(event)) {
-                    log.info("关注消息！！！");
+//                    log.info("关注消息！！！");
                     m = MessageUtil.initNews(toUserName, fromUserName);
                     // 取消关注
                 } else {
@@ -140,7 +140,7 @@ public class WeChatController {
 
         JSONObject jsonObject = JSONObject.fromObject(result);
         request.setAttribute("user", jsonObject);
-        log.info("用户信息：{}", jsonObject);
+//        log.info("用户信息：{}", jsonObject);
         request.setAttribute("list", stringObjectMap);
 
         return "index";

@@ -20,10 +20,11 @@
 <p>总金额：</p>
 <p th:text="${sumPrice}"></p>
 
-<input type="number" value="" id="price"/>
+<input type="number" value="0.01" id="price"/>
 <button onclick="pay()">支付</button>
 </body>
 <script>
+    var submit = true;
     function pay() {
 
         var listBillId = $("#listBillId").val();
