@@ -11,10 +11,7 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -105,10 +102,10 @@ public class PayController {
 
         }
 
-//        payService.create(Double.valueOf(payPrice),openid,"","");
         return mv;
     }
 
+    @ResponseBody
     @PostMapping("notify")
     public String payResult(@RequestBody String notifyData) {
         String insertf_finance_bill_recordsql = "insert into f_finance_bill_record (comp_id,comm_id,finance_record_id,bill_id,cost,created_at,created_by,created_name) select comp_id,comm_id,?,bill_id,cost,created_at,created_by,created_name from f_finance_bill_record_draft where finance_record_id = ?";
@@ -161,7 +158,17 @@ public class PayController {
         } catch (ClassNotFoundException classNotFoundException) {
             classNotFoundException.printStackTrace();
         }
-        return "abc";
+        System.out.println(11111);
+        System.out.println(22222);
+        System.out.println(orderId);
+        System.out.println(11111);
+        String result = "<xml>" +
+                            "<return_code><![CDATA[SUCCESS]]></return_code>"+
+                            "<return_msg><![CDATA[OK]]></return_msg>"+
+                        "</xml>";
+
+
+        return result;
     }
 
     @PostMapping("doprestore")

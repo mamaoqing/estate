@@ -9,6 +9,8 @@ import com.estate.sdzy.wechat.util.ResultSetToMap;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -108,7 +110,6 @@ public class EstateWeChatController {
     @GetMapping("getDist")
     public Result getDist(HttpServletRequest request){
         String provinceId = request.getParameter("provinceId");
-        System.out.println(provinceId+"<--->");
         String forObject = restTemplate.getForObject("http://estate-bill/sdzy/rProvince/getDistList?cityId="+provinceId, String.class);
         System.out.println(forObject);
         return ResultUtil.success(forObject);

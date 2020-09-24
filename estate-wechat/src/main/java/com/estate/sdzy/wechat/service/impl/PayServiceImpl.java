@@ -24,8 +24,6 @@ public class PayServiceImpl implements PayService {
     @Autowired
     private BestPayServiceImpl bestPayService;
 
-
-
     @Override
     public PayResponse create(Double price,String openid,String orderId,String orderName) {
         PayRequest payRequest = new PayRequest();

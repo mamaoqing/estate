@@ -35,6 +35,7 @@ public class PayConfig {
         wxPayConfig.setMchKey(WeChatResources.APPPAYSECRET);
         // 证书位置
         wxPayConfig.setKeyPath(WeChatResources.CERPATH);
+        // 返回url
         wxPayConfig.setNotifyUrl(WeChatResources.NOTIFYURL);
         return wxPayConfig;
     }
