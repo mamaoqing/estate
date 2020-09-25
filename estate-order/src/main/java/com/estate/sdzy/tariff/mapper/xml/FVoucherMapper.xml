@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.estate.sdzy.tariff.mapper.FVoucherMapper">
+    <select id="getOwners" parameterType="java.util.Map" resultType="com.estate.sdzy.asstes.entity.ROwner">
+        SELECT
+            bb.*
+            FROM
+            r_owner_property aa,
+            r_owner bb
+        WHERE
+            aa.is_delete = 0
+            and aa.owner_id = bb.id
+            and aa.property_type = #{propertyType}
+            and aa.property_id = #{propertyId}
+
+    </select>
+    <select id="getNo" resultType="java.lang.Long">
+        select max(id) from f_voucher
+    </select>
+    <insert id="insertVoucherProperty" parameterType="com.estate.sdzy.tariff.entity.FVoucher">
+        insert into f_voucher_property(voucher_id,bill_id) VALUES(#{id},#{billId})
+    </insert>
+</mapper>
