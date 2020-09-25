@@ -6,11 +6,8 @@ import com.estate.common.util.ResultUtil;
 import com.estate.common.util.TransactionConnUtil;
 import com.estate.sdzy.wechat.resource.WeChatResources;
 import com.estate.sdzy.wechat.util.ResultSetToMap;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import net.sf.json.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +20,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
+
 /**
  * @author mq
  * @description: TODO
@@ -32,6 +31,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/estate/")
+@Slf4j
 public class EstateWeChatController {
 
     @Autowired
@@ -245,4 +245,40 @@ public class EstateWeChatController {
         }
         return ResultUtil.success(stringObjectMap);
     }
+
+    @GetMapping("getCostRuleList")
+    public Result getCostRuleList(HttpServletRequest request) throws SQLException, ClassNotFoundException {
+        String commId = request.getParameter("commId");
+        String openid = request.getParameter("openid");
+        String sql = "select DISTINCT aa.name,cc.property_type,dd.roomNo from f_cost_rule aa,r_owner_property bb,f_cost_rule_room cc,v_room_roomNo dd,r_owner ee where aa.id =cc.cost_rule_id and cc.property_type=bb.property_type and cc.property_id = bb.property_id and aa.comm_id=? and bb.owner_id=ee.id and dd.id = cc.property_id and ee.wx_openid=?";
+        List<Map<String, Object>> list = new ArrayList<>();
+        ResultSet resultSet = ConnectUtil.executeQuery(sql, new Object[]{commId, openid});
+        while (resultSet.next()){
+            Map<String, Object> map = new HashMap<>(16);
+            map.put("property_type", resultSet.getString("property_type"));
+            map.put("roomNo", resultSet.getString("roomNo"));
+            map.put("name", resultSet.getString("name"));
+            list.add(map);
+        }
+
+        String sqlf_account = "select aa.* from f_account aa, r_owner bb where aa.owner_id = bb.id and bb.wx_openid = ? and aa.comm_id = ?";
+        ResultSet resultSet1 = ConnectUtil.executeQuery(sqlf_account, new Object[]{openid, commId});
+        List<Map<String, Object>> nameList = new ArrayList<>();
+        while (resultSet1.next()){
+            Map<String, Object> map = new HashMap<>(16);
+            String name = resultSet1.getString("name");
+            int id = resultSet1.getInt("id");
+            map.put("name",name);
+            map.put("id",id);
+            nameList.add(map);
+        }
+        Map<String,Object> result = new HashMap<>(16);
+        result.put("nameList",nameList);
+        result.put("list",list);
+        log.info("结果：{}",result);
+        return ResultUtil.success(result);
+    }
+
+
+
 }
