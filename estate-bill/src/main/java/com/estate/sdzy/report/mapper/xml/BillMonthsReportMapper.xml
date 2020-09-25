@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.estate.sdzy.report.mapper.BillMonthsReportMapper">
+
+    <select id="selectBillMonthsReport" resultType="java.util.Map">
+        select SUM(price) price,SUM(overdue_cost) overdueCost,SUM(sale_price) salePrice,SUM(pay_price) payPrice,SUM(price-pay_price+overdue_cost+sale_price) owed
+        from f_bill
+        where 1=1
+        <if test="commId!=null and commId!=''">
+            and comm_id=#{commId}
+        </if>
+        <if test="ruleId!=null and ruleId!=''">
+            and cost_rule_id = #{ruleId}
+        </if>
+        and  bill_time between #{firstDate} AND #{lastDate}
+    </select>
+
+    <!--本月总收费额 -->
+    <select id="getBillMonthsReportGbRule" resultType="java.util.Map">
+        select b.cost_rule_id ruleId,b.comm_id,rule.name,SUM(b.price) price,SUM(b.overdue_cost) overdueCost,SUM(b.sale_price) salePrice,SUM(b.pay_price) payPrice,
+        SUM(b.price-b.pay_price+b.overdue_cost+b.sale_price) owed
+        from f_bill b,f_cost_rule rule
+        where b.cost_rule_id=rule.id and  b.bill_time between #{firstDate} AND #{lastDate} and b.comm_id = #{commId}
+        <if test="ruleId!=null and ruleId!=''">
+            and b.cost_rule_id = #{ruleId}
+        </if>
+        GROUP BY b.cost_rule_id
+    </select>
+
+</mapper>
