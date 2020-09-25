@@ -41,6 +41,21 @@ public class FVoucher implements Serializable {
     private Long compId;
 
     /**
+     * 物业公司名称
+     */
+    private String compName;
+
+    /**
+     * 社区名称
+     */
+    private String commName;
+
+    /**
+     * 业主名称
+     */
+    private String ownerName;
+
+    /**
      * 社区id
      */
     private Long commId;
