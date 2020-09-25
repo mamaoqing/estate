@@ -35,7 +35,7 @@ public class DoDebit {
                 int account_id = resultSet.getInt("id");
                 int owner_id = resultSet.getInt("owner_id");
                 BigDecimal fee = resultSet.getBigDecimal("fee");
-                String billSql = "select bb.*,price-sale_price-pay_price+overdue_cost aaa from f_account_cost_item aa, f_bill bb where aa.property_type = bb.property_type and aa.property_id = bb.property_id and aa.account_id =? and aa.rule_id  = bb.cost_rule_id and is_payment='否'";
+                String billSql = "select bb.*,price+sale_price-pay_price+overdue_cost aaa from f_account_cost_item aa, f_bill bb where aa.property_type = bb.property_type and aa.property_id = bb.property_id and aa.account_id =? and aa.rule_id  = bb.cost_rule_id and is_payment='否'";
                 Object[] obj = {account_id};
                 ResultSet result = TransactionConnUtil.executeQuery(billSql, obj);
                 exeute(result, fee, account_id, now, owner_id);

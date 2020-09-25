@@ -10,11 +10,7 @@ import lombok.Data;
  * @date 2020/9/1518:25
  */
 @Data
-public class TextMessage {
-    private String ToUserName;
-    private String FromUserName;
-    private String CreateTime;
-    private String MsgType;
+public class TextMessage extends  BaseMessage{
     private String Content;
     private String MsgId;
 }
