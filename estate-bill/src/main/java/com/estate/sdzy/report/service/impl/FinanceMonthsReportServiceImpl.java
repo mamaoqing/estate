@@ -90,17 +90,47 @@ public class FinanceMonthsReportServiceImpl extends ServiceImpl<FinanceMonthsRep
                 financeReport.setCommName(comm.getName());
                 financeReport.setRuleName("合计");
                 //本月总收费额(总)
-                financeReport.setTotalPay(financeMonthsReportMapper.getTotalPay(getFirstDay(),getLastDay(),comm.getId()));
+                BigDecimal totalPay = financeMonthsReportMapper.getTotalPay(getFirstDay(), getLastDay(), comm.getId());
+                if(!StringUtils.isEmpty(totalPay)){
+                    financeReport.setTotalPay(totalPay);
+                }else{
+                    financeReport.setTotalPay(new BigDecimal(0));
+                }
                 //本月应收额(总)
-                financeReport.setReceivable(financeMonthsReportMapper.getReceivable(getFirstDay(),getLastDay(),comm.getId()));
+                BigDecimal receivable = financeMonthsReportMapper.getReceivable(getFirstDay(), getLastDay(), comm.getId());
+                if(!StringUtils.isEmpty(receivable)){
+                    financeReport.setReceivable(receivable);
+                }else{
+                    financeReport.setReceivable(new BigDecimal(0));
+                }
                 //本月欠费额
-                financeReport.setOwed(financeMonthsReportMapper.getOwed(getFirstDay(),getLastDay(),comm.getId()));
+                BigDecimal owed = financeMonthsReportMapper.getOwed(getFirstDay(), getLastDay(), comm.getId());
+                if(!StringUtils.isEmpty(owed)){
+                    financeReport.setOwed(owed);
+                }else{
+                    financeReport.setOwed(new BigDecimal(0));
+                }
                 //本月收本月金额
-                financeReport.setReceived(financeMonthsReportMapper.getReceived(getFirstDay(),getLastDay(),comm.getId()));
+                BigDecimal received = financeMonthsReportMapper.getReceived(getFirstDay(), getLastDay(), comm.getId());
+                if(!StringUtils.isEmpty(received)){
+                    financeReport.setReceived(received);
+                }else{
+                    financeReport.setReceived(new BigDecimal(0));
+                }
                 //本月收往期金额
-                financeReport.setPreviousPeriodReceived(financeMonthsReportMapper.getPreviousPeriodReceived(getFirstDay(),getLastDay(),comm.getId()));
+                BigDecimal previousPeriodReceived = financeMonthsReportMapper.getPreviousPeriodReceived(getFirstDay(), getLastDay(), comm.getId());
+                if(!StringUtils.isEmpty(previousPeriodReceived)){
+                    financeReport.setPreviousPeriodReceived(previousPeriodReceived);
+                }else{
+                    financeReport.setPreviousPeriodReceived(new BigDecimal(0));
+                }
                 //往期欠费金额
-                financeReport.setPreviousOwed(financeMonthsReportMapper.getPreviousOwed(getFirstDay(),getLastDay(),comm.getId()));
+                BigDecimal previousOwed = financeMonthsReportMapper.getPreviousOwed(getFirstDay(), getLastDay(), comm.getId());
+                if(!StringUtils.isEmpty(previousOwed)){
+                    financeReport.setPreviousOwed(previousOwed);
+                }else{
+                    financeReport.setPreviousOwed(new BigDecimal(0));
+                }
                 if(rCommunities.size()>1){
                     setTotal(financeReportTotal,financeReport);
                 }
@@ -124,22 +154,46 @@ public class FinanceMonthsReportServiceImpl extends ServiceImpl<FinanceMonthsRep
             //本月总收费额(按不同的收费标准)
             Map<String, Object> totalPayByRule = financeMonthsReportMapper.getTotalPayByRule(getFirstDay(), getLastDay(), commId, (Long)mapRules.get("id"));
             financeReport.setRuleName((String) mapRules.get("name"));
-            financeReport.setTotalPay((BigDecimal) totalPayByRule.get("totalPay"));
+            if (totalPayByRule.get("totalPay") == null) {
+                financeReport.setTotalPay(new BigDecimal(0));
+            } else {
+                financeReport.setTotalPay((BigDecimal) totalPayByRule.get("totalPay"));
+            }
             //本月应收额(按不同的收费标准)getReceivableByRule
             Map<String, Object> receivable = financeMonthsReportMapper.getReceivableByRule(getFirstDay(), getLastDay(), commId, (Long)mapRules.get("id"));
-            financeReport.setReceivable((BigDecimal) receivable.get("receivable"));
+            if(receivable.get("receivable") == null){
+                financeReport.setReceivable(new BigDecimal(0));
+            }else{
+                financeReport.setReceivable((BigDecimal) receivable.get("receivable"));
+            }
             //本月欠费额(按不同的收费标准)getOwedByRule
             Map<String, Object> owed = financeMonthsReportMapper.getOwedByRule(getFirstDay(), getLastDay(), commId, (Long)mapRules.get("id"));
-            financeReport.setOwed((BigDecimal) owed.get("owed"));
+            if(owed.get("owed") == null){
+                financeReport.setOwed(new BigDecimal(0));
+            }else{
+                financeReport.setOwed((BigDecimal) owed.get("owed"));
+            }
             //本月收本月金额(按不同的收费标准)getReceivedByRule
             Map<String, Object> received = financeMonthsReportMapper.getReceivedByRule(getFirstDay(), getLastDay(), commId, (Long)mapRules.get("id"));
-            financeReport.setReceived((BigDecimal) received.get("received"));
+            if(received.get("received") == null){
+                financeReport.setReceived(new BigDecimal(0));
+            }else{
+                financeReport.setReceived((BigDecimal) received.get("received"));
+            }
             //本月收往期金额(按不同的收费标准)getPreviousPeriodReceivedByRule
             Map<String, Object> previousPeriodReceived = financeMonthsReportMapper.getPreviousPeriodReceivedByRule(getFirstDay(), getLastDay(), commId, (Long)mapRules.get("id"));
-            financeReport.setPreviousPeriodReceived((BigDecimal) previousPeriodReceived.get("previousPeriodReceived"));
+            if(previousPeriodReceived.get("previousPeriodReceived") == null){
+                financeReport.setPreviousPeriodReceived(new BigDecimal(0));
+            }else{
+                financeReport.setPreviousPeriodReceived((BigDecimal) previousPeriodReceived.get("previousPeriodReceived"));
+            }
             //往期欠费金额(按不同的收费标准)getPreviousOwedByRule
             Map<String, Object> previousOwedByRule = financeMonthsReportMapper.getPreviousOwedByRule(getFirstDay(), getLastDay(), commId, (Long)mapRules.get("id"));
-            financeReport.setPreviousOwed((BigDecimal) previousOwedByRule.get("previousOwedByRule"));
+            if(previousOwedByRule.get("previousOwedByRule") == null){
+                financeReport.setPreviousOwed(new BigDecimal(0));
+            }else{
+                financeReport.setPreviousOwed((BigDecimal) previousOwedByRule.get("previousOwedByRule"));
+            }
             fList.add(financeReport);
             if(!StringUtils.isEmpty(financeReportTotal)){
                 setTotal(financeReportTotal,financeReport);
@@ -152,44 +206,44 @@ public class FinanceMonthsReportServiceImpl extends ServiceImpl<FinanceMonthsRep
         if(StringUtils.isEmpty(financeReportTotal.getTotalPay())){
             financeReportTotal.setTotalPay(financeReport.getTotalPay());
         }else{
-            if(!StringUtils.isEmpty(financeReport.getTotalPay())){
+            //if(!StringUtils.isEmpty(financeReport.getTotalPay())){
                 financeReportTotal.setTotalPay(financeReportTotal.getTotalPay().add(financeReport.getTotalPay()));
-            }
+            //}
         }
         if(StringUtils.isEmpty(financeReportTotal.getReceivable())){
             financeReportTotal.setReceivable(financeReport.getReceivable());
         }else{
-            if(!StringUtils.isEmpty(financeReport.getReceivable())){
+            //if(!StringUtils.isEmpty(financeReport.getReceivable())){
                 financeReportTotal.setReceivable(financeReportTotal.getReceivable().add(financeReport.getReceivable()));
-            }
+            //}
         }
         if(StringUtils.isEmpty(financeReportTotal.getOwed())){
             financeReportTotal.setOwed(financeReport.getOwed());
         }else{
-            if(!StringUtils.isEmpty(financeReport.getOwed())){
+            //if(!StringUtils.isEmpty(financeReport.getOwed())){
                 financeReportTotal.setOwed(financeReportTotal.getOwed().add(financeReport.getOwed()));
-            }
+            //}
         }
         if(StringUtils.isEmpty(financeReportTotal.getReceived())){
             financeReportTotal.setReceived(financeReport.getReceived());
         }else{
-            if(!StringUtils.isEmpty(financeReport.getReceived())){
+            //if(!StringUtils.isEmpty(financeReport.getReceived())){
                 financeReportTotal.setReceived(financeReportTotal.getReceived().add(financeReport.getReceived()));
-            }
+            //}
         }
         if(StringUtils.isEmpty(financeReportTotal.getPreviousPeriodReceived())){
             financeReportTotal.setPreviousPeriodReceived(financeReport.getPreviousPeriodReceived());
         }else{
-            if(!StringUtils.isEmpty(financeReport.getPreviousPeriodReceived())){
+            //if(!StringUtils.isEmpty(financeReport.getPreviousPeriodReceived())){
                 financeReportTotal.setPreviousPeriodReceived(financeReportTotal.getPreviousPeriodReceived().add(financeReport.getPreviousPeriodReceived()));
-            }
+            //}
         }
         if(StringUtils.isEmpty(financeReportTotal.getPreviousOwed())){
             financeReportTotal.setPreviousOwed(financeReport.getPreviousOwed());
         }else{
-            if(!StringUtils.isEmpty(financeReport.getPreviousOwed())){
+            //if(!StringUtils.isEmpty(financeReport.getPreviousOwed())){
                 financeReportTotal.setPreviousOwed(financeReportTotal.getPreviousOwed().add(financeReport.getPreviousOwed()));
-            }
+            //}
         }
     }
 
