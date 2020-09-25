@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.estate.sdzy.report.mapper.FinanceMonthsReportMapper">
+
+    <select id="selectRule" resultType="java.util.Map">
+        select rule.name,rule.id from f_bill b,f_cost_rule rule where b.cost_rule_id=rule.id and b.comm_id=#{commId} GROUP BY b.cost_rule_id
+    </select>
+
+    <!--本月总收费额 -->
+    <select id="getTotalPay" resultType="java.math.BigDecimal">
+        select SUM(cost) from f_finance_bill_record where created_at BETWEEN #{firstDate} AND #{lastDate} and comm_id=#{commId}
+    </select>
+
+    <!--本月总收费额(按不同的收费标准) -->
+    <select id="getTotalPayByRule" resultType="java.util.Map">
+        select SUM(r.cost) totalPay,rule.name,b.cost_rule_id from f_finance_bill_record r,f_bill b,f_cost_rule rule
+        where r.bill_id=b.id and b.cost_rule_id=rule.id
+        and r.created_at BETWEEN #{firstDate} AND #{lastDate} and r.comm_id=#{commId} and b.cost_rule_id = #{ruleId}
+    </select>
+
+    <!--本月应收额 -->
+    <select id="getReceivable" resultType="java.math.BigDecimal">
+        select SUM(price) from f_bill
+        where bill_time BETWEEN #{firstDate} AND #{lastDate} and comm_id=#{commId}
+    </select>
+    <!--本月应收额(按不同的收费标准) -->
+    <select id="getReceivableByRule" resultType="java.util.Map">
+        select b.cost_rule_id,r.name,SUM(b.price) receivable from f_bill b, f_cost_rule r where b.cost_rule_id=r.id and  b.comm_id=#{commId}
+        and b.bill_time BETWEEN #{firstDate} AND #{lastDate} and b.cost_rule_id = #{ruleId}
+    </select>
+
+    <!--本月欠费额 -->
+    <select id="getOwed" resultType="java.math.BigDecimal">
+        select SUM(price-pay_price+overdue_cost+sale_price) from f_bill
+        where bill_time BETWEEN #{firstDate} AND #{lastDate} and comm_id=#{commId}
+    </select>
+    <!--本月欠费额(按不同的收费标准) -->
+    <select id="getOwedByRule" resultType="java.util.Map">
+        select b.cost_rule_id,r.name,SUM(b.price-b.pay_price+b.overdue_cost+b.sale_price) owed from f_bill b, f_cost_rule r
+        where b.cost_rule_id=r.id and  b.comm_id=#{commId} and b.bill_time BETWEEN #{firstDate} AND #{lastDate} and b.cost_rule_id = #{ruleId}
+    </select>
+
+    <!--本月收本月金额 -->
+    <select id="getReceived" resultType="java.math.BigDecimal">
+        select SUM(r.cost) from f_finance_bill_record r,f_bill b where r.bill_id=b.id
+        and r.created_at BETWEEN #{firstDate} AND #{lastDate} and b.bill_time BETWEEN #{firstDate} AND #{lastDate} and r.comm_id=#{commId}
+    </select>
+    <!--本月收本月金额(按不同的收费标准) -->
+    <select id="getReceivedByRule" resultType="java.util.Map">
+        select b.cost_rule_id,rule.name,SUM(r.cost) received from f_finance_bill_record r,f_bill b,f_cost_rule rule where r.bill_id=b.id
+        and b.cost_rule_id=rule.id
+        and r.created_at BETWEEN #{firstDate} AND #{lastDate} and b.bill_time BETWEEN #{firstDate} AND #{lastDate} and r.comm_id=#{commId}
+        and b.cost_rule_id = #{ruleId}
+    </select>
+
+    <!--本月收往期金额 -->
+    <select id="getPreviousPeriodReceived" resultType="java.math.BigDecimal">
+        select SUM(r.cost) from f_finance_bill_record r,f_bill b where r.bill_id=b.id
+        and r.created_at BETWEEN #{firstDate} AND #{lastDate} and b.bill_time &lt; #{firstDate} and r.comm_id=#{commId}
+    </select>
+    <!--本月收往期金额(按不同的收费标准) -->
+    <select id="getPreviousPeriodReceivedByRule" resultType="java.util.Map">
+        select b.cost_rule_id,rule.name,SUM(r.cost) previousPeriodReceived from f_finance_bill_record r,f_bill b,f_cost_rule rule where r.bill_id=b.id
+        and b.cost_rule_id=rule.id and r.created_at BETWEEN #{firstDate} AND #{lastDate} and b.bill_time &lt; #{firstDate}
+        and r.comm_id=#{commId} and b.cost_rule_id = #{ruleId}
+    </select>
+
+    <!--往期欠费金额 -->
+    <select id="getPreviousOwed" resultType="java.math.BigDecimal">
+        select SUM(price-pay_price+overdue_cost+sale_price) from f_bill where bill_time &lt; #{firstDate} and comm_id=#{commId}
+    </select>
+    <!--往期欠费金额(按不同的收费标准) -->
+    <select id="getPreviousOwedByRule" resultType="java.util.Map">
+        select b.cost_rule_id,r.name,SUM(b.price-b.pay_price+b.overdue_cost+b.sale_price) previousOwedByRule from f_bill b, f_cost_rule r where b.cost_rule_id=r.id
+        and  b.comm_id=#{commId} and b.bill_time &lt; #{firstDate} and b.cost_rule_id = #{ruleId}
+    </select>
+</mapper>

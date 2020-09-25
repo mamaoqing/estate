@@ -16,6 +16,7 @@
         <module>estate-timedtask</module>
         <module>estate-wechat</module>
         <module>estate-account</module>
+        <module>estate-send</module>
     </modules>
 
     <properties>
