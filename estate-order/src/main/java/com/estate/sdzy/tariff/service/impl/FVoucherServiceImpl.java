@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -100,7 +101,13 @@ public class FVoucherServiceImpl extends ServiceImpl<FVoucherMapper, FVoucher> i
         voucher.setCreatedBy(user.getId());
         int insert = mapper.insert(voucher);
         if (insert > 0) {
-            mapper.insertVoucherProperty(voucher);
+            String[] split = voucher.getBillIds().split(",");
+            Map<String,String> map = new HashMap<>();
+            for (int i=0;i<split.length;i++){
+                map.put("id",voucher.getId().toString());
+                map.put("billId",split[i]);
+                mapper.insertVoucherProperty(map);
+            }
             return true;
         }
         return false;

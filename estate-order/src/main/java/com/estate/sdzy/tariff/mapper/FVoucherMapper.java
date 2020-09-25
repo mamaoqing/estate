@@ -18,5 +18,5 @@ import java.util.Map;
 public interface FVoucherMapper extends BaseMapper<FVoucher> {
     List<ROwner> getOwners (Map<String,String> map);
     Long getNo ();
-    boolean insertVoucherProperty(FVoucher voucher);
+    boolean insertVoucherProperty(Map<String,String> map);
 }
