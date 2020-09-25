@@ -2,6 +2,8 @@ package com.estate.sdzy.wechat.service;
 
 import com.lly835.bestpay.model.PayResponse;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author mq
  * @description: TODO
@@ -11,7 +13,8 @@ import com.lly835.bestpay.model.PayResponse;
  */
 public interface PayService {
 
-    PayResponse create(Double price,String openid,String orderId,String orderName);
+    PayResponse create(HttpServletRequest request,  String orderName,String oper_type,String accountName,Integer commId,Integer accountId);
 
-    PayResponse notify(String data);
+    String notify(String data);
+
 }

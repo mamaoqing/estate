@@ -21,7 +21,20 @@ public class WeChatResources {
     /** 微信支付密码  819088 */
     public static final String APPPAYSECRET = "7308a4a2c5081dcb34549005cee28b3d";
 
+    /** 微信支付回调地址 */
     public static final String NOTIFYURL = "http://qjwsg.free.idcfengye.com/pay/notify";
+
+    /** 微信支付成功时告诉微信 */
+    public static final String PAY_SUCCESS_RESULT = "<xml>" +
+            "<return_code><![CDATA[SUCCESS]]></return_code>" +
+            "<return_msg><![CDATA[OK]]></return_msg>" +
+            "</xml>";
+
+    /** 微信支付失败时告诉微信 */
+    public static final String PAY_ERROR_RESULT = "<xml>" +
+            "<return_code><![CDATA[FAIL]]></return_code>" +
+            "<return_msg><![CDATA[ERROR]]></return_msg>" +
+            "</xml>";
 
     /** 微信支付证书保存位置 */
     public static final String CERPATH = "C:\\Users\\Administrator\\Desktop\\WXCertUtil\\cert\\apiclient_cert.p12";
@@ -65,5 +78,6 @@ public class WeChatResources {
     /** 发送模板消息 post */
     public static final String SEND_TEMPATE = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=ACCESS_TOKEN";
 
+    /**  消息模板id */
     public static final String TEMPLATE_WYGL_ID = "8D9nSKZCBVK0Qs7yHM2uEApKLeMxIsP8Zg2vi23JgLo";
 }
