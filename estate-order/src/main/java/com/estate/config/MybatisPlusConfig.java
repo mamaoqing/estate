@@ -24,6 +24,8 @@ public class MybatisPlusConfig {
     // 分页插件
     @Bean
     public PaginationInterceptor paginationInterceptor() {
-        return new PaginationInterceptor();
+        PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+        paginationInterceptor.setLimit(-1);
+        return paginationInterceptor;
     }
 }
