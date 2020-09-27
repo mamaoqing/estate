@@ -50,7 +50,7 @@ public class FCostRuleRoomServiceImpl extends ServiceImpl<FCostRuleRoomMapper, F
         SUser user = getUserByToken(token);
         String[] rooms = String.valueOf(ruleRooms).split(",");
         QueryWrapper<FCostRuleRoom> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("cost_rule_id", ruleId).eq("property_type", "room");
+        queryWrapper.eq("cost_rule_id", ruleId).eq("property_type", "房产");
         List<FCostRuleRoom> fCostRuleRooms = costRuleRoomMapper.selectList(queryWrapper);
         // 添加费用标准与物业的关系 ，添加之前需要先将之前存在的该标准的房间删除，然后从新添加
         if (fCostRuleRooms != null && !fCostRuleRooms.isEmpty()) {
