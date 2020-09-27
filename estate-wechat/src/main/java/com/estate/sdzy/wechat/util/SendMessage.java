@@ -60,6 +60,16 @@ public class SendMessage {
         return jsonObject1;
     }
 
+
+    public static JSONObject sendMessage(String toUser,String template_id, String title, String content,String first ){
+        String token = AccessTokenUtil.getToken();
+        JSONObject jsonObject = messageContent(toUser, template_id, title, content,first);
+        String url = WeChatResources.SEND_TEMPATE.replace("ACCESS_TOKEN", token);
+        JSONObject jsonObject1 = HttpUtil.doPost(url, jsonObject.toString());
+        log.info("发送内容：{}",jsonObject1);
+        return jsonObject1;
+    }
+
     public static void main(String[] args) {
         String token = AccessTokenUtil.getToken();
         System.out.println(token);
@@ -140,6 +150,38 @@ public class SendMessage {
         keyword2.put("value", s);
         keyword3.put("value",content);
         remark.put("value",remarks);
+
+        data.put("first", first);
+        data.put("keyword1", keyword1);
+        data.put("keyword2", keyword2);
+        data.put("keyword3", keyword3);
+        data.put("remark", remark);
+
+        jsonObject.put("data", data);
+
+        return jsonObject;
+    }
+
+    public static JSONObject messageContent(String toUser, String template_id, String title, String content,String firsts) {
+        String s = FormatUtil.dateToString(new Date(), FormatUtil.FORMAT_LONG);
+        JSONObject jsonObject = new JSONObject();
+
+        JSONObject data = new JSONObject();
+
+        JSONObject first = new JSONObject();
+        JSONObject keyword1 = new JSONObject();
+        JSONObject keyword2 = new JSONObject();
+        JSONObject keyword3 = new JSONObject();
+        JSONObject remark = new JSONObject();
+
+        jsonObject.put("touser", toUser);
+        jsonObject.put("template_id", template_id);
+
+        first.put("value", firsts);
+        keyword1.put("value", title);
+        keyword2.put("value", s);
+        keyword3.put("value",content);
+        remark.put("value","");
 
         data.put("first", first);
         data.put("keyword1", keyword1);

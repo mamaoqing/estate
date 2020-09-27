@@ -166,10 +166,6 @@ public class FBillServiceImpl extends ServiceImpl<FBillMapper, FBill> implements
     public List<FBill> listBillNoPage(Map<String, String> map, String token) {
         List<Long> rooms = new ArrayList<>();
 
-        if (StringUtils.isEmpty(map.get("pageNo"))) {
-            log.error("参数错误，请输入页码");
-            throw new OrderException(OrderExceptionEnum.PARAMS_MISS_ERROR);
-        }
         SUser user = getUserByToken(token);
         QueryWrapper<FBill> queryWrapper = new QueryWrapper<>();
         queryWrapper.isNotNull("aa.id");

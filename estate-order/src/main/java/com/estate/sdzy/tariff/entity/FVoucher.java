@@ -85,6 +85,6 @@ public class FVoucher implements Serializable {
     private Date createdAt;
 
     @TableField(exist = false)
-    private String billId;
+    private String billIds;
 
 }
