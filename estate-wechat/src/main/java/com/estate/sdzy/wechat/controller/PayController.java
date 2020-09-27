@@ -63,6 +63,7 @@ public class PayController {
         String costName = request.getParameter("costName");
         String accountName = request.getParameter("accountName");
         String commId = request.getParameter("commId");
+//        String commId = request.getParameter("commId");
         Integer count = null;
         if(!StringUtils.isEmpty(accountName)){
             count = Integer.valueOf(accountName);

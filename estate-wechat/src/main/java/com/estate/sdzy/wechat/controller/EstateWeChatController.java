@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -250,7 +251,7 @@ public class EstateWeChatController {
     public Result getCostRuleList(HttpServletRequest request) throws SQLException, ClassNotFoundException {
         String commId = request.getParameter("commId");
         String openid = request.getParameter("openid");
-        String sql = "select DISTINCT aa.name,cc.property_type,dd.roomNo from f_cost_rule aa,r_owner_property bb,f_cost_rule_room cc,v_room_roomNo dd,r_owner ee where aa.id =cc.cost_rule_id and cc.property_type=bb.property_type and cc.property_id = bb.property_id and aa.comm_id=? and bb.owner_id=ee.id and dd.id = cc.property_id and ee.wx_openid=?";
+        String sql = "select DISTINCT aa.name,cc.property_type,dd.roomNo,cc.property_id,cc.cost_rule_id,aa.comm_id,aa.comp_id from f_cost_rule aa,r_owner_property bb,f_cost_rule_room cc,v_room_roomNo dd,r_owner ee where aa.id =cc.cost_rule_id and cc.property_type=bb.property_type and cc.property_id = bb.property_id and aa.comm_id=? and bb.owner_id=ee.id and dd.id = cc.property_id and ee.wx_openid=?";
         List<Map<String, Object>> list = new ArrayList<>();
         ResultSet resultSet = ConnectUtil.executeQuery(sql, new Object[]{commId, openid});
         while (resultSet.next()){
@@ -258,6 +259,7 @@ public class EstateWeChatController {
             map.put("property_type", resultSet.getString("property_type"));
             map.put("roomNo", resultSet.getString("roomNo"));
             map.put("name", resultSet.getString("name"));
+            map.put("params", resultSet.getString("name")+";"+resultSet.getString("comp_id")+";"+resultSet.getString("comm_id")+";"+resultSet.getString("cost_rule_id")+";"+resultSet.getString("property_type")+";"+resultSet.getString("property_id"));
             list.add(map);
         }
 
@@ -268,7 +270,8 @@ public class EstateWeChatController {
             Map<String, Object> map = new HashMap<>(16);
             String name = resultSet1.getString("name");
             int id = resultSet1.getInt("id");
-            map.put("name",name);
+            BigDecimal fee = resultSet1.getBigDecimal("fee");
+            map.put("name",name+"\t 账户余额："+fee);
             map.put("id",id);
             nameList.add(map);
         }

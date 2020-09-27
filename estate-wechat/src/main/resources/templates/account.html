@@ -2,6 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <title>预存余额</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
     <script th:src="@{/js/jquery-3.5.1.min.js}"></script>
 </head>
 <body>
@@ -14,12 +15,12 @@
             <option value="">-请选择社区-</option>
             <option th:each="area:${commList}" th:value="${area.id}" th:text="${area.name}"></option>
         </select>
-
-        <select name="" id="accountName">
+<br/>
+        <select name="" id="accountName" style="width: 300px">
             <option value="">-请选择账户-</option>
         </select>
         <input type="number" value="" id="account">
-
+        <br/>
         <button type="button" id="sub" onclick="dosubmit()">预存</button>
     </form>
     <table id="data">
@@ -53,7 +54,7 @@
                     var content = "";
                     for ( var i = 0; i < json.length; i++) {
                         content+='<tr>' +
-                                    '<td><input type="checkbox" checked name="chose" value="'+json[i].name+'"/></td>'+
+                                    '<td><input type="checkbox" checked name="chose" value="'+json[i].params+'"/></td>'+
                                     '<td>'+json[i].property_type+'</td>' +
                                     '<td>'+json[i].roomNo+'</td>' +
                                     '<td>'+json[i].name+'</td>' +
@@ -61,7 +62,6 @@
                     }
                     t2.append(content);
                     var nameList = data.data.nameList;
-                    alert(nameList);
                     t3.html('<option value="">-请选择账户-</option>')
                     for ( var i = 0; i < nameList.length; i++) {
                         t3.append("<option value='"+nameList[i].id+"'>"+ nameList[i].name+"</option>");
@@ -102,6 +102,10 @@
     function dosubmit(){
         var arr = beginGet();
         var text = '';
+        if(!(arr.length >0)){
+            alert("请选择物业费用标准");
+            return false;
+        }
         for(var i=0;i<arr.length;i++){
             text = text + arr[i]+",";
         }
