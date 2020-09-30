@@ -66,13 +66,18 @@ public class BillMonthsReportServiceImpl extends ServiceImpl<BillMonthsReportMap
                 rCommunities = sUserCommService.getUserComm(user.getId(),user.getCompId());
             }
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+        SimpleDateFormat sdf = null;
+        if(StringUtils.isEmpty(map.get("year"))){
+            sdf = new SimpleDateFormat("yyyy-MM");
+        }else{
+            sdf = new SimpleDateFormat("yyyy");
+        }
         List<Date> date = null;
         String formatFirstDay = null;
         if(("true").equals(map.get("more"))) {
-            date = getDate();
+            date = getDate(map.get("year"));
         }else{
-            Date firstDay = getFirstDay(null);
+            Date firstDay = getFirstDay(null,map.get("year"));
             formatFirstDay = sdf.format(firstDay);
         }
         if(!StringUtils.isEmpty(map.get("ruleId"))){
@@ -89,13 +94,13 @@ public class BillMonthsReportServiceImpl extends ServiceImpl<BillMonthsReportMap
                     if(("true").equals(map.get("more"))){
                         for (Date d: date) {
                             String format = sdf.format(d);
-                            List<Map<String, Object>> billRule = billMonthsReportMapper.getBillMonthsReportGbRule(getFirstDay(d), getLastDay(d), comm.getId(),map.get("ruleId"));
+                            List<Map<String, Object>> billRule = billMonthsReportMapper.getBillMonthsReportGbRule(getFirstDay(d,map.get("year")), getLastDay(d,map.get("year")), comm.getId(),map.get("ruleId"));
                             billRuleAll.put(format,billRule);
                         }
                         setCommRuleTotal(map.get("ruleName"),comm.getName(),rules,billRuleAll,fList);
                     }else{
-                        Date firstDay = getFirstDay(null);
-                        Date lastDay = getLastDay(null);
+                        Date firstDay = getFirstDay(null,map.get("year"));
+                        Date lastDay = getLastDay(null,map.get("year"));
                         List<Map<String, Object>> billRule = billMonthsReportMapper.getBillMonthsReportGbRule(firstDay, lastDay, comm.getId(),map.get("ruleId"));
                         billRuleAll.put(formatFirstDay,billRule);
                         setCommRuleTotal(map.get("ruleName"),comm.getName(),rules,billRuleAll,fList);
@@ -106,12 +111,12 @@ public class BillMonthsReportServiceImpl extends ServiceImpl<BillMonthsReportMap
                 if(("true").equals(map.get("more"))) {//查询12个月的数据
                     for (Date d : date) {
                         String format = sdf.format(d);
-                        Map<String, Object> mapTotal = billMonthsReportMapper.selectBillMonthsReport(getFirstDay(d), getLastDay(d), null,map.get("ruleId"));
+                        Map<String, Object> mapTotal = billMonthsReportMapper.selectBillMonthsReport(getFirstDay(d,map.get("year")), getLastDay(d,map.get("year")), null,map.get("ruleId"));
                         setCommTotalAll(mapTotal, format, resultMapTotal);//保存一行社区总数
                     }
                 }else{
-                    Date firstDay = getFirstDay(null);
-                    Date lastDay = getLastDay(null);
+                    Date firstDay = getFirstDay(null,map.get("year"));
+                    Date lastDay = getLastDay(null,map.get("year"));
                     Map<String, Object> mapTotal = billMonthsReportMapper.selectBillMonthsReport(firstDay, lastDay, null,map.get("ruleId"));
                     setCommTotalAll(mapTotal, formatFirstDay, resultMapTotal);//保存一行社区总数
                 }
@@ -131,16 +136,16 @@ public class BillMonthsReportServiceImpl extends ServiceImpl<BillMonthsReportMap
                 if(("true").equals(map.get("more"))){//查询12个月的数据
                     for (Date d: date) {
                         String format = sdf.format(d);
-                        Map<String, Object> mapTotal = billMonthsReportMapper.selectBillMonthsReport(getFirstDay(d), getLastDay(d), comm.getId(),null);
+                        Map<String, Object> mapTotal = billMonthsReportMapper.selectBillMonthsReport(getFirstDay(d,map.get("year")), getLastDay(d,map.get("year")), comm.getId(),null);
                         setCommTotal(mapTotal,format,resultMap);//保存一行社区总数
-                        List<Map<String, Object>> billRule = billMonthsReportMapper.getBillMonthsReportGbRule(getFirstDay(d), getLastDay(d), comm.getId(),null);
+                        List<Map<String, Object>> billRule = billMonthsReportMapper.getBillMonthsReportGbRule(getFirstDay(d,map.get("year")), getLastDay(d,map.get("year")), comm.getId(),null);
                         billRuleAll.put(format,billRule);
                     }
                     fList.add(resultMap);
                     setCommRuleTotal(null,null,rules,billRuleAll,fList);
                 }else{
-                    Date firstDay = getFirstDay(null);
-                    Date lastDay = getLastDay(null);
+                    Date firstDay = getFirstDay(null,map.get("year"));
+                    Date lastDay = getLastDay(null,map.get("year"));
                     Map<String, Object> mapTotal = billMonthsReportMapper.selectBillMonthsReport(firstDay, lastDay, comm.getId(),null);
                     setCommTotal(mapTotal,formatFirstDay,resultMap);
                     fList.add(resultMap);
@@ -154,12 +159,12 @@ public class BillMonthsReportServiceImpl extends ServiceImpl<BillMonthsReportMap
                 if(("true").equals(map.get("more"))) {//查询12个月的数据
                     for (Date d : date) {
                         String format = sdf.format(d);
-                        Map<String, Object> mapTotal = billMonthsReportMapper.selectBillMonthsReport(getFirstDay(d), getLastDay(d), null,null);
+                        Map<String, Object> mapTotal = billMonthsReportMapper.selectBillMonthsReport(getFirstDay(d,map.get("year")), getLastDay(d,map.get("year")), null,null);
                         setCommTotalAll(mapTotal, format, resultMapTotal);//保存一行社区总数
                     }
                 }else{
-                    Date firstDay = getFirstDay(null);
-                    Date lastDay = getLastDay(null);
+                    Date firstDay = getFirstDay(null,map.get("year"));
+                    Date lastDay = getLastDay(null,map.get("year"));
                     Map<String, Object> mapTotal = billMonthsReportMapper.selectBillMonthsReport(firstDay, lastDay, null,null);
                     setCommTotalAll(mapTotal, formatFirstDay, resultMapTotal);//保存一行社区总数
                 }
@@ -312,14 +317,22 @@ public class BillMonthsReportServiceImpl extends ServiceImpl<BillMonthsReportMap
      * 获取本月第一天
      * @return
      */
-    public Date getFirstDay(Date date){
+    public Date getFirstDay(Date date,String year){
         Calendar calendar = Calendar.getInstance();
         if(!StringUtils.isEmpty(date)){
             calendar.setTime(date);
         }else{
             calendar.setTime(new Date());
         }
-        calendar.set(Calendar.DAY_OF_MONTH,calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+        if(StringUtils.isEmpty(year)){
+            calendar.set(Calendar.DAY_OF_MONTH,calendar.getActualMinimum(Calendar.DAY_OF_MONTH));
+        }else{
+            calendar.set(Calendar.DAY_OF_YEAR,calendar.getActualMinimum(Calendar.DAY_OF_YEAR));
+        }
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
         return calendar.getTime();
     }
 
@@ -327,24 +340,40 @@ public class BillMonthsReportServiceImpl extends ServiceImpl<BillMonthsReportMap
      * 获取本月最后一天
      * @return
      */
-    public Date getLastDay(Date date){
+    public Date getLastDay(Date date,String year){
         Calendar calendar2 = Calendar.getInstance();
         if(!StringUtils.isEmpty(date)){
             calendar2.setTime(date);
         }else{
             calendar2.setTime(new Date());
         }
-        calendar2.set(Calendar.DAY_OF_MONTH, calendar2.getActualMaximum(Calendar.DAY_OF_MONTH));
+        if(StringUtils.isEmpty(year)){
+            calendar2.set(Calendar.DAY_OF_MONTH, calendar2.getActualMaximum(Calendar.DAY_OF_MONTH));
+        }else{
+            calendar2.set(Calendar.DAY_OF_YEAR, calendar2.getActualMaximum(Calendar.DAY_OF_YEAR));
+        }
+        calendar2.set(Calendar.HOUR_OF_DAY, 23);
+        calendar2.set(Calendar.MINUTE, 59);
+        calendar2.set(Calendar.SECOND, 59);
+        calendar2.set(Calendar.MILLISECOND, 999);
         return calendar2.getTime();
     }
 
-    public List<Date> getDate(){
+    public List<Date> getDate(String year){
         List<Date> dates = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
-        for (int i = 0; i < 12; i++) {
-            calendar.setTime(new Date());
-            calendar.add(Calendar.MONTH,-i);
-            dates.add(calendar.getTime());
+        if(StringUtils.isEmpty(year)){
+            for (int i = 0; i < 12; i++) {
+                calendar.setTime(new Date());
+                calendar.add(Calendar.MONTH,-i);
+                dates.add(calendar.getTime());
+            }
+        }else{
+            for (int i = 0; i < 3; i++) {
+                calendar.setTime(new Date());
+                calendar.add(Calendar.YEAR,-i);
+                dates.add(calendar.getTime());
+            }
         }
         return dates;
     }
