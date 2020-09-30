@@ -1,0 +1,165 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<title>我的</title>
+<meta http-equiv="Content-Type" content="textml; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link th:href="@{/css/index.css}" rel="stylesheet" type="text/css" media="all" />
+
+</head>
+
+<body>
+<form>
+<div class="wrapper"> 
+    <div class="head">
+    	<div class="head_tb">
+            <i class="fa"><a href="index.html" class="g3"></a></i>
+            <h1>收益详情</h1>
+            <i class="fi">
+                累积收益
+            </i>
+        </div>
+    </div>
+
+    <div class="index_nr">
+    	<div class="yongg">
+        	<ul>
+            	<li class="gp" style="background:none">本月预期收益（元）</li>
+                <li class="gr" style="background:none">0.00</li>
+               	<br/>
+            </ul>
+        </div>
+        
+        
+       <div class="accum">
+        	<h3>月度收益</h3>
+          	<ul class="" style="height:150px; background:#fff;">
+            	
+            </ul>
+        </div>
+        
+        <div class="accum" style="margin-top:10px;">
+        	<h3 style="background-image:url(images/s_y3.png);">收益明细<i></i></h3>
+          	<div class="leib">
+            	<span style="text-align:left;">类别</span>
+                <span>交易额（元）</span>
+                <span style=" text-align:right;">收益（元）</span>
+            </div>
+            
+            <div class="jiangl">
+            	<ul>
+                	<li>
+                    	<div class="ho htogi" id="hide">
+                            <span style="width:50%">拓展奖</span> 
+                            <span class="o" style="width:50%;">+0</span>
+                        </div>
+                        <div class="vop" id="show" style="display:none;">
+                            <ul>
+                                <span>推广奖励</span> 
+                                <span class="cout">0.00</span>
+                                <span class="o">+0</span>
+                            </ul>
+                            <ul>
+                                <span>园丁津贴</span>
+                                <span class="cout">0.00</span>
+                                <span class="o">+0</span>
+                            </ul>
+                            <ul>
+                                <span>导师津贴</span>
+                                <span class="cout">0.00</span>
+                                <span class="o">+0</span>
+                            </ul>
+                            <ul>
+                                <span>钻石奖</span>
+                                <span class="cout">0.00</span>
+                                <span class="o">+0</span>
+                            </ul>
+                            <ul>
+                                <span>皇冠奖</span>
+                                <span class="cout">0.00</span>
+                                <span class="o">+0</span>
+                            </ul>
+                         </div>   
+                    </li>
+                    <li>
+                    	<div class="ho" id="hi">
+                            <span style="width:50%;">调整金额 <i>（次月底更新）</i> </span> 
+                            <span class="o" style="width:50%; color:#0d93f2;">+0</span>
+                        </div> 
+                        <div class="vop" id="yes">   
+                            <ul class="gu">
+                                <span>扣款金额</span>
+                                <span class="o">0</span>
+                            </ul>
+                            <ul class="gu">
+                                <span>补发金额</span>
+                                <span class="o">+0</span>
+                            </ul>
+                        </div>    
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+       <div class="prompt">
+       		<span>温馨提示：本月预期收益稍有延迟，请在14:00后在关注一下。</span>
+       </div> 
+        <br>
+        <br>
+        <br>
+    </div>
+    
+<script src="https://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script src="js/jquery.flot.min.js"></script>    
+    
+  <script>
+	  $(document).ready(function(){
+		  $("#hide").click(function(){
+			$("#show").toggle();
+		  });
+	  });
+	  $(document).ready(function(){
+		  $("#hi").click(function(){
+			$("#yes").toggle();
+		  });
+	  });
+  </script>  
+    
+    
+<!--<script>    
+$(document).ready(function(){
+  $(".ho").click(function(){
+    $(".vop").toggle();
+  });
+});
+</script>-->
+
+
+
+
+
+    <div class="bottom">
+        <a href="/weChat/page/index">
+            <i class="icon icon_f1"></i>
+            首页
+        </a>
+
+        <a href="/weChat/page/alliance">
+            <i class="icon icon_f2"></i>
+            账单
+        </a>
+
+        <a href="/weChat/page/Mine">
+            <i class="icon icon_f4"></i>
+            预存
+        </a>
+
+        <a href="/weChat/page/income">
+            <i class="icon icon_f3"></i>
+            缴费
+        </a>
+    </div>
+
+</div>
+</form>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<title>我的</title>
+<meta http-equiv="Content-Type" content="textml; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link th:href="@{/css/index.css}" rel="stylesheet" type="text/css" media="all" />
+
+</head>
+<style>
+	
+</style>
+<body>
+<form>
+<div class="wrapper"> 
+    <div class="head">
+    	<div class="head_tb">
+            <i class="fa"><a href="index.html" class="g3"></a></i>
+            <h1>商务拓展</h1>
+        </div>
+    </div>
+
+    <div class="index_nr">
+    	<div class="Outreach">
+        	<ul>
+            	<li>
+                	<span>联系方式</span>
+                    <input type="text" value="商户联系手机号">
+                </li>
+                <li>
+                	<span>商户姓名</span>
+                    <input type="text" value="商户名称">
+                </li>
+                <li>
+                	<span>SN</span>
+                    <input type="text" value="机具序列号">
+                    <a>自动识别</a>
+                </li>
+                <li>
+                	<span>选择厂商</span>
+                    <input type="text" value="厂商联迪" readonly="true">
+                </li>
+            </ul>
+        </div>
+        
+        <div class="inp_button">
+        	<input type="button" value="提 交">
+        </div>
+        
+    </div>
+
+
+    <div class="bottom">
+        <a href="/weChat/page/index">
+            <i class="icon icon_f1"></i>
+            首页
+        </a>
+
+        <a href="/weChat/page/alliance">
+            <i class="icon icon_f2"></i>
+            账单
+        </a>
+
+        <a href="/weChat/page/Mine">
+            <i class="icon icon_f4"></i>
+            预存
+        </a>
+
+        <a href="/weChat/page/income">
+            <i class="icon icon_f3"></i>
+            缴费
+        </a>
+    </div>
+
+</div>
+</form>
+</body>
+</html>

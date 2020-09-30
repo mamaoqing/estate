@@ -1,0 +1,27 @@
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<input type="hidden" th:value="${user.openid}" id="openid"/>
+
+<input type="hidden" th:value="${user.nickname}" id="nickname"/>
+<input type="hidden" th:value="${user.sex}" id="sex"/>
+<input type="hidden" th:value="${user.province}" id="province"/>
+<input type="hidden" th:value="${user.city}" id="city"/>
+<input type="hidden" th:value="${user.country}" id="country"/>
+<input type="hidden" th:value="${user.headimgurl}" id="headimgurl"/>
+</body>
+<script>
+    window.onload = function () {
+        window.localStorage.setItem("openid","[[${user.openid}]]");
+        window.localStorage.setItem("sex","[[${user.openid}]]");
+        window.localStorage.setItem("province","[[${user.province}]]");
+        window.localStorage.setItem("city","[[${user.city}]]");
+        window.localStorage.setItem("country","[[${user.country}]]");
+        window.localStorage.setItem("headimgurl","[[${user.headimgurl}]]");
+        location.href = "/weChat/page/index";
+    }
+</script>
+</html>
