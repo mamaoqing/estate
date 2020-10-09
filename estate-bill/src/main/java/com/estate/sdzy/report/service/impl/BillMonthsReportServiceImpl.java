@@ -179,7 +179,9 @@ public class BillMonthsReportServiceImpl extends ServiceImpl<BillMonthsReportMap
         for (Map<String, Object> rule : rules) {
             Map<String,Object> resultMap = new LinkedHashMap<>();
             setValue(ruleName,commName,billRuleAll,rule,resultMap);
-            fList.add(resultMap);
+            if(!resultMap.isEmpty()){
+                fList.add(resultMap);
+            }
         }
     }
 
