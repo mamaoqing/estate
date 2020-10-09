@@ -118,9 +118,34 @@ public class WeChatController {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        JSONObject jsonObject = JSONObject.fromObject(result);
+        request.setAttribute("user", jsonObject);
+
+        return "index_skip";
+    }
+
+    @GetMapping("/bindEstate")
+    public String bindEstate(HttpServletRequest request){
+        String openid = request.getParameter("openid");
+        String sex = request.getParameter("sex");
+        String city = request.getParameter("city");
+        String nickname = request.getParameter("nickname");
+        String country = request.getParameter("country");
+        String province = request.getParameter("province");
+        String headimgurl = request.getParameter("headimgurl");
+        Map<String,String> user = new HashMap<>(16);
+        user.put("openid",openid);
+        user.put("sex",sex);
+        user.put("city",city);
+        user.put("city",city);
+        user.put("nickname",nickname);
+        user.put("country",country);
+        user.put("province",province);
+        user.put("headimgurl",headimgurl);
         String forObject = restTemplate.getForObject("http://estate-bill/sdzy/rProvince/get", String.class);
         JSONObject dist = JSONObject.fromObject(forObject);
         request.setAttribute("dist",dist);
+        request.setAttribute("user",user);
         String sql = "select * from s_company where is_delete = 0";
         List<Map<String, Object>> stringObjectMap = new ArrayList<>();
         try {
@@ -139,14 +164,11 @@ public class WeChatController {
         }
 
 
-        JSONObject jsonObject = JSONObject.fromObject(result);
-        request.setAttribute("user", jsonObject);
+
 //        log.info("用户信息：{}", jsonObject);
         request.setAttribute("list", stringObjectMap);
-
-        return "index_skip";
+        return "index";
     }
-
 
     @GetMapping("/billDetail")
     public String billDetail(HttpServletRequest request) {

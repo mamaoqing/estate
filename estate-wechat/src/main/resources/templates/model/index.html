@@ -41,7 +41,7 @@
                             报修
                         </li>
                     </a>
-                    <a href="/weChat/page/accumulate_inc">
+                    <a href="javascript:location.href='/weChat/bindEstate?openid='+openid+'&nickname='+nickname+'&sex='+sex+'&province='+province+'&city='+city+'&country='+country+'&headimgurl'+headimgurl">
                         <li>
                             <i><img th:src="@{/images/p3.png}"></i>
                             绑定物业
@@ -90,7 +90,7 @@
                         <li class="i">
                             网贷口子
                         </li>
-                        <li style="background-image:url(/images/wd2.png); border-left:solid 1px #dadada;box-sizing: border-box;">
+                        <li style="/*background-image:url('');*/ border-left:solid 1px #dadada;box-sizing: border-box;">
                             信用卡
                         </li>
                     </ul>
@@ -126,6 +126,12 @@
 </body>
 <script>
     var openid = window.localStorage.getItem("openid");
+    var nickname = window.localStorage.getItem("nickname");
+    var sex = window.localStorage.getItem("sex");
+    var province = window.localStorage.getItem("province");
+    var city = window.localStorage.getItem("city");
+    var country = window.localStorage.getItem("country");
+    var headimgurl = window.localStorage.getItem("headimgurl");
     function route(url) {
         console.log(openid);
         location.href = "http://qjwsg.free.idcfengye.com/weChat/page/bill?openid="+openid;
