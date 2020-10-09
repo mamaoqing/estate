@@ -1,0 +1,118 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+<title>收益</title>
+<meta http-equiv="Content-Type" content="textml; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link th:href="@{/css/index.css}" rel="stylesheet" type="text/css" media="all" />
+
+</head>
+<style>
+	.nav_caid ul{
+		padding:10px 0;
+		}
+	.nav_caid ul li{
+		width:25%;
+		margin-top:10px;
+		}
+</style>
+<body>
+<form>
+<div class="wrapper">
+    <div class="head">
+    	<div class="head_tb">
+            <!--<i class="fa"><a></a></i>-->
+            <h1>收益</h1>
+            <i class="fi">
+                <a class="g1"></a>
+                <a class="g2"></a>
+            </i>
+        </div>
+    </div>
+
+    <div class="index_nr">
+    	
+        <div class="yongg">
+        	<ul>
+            	<li class="gp">本月预期收益（元）</li>
+                <li class="gr">0.00</li>
+                <li class="gy">已打败0%的用户</li>
+            </ul>
+            <div class="fud">昨日收益浮动 0.00 元</div>
+        </div>
+        
+       	<div class="sub">
+            <div class="subbg">
+                <!-- 通过js控制div的宽度实现进度条的进度，用动画控制前进效果 -->
+                <div style="width:100%;"><span></span></div>
+                <!-- /宽度为25+81x等级x70% -->
+            </div>
+            <div class="subnum">
+                <div class="divison">
+                	<span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="divnum">
+                    <ul>
+                        <li class="z-ov" style="background-image:url(images/bg.png); background-repeat:no-repeat; background-size:100% 100%; color:#fff;">v_1</li>
+                        <li class="z-ov">v_2</li>
+                        <li class="z-ov">v_3</li>
+                        <li class="z-ov">v_4</li>
+                        <li class="z-ov">v_5</li>
+                    </ul>
+                </div>
+                <!-- / .ov已过等级样式 .on达到等级样式 -->
+            </div>
+            <br/>
+    
+       	</div>  
+        <div style="clear:both;"></div>
+         <div class="biaoti">
+        	<ul>
+            	<a href="skill.html">
+            	<li>提升小技巧</li>
+                </a>
+            </ul>
+        </div> 
+         
+        <div class="biaoti" style="padding-top:0px; border-top: solid 10px #efefef;">
+            <ul>
+            	<a href="benefits.html">
+                <li class="ci">
+                	累积收益
+                    <p>金额</p>
+                </li>
+                </a>
+            </ul>
+        </div>    
+              
+    </div>
+
+
+    <div class="bottom">
+        <a href="/weChat/page/index">
+            <i class="icon icon_f1"></i>
+            首页
+        </a>
+
+        <a href="/weChat/page/alliance">
+            <i class="icon icon_f2"></i>
+            账单
+        </a>
+
+        <a href="/weChat/page/Mine">
+            <i class="icon icon_f4"></i>
+            预存
+        </a>
+
+        <a href="/weChat/page/income">
+            <i class="icon icon_f3"></i>
+            缴费
+        </a>
+    </div>
+
+</div>
+</body>
+</html>
