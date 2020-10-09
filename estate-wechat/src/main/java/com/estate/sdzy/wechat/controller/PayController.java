@@ -76,10 +76,11 @@ public class PayController {
 
     @RequestMapping("/prestore")
     public String prestore(HttpServletRequest request) {
-        String code = request.getParameter("code");
-        JSONObject htmlAccessToken = WeChatUtil.getHTMLAccessToken(code);
-        Object access_token = htmlAccessToken.get("access_token");
-        Object openid = htmlAccessToken.get("openid");
+//        String code = request.getParameter("code");
+//        JSONObject htmlAccessToken = WeChatUtil.getHTMLAccessToken(code);
+//        Object access_token = htmlAccessToken.get("access_token");
+//        Object openid = htmlAccessToken.get("openid");
+        String openid = request.getParameter("openid");
         String sql  ="select DISTINCT bb.name,bb.id from r_community bb ,r_owner cc,r_owner_property dd where dd.comm_id = bb.id and cc.id = dd.owner_id and cc.wx_openid= ? and bb.comp_id= ? ";
 
 
@@ -100,15 +101,17 @@ public class PayController {
         } catch (ClassNotFoundException classNotFoundException) {
             classNotFoundException.printStackTrace();
         }
-        JSONObject userInfo = WeChatUtil.getUserInfo(access_token, openid);
+//        JSONObject userInfo = WeChatUtil.getUserInfo(access_token, openid);
         String result = null;
-        try {
-            result = new String(userInfo.toString().getBytes("ISO-8859-1"), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            result = new String(userInfo.toString().getBytes("ISO-8859-1"), "UTF-8");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+        System.out.println(list);
+        log.info("结果是：{}",list);
         JSONObject jsonObject = JSONObject.fromObject(result);
-        request.setAttribute("openid", jsonObject.getString("openid"));
+        request.setAttribute("openid", openid);
         request.setAttribute("commList", list);
         return "account";
     }
