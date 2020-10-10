@@ -12,7 +12,7 @@
     WHERE
         u.id = r.user_id
         AND r.role_id = m.role_id
-        AND m.menu_id = e.id  and u.id =#{id} and u.is_delete=0 and e.is_delete=0
+        AND m.menu_id = e.id  and u.id =#{id} and u.is_delete=0 and e.is_delete=0 order by order_no
     </select>
 
     <select id="listMenuAll" resultType="com.estate.sdzy.system.entity.SMenu">

@@ -98,5 +98,6 @@ public class SMenu implements Serializable {
     @TableField(exist = false)
     private List<SMenu> chirldMenuList;
 
+    private Integer orderNo;
 
 }
