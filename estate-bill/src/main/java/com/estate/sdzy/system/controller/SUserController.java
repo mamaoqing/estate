@@ -86,5 +86,12 @@ public class SUserController extends BaseController {
         return ResultUtil.success(userService.setUserRole(userId,compId, roleIds, token));
     }
 
+    @GetMapping("/checkUser/{userName}")
+    @ResponseBody
+    public Result checkUser(@PathVariable("userName") String userName){
+
+        return  ResultUtil.success(userService.checkUser(userName));
+    }
+
 }
 

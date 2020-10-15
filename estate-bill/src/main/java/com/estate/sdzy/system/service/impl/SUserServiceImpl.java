@@ -107,6 +107,15 @@ public class SUserServiceImpl extends ServiceImpl<SUserMapper, SUser> implements
     }
 
     @Override
+    public boolean checkUser(String userName) {
+        SUser user = userMapper.findByUserName(userName);
+        if(null == user){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public Boolean autoSave(SCompany company) {
         Long companyId = company.getId();
         String companyName = company.getName();
