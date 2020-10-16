@@ -1,0 +1,99 @@
+* {
+    padding: 0px;
+    margin: 0px;
+    font-size: 14px;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+.waik {
+    width: 100%;
+}
+
+.head_div {
+    width: 100%;
+    height: 60px;
+}
+
+.head_ul {
+    width: 100%;
+    overflow: hidden;
+    height: 60px;
+    border-bottom: solid 1px #ffffff;
+}
+
+.head_ul li {
+    height: 60px;
+    line-height: 60px;
+}
+
+.head_ul li:first-child {
+    width: 14%;
+    float: left;
+}
+
+.head_ul li:first-child img {
+    width: 60%;
+    margin-top: 29%;
+    margin-left: 24%;
+}
+
+.head_ul li:nth-child(2) {
+    width: 72%;
+    float: left;
+    text-align: center;
+}
+
+.head_ul li:nth-child(2) h2 {
+    font-size: 20px;
+    font-weight: 400;
+    color: #ffffff;
+}
+
+.head_ul li:last-child {
+    width: 14%;
+    float: right;
+}
+
+.head_ul li:last-child a {
+    color: #318bff;
+    font-size: 16px;
+}
+
+.content_div {
+    width: 100%;
+}
+
+.liebiao {
+    width: 96%;
+    margin: 0px auto;
+}
+
+.lb_li {
+    width: 100%;
+    border-bottom: solid 1px #eaeaea;
+}
+
+.lb_li ul {
+    overflow: hidden;
+    margin: 16px 0px 12px 0px;
+}
+
+.lb_li ul li {
+    float: left;
+    line-height: 30px;
+}
+
+.lb_li ul li:nth-child(2n) {
+    width: 50%;
+}
+
+.lb_li ul li:nth-child(2n+1) {
+    width: 50%;
+}

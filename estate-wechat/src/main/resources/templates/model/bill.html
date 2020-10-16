@@ -1,162 +1,184 @@
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
-    <title>账单</title>
+    <title>我的账单</title>
     <meta http-equiv="Content-Type" content="textml; charset=UTF-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
     <link th:href="@{/css/mui.css}" rel="stylesheet" type="text/css" media="all"/>
     <link th:href="@{/css/index.css}" rel="stylesheet" type="text/css" media="all"/>
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
 
     <script th:src="@{/js/jquery-3.5.1.min.js}"></script>
 </head>
-<style>
-    .nav_caid ul {
-        padding: 10px 0;
-    }
-
-    .nav_caid ul li {
-        width: 25%;
-        margin-top: 10px;
-    }
-</style>
 <body>
 <input type="hidden" value="1" id="pageNo">
-<form>
-    <div class="wrapper" >
-        <div class="head">
-            <div class="head_tb">
-                <!--<i class="fa"><a></a></i>-->
-                <h1>我的账单</h1>
-
-            </div>
-        </div>
-
-        <div class="index_nr" id="ally">
-            <div class="all_list" style=" background:#fff; margin-top:10px;">
-                <div class="ally">
-                    <table class="table table-bordered" style="table-layout: fixed;" border="1" width="100%"
-                           cellspacing="0" cellpadding="2"
-                           id="billList">
-                        <tr>
-                            <td>账期</td>
-                            <td>费用标准</td>
-                            <td>应付金额</td>
-                            <td>支付金额</td>
-                            <td>状态</td>
-                            <td>物业类型</td>
-                            <td>物业编号</td>
-                        </tr>
-
-                    </table>
-                </div>
-                <!--<div class="main-nomessage pad-top-rem18" v-if="designOrganizationList.length==0"></div>-->
-            </div>
-
-        </div>
-
-        <div class="bottom">
-            <a href="/weChat/page/index">
-                <i class="icon icon_f1"></i>
-                首页
-            </a>
-
-            <a href="/weChat/page/bill" onclick="route('')">
-                <i class="icon icon_f2"></i>
-                账单
-            </a>
-
-            <a href="/weChat/page/Mine">
-                <i class="icon icon_f4"></i>
-                预存
-            </a>
-
-            <a href="/weChat/page/income">
-                <i class="icon icon_f3"></i>
-                缴费
-            </a>
-        </div>
+<!--<div class="head">
+    <div class="head_tb">
+        &lt;!&ndash;<i class="fa"><a></a></i>&ndash;&gt;
+        <h1>我的账单</h1>
 
     </div>
-    <script th:src="@{/js/mui.js}"></script>
-    <script>
-        var openid = window.localStorage.getItem("openid");
-        var s = $("#ally")
-        console.log(s)
-        console.log(mui)
-        console.log(openid)
-        mui.init({
-            pullRefresh : {
-                container:s,//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+</div>-->
+<div class="waik">
+    <div class="head_div">
+        <ul class="head_ul">
+            <li>
+                <!--                        <img th:src="@{/images/left_arrow.png}" />-->
+            </li>
+            <li>
+                <h2>我的账单</h2>
+            </li>
+            <li>
+                <!--                        <a href="#">查询</a>-->
+            </li>
+        </ul>
+    </div>
+    <div class="content_div mui-content mui-scroll-wrapper" id="ally">
+        <ul class="liebiao">
+            <li class="lb_li" id="billList">
 
-                up : {
-                    height:500,//可选.默认50.触发上拉加载拖动距离
-                    callback :pullfresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
-                }
-            }
-        });
-        window.onload = function () {
-            listBill();
-        }
+            </li>
+        </ul>
+    </div>
+</div>
+<!--<div class="index_nr" id="ally">
+    <div class="all_list" style=" background:#fff; margin-top:10px;">
+        <div class="ally">
+            <table class="table table-bordered" style="table-layout: fixed;" border="1" width="100%"
+                   cellspacing="0" cellpadding="2"
+                   id="billList">
+                <tr>
+                    <td>账期</td>
+                    <td>费用标准</td>
+                    <td>应付金额</td>
+                    <td>支付金额</td>
+                    <td>状态</td>
+                    <td>物业类型</td>
+                    <td>物业编号</td>
+                </tr>
 
-        function listBill() {
-            var pageNo = $("#pageNo").val();
-            $.ajax({
-                url: '/weChat/getBill',
-                async: false,
-                type: 'get',
-                data: {openid: openid,pageNo:pageNo},
-                success: function (data) {
-                    var list = data.data;
-                    var content = "";
-                    for (var i = 0; i < list.length; i++) {
-                        content += '<tr>' +
-                            '<td>' + list[i].account_period + '</td>' +
-                            '<td>' + list[i].name + '</td>' +
-                            '<td>' + list[i].price + '</td>' +
-                            '<td>' + list[i].pay_price + '</td>' +
-                            '<td>' + list[i].resultState + '</td>' +
-                            '<td>' + list[i].property_type + '</td>' +
-                            '<td>' + list[i].property_No + '</td>' +
-                            '</tr>';
-                    }
-                    var table = $("#billList");
-                    table.append(content);
-                }
-            })
-        }
+            </table>
+        </div>
+        &lt;!&ndash;<div class="main-nomessage pad-top-rem18" v-if="designOrganizationList.length==0"></div>&ndash;&gt;
+    </div>
 
+</div>-->
 
-        function pullfreshFunction() {
-            console.log(123444);
-            this.endPullupToRefresh(false);
-        }
+<div class="bottom">
+    <a href="/weChat/page/index">
+        <i class="icon icon_f1"></i>
+        首页
+    </a>
 
-        function route(url) {
-            location.href = "/weChat/page/bill?openid=" + openid;
-        }
+    <a href="/weChat/page/bill" onclick="route('')">
+        <i class="icon icon_f2"></i>
+        账单
+    </a>
 
-        function pullfreshFunction() {
-            console.log(123);
-            //业务逻辑代码，比如通过ajax从服务器获取新数据；
-            //......
-            //注意，加载完新数据后，必须执行如下代码，注意：若为ajax请求，则需将如下代码放置在处理完ajax响应数据之后
-            //没有更多内容了，endPulldown 传入true， 不再执行下拉刷新
-            //mui('#refreshContainer').pullRefresh().endPulldown();
-        }
-        function pullfresh(){
-            var pageNo  = $("#pageNo").val();
-            $("#pageNo").val(Number(pageNo) +1);
-            listBill();
+    <a href="/pay/prestore">
+        <i class="icon icon_f4"></i>
+        预存
+    </a>
 
-            this.endPullupToRefresh(false);
-            mui(s).pullRefresh().disablePullupToRefresh(); // 关闭显示更多的提示
-            setTimeout(function () {
-                mui.toast('刷新成功');
-                mui(s).pullRefresh().enablePullupToRefresh();
-                mui(s).pullRefresh().endPullupToRefresh();
-            }, 1000)
-        }
-    </script>
+    <a href="/weChat/page/income">
+        <i class="icon icon_f3"></i>
+        缴费
+    </a>
+</div>
+
 </body>
+<script th:src="@{/js/mui.js}"></script>
+
+<script>
+    var openid = window.localStorage.getItem("openid");
+    var s = $("#ally")
+    console.log(s)
+    console.log(mui)
+    console.log(openid)
+    mui.init({
+        pullRefresh: {
+            container: s,//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+
+            up: {
+                height: 500,//可选.默认50.触发上拉加载拖动距离
+                callback: pullfresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+            }
+        }
+    });
+
+
+    window.onload = function () {
+        listBill();
+    }
+
+    function listBill() {
+        var pageNo = $("#pageNo").val();
+        $.ajax({
+            url: '/weChat/getBill',
+            async: false,
+            type: 'get',
+            data: {openid: openid, pageNo: pageNo},
+            success: function (data) {
+                var list = data.data;
+                var content = "";
+                for (var i = 0; i < list.length; i++) {
+                    var ap = list[i].account_period;
+                    var name = list[i].name;
+
+                    content += '<ul>' +
+                        '<li>' +
+                        '账期：<span>' + ap.substring(0,9) + '</span>' +
+                        '</li>' +
+                        '<li>' +
+                        '费用标准：<span>' + name.substring(0,7) + '</span>' +
+                        '</li>' +
+                        '<li>' +
+                        '应付金额：<span>' + list[i].price + '</span>' +
+                        '</li>' +
+                        '<li>' +
+                        '支付金额：<span>' + list[i].pay_price + '</span>' +
+                        '</li>' +
+                        '<li>物业类型：' + list[i].property_type + '</li>' +
+                        '<li>物业编号：' + list[i].property_No + '</li>' +
+                        '</ul>'+'<div style="width: 100%;height: 0.5px;border: 1px solid #CCCCCC"></div>';
+                }
+                var table = $("#billList");
+                table.append(content);
+            }
+        })
+    }
+
+
+    function pullfreshFunction() {
+        console.log(123444);
+        this.endPullupToRefresh(false);
+    }
+
+    function route(url) {
+        location.href = "/weChat/page/bill?openid=" + openid;
+    }
+
+    function pullfreshFunction() {
+        console.log(123);
+        //业务逻辑代码，比如通过ajax从服务器获取新数据；
+        //......
+        //注意，加载完新数据后，必须执行如下代码，注意：若为ajax请求，则需将如下代码放置在处理完ajax响应数据之后
+        //没有更多内容了，endPulldown 传入true， 不再执行下拉刷新
+        //mui('#refreshContainer').pullRefresh().endPulldown();
+    }
+
+    function pullfresh() {
+        var pageNo = $("#pageNo").val();
+        $("#pageNo").val(Number(pageNo) + 1);
+        listBill();
+
+        this.endPullupToRefresh(false);
+        mui(s).pullRefresh().disablePullupToRefresh(); // 关闭显示更多的提示
+        setTimeout(function () {
+            mui.toast('刷新成功');
+            mui(s).pullRefresh().enablePullupToRefresh();
+            mui(s).pullRefresh().endPullupToRefresh();
+        }, 1000)
+    }
+</script>
 </html>

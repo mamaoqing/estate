@@ -4,6 +4,7 @@ import com.estate.common.util.ConnectUtil;
 import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.wechat.entity.TextMessage;
+import com.estate.sdzy.wechat.resource.WeChatResources;
 import com.estate.sdzy.wechat.util.CheckUtil;
 import com.estate.sdzy.wechat.util.MessageUtil;
 import com.estate.sdzy.wechat.util.WeChatUtil;
@@ -117,9 +118,34 @@ public class WeChatController {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        JSONObject jsonObject = JSONObject.fromObject(result);
+        request.setAttribute("user", jsonObject);
+
+        return "index_skip";
+    }
+
+    @GetMapping("/bindEstate")
+    public String bindEstate(HttpServletRequest request){
+        String openid = request.getParameter("openid");
+        String sex = request.getParameter("sex");
+        String city = request.getParameter("city");
+        String nickname = request.getParameter("nickname");
+        String country = request.getParameter("country");
+        String province = request.getParameter("province");
+        String headimgurl = request.getParameter("headimgurl");
+        Map<String,String> user = new HashMap<>(16);
+        user.put("openid",openid);
+        user.put("sex",sex);
+        user.put("city",city);
+        user.put("city",city);
+        user.put("nickname",nickname);
+        user.put("country",country);
+        user.put("province",province);
+        user.put("headimgurl",headimgurl);
         String forObject = restTemplate.getForObject("http://estate-bill/sdzy/rProvince/get", String.class);
         JSONObject dist = JSONObject.fromObject(forObject);
         request.setAttribute("dist",dist);
+        request.setAttribute("user",user);
         String sql = "select * from s_company where is_delete = 0";
         List<Map<String, Object>> stringObjectMap = new ArrayList<>();
         try {
@@ -138,14 +164,11 @@ public class WeChatController {
         }
 
 
-        JSONObject jsonObject = JSONObject.fromObject(result);
-        request.setAttribute("user", jsonObject);
+
 //        log.info("用户信息：{}", jsonObject);
         request.setAttribute("list", stringObjectMap);
-
-        return "index_skip";
+        return "index";
     }
-
 
     @GetMapping("/billDetail")
     public String billDetail(HttpServletRequest request) {
@@ -205,10 +228,42 @@ public class WeChatController {
     public String route(@PathVariable ("page") String page,HttpServletRequest request){
         String openid = request.getParameter("openid");
         request.setAttribute("openid",openid);
+        System.out.println(openid+"=========");
         System.out.println(page+"=====================");
         return "model/"+page;
     }
 
+    @GetMapping("/page/account")
+    public String account(HttpServletRequest request){
+        String openid = request.getParameter("openid");
+        request.setAttribute("openid",openid);
+        System.out.println(openid+"=========");
+        String sql  ="select DISTINCT bb.name,bb.id from r_community bb ,r_owner cc,r_owner_property dd where dd.comm_id = bb.id and cc.id = dd.owner_id and cc.wx_openid= ? and bb.comp_id= ? ";
+
+        List<Map<String,Object>> list = new ArrayList<>();
+        try {
+            ResultSet resultSet = ConnectUtil.executeQuery(sql, new Object[]{openid, WeChatResources.COMP_ID});
+            while (resultSet.next()){
+                Map<String,Object> map = new HashMap<>(16);
+                String name = resultSet.getString("name");
+                int id = resultSet.getInt("id");
+                map.put("name",name);
+                map.put("id",id);
+                list.add(map);
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        } catch (ClassNotFoundException classNotFoundException) {
+            classNotFoundException.printStackTrace();
+        }
+        String result = null;
+        System.out.println(list);
+        log.info("结果是：{}",list);
+        JSONObject jsonObject = JSONObject.fromObject(result);
+        request.setAttribute("openid", openid);
+        request.setAttribute("commList", list);
+        return "model/account";
+    }
 
 
     @GetMapping("/getBill")
@@ -239,6 +294,7 @@ public class WeChatController {
         }
 
         sql.append(" limit ?,?");
+        System.out.println(sql.toString());
         ResultSet resultSet = ConnectUtil.executeQuery(sql.toString(), new Object[]{openid,pageNo,size});
         List<Map<String,Object>> list = new ArrayList<>();
         while(resultSet.next()){

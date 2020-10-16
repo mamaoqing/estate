@@ -25,6 +25,8 @@ public interface SUserService extends IService<SUser> {
     List<SUser> findOne(Integer id);
     SUser findByUserName(String username);
 
+    boolean checkUser(String userName);
+
     /**
      * 自动添加公司管理员角色
      * @param company 公司信息
