@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.estate.sdzy.system.mapper.SMessageMapper">
+
+    <select id="getListSMessage" resultType="com.estate.sdzy.system.entity.SMessage">
+        select m.id,m.comp_id,m.top_pic,m.title,m.synopsis,m.content,m.state,m.created_at,m.created_name,m.modified_at,
+        m.modified_name,m.release_at,m.release_name,m.markdown,comp.name as compName
+        from s_message m,s_company comp where m.comp_id=comp.id
+        and m.comp_id=#{compId} and m.is_delete=0
+    </select>
+
+    <select id="listMessageComm" resultType="java.util.Map">
+        select id,name, case when id in(select comm_id from s_message_comm aa where aa.message_id=#{id})
+        then true else false end flag from r_community where comp_id = #{compId} and is_delete = 0
+    </select>
+
+    <select id="listOwnerId" resultType="java.util.Map">
+        select DISTINCT o.id,o.wx_openid,comm.name,comm.id as commId from r_owner_property pro,r_owner o,r_community comm
+        where pro.owner_id=o.id and pro.comm_id=comm.id and o.wx_openid is not null and pro.comm_id in
+        <foreach collection="array" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>
