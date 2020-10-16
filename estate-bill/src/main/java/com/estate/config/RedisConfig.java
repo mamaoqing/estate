@@ -15,7 +15,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @date 2020/7/28 9:40
  * @description redis配置
  */
-@Configuration
+@Configuration(value = "RedisConfig")
 public class RedisConfig {
     @Bean
     @SuppressWarnings("all")
