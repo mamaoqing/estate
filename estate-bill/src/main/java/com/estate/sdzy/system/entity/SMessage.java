@@ -83,11 +83,13 @@ public class SMessage implements Serializable {
 
     private String modifiedName;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date releaseAt;
 
     private Long releaseBy;
 
     private String releaseName;
 
+    private int isDelete;
 
 }
