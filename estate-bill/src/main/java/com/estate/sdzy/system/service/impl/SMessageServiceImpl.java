@@ -156,16 +156,17 @@ public class SMessageServiceImpl extends ServiceImpl<SMessageMapper, SMessage> i
 
     private String saveFile(MultipartFile[] files, HttpServletRequest request, String fileList,Long id){
         String topPic = "";
+        String[] fileNames = request.getParameter("fileList").split(",");
         if(!StringUtils.isEmpty(id)){
             SMessage sMessage = sMessageMapper.selectById(id);
             topPic = sMessage.getTopPic();
         }
         StringBuilder paths = new StringBuilder();
-        for (MultipartFile file : files) {
+        for (int i=0;i<files.length;i++) {
             String path = null;
             UploadFileToFileServer server = new UploadFileToFileServer();
             try {
-                path = server.fileUpload(file.getBytes(),file.getOriginalFilename());
+                path = server.fileUpload(files[i].getBytes(),fileNames[i]);
             }catch (Exception e){
 
             }
@@ -185,8 +186,13 @@ public class SMessageServiceImpl extends ServiceImpl<SMessageMapper, SMessage> i
         if (StringUtils.isEmpty(id)) {
             throw new BillException(BillExceptionEnum.PARAMS_MISS_ERROR);
         }
-        int i = sMessageMapper.deleteById(id);
-        if(i>0){
+        SMessage message = sMessageMapper.selectById(id);
+        message.setModifiedBy(user.getId());
+        message.setModifiedName(user.getUserName());
+        message.setIsDelete(1);
+        int del = sMessageMapper.updateById(message);
+        //int i = sMessageMapper.deleteById(id);
+        if(del>0){
             log.info("消息通知{}删除成功，删除人{}",user.getUserName());
             return true;
         }
