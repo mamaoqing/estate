@@ -16,11 +16,11 @@ public class UeditorController extends BaseController {
 
         @RequestMapping(value = "/exec")
         @ResponseBody
-        public String exec(HttpServletRequest request,@RequestParam("image") MultipartFile file) throws UnsupportedEncodingException, JSONException {
+        public String exec(HttpServletRequest request,@RequestParam("image") MultipartFile file,@RequestParam("fileName") String fileName) throws UnsupportedEncodingException, JSONException {
             String path = null;
             UploadFileToFileServer server = new UploadFileToFileServer();
             try {
-                path = server.fileUpload(file.getBytes(),file.getOriginalFilename());
+                path = server.fileUpload(file.getBytes(),fileName);
             }catch (Exception e){
 
             }
