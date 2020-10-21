@@ -6,7 +6,10 @@
         select m.id,m.comp_id,m.top_pic,m.title,m.synopsis,m.content,m.state,m.created_at,m.created_name,m.modified_at,
         m.modified_name,m.release_at,m.release_name,m.markdown,comp.name as compName
         from s_message m,s_company comp where m.comp_id=comp.id
-        and m.comp_id=#{compId} and m.is_delete=0
+        <if test="compId!='' and compId!=null">
+            and m.comp_id=#{compId}
+        </if>
+        and m.is_delete=0
     </select>
 
     <select id="listMessageComm" resultType="java.util.Map">
