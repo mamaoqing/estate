@@ -8,6 +8,8 @@ import com.estate.sdzy.wechat.resource.WeChatResources;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,8 +29,8 @@ public class WeChatUtil {
      */
     public static Menu initMenu() {
         Menu menu = new Menu();
-        String url = "http://qjwsg.free.idcfengye.com/pay/prestore";
-        String replace = WeChatResources.GET_USER_ACC_URL.replace("APPID", WeChatResources.APPID).replace("REDIRECT_URI", url);
+        String url = "http://www.ztwit.com.cn/pay/prestore";
+        //String replace = WeChatResources.GET_USER_ACC_URL.replace("APPID", WeChatResources.APPID).replace("REDIRECT_URI", url);
         ViewButton viewButton = new ViewButton();
         viewButton.setName("生活圈");
         viewButton.setType("view");
@@ -40,6 +42,14 @@ public class WeChatUtil {
         ViewButton viewButton2 = new ViewButton();
         viewButton2.setName("物业");
         viewButton2.setType("view");
+        String encode ="";
+        try {
+            encode = URLEncoder.encode("http://www.zywit.com.cn/weChat/getUser", "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String replace = WeChatResources.GET_USER_ACC_URL.replace("APPID", WeChatResources.APPID).replace("REDIRECT_URI", encode);
+        System.out.println(replace);
         viewButton2.setUrl(replace);
 
 

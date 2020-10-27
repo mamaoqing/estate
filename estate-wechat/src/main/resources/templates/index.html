@@ -30,11 +30,9 @@
     </select>
     <select class="area_select notnull" name="compId" id="citys">
         <option value="">-选择市-</option>
-        <option th:each="area:${list}" th:value="${area.id}" th:text="${area.name}"></option>
     </select>
     <select class="area_select notnull" name="compId" id="district">
         <option value="">-选择区-</option>
-        <option th:each="area:${list}" th:value="${area.id}" th:text="${area.name}"></option>
     </select>
     <select class="area_select notnull" name="commId" id="comm">
         <option value="">-选择社区-</option>
@@ -54,6 +52,19 @@
 
     <button type="button" id="submit" onclick="dosubmit()"> 提交</button>
 </form>
+
+<table border="1">
+    <tr>
+        <th>物业类型</th>
+        <th>地址</th>
+        <th>操作</th>
+    </tr>
+    <tr  th:each="map:${map}" >
+        <td th:text="${map.property_type}"></td>
+        <td th:text="${map.property_No}"></td>
+        <td><button th:text="删除" th:onclick="delete_property([[${map.id}]])"></button></td>
+    </tr>
+</table>
 
 </body>
 <script>
@@ -210,6 +221,21 @@
             })
         });
     });
+
+    function  delete_property(id){
+        $.ajax({
+            url:'/weChat/deleteEstate',
+            async:false,
+            type:'delete',
+            data:{id:id},
+            success:function(data){
+               if(data){
+                   alert("删除成功");
+                   window.location.reload();
+               }
+            }
+        });
+    }
 
     function dosubmit(){
         var commId = $("#comm").val();

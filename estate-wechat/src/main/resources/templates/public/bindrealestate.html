@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<link rel="stylesheet" th:href="@{/public/lib/weui.min.css}" />
+		<link rel="stylesheet" th:href="@{/public/css/jquery-weui.min.css}" />
+		<link rel="stylesheet" th:href="@{/public/css/demos.css}">
+		<link rel="stylesheet" th:href="@{/public/css/style.css}" />
+	</head>
+	<body ontouchstart>
+		<form>
+			<div class="weui-cells weui-cells_form">
+			  <div class="weui-cell">
+			    <div class="weui-cell__hd"><label for="name" class="weui-label">省、市、区：</label></div>
+			    <div class="weui-cell__bd ziyun-selectbox three">
+					<select name="" class="ps-select" id="province">
+						<option selected="selected">请选择</option>
+					</select>
+					<select name="" id="city">
+						<option selected="selected">请选择</option>
+					</select>
+					<select name="" id="dict">
+						<option selected="selected">请选择</option>
+					</select>
+			    </div>
+			  </div>
+				<div class="weui-cell">
+				  <div class="weui-cell__hd"><label for="home-city" class="weui-label">社区：</label></div>
+				  <div class="weui-cell__bd  ziyun-selectbox two">
+					  <select name="" id="comm">
+					  	<option selected="selected">请选择</option>
+					  </select>
+					  <select name="" id="area">
+					  	<option selected="selected">请选择</option>
+					  </select>
+				  </div>
+				</div>
+			  <div class="weui-cell">
+			    <div class="weui-cell__hd"><label for="date" class="weui-label">房间：</label></div>
+			    <div class="weui-cell__bd ziyun-selectbox three">
+			        <select name="" class="ps-select" id="build">
+			        	<option selected="selected">请选择</option>
+			        </select>
+			        <select name="" id="unit">
+			        	<option selected="selected">请选择</option>
+			        </select>
+			        <select name="" id="room">
+			        	<option selected="selected">请选择</option>
+			        </select>
+			    </div>
+			  </div>
+			</div>
+			<div class='demos-content-padded'>
+				<a href="javascript:;" class="weui-btn weui-btn_primary" onclick="dosubmit()">提交</a>
+			</div>
+		</form>
+		<div class='demos-content-padded'>
+			<table class="bindrealestate-table" cellpadding="0" cellspacing="0" id="table">
+				<thead>
+					<th width="80">物业类型</th>
+					<th>地址</th>
+					<th width="60">操作</th>
+				</thead>
+			</table>
+		</div>
+
+		<script th:src="@{/public/lib/jquery-2.1.4.js}"></script>
+		<script th:src="@{/public/lib/fastclick.js}"></script>
+		<script>
+		  $(function() {
+		    FastClick.attach(document.body);
+		  });
+		</script>
+		<script th:src="@{/public/js/jquery-weui.min.js}"></script>
+		<script th:src="@{/public/js/city-picker.min.js}"></script>
+		<script>
+			var openid = window.localStorage.getItem("openid");
+			var para = {
+				openid:openid
+			};
+			$.get("../../weChatData/bindEstate",para,function (res) {
+				let json = eval('(' + res + ')');
+				var tablecontent = "";
+				console.log(json.map);
+				for(var i=0;i<json.map.length;i++){
+					tablecontent +='<tr><td>'+json.map[i].property_type+'</td>' +
+							'<td>'+json.map[i].property_No+'</td>' +
+							'<td>' +
+							'<a href="javascript:;" class="bt-del" onclick="delete_property('+json.map[i].id+')">删除</a>' +
+							'</td></tr>';
+				}
+				$("#table").append(tablecontent);
+				var content = '<option >请选择</option>';
+				for(var i=0;i<json.dist.length;i++){
+					content +='<option value="'+json.dist[i].id+'">'+json.dist[i].provinceName+'</option>';
+				}
+				$("#province").html(content);
+				$("#province").change(function () {
+					var t = $(this).val();
+					$.ajax({
+						url: '/estate/getCity',
+						async: false,
+						type: 'get',
+						data: {provinceId: t},
+						success: function (data) {
+							var json = $.parseJSON(data.data);
+							var res = json.data;
+							var t2 = $("#city");
+							t2.html('<option value="">选择市</option>')
+							for (var i = 0; i < res.length; i++) {
+								t2.append("<option value='" + res[i].id + "'>" + res[i].cityName + "</option>");
+							}
+						}
+					})
+				});
+				$("#city").change(function () {
+					var t = $(this).val();
+					if (t == '') {
+						return;
+					}
+					$.ajax({
+						url: '/estate/getDist',
+						async: false,
+						type: 'get',
+						data: {provinceId: t},
+						success: function (data) {
+							var json = $.parseJSON(data.data);
+							var res = json.data;
+							var t2 = $("#dict");
+							t2.html('<option value="">选择区</option>')
+							for (var i = 0; i < res.length; i++) {
+								t2.append("<option value='" + res[i].id + "'>" + res[i].districtName + "</option>");
+							}
+						}
+					})
+				});
+
+				$("#dict").change(function () {
+					var t = $(this).val();
+					if (t == '') {
+						return;
+					}
+					$.ajax({
+						url: '/estate/getCommList',
+						async: false,
+						type: 'get',
+						data: {id: t},
+						success: function (data) {
+							var res = data.data;
+							var t2 = $("#comm");
+							t2.html('<option value="">选择社区</option>')
+							for (var i = 0; i < res.length; i++) {
+								t2.append("<option value='" + res[i].id + "'>" + res[i].name + "</option>");
+							}
+						}
+					})
+				});
+				$("#comm").change(function () {
+					var t = $("#comm").val();
+					if (t == '') {
+						return;
+					}
+					$.ajax({
+						url:'/estate/getCommAreaList',
+						async:false,
+						type:'get',
+						data:{id:t},
+						success:function(data){
+							var res = data.data;
+							var t3 = $("#area");
+							t3.html('<option value="">选择分区</option>');
+							for ( var i = 0; i < res.length; i++) {
+								t3.append("<option value='"+res[i].id+"'>"+ res[i].name+"</option>");
+							}
+						}
+					})
+				});
+
+				$("#area").change(function(){
+					console.log($(this).val())
+					var t = $(this).val();
+					if(t ==''){
+						return;
+					}
+					console.log(123)
+					$.ajax({
+						url:'/estate/getBuildList',
+						async:false,
+						type:'get',
+						data:{id:t},
+						success:function(data){
+							console.log(data);
+							var res = data.data;
+							var t3 = $("#build");
+							t3.html('<option value="">选择楼栋</option>');
+							for ( var i = 0; i < res.length; i++) {
+								t3.append("<option value='"+res[i].id+"'>"+ res[i].name+"</option>");
+							}
+						}
+					})
+				});
+
+				$("#build").change(function(){
+					var t = $("#build").val();
+					if(t ==''){
+						return;
+					}
+
+					$.ajax({
+						url:'/estate/getUnitList',
+						async:false,
+						type:'get',
+						data:{id:t},
+						success:function(data){
+							var res = data.data;
+							var t3 = $("#unit");
+							t3.html('<option value="">选择单元</option>');
+							for ( var i = 0; i < res.length; i++) {
+								t3.append("<option value='"+res[i].id+"'>"+ res[i].name+"</option>");
+							}
+						}
+					})
+				});
+
+				$("#unit").change(function(){
+					var t = $("#unit").val();
+					if(t ==''){
+						return;
+					}
+
+					$.ajax({
+						url:'/estate/getRoomList',
+						async:false,
+						type:'get',
+						data:{id:t},
+						success:function(data){
+							var res = data.data;
+							var t3 = $("#room");
+							t3.html('<option value="">选择房间</option>');
+							for ( var i = 0; i < res.length; i++) {
+								t3.append("<option value='"+res[i].id+"'>"+ res[i].name+"</option>");
+							}
+						}
+					})
+				});
+			});
+
+			function  delete_property(id) {
+				$.ajax({
+					url: '/weChat/deleteEstate',
+					async: false,
+					type: 'delete',
+					data: {id: id},
+					success: function (data) {
+						if (data) {
+							alert("删除成功");
+							window.location.reload();
+						}
+					}
+				});
+			}
+
+
+			function dosubmit(){
+				var commId = $("#comm").val();
+				var areaId = $("#area").val();
+				var buildId = $("#build").val();
+				var unitId = $("#unit").val();
+				var roomId = $("#room").val();
+				var openid = window.localStorage.getItem("openid");
+				var nickname = $("#nickname").val();
+				var sex = $("#sex").val();
+				var province = $("#province").val();
+				var city = $("#city").val();
+				var country = $("#country").val();
+				var headimgurl = $("#headimgurl").val();
+
+				if(commId == '' ||commId == null || commId == 'undefined'){
+					alert("请选择社区");
+					return false;
+				}
+				if(areaId == '' ||areaId == null || areaId == 'undefined'){
+					alert("请选择分区");
+					return false;
+				}
+				if(buildId == '' ||buildId == null || buildId == 'undefined'){
+					alert("请选择楼栋");
+					return false;
+				}
+				if(unitId == '' ||unitId == null || unitId == 'undefined'){
+					alert("请选择单元");
+					return false;
+				}
+				if(roomId == '' ||roomId == null || roomId == 'undefined'){
+					alert("请选择房间");
+					return false;
+				}
+
+				console.log(openid+"<>"+"<>"+commId+"<>"+areaId+buildId+"<>"+unitId+"<>"+roomId);
+
+				var data = {
+					commId:commId,
+					areaId:areaId,
+					buildId:buildId,
+					unitId:unitId,
+					roomId:roomId,
+					openid:openid,
+					nickname:nickname,
+					sex:sex,
+					province:province,
+					city:city,
+					country:country,
+					headimgurl:headimgurl
+				};
+				$.ajax({
+					url:'/estate/setWeChatUser',
+					async:false,
+					type:'post',
+					data:data,
+					success:function(data){
+						if(data){
+							alert('绑定成功');
+							location.href="/weChat/page/index";
+						}
+					}
+				})
+			}
+
+		</script>
+	</body>
+</html>

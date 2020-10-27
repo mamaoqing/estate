@@ -9,6 +9,7 @@
 <body>
 <table>
     <tr th:each="area:${list}" style="border: 1px solid #cccccc">
+        <td><input type="checkbox" name="change" th:value="${area.price}" th:onclick="clickChange(this)"></td>
         <td  th:text="${area.bill_no}" hidden></td>
         <td  th:text="${area.costName}"></td>
         <td  th:text="${area.account_period}"></td>
@@ -37,6 +38,16 @@
             return false;
         }
         location.href="/pay/create?payPrice="+price+"&compId=[[${comp_id}]]&commId=[[${comm_id}]]&listBillId=[[${listBillId}]]&openid=[[${openid}]]";
+    }
+    var allPrice = 0;
+    function clickChange(e){
+        var p = parseFloat($(e).val());
+        if(e.checked){
+            allPrice += p;
+        }else{
+            allPrice-=p;
+        }
+        $("#price").val(allPrice);
     }
 </script>
 </html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<link rel="stylesheet" th:href="@{/public/lib/weui.min.css}" />
+		<link rel="stylesheet" th:href="@{/public/css/jquery-weui.min.css}" />
+		<link rel="stylesheet" th:href="@{/public/css/demos.css}">
+		<link rel="stylesheet" th:href="@{/public/css/style.css}" />
+	</head>
+	<body ontouchstart>
+	<input type="hidden" id="commId">
+	<input type="hidden" id="compId">
+	<input type="hidden" id="listBillId">
+		<div class='demos-content-padded'>
+			<table class="bindrealestate-table" cellpadding="0" cellspacing="0" id="table">
+				<thead>
+					<th width="40px">
+						<input type="checkbox" class="weui-agree__checkbox">
+					</th>
+					<th width="80">类型</th>
+					<th>日期/房间</th>
+					<th width="80">费用</th>
+				</thead>
+
+			</table>
+		</div>
+		<form>
+			<div class="weui-cell">
+				<div class="weui-cell__hd"><label class="weui-label">金额：</label></div>
+				<div class="weui-cell__bd">
+				  <input class="weui-input" type="number" placeholder="请选择或输入金额" id="price">
+				</div>
+			</div>
+			
+			<div class='demos-content-padded'>
+				<a href="javascript:;" class="weui-btn weui-btn_primary" onclick="pay()">支付</a>
+			</div>
+		</form>
+		
+		
+		<script th:src="@{/public/lib/jquery-2.1.4.js}"></script>
+		<script th:src="@{/public/lib/fastclick.js}"></script>
+		<script>
+		  $(function() {
+		    FastClick.attach(document.body);
+		  });
+		</script>
+		<script th:src="@{/public/js/jquery-weui.min.js}"></script>
+		<script>
+			$.get("../../weChatData/billDetail",{openid:window.localStorage.getItem("openid")},function (res) {
+				$("#compId").val(res.data.comp_id);
+				$("#commId").val(res.data.comm_id);
+				$("#listBillId").val(res.data.listBillId);
+				var content = '';
+				for (var i=0;i<res.data.list.length;i++){
+					content += '<tr>' +
+									'<td><input type="checkbox" value="'+res.data.list[i].price+'" onclick="clickChange(this)"></td>'+
+									'<td>'+res.data.list[i].costName+'</td>'+
+									'<td>'+res.data.list[i].account_period+'</td>'+
+									'<td>'+res.data.list[i].price+'</td>'+
+								'</tr>';
+				}
+				$("#table").append(content);
+			});
+
+			function pay() {
+
+				var listBillId = $("#listBillId").val();
+				var compId = $("#compId").val();
+				var commId = $("#commId").val();
+				var price = $("#price").val();
+				if(price == '' ||price == undefined || price == null){
+					alert("付款金额不能为空！");
+					return false;
+				}
+				location.href="/pay/create?payPrice="+price+"&compId="+compId+"&commId="+commId+"&listBillId="+listBillId+"&openid="+window.localStorage.getItem("openid");
+			}
+
+			var allPrice = 0;
+			function clickChange(e){
+				console.log(e);
+				var p = parseFloat($(e).val());
+				if(e.checked){
+					allPrice += p;
+				}else{
+					allPrice-=p;
+				}
+				$("#price").val(allPrice);
+			}
+		</script>
+	</body>
+</html>

@@ -103,7 +103,7 @@ public class MessageUtil {
         news.setDescription("小区物业与业主信息关联");
         String encode =null;
         try {
-            encode = URLEncoder.encode("http://qjwsg.free.idcfengye.com/weChat/getUser", "utf-8");
+            encode = URLEncoder.encode("http://www.zywit.com.cn/weChat/getUser", "utf-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

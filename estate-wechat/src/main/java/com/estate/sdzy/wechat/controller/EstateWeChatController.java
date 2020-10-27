@@ -99,6 +99,64 @@ public class EstateWeChatController {
         return true;
     }
 
+    @PostMapping("setWeChatPark")
+    public boolean setWeChatPark(HttpServletRequest request) {
+        String compId = request.getParameter("compId");
+        String commId = request.getParameter("commId");
+        String parkId = request.getParameter("parkId");
+        String openid = request.getParameter("openid");
+        String nickname = request.getParameter("nickname");
+        String sex = request.getParameter("sex");
+        String province = request.getParameter("province");
+        String city = request.getParameter("city");
+        String country = request.getParameter("country");
+        String sql = "select id from  r_owner where wx_openid = '" + openid + "' and comp_id = "+ WeChatResources.COMP_ID;
+        String ownerProper = "select id from  r_owner_property where property_id = "+parkId +" and property_type = '停车位' and owner_id= ?";
+
+
+        Date date = new Date();
+        String insertSql = "insert into r_owner (wx_openid,wx_sex,wx_province,wx_city,wx_country,created_at,modified_at,comp_id) values(?,?,?,?,?,?,?,?)";
+        String ownerProperty = "insert into r_owner_property (owner_id,comp_id,comm_id,comm_area_id,property_type,property_id,building_id,type,created_at,modified_at) values(?,?,?,?,?,?,?,?,?,?)";
+        Connection connection = null;
+        Integer integer =0;
+        try {
+            ResultSet resultSet = ConnectUtil.executeQuery(sql);
+            if (resultSet.next()){
+                // 添加用户信息
+                integer = resultSet.getInt("id");
+            }else {
+                integer = TransactionConnUtil.executeUpdate(insertSql, new Object[]{openid, sex, province, city, country, date, date,compId}, true);
+            }
+
+
+            connection = TransactionConnUtil.getConnection();
+            ResultSet resultSet1 = TransactionConnUtil.executeQuery(ownerProper,new Object[]{integer});
+            if(!resultSet1.next()){
+                Object[] objects = {integer, compId, commId, null, "停车位", parkId, null, "业主", date, date};
+                TransactionConnUtil.executeUpdate(ownerProperty, objects);
+            }
+            connection.commit();
+        } catch (ClassNotFoundException classNotFoundException) {
+            try {
+                connection.rollback();
+            } catch (SQLException sqlException) {
+                sqlException.printStackTrace();
+            }
+            classNotFoundException.printStackTrace();
+            return false;
+        } catch (SQLException sqlException) {
+            try {
+                connection.rollback();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            sqlException.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
     @GetMapping("getCity")
     public Result getCity(HttpServletRequest request){
         String provinceId = request.getParameter("provinceId");
@@ -167,6 +225,29 @@ public class EstateWeChatController {
                 Map<String, Object> map = new HashMap<>(16);
                 map.put("id", resultSet.getInt("id"));
                 map.put("name", resultSet.getString("name"));
+                stringObjectMap.add(map);
+            }
+
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        } catch (ClassNotFoundException classNotFoundException) {
+            classNotFoundException.printStackTrace();
+        }
+        return ResultUtil.success(stringObjectMap);
+    }
+
+    @GetMapping("getParkList")
+    public Result getParkList(HttpServletRequest request) {
+        String id = request.getParameter("id");
+        List<Map<String, Object>> stringObjectMap = new ArrayList<>();
+
+        String sql = "select id,no from r_parking_space where comm_id = "+id+" and is_delete =0";
+        try {
+            ResultSet resultSet = ConnectUtil.executeQuery(sql);
+            while (resultSet.next()) {
+                Map<String, Object> map = new HashMap<>(16);
+                map.put("id", resultSet.getInt("id"));
+                map.put("no", resultSet.getString("no"));
                 stringObjectMap.add(map);
             }
 
@@ -251,6 +332,7 @@ public class EstateWeChatController {
     public Result getCostRuleList(HttpServletRequest request) throws SQLException, ClassNotFoundException {
         String commId = request.getParameter("commId");
         String openid = request.getParameter("openid");
+        log.info("commid：{}",commId);
         String sql = "select DISTINCT aa.name,cc.property_type,dd.roomNo,cc.property_id,cc.cost_rule_id,aa.comm_id,aa.comp_id from f_cost_rule aa,r_owner_property bb,f_cost_rule_room cc,v_room_roomNo dd,r_owner ee where aa.id =cc.cost_rule_id and cc.property_type=bb.property_type and cc.property_id = bb.property_id and aa.comm_id=? and bb.owner_id=ee.id and dd.id = cc.property_id and ee.wx_openid=?";
         List<Map<String, Object>> list = new ArrayList<>();
         ResultSet resultSet = ConnectUtil.executeQuery(sql, new Object[]{commId, openid});

@@ -1,0 +1,70 @@
+<html lang="en"  xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title th:text="${title}"></title>
+    <link th:href="@{/css/mui.css}" rel="stylesheet" type="text/css" media="all"/>
+    <link th:href="@{/css/index.css}" rel="stylesheet" type="text/css" media="all"/>
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <script th:src="@{/js/jquery-3.5.1.min.js}"></script>
+    <style>
+        .mui-slider{ height: 230px; background-color: #2ac845}
+        .mui-slider .mui-slider-group .mui-slider-item img{ height: 100%;}
+    </style>
+</head>
+<body>
+<div class="mui-slider">
+    <div class="mui-slider-group mui-slider-loop" >
+        <div class="mui-slider-item" th:each="sss:${top_pic}">
+            <a href="#"><img th:src="${sss.url}" /></a>
+        </div>
+        <div class="mui-slider-item" >
+            <a href="#"><img th:src="${url}" /></a>
+        </div>
+        <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img th:src="${url}" /></a></div>
+    </div>
+</div>
+<!--<img th:each="area:${top_pic}" th:src="${area.url}">-->
+<h1 th:text="${title}"></h1>
+<p>发布人：<span th:text="${created_name}"></span> 发布时间：<span th:text="${created_at}"></span></p>
+<div id="content" th:utext="${content}"></div>
+</body>
+<script th:src="@{/js/mui.js}"></script>
+<script>
+    var gallery = mui('.mui-slider');
+    gallery.slider({
+        interval:5000//自动轮播周期，若为0则不自动播放，默认为0；
+    });
+
+    function unrar(){
+
+        var url = apis.exports;
+        url += "?query=" + query.query;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);    // 也可以使用POST方式，根据接口
+        xhr.responseType = "arraybuffer";  // 返回类型arraybuffer
+        xhr.onload = function () {
+            if (this.status === 200) {
+                var data = new Uint8Array(this.response);
+                // 使用pako插件解压 自行百度下载
+                var result = pako.inflate(data, { to: 'text/comma-separated-values' });
+
+                var blob =new Blob([result]);
+                var reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onload = function (e) {
+                    var a = document.createElement('a');
+                    a.download = 'down.csv';
+                    a.href = e.target.result;
+                    $("body").append(a);
+                    a.click();
+                    $(a).remove();
+                }
+            }
+        };
+        xhr.send();
+    }
+</script>
+</html>

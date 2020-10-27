@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<script th:src="@{/js/jquery-3.5.1.min.js}"></script>
+		<link th:href="@{/css/index.css}" rel="stylesheet" type="text/css"/>
+	</head>
+	<body>
+	<!--<input type="hidden" th:value="${user.openid}" id="openid"/>-->
+
+	<!--<input type="hidden" th:value="${user.nickname}" id="nickname"/>-->
+	<!--<input type="hidden" th:value="${user.sex}" id="sex"/>-->
+	<!--<input type="hidden" th:value="${user.province}" id="province"/>-->
+	<!--<input type="hidden" th:value="${user.city}" id="city"/>-->
+	<!--<input type="hidden" th:value="${user.country}" id="country"/>-->
+	<!--<input type="hidden" th:value="${user.headimgurl}" id="headimgurl"/>-->
+	<form>
+		<div class="wrapper">
+			<div class="head">
+				<div class="head_tb">
+					<!--<i class="fa"><a></a></i>-->
+					<h1>子云智能科技</h1>
+
+				</div>
+			</div>
+
+			<div class="index_nr">
+				<div class="nav_caid">
+					<ul>
+						<a href="/weChat/page/invite">
+							<li>
+								<i><img th:src="@{/images/p2.png}"></i>
+								报修
+							</li>
+						</a>
+						<a href="javascript:location.href='/weChat/page/bindrealestate?openid='+openid">
+							<li>
+								<i><img th:src="@{/images/p3.png}"></i>
+								绑定房产
+							</li>
+						</a>
+						<a href="javascript:location.href='/weChat/page/bindrealestate?openid='+openid">
+							<li>
+								<i><img th:src="@{/images/p3.png}"></i>
+								绑定车位
+							</li>
+						</a>
+						<a href="/weChat/page/card">
+							<li>
+								<i><img th:src="@{/images/p4.png}"></i>
+								人工智能
+							</li>
+						</a>
+					</ul>
+				</div>
+
+				<div class="ann_pro">
+					提示
+					<i></i>
+					<a>重要！众鑫金融联盟营销规范</a>
+				</div>
+
+				<div class="Monthly">
+					<h2>
+						物业公告
+						<a href="/weChat/page/alliance">更多>></a>
+					</h2>
+					<div class="Mont_data">
+						<div class="jine">
+							交易额（元）
+							<p>2580.55</p>
+							<span>本月收益 0 元</span>
+						</div>
+						<ul>
+							<li style="background:none;">
+								<span>0</span>
+								新增盟友
+							</li>
+							<li>
+								<span>0</span>
+								激活用户
+							</li>
+						</ul>
+					</div>
+
+					<div class="wangfi">
+						<ul>
+							<li class="i">
+								业主留言
+							</li>
+							<li style="/*background-image:url('');*/ border-left:solid 1px #dadada;box-sizing: border-box;">
+								便民服务
+							</li>
+						</ul>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="bottom">
+				<a href="/weChat/page/index">
+					<i class="icon icon_f1"></i>
+					首页
+				</a>
+
+				<a href="javascript:location.href='/weChat/page/order?openid='+openid" >
+					<i class="icon icon_f2"></i>
+					账单
+				</a>
+
+				<a href="javascript:location.href='/weChat/page/prestore?openid='+openid">
+					<i class="icon icon_f4"></i>
+					预存
+				</a>
+
+				<a href="javascript:location.href='/weChat/page/pay?openid='+openid">
+					<i class="icon icon_f3"></i>
+					缴费
+				</a>
+			</div>
+
+		</div>
+	</form>
+	</body>
+	<script>
+		var openid = window.localStorage.getItem("openid");
+		var nickname = window.localStorage.getItem("nickname");
+		var sex = window.localStorage.getItem("sex");
+		var province = window.localStorage.getItem("province");
+		var city = window.localStorage.getItem("city");
+		var country = window.localStorage.getItem("country");
+		var headimgurl = window.localStorage.getItem("headimgurl");
+		/*function route(url) {
+			console.log(openid);
+			location.href = "http://qjwsg.free.idcfengye.com/weChat/page/bill?openid="+openid;
+			alert(1);
+		}*/
+	</script>
+	<!--<body>
+		<a href="javascript:location.href='/weChat/page/bindrealestate?openid='+openid">绑定房产</a>
+		<a href="javascript:location.href='/weChat/page/bindparkingspace?openid='+openid">绑定车位</a>
+		<a href="javascript:location.href='/weChat/page/prestore?openid='+openid">预存</a>
+		<a href="javascript:location.href='/weChat/page/pay?openid='+openid">缴费</a>
+		<a href="javascript:location.href='/weChat/page/order?openid='+openid">订单</a>
+	</body>
+	<script>
+		var openid = window.localStorage.getItem("openid");
+		var nickname = window.localStorage.getItem("nickname");
+		var sex = window.localStorage.getItem("sex");
+		var province = window.localStorage.getItem("province");
+		var city = window.localStorage.getItem("city");
+		var country = window.localStorage.getItem("country");
+		var headimgurl = window.localStorage.getItem("headimgurl");
+	</script>-->
+</html>

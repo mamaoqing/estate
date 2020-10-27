@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<link rel="stylesheet" th:href="@{/public/lib/weui.min.css}" />
+		<link rel="stylesheet" th:href="@{/public/css/jquery-weui.min.css}" />
+		<link rel="stylesheet" th:href="@{/public/css/demos.css}">
+		<link rel="stylesheet" th:href="@{/public/css/style.css}" />
+	</head>
+	<body ontouchstart>
+		<form>
+			<div class="weui-cells weui-cells_form">
+				<div class="weui-cell">
+				  <div class="weui-cell__hd"><label for="date" class="weui-label">社区</label></div>
+				  <div class="weui-cell__bd">
+					  <select name="" class="ps-select" id="comm">
+						  <option selected="selected">请选择</option>
+					  </select>
+				  </div>
+				</div>
+				<div class="weui-cell">
+				  <div class="weui-cell__hd"><label for="date" class="weui-label">账户</label></div>
+				  <div class="weui-cell__bd">
+					  <select name="" class="ps-select" id="accountName">
+						  <option selected="selected">请选择</option>
+					  </select>
+				  </div>
+				</div>
+			</div>
+			<div class="weui-cells__tips">不选账户，默认新建账户</div>
+			<div class="weui-cell">
+				
+				<div class="weui-cell__hd"><label class="weui-label">预存金额：</label></div>
+				<div class="weui-cell__bd">
+				  <input class="weui-input" type="number" id="account" placeholder="请输入预存金额">
+				</div>
+			</div>
+			
+			<div class='demos-content-padded'>
+				<a href="javascript:;" onclick="dosubmit()" class="weui-btn weui-btn_primary">预存</a>
+			</div>
+		</form>
+		<div class='demos-content-padded'>
+			<table class="bindrealestate-table" cellpadding="0" cellspacing="0" id="table">
+				<thead>
+					<th width="40px">
+						<input type="checkbox" class="weui-agree__checkbox" >
+					</th>
+					<th width="80">物业类型</th>
+					<th>物业编号</th>
+					<th width="80">费用名称</th>
+				</thead>
+
+			</table>
+		</div>
+
+		<script th:src="@{/public/lib/jquery-2.1.4.js}"></script>
+		<script th:src="@{/public/lib/fastclick.js}"></script>
+		<script>
+		  $(function() {
+		    FastClick.attach(document.body);
+		  });
+		</script>
+		<script th:src="@{/public/js/jquery-weui.min.js}"></script>
+		<script>
+			$.get("../../weChatData/commList",{openid:window.localStorage.getItem("openid")},function (res) {
+				console.log(res);
+				var content = '<option >请选择</option>';
+				for (var i=0;i<res.data.commList.length;i++){
+					content += '<option value="'+res.data.commList[i].id+'">'+res.data.commList[i].name+'</option>';
+				}
+				$("#comm").html(content);
+			});
+			$("#comm").change(function () {
+				var t = $(this).val();
+				if (t == '') {
+					return;
+				}
+				$.ajax({
+					url: '/estate/getCostRuleList',
+					async: false,
+					type: 'get',
+					data: {commId: t, openid: window.localStorage.getItem("openid")},
+					success: function (data) {
+						var json = data.data.list;
+						var t2 = $("#table");
+						var t3 = $("#accountName");
+						// t2.html('<option value="">-选择市-</option>')
+						var content = "";
+						for (var i = 0; i < json.length; i++) {
+							content += '<tr>' +
+									'<td><input type="checkbox" checked name="chose" value="' + json[i].params + '"/></td>' +
+									'<td>' + json[i].property_type + '</td>' +
+									'<td>' + json[i].roomNo + '</td>' +
+									'<td>' + json[i].name + '</td>' +
+									'</tr>';
+						}
+						t2.append(content);
+						var nameList = data.data.nameList;
+						t3.html('<option value="">请选择账户</option>')
+						for (var i = 0; i < nameList.length; i++) {
+							t3.append("<option value='" + nameList[i].id + "'>" + nameList[i].name + "</option>");
+						}
+					}
+				})
+			});
+			$("#accountName").change(function () {
+				if ($("#accountName").val()) {
+					$("#data").hide();
+				} else {
+					$("#data").show();
+				}
+			});
+			function dosubmit() {
+				var arr = beginGet();
+				var text = '';
+				if (!(arr.length > 0)) {
+					alert("请选择物业费用标准");
+					return false;
+				}
+				for (var i = 0; i < arr.length; i++) {
+					text = text + arr[i] + ",";
+				}
+				var price = $("#account").val();
+				var commId = $("#comm").val();
+				var accountName = $("#accountName").val();
+				if (!(price > 0)) {
+					alert("金额不能小于0");
+					return false;
+				}
+				if (commId == '' || commId == null || commId == undefined) {
+					alert("请选择社区");
+					return false;
+				}
+				location.href = "/pay/doprestore?payPrice=" + price + "&openid=[[${openid}]]&commId=" + commId + "&accountName=" + accountName + "&costName=" + text;
+
+			}
+
+			function beginGet() {
+				//首先我们要得到多选框中有一些什么样的值
+				var date = document.getElementsByName("chose");
+				//然后我们去得到这个多选框的长度
+				var thisLength = date.length;
+				//使用字符串数组，用于存放选择好了的数据
+				var str = new Array();
+				for (var i = 0; i < thisLength; i++) {
+					if (date[i].checked == true) {
+						str[i] = date[i].value;
+					}
+				}
+				return remove(str);
+			}
+
+			function remove(arr2) {
+				var new_arr = [];
+				for (var i = 0; i < arr2.length; i++) {
+					var items = arr2[i];
+					//判断元素是否存在于new_arr中，如果不存在则插入到new_ar中
+					if ($.inArray(items, new_arr) == -1) {
+						new_arr.push(items);
+					}
+				}
+
+				return new_arr;
+			}
+		</script>
+	</body>
+</html>

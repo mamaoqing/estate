@@ -1,6 +1,7 @@
 package com.estate.sdzy.wechat.controller;
 
 import com.estate.common.util.ConnectUtil;
+import com.estate.common.util.FormatUtil;
 import com.estate.common.util.Result;
 import com.estate.common.util.ResultUtil;
 import com.estate.sdzy.wechat.entity.TextMessage;
@@ -11,6 +12,7 @@ import com.estate.sdzy.wechat.util.WeChatUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.apache.ibatis.annotations.Delete;
 import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLNonTransientConnectionException;
 import java.util.*;
 
 /**
@@ -122,10 +125,32 @@ public class WeChatController {
         request.setAttribute("user", jsonObject);
 
         return "index_skip";
+//        return "public/index";
     }
 
+    @DeleteMapping("/deleteEstate")
+    @ResponseBody
+    public boolean deleteEstate(HttpServletRequest request) {
+        String id = request.getParameter("id");
+
+        String sql = "delete from r_owner_property where id = ?";
+
+        try {
+            Integer integer = ConnectUtil.executeUpdate(sql, new Object[]{id});
+            if (integer > 0) {
+                return true;
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        } catch (ClassNotFoundException classNotFoundException) {
+            classNotFoundException.printStackTrace();
+        }
+        return false;
+    }
+
+
     @GetMapping("/bindEstate")
-    public String bindEstate(HttpServletRequest request){
+    public String bindEstate(HttpServletRequest request) {
         String openid = request.getParameter("openid");
         String sex = request.getParameter("sex");
         String city = request.getParameter("city");
@@ -133,24 +158,36 @@ public class WeChatController {
         String country = request.getParameter("country");
         String province = request.getParameter("province");
         String headimgurl = request.getParameter("headimgurl");
-        Map<String,String> user = new HashMap<>(16);
-        user.put("openid",openid);
-        user.put("sex",sex);
-        user.put("city",city);
-        user.put("city",city);
-        user.put("nickname",nickname);
-        user.put("country",country);
-        user.put("province",province);
-        user.put("headimgurl",headimgurl);
+        Map<String, String> user = new HashMap<>(16);
+        user.put("openid", openid);
+        user.put("sex", sex);
+        user.put("city", city);
+        user.put("nickname", nickname);
+        user.put("country", country);
+        user.put("province", province);
+        user.put("headimgurl", headimgurl);
         String forObject = restTemplate.getForObject("http://estate-bill/sdzy/rProvince/get", String.class);
         JSONObject dist = JSONObject.fromObject(forObject);
-        request.setAttribute("dist",dist);
-        request.setAttribute("user",user);
+        request.setAttribute("dist", dist);
+        request.setAttribute("user", user);
         String sql = "select * from s_company where is_delete = 0";
+        String propertyNo = "select aa.id aid,bb.property_type,bb.id,case bb.property_type when '房产' then (select CONCAT(mm.name,bu.name,uu.name,'-',room_no)  from r_room room,r_unit uu,r_building bu,r_comm_area ca,r_community mm where room.unit_id = uu.id and uu.building_id = bu.id and bu.comm_area_id = ca.id and ca.comm_id = mm.id and  room.id = bb.property_id) else (select CONCAT(mm.name,ca.name,ps.no,'') from r_parking_space ps,r_comm_area ca,r_community mm where ps.comm_area_id = ca.id and ps.comm_id = mm.id and ps.id=bb.property_id) end property_No from r_owner aa,r_owner_property bb where aa.id = bb.owner_id and  aa.wx_openid=? and bb.property_type='房产'";
         List<Map<String, Object>> stringObjectMap = new ArrayList<>();
+        List<Map<String, Object>> noMap = new ArrayList<>();
         try {
             ResultSet resultSet = ConnectUtil.executeQuery(sql);
 //            stringObjectMap = ResultSetToMap.resultSetToMap(resultSet);
+            ResultSet no = ConnectUtil.executeQuery(propertyNo, new Object[]{openid});
+            while (no.next()) {
+                Map<String, Object> map = new HashMap<>(16);
+                String property_type = no.getString("property_type");
+                String property_No = no.getString("property_No");
+                String id = no.getString("id");
+                map.put("property_type", property_type);
+                map.put("property_No", property_No);
+                map.put("id", id);
+                noMap.add(map);
+            }
             while (resultSet.next()) {
                 Map<String, Object> map = new HashMap<>(16);
                 map.put("id", resultSet.getInt("id"));
@@ -164,10 +201,106 @@ public class WeChatController {
         }
 
 
+//        log.info("用户信息：{}", jsonObject);
+        request.setAttribute("list", stringObjectMap);
+        request.setAttribute("map", noMap);
+        return "index";
+    }
+
+    @GetMapping("/bindPark")
+    public String bindPark(HttpServletRequest request) {
+        String openid = request.getParameter("openid");
+        String sex = request.getParameter("sex");
+        String city = request.getParameter("city");
+        String nickname = request.getParameter("nickname");
+        String country = request.getParameter("country");
+        String province = request.getParameter("province");
+        String headimgurl = request.getParameter("headimgurl");
+        Map<String, String> user = new HashMap<>(16);
+        user.put("openid", openid);
+        user.put("sex", sex);
+        user.put("city", city);
+        user.put("nickname", nickname);
+        user.put("country", country);
+        user.put("province", province);
+        user.put("headimgurl", headimgurl);
+        String forObject = restTemplate.getForObject("http://estate-bill/sdzy/rProvince/get", String.class);
+        JSONObject dist = JSONObject.fromObject(forObject);
+        request.setAttribute("dist", dist);
+        request.setAttribute("user", user);
+        String sql = "select * from s_company where is_delete = 0";
+        String propertyNo = "select aa.id aid,bb.property_type,bb.id,case bb.property_type when '房产' then (select CONCAT(mm.name,bu.name,'-',uu.name,'-',room_no)  from r_room room,r_unit uu,r_building bu,r_comm_area ca,r_community mm where room.unit_id = uu.id and uu.building_id = bu.id and bu.comm_area_id = ca.id and ca.comm_id = mm.id  and  room.id = bb.property_id) else (select CONCAT(mm.name,'-',ps.no,'') from r_parking_space ps,r_community mm where  ps.comm_id = mm.id and ps.id=bb.property_id) end property_No from r_owner aa,r_owner_property bb where aa.id = bb.owner_id and  aa.wx_openid=? and bb.property_type='停车位'";
+        List<Map<String, Object>> stringObjectMap = new ArrayList<>();
+        List<Map<String, Object>> noMap = new ArrayList<>();
+        try {
+            ResultSet resultSet = ConnectUtil.executeQuery(sql);
+//            stringObjectMap = ResultSetToMap.resultSetToMap(resultSet);
+            ResultSet no = ConnectUtil.executeQuery(propertyNo, new Object[]{openid});
+            while (no.next()) {
+                Map<String, Object> map = new HashMap<>(16);
+                String property_type = no.getString("property_type");
+                String property_No = no.getString("property_No");
+                String id = no.getString("id");
+                map.put("property_type", property_type);
+                map.put("property_No", property_No);
+                map.put("id", id);
+                noMap.add(map);
+            }
+            while (resultSet.next()) {
+                Map<String, Object> map = new HashMap<>(16);
+                map.put("id", resultSet.getInt("id"));
+                map.put("name", resultSet.getString("name"));
+                stringObjectMap.add(map);
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        } catch (ClassNotFoundException classNotFoundException) {
+            classNotFoundException.printStackTrace();
+        }
+
 
 //        log.info("用户信息：{}", jsonObject);
         request.setAttribute("list", stringObjectMap);
-        return "index";
+        request.setAttribute("map", noMap);
+        return "park";
+    }
+
+    @GetMapping("/top")
+    public String goIndex(Integer id, HttpServletRequest request) {
+        String sql = "select * from s_message where id = ?";
+        try {
+            ResultSet result = ConnectUtil.executeQuery(sql, new Object[]{id});
+            while (result.next()) {
+                List<Map<String, String>> list = new ArrayList<>();
+                String top_pic = result.getString("top_pic");
+                String[] split = top_pic.split(",");
+
+                for (String x : split) {
+                    Map<String, String> map = new HashMap<>(16);
+                    map.put("url",x);
+                    list.add(map);
+                }
+                String url = split.length > 0 ? split[0]:"";
+                String title = result.getString("title");
+                String content = result.getString("content");
+                String created_name = result.getString("created_name");
+                Date created_at = result.getDate("created_at");
+                String s = FormatUtil.dateToString(created_at, FormatUtil.FORMAT_LONG);
+                request.setAttribute("content", content);
+                request.setAttribute("top_pic", list);
+                log.info("集合：{}",list);
+                request.setAttribute("title", title);
+                request.setAttribute("created_name", created_name);
+                request.setAttribute("created_at", s);
+                request.setAttribute("url", url);
+            }
+        } catch (SQLException sqlException) {
+            sqlException.printStackTrace();
+        } catch (ClassNotFoundException classNotFoundException) {
+            classNotFoundException.printStackTrace();
+        }
+
+        return "top";
     }
 
     @GetMapping("/billDetail")
@@ -181,7 +314,7 @@ public class WeChatController {
         try {
             ResultSet result = ConnectUtil.executeQuery(sql);
             StringBuffer listBillId = new StringBuffer();
-            int comp_id = 0,comm_id = 0;
+            int comp_id = 0, comm_id = 0;
             while (result.next()) {
                 Map<String, Object> map = new HashMap<>(16);
 
@@ -206,14 +339,14 @@ public class WeChatController {
                 map.put("room", room);
                 list.add(map);
             }
-            request.setAttribute("comp_id",comp_id);
-            request.setAttribute("comm_id",comm_id);
-            request.setAttribute("list",list);
-            request.setAttribute("listBillId",listBillId.toString());
+            request.setAttribute("comp_id", comp_id);
+            request.setAttribute("comm_id", comm_id);
+            request.setAttribute("list", list);
+            request.setAttribute("listBillId", listBillId.toString());
             ResultSet sum = ConnectUtil.executeQuery(sumSql);
-            while(sum.next()){
+            while (sum.next()) {
                 BigDecimal price = sum.getBigDecimal("price");
-                request.setAttribute("sumPrice",price);
+                request.setAttribute("sumPrice", price);
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
@@ -221,47 +354,68 @@ public class WeChatController {
             classNotFoundException.printStackTrace();
         }
 
+//        return "public/pay";
         return "billdetail";
     }
 
     @GetMapping("/page/{page}")
-    public String route(@PathVariable ("page") String page,HttpServletRequest request){
+    public String route(@PathVariable("page") String page, HttpServletRequest request) {
         String openid = request.getParameter("openid");
-        request.setAttribute("openid",openid);
-        System.out.println(openid+"=========");
-        System.out.println(page+"=====================");
-        return "model/"+page;
+        request.setAttribute("openid", openid);
+        System.out.println(openid + "=========");
+        System.out.println(page + "=====================");
+        return "public/" + page;
+//        return "model/" + page;
     }
 
     @GetMapping("/page/account")
-    public String account(HttpServletRequest request){
+    public String account(HttpServletRequest request) {
         String openid = request.getParameter("openid");
-        request.setAttribute("openid",openid);
-        System.out.println(openid+"=========");
-        String sql  ="select DISTINCT bb.name,bb.id from r_community bb ,r_owner cc,r_owner_property dd where dd.comm_id = bb.id and cc.id = dd.owner_id and cc.wx_openid= ? and bb.comp_id= ? ";
+        request.setAttribute("openid", openid);
+        System.out.println(openid + "=========");
+        String sql = "select DISTINCT bb.name,bb.id from r_community bb ,r_owner cc,r_owner_property dd where dd.comm_id = bb.id and cc.id = dd.owner_id and cc.wx_openid= ? and bb.comp_id= ? ";
 
-        List<Map<String,Object>> list = new ArrayList<>();
+        List<Map<String, Object>> list = new ArrayList<>();
+        List<String> arr = new ArrayList<>();
         try {
             ResultSet resultSet = ConnectUtil.executeQuery(sql, new Object[]{openid, WeChatResources.COMP_ID});
-            while (resultSet.next()){
-                Map<String,Object> map = new HashMap<>(16);
+            while (resultSet.next()) {
+                Map<String, Object> map = new HashMap<>(16);
                 String name = resultSet.getString("name");
                 int id = resultSet.getInt("id");
-                map.put("name",name);
-                map.put("id",id);
+                map.put("name", name);
+                map.put("id", id);
+                arr.add(name);
                 list.add(map);
             }
-        } catch (SQLException sqlException) {
+        } catch (SQLNonTransientConnectionException sqlException) {
+            try {
+                ResultSet resultSet = ConnectUtil.executeQuery(sql, new Object[]{openid, WeChatResources.COMP_ID});
+                while (resultSet.next()) {
+                    Map<String, Object> map = new HashMap<>(16);
+                    String name = resultSet.getString("name");
+                    int id = resultSet.getInt("id");
+                    map.put("name", name);
+                    map.put("id", id);
+                    list.add(map);
+                }
+            } catch (ClassNotFoundException | SQLException classNotFoundException) {
+                classNotFoundException.printStackTrace();
+            }
+            sqlException.printStackTrace();
+        }catch (SQLException sqlException) {
             sqlException.printStackTrace();
         } catch (ClassNotFoundException classNotFoundException) {
             classNotFoundException.printStackTrace();
         }
         String result = null;
         System.out.println(list);
-        log.info("结果是：{}",list);
+        log.info("结果是：{}", list);
         JSONObject jsonObject = JSONObject.fromObject(result);
         request.setAttribute("openid", openid);
         request.setAttribute("commList", list);
+        request.setAttribute("arr", arr);
+//        return "public/prestore";
         return "model/account";
     }
 
@@ -269,36 +423,36 @@ public class WeChatController {
     @GetMapping("/getBill")
     @ResponseBody
     public Result getBill(HttpServletRequest request) throws SQLException, ClassNotFoundException {
-        log.info("开始时间：{}",new Date());
+        log.info("开始时间：{}", new Date());
         Integer pageNo = 0;
         Integer size = 10;
 
         String openid = request.getParameter("openid");
         String no = request.getParameter("pageNo");
-        if(!StringUtils.isEmpty(no)){
-            pageNo = (Integer.valueOf(no)-1)*size;
+        if (!StringUtils.isEmpty(no)) {
+            pageNo = (Integer.valueOf(no) - 1) * size;
         }
         String state = request.getParameter("state");
         String costName = request.getParameter("costName");
         String isPayment = request.getParameter("isPayment");
         StringBuffer sql = new StringBuffer();
         sql.append("select ee.property_No,ee.property_type,dd.name,bb.bill_no,bb.bill_time,bb.is_overdue,bb.overdue_rule,bb.overdue_cost,bb.is_payment,bb.price+sale_price-pay_price+overdue_cost price,bb.pay_price,bb.sale_price,bb.account_period,bb.state,bb.begin_scale,bb.end_scale from r_owner aa,f_bill bb,r_owner_property cc,f_cost_rule dd,v_r_owner_property ee  where aa.id = cc.owner_id and bb.property_id = cc.property_id and bb.property_type = cc.property_type and bb.cost_rule_id = dd.id and bb.property_id = ee.property_id and bb.property_type = ee.property_type and aa.wx_openid= ? ");
-        if(!StringUtils.isEmpty(state)){
+        if (!StringUtils.isEmpty(state)) {
             sql.append(" and bb.state = '").append(state).append("'");
         }
-        if(!StringUtils.isEmpty(costName)){
+        if (!StringUtils.isEmpty(costName)) {
             sql.append(" and dd.costName = '").append(costName).append("'");
         }
-        if(!StringUtils.isEmpty(isPayment)){
+        if (!StringUtils.isEmpty(isPayment)) {
             sql.append(" and bb.isPayment = '").append(isPayment).append("'");
         }
 
         sql.append(" limit ?,?");
         System.out.println(sql.toString());
-        ResultSet resultSet = ConnectUtil.executeQuery(sql.toString(), new Object[]{openid,pageNo,size});
-        List<Map<String,Object>> list = new ArrayList<>();
-        while(resultSet.next()){
-            Map<String,Object> map = new HashMap<>(16);
+        ResultSet resultSet = ConnectUtil.executeQuery(sql.toString(), new Object[]{openid, pageNo, size});
+        List<Map<String, Object>> list = new ArrayList<>();
+        while (resultSet.next()) {
+            Map<String, Object> map = new HashMap<>(16);
             String name = resultSet.getString("name");
             String billNo = resultSet.getString("bill_no");
             Date billTime = resultSet.getDate("bill_time");
@@ -315,24 +469,24 @@ public class WeChatController {
             BigDecimal pay_price = resultSet.getBigDecimal("pay_price");
             BigDecimal sale_price = resultSet.getBigDecimal("sale_price");
 
-            map.put("property_No",property_No);
-            map.put("property_type",property_type);
-            map.put("name",name);
-            map.put("billNo",billNo);
-            map.put("billTime",billTime);
-            map.put("is_overdue",is_overdue);
-            map.put("overdue_cost",overdue_cost);
-            map.put("account_period",account_period);
-            map.put("resultState",resultState);
-            map.put("begin_scale",begin_scale);
-            map.put("end_scale",end_scale);
-            map.put("is_payment",is_payment);
-            map.put("price",price);
-            map.put("pay_price",pay_price);
-            map.put("sale_price",sale_price);
+            map.put("property_No", property_No);
+            map.put("property_type", property_type);
+            map.put("name", name);
+            map.put("billNo", billNo);
+            map.put("billTime", billTime);
+            map.put("is_overdue", is_overdue);
+            map.put("overdue_cost", overdue_cost);
+            map.put("account_period", account_period);
+            map.put("resultState", resultState);
+            map.put("begin_scale", begin_scale);
+            map.put("end_scale", end_scale);
+            map.put("is_payment", is_payment);
+            map.put("price", price);
+            map.put("pay_price", pay_price);
+            map.put("sale_price", sale_price);
             list.add(map);
         }
-        log.info("结束时间:{}",new Date());
+        log.info("结束时间:{}", new Date());
         return ResultUtil.success(list);
     }
 }

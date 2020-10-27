@@ -22,7 +22,7 @@ public class WeChatResources {
     public static final String APPPAYSECRET = "7308a4a2c5081dcb34549005cee28b3d";
 
     /** 微信支付回调地址 */
-    public static final String NOTIFYURL = "http://qjwsg.free.idcfengye.com/pay/notify";
+    public static final String NOTIFYURL = "132.232.89.144/pay/notify";
 
     /** 微信支付成功时告诉微信 */
     public static final String PAY_SUCCESS_RESULT = "<xml>" +
@@ -37,7 +37,8 @@ public class WeChatResources {
             "</xml>";
 
     /** 微信支付证书保存位置 */
-    public static final String CERPATH = "C:\\Users\\Administrator\\Desktop\\WXCertUtil\\cert\\apiclient_cert.p12";
+    public static final String CERPATH = "/opt/rh/java/project/apiclient_cert.p12";
+//    public static final String CERPATH = "C:\\Users\\Administrator\\Desktop\\WXCertUtil\\cert\\apiclient_cert.p12";
 
     /** 物业公司id */
     public static final Integer COMP_ID = 1;

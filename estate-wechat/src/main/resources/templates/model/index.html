@@ -1,6 +1,6 @@
 <html xmlns:th="http://www.w3.org/1999/xhtml">
 <link>
-<title>首页1111111111</title>
+<title>首页</title>
 <link th:href="@{/css/index.css}" rel="stylesheet" type="text/css"/>
 <meta http-equiv="Content-Type" content="textml; charset=UTF-8">
 <meta name="viewport"
@@ -29,12 +29,6 @@
         <div class="index_nr">
             <div class="nav_caid">
                 <ul>
-                    <a href="/weChat/page/Outreach">
-                        <li>
-                            <i><img th:src="@{/images/p1.png}"></i>
-                            公告
-                        </li>
-                    </a>
                     <a href="/weChat/page/invite">
                         <li>
                             <i><img th:src="@{/images/p2.png}"></i>
@@ -44,7 +38,13 @@
                     <a href="javascript:location.href='/weChat/bindEstate?openid='+openid+'&nickname='+nickname+'&sex='+sex+'&province='+province+'&city='+city+'&country='+country+'&headimgurl'+headimgurl">
                         <li>
                             <i><img th:src="@{/images/p3.png}"></i>
-                            绑定物业
+                            绑定房产
+                        </li>
+                    </a>
+                    <a href="javascript:location.href='/weChat/bindPark?openid='+openid+'&nickname='+nickname+'&sex='+sex+'&province='+province+'&city='+city+'&country='+country+'&headimgurl'+headimgurl">
+                        <li>
+                            <i><img th:src="@{/images/p3.png}"></i>
+                            绑定车位
                         </li>
                     </a>
                     <a href="/weChat/page/card">
@@ -64,7 +64,7 @@
 
             <div class="Monthly">
                 <h2>
-                    本月业绩
+                    物业公告
                     <a href="/weChat/page/alliance">更多>></a>
                 </h2>
                 <div class="Mont_data">
@@ -88,10 +88,10 @@
                 <div class="wangfi">
                     <ul>
                         <li class="i">
-                            网贷口子
+                            业主留言
                         </li>
                         <li style="/*background-image:url('');*/ border-left:solid 1px #dadada;box-sizing: border-box;">
-                            信用卡
+                            便民服务
                         </li>
                     </ul>
                 </div>
@@ -115,7 +115,7 @@
                 预存
             </a>
 
-            <a href="/weChat/page/income">
+            <a href="javascript:location.href='/weChat/billDetail?openid='+openid">
                 <i class="icon icon_f3"></i>
                 缴费
             </a>

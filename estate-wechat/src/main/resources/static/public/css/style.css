@@ -1,0 +1,11 @@
+.bindrealestate-table{ border-top: 1px solid #f2f2f2; border-left: 1px solid #f2f2f2; width: 100%;}
+.bindrealestate-table th, .bindrealestate-table td{ text-align: center;border-right: 1px solid #f2f2f2; border-bottom: 1px solid #f2f2f2; background-color: #f8f8f8;
+	padding: 5px 0;} 
+.bindrealestate-table td{ font-size: 14px; color: #666; background-color: #fff;} 
+.bindrealestate-table .bt-del{ color: #e64340;}
+
+/*order*/
+.order-menulist{ display: flex; justify-content: space-evenly;}
+.order-menulist .om-li{display: flex} 
+.order-menulist .oml-option{ color: #000000;} 
+.order-menulist .icon-arrow{ width: 28px; height: 28px; margin-left: 5px;}
